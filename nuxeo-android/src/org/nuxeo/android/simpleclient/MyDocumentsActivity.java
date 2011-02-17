@@ -80,9 +80,15 @@ public class MyDocumentsActivity extends WrappedSmartListActivity implements
     public List<? extends BusinessViewWrapper<?>> retrieveBusinessObjectsList()
             throws BusinessObjectUnavailableException {
 
-        HttpAutomationClient client = new HttpAutomationClient(
-                "http://10.213.2.104:8080/nuxeo/site/automation");
-        Session session = client.getSession("Administrator", "Administrator");
+        String serverUrl = getPreferences().getString(
+                SettingsActivity.PREF_SERVER_URL, "")
+                + "/" + SettingsActivity.PREF_SERVER_URL_SUFFIX;
+        HttpAutomationClient client = new HttpAutomationClient(serverUrl);
+        String login = getPreferences().getString(SettingsActivity.PREF_LOGIN,
+                "");
+        String password = getPreferences().getString(
+                SettingsActivity.PREF_PASSWORD, "");
+        Session session = client.getSession(login, password);
         Documents docs;
         try {
             docs = (Documents) session.newRequest("Document.Query").set(
@@ -100,5 +106,4 @@ public class MyDocumentsActivity extends WrappedSmartListActivity implements
         }
         return wrappers;
     }
-
 }
