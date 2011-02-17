@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <PreferenceCategory
+    android:title="@string/preferences_server">
+
+    <EditTextPreference
+      android:key="server_name"
+      android:title="@string/title_server_name"
+      android:summary="@string/summary_server_name"
+      android:dialogTitle="@string/title_server_name"
+      android:defaultValue="Nuxeo demo server"
+      android:persistent="true"
+      android:singleLine="true" />
+    <EditTextPreference
+      android:key="server_url"
+      android:title="@string/title_server_url"
+      android:summary="@string/summary_server_url"
+      android:dialogTitle="@string/title_server_url"
+      android:defaultValue="http://dm.demo.nuxeo.com/nuxeo"
+      android:persistent="true"
+      android:singleLine="true" />
+    <EditTextPreference
+      android:key="server_login"
+      android:title="@string/title_server_login"
+      android:summary="@string/summary_server_login"
+      android:dialogTitle="@string/title_server_login"
+      android:defaultValue="Administrator"
+      android:persistent="true"
+      android:singleLine="true" />
+    <EditTextPreference
+      android:key="server_password"
+      android:title="@string/title_server_password"
+      android:summary="@string/summary_server_password"
+      android:dialogTitle="@string/title_server_password"
+      android:defaultValue="Administrator"
+      android:password="true"
+      android:persistent="true"
+      android:singleLine="true" />
+  </PreferenceCategory>
+
+  <PreferenceCategory
+    android:title="@string/Home_menu_about">
+    <Preference
+      android:key="version"
+      android:persistent="false"
+      android:selectable="false"
+      android:title="@string/Settings_version" />
+    <Preference
+      android:key="about"
+      android:title="@string/Home_menu_about" />
+  </PreferenceCategory>
+</PreferenceScreen>

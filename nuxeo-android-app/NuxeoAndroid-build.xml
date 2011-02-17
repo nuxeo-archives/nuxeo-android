@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+This Ant buildfile requires that you have included the following Ant library extensions:
+<ul>
+  <li><a href="http://ant-contrib.sourceforge.net/">Ant-Contrib</a></li>
+   <li><a href="http://subclipse.tigris.org/svnant.html">SvnAnt</a></li>
+  <li><a href="http://antelope.tigris.org/">Antelope</a></li>
+ </ul>
+
+When building, you can override the Java property <code>sdk.dir</code> in order to point to the Android SDK home directory.
+ -->
+<project
+  name="NuxeoAndroid-build"
+  default="project.init"
+  basedir="."
+>
+
+  <description>The aim of this Ant buildfile is to propose helpers for handling the 'NuxeoAndroid' Android project.</description>
+
+  <loadproperties srcfile="NuxeoAndroid-build.properties"/>
+
+  <!-- The AntContrib library extends Ant. -->
+  <taskdef resource="net/sf/antcontrib/antlib.xml"/>
+  <!-- The Antelope library extends Ant. -->
+  <taskdef
+    name="stringutil"
+    classname="ise.antelope.tasks.StringUtilTask"
+  />
+
+  <!-- The SvnAnt library. -->
+  <property
+    name="svnant.directoryPath"
+    location="/opt/svnant-1.3.0"
+  />
+  <path id="svnant.classpath">
+    <fileset dir="${svnant.directoryPath}">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+  <typedef
+    resource="org/tigris/subversion/svnant/svnantlib.xml"
+    classpathref="svnant.classpath"
+  />
+
+  <target
+    name="project.defineMacroCommit"
+    depends=""
+    description="Defines a SVN 'commit' macro."
+  >
+    <macrodef name="commit">
+      <attribute name="comment"/>
+      <element name="fileSetIncludeAndExcludes"/>
+      <sequential>
+        <!--antcall target="project.computeSvn"/-->
+        <svn
+          username="${svn.login}"
+          password="${svn.password}"
+        >
+          <commit message="@{comment}">
+            <fileSetIncludeAndExcludes/>
+          </commit>
+        </svn>
+      </sequential>
+    </macrodef>
+  </target>
+
+  <target
+    name="defineMacroAdd.project"
+    depends=""
+    description="Defines a SVN 'add' macro."
+  >
+    <macrodef name="add">
+      <element name="fileSetIncludeAndExcludes"/>
+      <sequential>
+        <!--antcall target="project.computeSvn"/-->
+        <svn
+          username="${login.svn}"
+          password="${login.password}"
+          svnkit="true"
+        >
+          <add recurse="true">
+            <fileSetIncludeAndExcludes/>
+          </add>
+        </svn>
+      </sequential>
+    </macrodef>
+  </target>
+
+  <target
+    name="releaseAndTag"
+    depends="project.init, project.build, project.preTag, project.tag"
+    description="Builds from scratch the .apk and then tags the current version of the project."
+  />
+
+  <target
+    name="project.tag"
+    depends="project.init, project.ensureSvnTag, project.computeSvn"
+    description="Tags the current version of the project."
+  >
+    <property
+      name="tag.svn"
+      value="${projectPrefix}-${version.svn}"
+    />
+    <propertyregex
+      property="tagUrl.svn"
+      override="yes"
+      input="${repository.url}"
+      regexp="${svnTagPathRegexp}"
+      replace="\1/tags/${tag.svn}"
+      global="true"
+    />
+    <echo>Creating the tag '${tag.svn}' from the '${repository.url}' HEAD</echo>
+    <svn
+      username="${svn.login}"
+      password="${svn.password}"
+    >
+      <copy
+        srcUrl="${repository.url}"
+        destUrl="${tagUrl.svn}"
+        revision="HEAD"
+        message="The v${version.svn}."
+      />
+    </svn>
+  </target>
+
+  <target
+    name="project.computeSvn"
+    depends="project.init, project.ensureSvn"
+    description="Computes the SVN properties."
+  >
+    <if>
+      <not>
+        <isset property="repository.url"/>
+      </not>
+      <then>
+        <svn
+          username="${svn.login}"
+          password="${svn.password}"
+        >
+          <wcVersion
+            path="."
+            prefix=""
+          />
+        </svn>
+      </then>
+    </if>
+  </target>
+
+  <target
+    name="project.ensureSvnTag"
+    depends="project.init"
+    description="Asks for the SVN tag if necessary."
+  >
+    <input
+      message="Version of the release?"
+      addproperty="version.svn"
+    />
+    <property
+      name="tag.svn"
+      value="${projectPrefix}-${version.svn}"
+    />
+  </target>
+
+  <target
+    name="project.ensureSvn"
+    depends="project.init"
+    description="Asks for the SVN credentials if necessary."
+  >
+    <input
+      message="SVN login?"
+      addproperty="svn.login"
+    />
+    <input
+      message="SVN password?"
+      addproperty="svn.password"
+    />
+  </target>
+
+  <!--                                 -->
+  <!-- The section specific to Android -->
+  <!--                                 -->
+
+  <target
+    name="project.init"
+    depends="project.defineMacroCommit, defineMacroAdd.project"
+    description="Default target, which should always be called first be other targets."
+  >
+  </target>
+
+  <target
+    name="project.build"
+    depends="project.init"
+    description="Builds from scratch the project .apk."
+  >
+    <delete dir="bin"/>
+    <ant
+      antfile="android-build.xml"
+      target="release"
+    />
+  </target>
+
+  <target
+    name="project.clean"
+    depends="project.init"
+    description="Cleans-up the project generated artifacts."
+  >
+    <delete dir="bin"/>
+  </target>
+
+  <target
+    name="project.preTag"
+    depends="project.init, project.ensureSvnTag, project.ensureSvn"
+    description="Performs some operation before the project is tagged."
+  >
+    <property
+      name="distribution.directoryPath"
+      location="dist"
+    />
+    <property
+      name="installationPackage.filePath"
+      location="${distribution.directoryPath}/${projectPrefix}.apk"
+    />
+    <svn
+      username="${svn.login}"
+      password="${svn.password}"
+    >
+      <status
+        path="${installationPackage.filePath}"
+        textStatusProperty="status.svn"
+      />
+    </svn>
+    <echo>The SVN status of the installation package file '${installationPackage.filePath}' is '${status.svn}'.</echo>
+    <mkdir dir="dist"/>
+    <copy
+      file="bin/${projectPrefix}-android-release.apk"
+      tofile="${installationPackage.filePath}"
+    />
+    <if>
+      <equals
+        arg1="${status.svn}"
+        arg2="unversioned"
+      />
+      <then>
+        <echo>Adding to SVN the distribution directory '${distribution.directoryPath}'...</echo>
+        <add>
+          <fileSetIncludeAndExcludes >
+            <fileset file="${distribution.directoryPath}"/>
+          </fileSetIncludeAndExcludes>
+        </add>
+        <echo>Committing to SVN the distribution directory '${distribution.directoryPath}'...</echo>
+        <commit comment="The repostory of the distribution packages.">
+          <fileSetIncludeAndExcludes>
+            <fileset file="${distribution.directoryPath}"/>
+          </fileSetIncludeAndExcludes>
+        </commit>
+        <echo>Adding to SVN the installation package '${installationPackage.filePath}'...</echo>
+        <add>
+          <fileSetIncludeAndExcludes >
+            <fileset file="${installationPackage.filePath}"/>
+          </fileSetIncludeAndExcludes>
+        </add>
+      </then>
+    </if>
+    <echo>Committing to SVN the installation package '${installationPackage.filePath}'...</echo>
+    <commit comment="New version of the installation package for the '${tag.svn}'.">
+      <fileSetIncludeAndExcludes>
+        <fileset file="${installationPackage.filePath}"/>
+     </fileSetIncludeAndExcludes>
+    </commit>
+  </target>
+
+  <target
+    name="project.prepareNextVersion"
+    depends="project.init"
+    description="Modifies the 'AndroidManifest.xml' file for preparing a new version of the project release."
+  >
+    <loadfile
+      srcFile="AndroidManifest.xml"
+      property="manifest"
+    />
+    <propertyregex
+      property="manifest.curentVersionName"
+      override="yes"
+      input="${manifest}"
+      regexp="(android:versionName=&quot;)(.*)(&quot;)"
+      select="\2"
+    />
+    <input
+      message="Next version name?"
+      addproperty="manifest.versionName"
+      defaultvalue="${manifest.curentVersionName}"
+    />
+    <propertyregex
+      property="manifest"
+      override="yes"
+      input="${manifest}"
+      regexp="(android:versionName=&quot;)(.*)(&quot;)"
+      replace="\1${manifest.versionName}\3"
+    />
+    <propertyregex
+      property="manifest.curentVersionCode"
+      override="yes"
+      input="${manifest}"
+      regexp="(android:versionCode=&quot;)(.*)(&quot;)"
+      select="\2"
+    />
+    <input
+      message="Next version code?"
+      addproperty="manifest.versionCode"
+      defaultvalue="${manifest.curentVersionCode}"
+    />
+    <propertyregex
+      property="manifest"
+      override="yes"
+      input="${manifest}"
+      regexp="(android:versionCode=&quot;)(.*)(&quot;)"
+      replace="\1${manifest.versionCode}\3"
+    />
+    <echo
+      file="AndroidManifest.xml"
+      message="${manifest}"
+    />
+  </target>
+
+  <!--                                              -->
+  <!-- The section specific to the software factory -->
+  <!--                                              -->
+
+  <target
+    name="sf.init"
+    depends=""
+    description="Initializes the software factory properties."
+  >
+    <!-- This propery 'sf.properties.filePath' must be defined during the software factory run. -->
+    <loadproperties srcfile="${sf.properties.filePath}">
+      <filterchain>
+        <linecontains>
+          <contains value="${projectPrefix}"/>
+        </linecontains>
+      </filterchain>
+    </loadproperties>
+    <macrodef name="propertycopyIf">
+      <attribute name="name"/>
+      <attribute name="from"/>
+      <sequential>
+        <if>
+          <isset property="@{from}"/>
+          <then>
+            <propertycopy
+              name="@{name}"
+              from="@{from}"
+            />
+          </then>
+        </if>
+      </sequential>
+    </macrodef>
+    <propertycopyIf
+      name="key.alias.password"
+      from="${projectPrefix}.key.alias.password"
+    />
+    <propertycopyIf
+      name="key.store.password"
+      from="${projectPrefix}.key.store.password"
+    />
+    <propertycopyIf
+      name="ftp.hostName"
+      from="${projectPrefix}.ftp.hostName"
+    />
+    <propertycopyIf
+      name="ftp.directoryName"
+      from="${projectPrefix}.ftp.directoryName"
+    />
+    <propertycopyIf
+      name="ftp.login"
+      from="${projectPrefix}.ftp.login"
+    />
+    <propertycopyIf
+      name="ftp.password"
+      from="${projectPrefix}.ftp.password"
+    />
+  </target>
+
+  <target
+    name="sf.deploy"
+    depends=""
+    if="ftp.hostName"
+    description="Pushes the latest compiled application .apk on a FTP server."
+  >
+    <property
+      name="binary.filePath"
+      location="bin/${projectPrefix}.apk"
+    />
+    <if>
+      <not>
+        <isset property="ftp.directoryName"/>
+      </not>
+      <then>
+        <stringutil
+          property="ftp.directoryName"
+          string="${projectPrefix}"
+        >
+          <lowercase/>
+        </stringutil>
+      </then>
+    </if>
+    <if>
+      <available file="bin/${projectPrefix}-android-release.apk"/>
+        <then>
+          <copy
+            file="bin/${projectPrefix}-android-release.apk"
+            toFile="${binary.filePath}"
+          />
+        </then>
+        <else>
+          <copy
+            file="bin/${projectPrefix}-android-unsigned.apk"
+            toFile="${binary.filePath}"
+          />
+       </else>
+    </if>
+    <ftp
+      action="send"
+      binary="yes"
+      ignoreNoncriticalErrors="true"
+      remotedir="${ftp.directoryName}"
+      server="${ftp.hostName}"
+      userid="${ftp.login}"
+      password="${ftp.password}"
+      verbose="yes"
+    >
+      <fileset file="${binary.filePath}"/>
+    </ftp>
+  </target>
+
+</project>
