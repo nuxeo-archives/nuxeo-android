@@ -22,7 +22,6 @@
 package org.nuxeo.ecm.automation.client.jaxrs.util;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 
 /**
  * Encodes and decodes to and from Base64 notation.
@@ -302,10 +301,6 @@ public class Base64
    }
 
    public static String encode(String content, String charset) throws UnsupportedEncodingException {
-       return encodeBytes(content.getBytes(charset));
-   }
-
-   public static String encode(String content, Charset charset) {
        return encodeBytes(content.getBytes(charset));
    }
 
