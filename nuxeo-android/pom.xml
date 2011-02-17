@@ -34,11 +34,9 @@
     <!-- <scope>provided</scope> -->
     <!-- </dependency> -->
     <dependency>
-      <groupId>org.nuxeo.android</groupId>
-      <artifactId>android-sdk</artifactId>
+      <groupId>com.google.android</groupId>
+      <artifactId>android-sdk-nx</artifactId>
       <version>2.2.1</version>
-      <scope>system</scope>
-      <systemPath>/opt/android-sdk-mac_x86/platforms/android-8/android.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>org.nuxeo.ecm.automation</groupId>
@@ -50,13 +48,13 @@
       <artifactId>droid4me</artifactId>
       <version>1.0</version>
       <scope>system</scope>
-      <systemPath>/Users/julien/Documents/workspace/nuxeo-android/nuxeo-android/libs/com.smartnsoft.droid4me.jar</systemPath>
+      <systemPath${project.basedir}/libs/com.smartnsoft.droid4me.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>com.smartnsoft</groupId>
       <artifactId>droid4me.ext</artifactId>
       <scope>system</scope>
-      <systemPath>/Users/julien/Documents/workspace/nuxeo-android/nuxeo-android/libs/com.smartnsoft.droid4me.ext.jar</systemPath>
+      <systemPath>${project.basedir}/libs/com.smartnsoft.droid4me.ext.jar</systemPath>
       <version>1.0</version>
     </dependency>
   </dependencies>
