@@ -10,79 +10,135 @@ import android.text.Html;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.smartnsoft.droid4me.app.AppPublics;
+import com.smartnsoft.droid4me.app.AppPublics.GuardedCommand;
 import com.smartnsoft.droid4me.app.SmartActivity;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 
 public class TestAndroid1 extends SmartActivity<Void> implements
-		BusinessObjectsRetrievalAsynchronousPolicy, OnClickListener {
+        BusinessObjectsRetrievalAsynchronousPolicy, OnClickListener {
 
-	/** Called when the activity is first created. */
+    /** Called when the activity is first created. */
 
-	TextView myText = null;
-	TextView result = null;
-	Documents docs = null;
+    TextView myText = null;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-	}
+    TextView result = null;
 
-	// call back of object retrieval => Thread UI
-	public void onFulfillDisplayObjects() {
+    Documents docs = null;
 
-		myText.setText("Automation call succeed");
+    private EditText searchText;
 
-		Button button = (Button) findViewById(R.id.button1);
-		button.setOnClickListener(this);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
-		if (docs != null) {
-			StringBuffer sb = new StringBuffer();
+    // call back of object retrieval => Thread UI
+    public void onFulfillDisplayObjects() {
 
-			sb.append("<h3>query result</h3> <ul>");
+        myText.setText("Automation call succeed");
 
-			for (Document doc : docs) {
-				sb.append("<li>" +  doc.getType() + " - ");
-				sb.append("<b>" +  doc.getTitle() + "</b>");
-				sb.append("</li>");
-			}
-			sb.append("</ul>");
-			result.setText(Html.fromHtml(sb.toString()));
-		}
-	}
+        Button button = (Button) findViewById(R.id.button1);
+        button.setOnClickListener(this);
 
-	// executed in an async thread
-	public void onRetrieveBusinessObjects()
-			throws BusinessObjectUnavailableException {
+        displayQueryResult();
+    }
 
-		HttpAutomationClient client = new HttpAutomationClient("http://10.0.2.2:8080/nuxeo/site/automation");
-		Session session = client.getSession("Administrator", "Administrator");
-		try {
-			docs = (Documents) session.newRequest("Document.Query").set(
-					"query", "SELECT * FROM Document where ecm:mixinType != 'HiddenInNavigation'").execute();
-		} catch (Exception e) {
-			throw new BusinessObjectUnavailableException(e);
-		}
-		client.shutdown();
+    public void displayQueryResult() {
+        if (docs != null) {
+            StringBuffer sb = new StringBuffer();
 
-	}
+            sb.append("<h3>query result</h3> <ul>");
 
-	public void onRetrieveDisplayObjects() {
-		setContentView(R.layout.main);
-		myText = (TextView) findViewById(R.id.myTextBox);
-		result = (TextView) findViewById(R.id.result);
+            for (Document doc : docs) {
+                sb.append("<li>" + doc.getType() + " - ");
+                sb.append("<b>" + doc.getTitle() + "</b>");
+                sb.append("</li>");
+            }
+            sb.append("</ul>");
+            result.setText(Html.fromHtml(sb.toString()));
+        }
+    }
 
-		myText.setText("Automation Call in progress ...");
-	}
+    // executed in an async thread
+    public void onRetrieveBusinessObjects()
+            throws BusinessObjectUnavailableException {
+        retrieveDocumentsList();
+    }
 
-	public void onSynchronizeDisplayObjects() {
-		// resync business object
-	}
+    public void retrieveDocumentsList()
+            throws BusinessObjectUnavailableException {
+        HttpAutomationClient client = new HttpAutomationClient(
+                "http://10.213.2.104:8080/nuxeo/site/automation");
+        Session session = client.getSession("Administrator", "Administrator");
+        try {
+            docs = (Documents) session.newRequest("Document.Query").set(
+                    "query",
+                    "SELECT * FROM Document where ecm:mixinType != 'HiddenInNavigation'").execute();
+        } catch (Exception e) {
+            throw new BusinessObjectUnavailableException(e);
+        }
+        client.shutdown();
+    }
 
-	public void onClick(View v) {
-		myText.setText("should refresh query in a non UI Thread" );
-	}
+    public void searchDocuments(String searchStr)
+            throws BusinessObjectUnavailableException {
+        HttpAutomationClient client = new HttpAutomationClient(
+                "http://10.213.2.104:8080/nuxeo/site/automation");
+        Session session = client.getSession("Administrator", "Administrator");
+        try {
+            docs = (Documents) session.newRequest("Document.PageProvider").set(
+                    "query",
+                    "SELECT * FROM Document WHERE ecm:fulltext LIKE ? "
+                            + "AND ecm:mixinType != 'HiddenInNavigation' "
+                            + "AND ecm:isCheckedInVersion = 0 "
+                            + "AND ecm:currentLifeCycleState != 'deleted'").set(
+                    "queryParams", searchStr).execute();
+        } catch (Exception e) {
+            throw new BusinessObjectUnavailableException(e);
+        }
+        client.shutdown();
+    }
 
+    public void onRetrieveDisplayObjects() {
+        setContentView(R.layout.main);
+        myText = (TextView) findViewById(R.id.myTextBox);
+        result = (TextView) findViewById(R.id.result);
+        searchText = (EditText) findViewById(R.id.searchTxt);
+
+        myText.setText("Automation Call in progress ...");
+    }
+
+    public void onSynchronizeDisplayObjects() {
+        // resync business object
+    }
+
+    public void onClick(View v) {
+        final String searchStr = searchText.getText().toString();
+        AppPublics.THREAD_POOL.execute(new GuardedCommand(this) {
+
+            @Override
+            protected void runGuarded() throws Exception {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        myText.setText("Search for " + searchStr + "...");
+                    }
+                });
+                searchDocuments(searchStr);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        myText.setText("Search succeeded.");
+                        displayQueryResult();
+                    }
+                });
+            }
+        });
+        myText.setText("should refresh query in a non UI Thread");
+    }
 }
