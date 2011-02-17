@@ -61,6 +61,8 @@ public class Request extends HashMap<String, String> {
 
     protected Object result;
 
+    protected boolean cachable = false;
+
     public Request(int method, String url) {
         this.method = method;
         this.url = url;

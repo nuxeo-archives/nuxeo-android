@@ -96,7 +96,7 @@ public class DefaultSession implements Session {
         }
         req.put("Accept", REQUEST_ACCEPT_HEADER);
         req.put("Content-Type", ctype);
-        return connector.execute(req);
+        return connector.execute(req, request.forceRefresh(), request.isCachable());
     }
 
     public void execute(final OperationRequest request,
@@ -149,6 +149,10 @@ public class DefaultSession implements Session {
     }
 
     public OperationRequest newRequest(String id) throws Exception {
+        return newRequest(id, false);
+    }
+
+    public OperationRequest newRequest(String id, boolean cachable) throws Exception {
         return newRequest(id, new HashMap<String, String>());
     }
 

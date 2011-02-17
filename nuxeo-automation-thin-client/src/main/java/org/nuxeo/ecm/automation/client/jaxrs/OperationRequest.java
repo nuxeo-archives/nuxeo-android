@@ -38,6 +38,8 @@ public interface OperationRequest {
 
     OperationRequest setContextProperty(String key, String value);
 
+    Object execute(boolean forceRefresh, boolean cachable) throws Exception;
+
     Object execute() throws Exception;
 
     void execute(AsyncCallback<Object> cb);
@@ -49,5 +51,9 @@ public interface OperationRequest {
     OperationRequest setHeader(String key, String value);
 
     Map<String, String> getHeaders();
+
+    boolean isCachable();
+
+    boolean forceRefresh();
 
 }

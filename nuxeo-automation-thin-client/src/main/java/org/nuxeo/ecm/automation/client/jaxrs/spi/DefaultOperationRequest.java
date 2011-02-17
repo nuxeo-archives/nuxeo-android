@@ -46,6 +46,10 @@ public class DefaultOperationRequest implements OperationRequest {
 
     protected OperationInput input;
 
+    protected boolean cachable = true;
+
+    protected boolean refresh = false;
+
     public DefaultOperationRequest(DefaultSession session,
             OperationDocumentation op) {
         this(session, op, new HashMap<String, String>());
@@ -156,6 +160,12 @@ public class DefaultOperationRequest implements OperationRequest {
         return params;
     }
 
+    public Object execute(boolean forceRefresh, boolean cachable) throws Exception {
+        this.refresh=forceRefresh;
+        this.cachable=cachable;
+        return session.execute(this);
+    }
+
     public Object execute() throws Exception {
         return session.execute(this);
     }
@@ -173,4 +183,11 @@ public class DefaultOperationRequest implements OperationRequest {
         return headers;
     }
 
+    public boolean isCachable() {
+        return cachable;
+    }
+
+    public boolean forceRefresh() {
+        return refresh;
+    }
 }
