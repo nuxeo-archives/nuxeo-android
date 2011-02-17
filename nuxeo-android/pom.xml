@@ -48,7 +48,7 @@
       <artifactId>droid4me</artifactId>
       <version>1.0</version>
       <scope>system</scope>
-      <systemPath${project.basedir}/libs/com.smartnsoft.droid4me.jar</systemPath>
+      <systemPath>${project.basedir}/libs/com.smartnsoft.droid4me.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>com.smartnsoft</groupId>
