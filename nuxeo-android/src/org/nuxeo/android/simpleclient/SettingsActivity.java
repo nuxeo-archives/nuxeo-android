@@ -27,7 +27,7 @@ import com.smartnsoft.droid4me.app.SmartPreferenceActivity;
 
 /**
  * The activity which enables to tune the application.
- *
+ * 
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.17
  */
@@ -45,6 +45,7 @@ public final class SettingsActivity extends SmartPreferenceActivity implements
     public void onRetrieveDisplayObjects() {
         addPreferencesFromResource(R.xml.settings);
         {
+
             final Preference versionPreference = findPreference("version");
             try {
                 versionPreference.setSummary(getPackageManager().getPackageInfo(

@@ -11,21 +11,24 @@
       android:summary="@string/summary_server_name"
       android:dialogTitle="@string/title_server_name"
       android:defaultValue="Nuxeo demo server"
-      android:persistent="true" />
+      android:persistent="true"
+      android:singleLine="true" />
     <EditTextPreference
       android:key="server_url"
       android:title="@string/title_server_url"
       android:summary="@string/summary_server_url"
       android:dialogTitle="@string/title_server_url"
       android:defaultValue="http://dm.demo.nuxeo.com/nuxeo"
-      android:persistent="true" />
+      android:persistent="true"
+      android:singleLine="true" />
     <EditTextPreference
       android:key="server_login"
       android:title="@string/title_server_login"
       android:summary="@string/summary_server_login"
       android:dialogTitle="@string/title_server_login"
       android:defaultValue="Administrator"
-      android:persistent="true" />
+      android:persistent="true"
+      android:singleLine="true" />
     <EditTextPreference
       android:key="server_password"
       android:title="@string/title_server_password"
@@ -33,7 +36,8 @@
       android:dialogTitle="@string/title_server_password"
       android:defaultValue="Administrator"
       android:password="true"
-      android:persistent="true" />
+      android:persistent="true"
+      android:singleLine="true" />
   </PreferenceCategory>
 
   <PreferenceCategory
