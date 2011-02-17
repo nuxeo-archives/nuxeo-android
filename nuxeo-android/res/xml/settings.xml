@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <Preference
+    android:key="version"
+    android:persistent="false"
+    android:selectable="false"
+    android:title="@string/Settings_version"
+    android:summary=""
+  />
+
+</PreferenceScreen>

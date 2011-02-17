@@ -1,0 +1,87 @@
+body
+{ 
+  background-image: url(background.png);
+  color: #FFF;
+  background-color: #101010;
+  background-position: top;
+  background-attachment:fixed;
+  background-repeat: repeat-x;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-family: Verdana;
+}
+
+a:link
+{
+  color: #2080b5;
+}
+
+div
+{
+  margin-bottom: 1em;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+h2
+{
+  //text-align: center;
+  font-size: large;
+}
+
+.applicationLogo
+{
+  text-align: center;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.applicationName
+{
+  font-size: large;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.detail
+{
+}
+
+.version
+{
+  text-align: center;
+}
+
+.smartNSoft
+{
+  text-align: center;
+}
+
+.smartNSoftLogo
+{
+  float: left;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.poweredBySmartNSoft
+{
+  font-weight: bold;
+}
+
+.droid4meInside
+{
+  font-size: small;
+  font-style: italic;
+}
+
+.about
+{
+}
+
+.source
+{
+  font-size: small;
+}
