@@ -16,56 +16,60 @@ import com.smartnsoft.droid4me.menu.StaticMenuCommand;
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.17
  */
-public final class HomeActivity
-    extends SmartActivity
-{
+public final class HomeActivity extends SmartActivity {
 
-  public void onRetrieveDisplayObjects()
-  {
-    // TODO Auto-generated method stub
+    public void onRetrieveDisplayObjects() {
+        // TODO Auto-generated method stub
 
-  }
+    }
 
-  public void onRetrieveBusinessObjects()
-      throws BusinessObjectUnavailableException
-  {
-    // TODO Auto-generated method stub
+    public void onRetrieveBusinessObjects()
+            throws BusinessObjectUnavailableException {
+        // TODO Auto-generated method stub
 
-  }
+    }
 
-  public void onFulfillDisplayObjects()
-  {
-    // TODO Auto-generated method stub
+    public void onFulfillDisplayObjects() {
+        // TODO Auto-generated method stub
 
-  }
+    }
 
-  public void onSynchronizeDisplayObjects()
-  {
-    // TODO Auto-generated method stub
+    public void onSynchronizeDisplayObjects() {
+        // TODO Auto-generated method stub
 
-  }
+    }
 
-  @Override
-  public List<StaticMenuCommand> getMenuCommands()
-  {
-    final List<StaticMenuCommand> commands = new ArrayList<StaticMenuCommand>();
-    commands.add(new StaticMenuCommand(R.string.Home_menu_settings, '1', 's', android.R.drawable.ic_menu_preferences, new Commands.StaticEnabledExecutable()
-    {
-      @Override
-      public void run()
-      {
-        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-      }
-    }));
-    commands.add(new StaticMenuCommand(R.string.Home_menu_about, '2', 'a', android.R.drawable.ic_menu_info_details, new Commands.StaticEnabledExecutable()
-    {
-      @Override
-      public void run()
-      {
-        startActivity(new Intent(getApplicationContext(), AboutActivity.class));
-      }
-    }));
-    return commands;
-  }
+    @Override
+    public List<StaticMenuCommand> getMenuCommands() {
+        final List<StaticMenuCommand> commands = new ArrayList<StaticMenuCommand>();
+        commands.add(new StaticMenuCommand(R.string.Home_menu_settings, '1',
+                's', android.R.drawable.ic_menu_preferences,
+                new Commands.StaticEnabledExecutable() {
+                    @Override
+                    public void run() {
+                        startActivity(new Intent(getApplicationContext(),
+                                SettingsActivity.class));
+                    }
+                }));
+        commands.add(new StaticMenuCommand(R.string.Home_menu_about, '2', 'a',
+                android.R.drawable.ic_menu_info_details,
+                new Commands.StaticEnabledExecutable() {
+                    @Override
+                    public void run() {
+                        startActivity(new Intent(getApplicationContext(),
+                                AboutActivity.class));
+                    }
+                }));
+        commands.add(new StaticMenuCommand("My Documents", '2', 'a',
+                android.R.drawable.ic_menu_info_details,
+                new Commands.StaticEnabledExecutable() {
+                    @Override
+                    public void run() {
+                        startActivity(new Intent(getApplicationContext(),
+                                MyDocumentsActivity.class));
+                    }
+                }));
+        return commands;
+    }
 
 }
