@@ -9,7 +9,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:scaleType="center"
-    android:src="@drawable/nuxeoandroid_splash_logo"
+    android:src="@drawable/nuxeo_logo_white"
   />
   <ImageView
     android:layout_width="wrap_content"
