@@ -37,6 +37,8 @@
       <groupId>com.google.android</groupId>
       <artifactId>android-sdk-nx</artifactId>
       <version>2.2.1</version>
+      <scope>system</scope>
+      <systemPath>${env.ANDROID_HOME}/platforms/android-8/android.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>org.nuxeo.ecm.automation</groupId>
