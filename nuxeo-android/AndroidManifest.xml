@@ -49,6 +49,11 @@
     </activity>
 
     <activity
+      android:name=".MyDocumentsActivity"
+      android:configChanges="keyboardHidden|orientation"
+    />
+
+    <activity
       android:name=".SettingsActivity"
       android:configChanges="keyboardHidden|orientation"
     >
