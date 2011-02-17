@@ -1,23 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources
+  xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <string name="applicationName">NuxeoAndroid</string>
-  <string name="applicationDescription">Simple Nuxeo Android application.</string>
+  <string
+    name="applicationName">NuxeoAndroid</string>
+  <string
+    name="applicationDescription">Simple Nuxeo Android application.</string>
 
-  <string name="problem">Problem</string>
-  <string name="unhandledProblem">You have unveiled a bug in the application, and we are sorry for that!\n\nWould you be kind enough to report that problem to us? Thank you.</string>
-  <string name="dialogButton_unhandledProblem">Send</string>
-  <string name="progressDialogMessage_unhandledProblem">Retrieving and computing the application log...</string>
-  <string name="unavailableService">Unavailable service: sorry, the current activity cannot resume.\n\nHave you checked you Internet connection?\n\nPlease, press \"OK\".</string>
-  <string name="connectivityProblem">Your terminal is not currently connected to Internet, or your connection is very poor.\n\nPlease, check your connection and try again.</string>
-  <string name="unavailableItem">Cannot retrieve the element: sorry, the current activity cannot resume.\n\nHave you checked you Internet connection?\n\nPlease, press \"OK\"</string>
+  <string
+    name="problem">Problem</string>
+  <string
+    name="unhandledProblem">You have unveiled a bug in the application, and we are sorry for
+    that!\n\nWould you be kind enough to report that problem to us? Thank you.</string>
+  <string
+    name="dialogButton_unhandledProblem">Send</string>
+  <string
+    name="progressDialogMessage_unhandledProblem">Retrieving and computing the application log...</string>
+  <string
+    name="unavailableService">Unavailable service: sorry, the current activity cannot resume.\n\nHave
+    you checked you Internet connection?\n\nPlease, press \"OK\".</string>
+  <string
+    name="connectivityProblem">Your terminal is not currently connected to Internet, or your
+    connection is very poor.\n\nPlease, check your connection and try again.</string>
+  <string
+    name="unavailableItem">Cannot retrieve the element: sorry, the current activity cannot
+    resume.\n\nHave you checked you Internet connection?\n\nPlease, press \"OK\"</string>
 
-  <string name="NuxeoAndroidSplashScreen_dialogMessage_noSdCard">No SD card is currently mounted/available on the device: the application cannot start!</string>
+  <string
+    name="NuxeoAndroidSplashScreen_dialogMessage_noSdCard">No SD card is currently mounted/available on the device: the
+    application cannot start!</string>
 
-  <string name="Settings_version">Version</string>
+  <string
+    name="Settings_version">Version</string>
 
-  <string name="Home_menu_settings">Settings</string>
-  <string name="Home_menu_sharing">Sharing</string>
-  <string name="Home_menu_about">About</string>
+  <string
+    name="Home_menu_settings">Settings</string>
+  <string
+    name="Home_menu_sharing">Sharing</string>
+  <string
+    name="Home_menu_about">About</string>
+
+  <string
+    name="preferences_server">Server</string>
+  <string
+    name="title_server_name">Server Name</string>
+  <string
+    name="summary_server_name">Choose a name for that server.</string>
+  <string
+    name="title_server_url">Server URL</string>
+  <string
+    name="summary_server_url">Set server URL.</string>
+  <string
+    name="title_server_login">login</string>
+  <string
+    name="summary_server_login">Login allowed to connect on the Nuxeo server.</string>
+  <string
+    name="title_server_password">Password</string>
+  <string
+    name="summary_server_password">Password</string>
 
 </resources>
