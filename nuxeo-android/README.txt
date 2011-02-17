@@ -1,0 +1,4 @@
+set export ANDROID_HOME=/path/to/your/AndroidSDK/ containing platforms/
+do not use maven-eclipse-plugin which badly defines:
+- JRE instead of Android SDK
+- target/generated-sources/ instead of src/
