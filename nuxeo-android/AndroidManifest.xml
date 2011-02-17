@@ -4,29 +4,30 @@
   package="org.nuxeo.android.simpleclient"
   android:versionCode="1"
   android:versionName="0.1"
-  android:installLocation="auto"
->
+  android:installLocation="auto">
 
-  <uses-sdk android:minSdkVersion="4"/>
+  <uses-sdk
+    android:minSdkVersion="4" />
 
   <!-- We need this permission, in order to access to Internet -->
-  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission
+    android:name="android.permission.INTERNET" />
   <!-- We need this permission, because we write on the SD card -->
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <uses-permission
+    android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <!-- We need this permission, when geolocalizing -->
-  <!--uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-  <uses-permission  android:name="android.permission.ACCESS_FINE_LOCATION"/-->
+  <!--uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/> 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/ -->
 
   <application
     android:name="NuxeoAndroidApplication"
     android:icon="@drawable/icon"
     android:label="@string/applicationName"
     android:description="@string/applicationDescription"
-    android:theme="@style/Theme.NuxeoAndroid"
-  >
+    android:theme="@style/Theme.NuxeoAndroid">
 
     <!-- This is required in order to have Google Maps work at runtime! -->
-    <!--uses-library android:name="com.google.android.maps"/-->
+    <!--uses-library android:name="com.google.android.maps"/ -->
 
     <activity
       android:name=".NuxeoAndroidSplashScreenActivity"
@@ -34,33 +35,36 @@
       android:configChanges="keyboardHidden|orientation"
       android:alwaysRetainTaskState="true"
       android:excludeFromRecents="true"
-      android:multiprocess="true"
-    />
+      android:multiprocess="true" />
 
     <activity
       android:name=".HomeActivity"
       android:configChanges="keyboardHidden|orientation"
-      android:screenOrientation="portrait"
-    >
+      android:screenOrientation="portrait">
       <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
+        <action
+          android:name="android.intent.action.MAIN" />
+        <category
+          android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
 
     <activity
+      android:name=".MyDocumentsActivity"
+      android:configChanges="keyboardHidden|orientation"></activity>
+
+    <activity
       android:name=".SettingsActivity"
-      android:configChanges="keyboardHidden|orientation"
-    >
+      android:configChanges="keyboardHidden|orientation">
       <intent-filter>
-        <category android:name="android.intent.category.PREFERENCE"/>
+        <category
+          android:name="android.intent.category.PREFERENCE" />
       </intent-filter>
     </activity>
 
     <activity
       android:name=".AboutActivity"
-      android:configChanges="keyboardHidden|orientation"
-    />
+      android:configChanges="keyboardHidden|orientation" />
 
   </application>
 
