@@ -57,6 +57,6 @@
   <string
     name="title_server_password">Password</string>
   <string
-    name="summary_server_password">Password</string>
+    name="summary_server_password">********</string>
 
 </resources>

@@ -20,7 +20,7 @@
       android:defaultValue="http://dm.demo.nuxeo.com/nuxeo"
       android:persistent="true" />
     <EditTextPreference
-      android:key="server_username"
+      android:key="server_login"
       android:title="@string/title_server_login"
       android:summary="@string/summary_server_login"
       android:dialogTitle="@string/title_server_login"
