@@ -1,2 +1,4 @@
 *.class
 target/*
+*/bin
+nuxeo-android-app/gen
