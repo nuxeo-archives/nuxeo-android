@@ -39,7 +39,8 @@ public class JSONExporter {
         try {
             toJSON(docs, writer);
         } catch (JSONException e) {
-           throw new IOException("Error during JSON marshaling", e);
+            throw new IOException("Error during JSON marshaling "
+                    + e.getMessage());
         }
         return writer.toString();
     }
@@ -56,7 +57,8 @@ public class JSONExporter {
         writer.write(json.toString(2));
     }
 
-    public static JSONObject toJSON(OperationDocumentation doc) throws JSONException {
+    public static JSONObject toJSON(OperationDocumentation doc)
+            throws JSONException {
         JSONObject op = new JSONObject();
         op.put("id", doc.id);
         op.put("label", doc.label);
@@ -90,7 +92,8 @@ public class JSONExporter {
         return op;
     }
 
-    public static OperationDocumentation fromJSON(JSONObject json) throws JSONException {
+    public static OperationDocumentation fromJSON(JSONObject json)
+            throws JSONException {
         OperationDocumentation op = new OperationDocumentation(
                 json.getString("id"));
         op.category = json.optString("label", null);

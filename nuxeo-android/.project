@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>HomeActivity</name>
-	<comment></comment>
+	<name>nuxeo-android-simpleclient</name>
+	<comment>Nuxeo Android simple client for browsing a Nuxeo server.</comment>
 	<projects>
+		<project>nuxeo-automation-thin-client</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -26,12 +26,19 @@
     <!-- <artifactId>httpcore</artifactId> -->
     <!-- <version>4.0.1</version> -->
     <!-- </dependency> -->
+    <!-- <dependency> -->
+    <!-- <groupId>com.google.android</groupId> -->
+    <!-- <artifactId>android</artifactId> -->
+    <!-- <version>2.2.1</version> -->
+    <!-- <version>2.1_r1</version> -->
+    <!-- <scope>provided</scope> -->
+    <!-- </dependency> -->
     <dependency>
-      <groupId>com.google.android</groupId>
-      <artifactId>android</artifactId>
+      <groupId>org.nuxeo.android</groupId>
+      <artifactId>android-sdk</artifactId>
       <version>2.2.1</version>
-      <!-- <version>2.1_r1</version> -->
-      <scope>provided</scope>
+      <scope>system</scope>
+      <systemPath>/opt/android-sdk-mac_x86/platforms/android-8/android.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>org.nuxeo.ecm.automation</groupId>
@@ -42,12 +49,14 @@
       <groupId>com.smartnsoft</groupId>
       <artifactId>droid4me</artifactId>
       <version>1.0</version>
-      <systemPath>libs/com.smartnsoft.droid4me.jar</systemPath>
+      <scope>system</scope>
+      <systemPath>/Users/julien/Documents/workspace/nuxeo-android/nuxeo-android/libs/com.smartnsoft.droid4me.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>com.smartnsoft</groupId>
       <artifactId>droid4me.ext</artifactId>
-      <systemPath>libs/com.smartnsoft.droid4me.ext.jar</systemPath>
+      <scope>system</scope>
+      <systemPath>/Users/julien/Documents/workspace/nuxeo-android/nuxeo-android/libs/com.smartnsoft.droid4me.ext.jar</systemPath>
       <version>1.0</version>
     </dependency>
   </dependencies>

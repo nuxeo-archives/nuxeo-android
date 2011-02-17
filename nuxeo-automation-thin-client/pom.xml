@@ -10,27 +10,34 @@
   <version>5.4.1-SNAPSHOT</version>
   <description>Automation Thin Client for automation REST API.</description>
   <dependencies>
-    <dependency>
-      <groupId>org.json</groupId>
-      <artifactId>json</artifactId>
-      <version>20070829</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <version>4.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpcore</artifactId>
-      <version>4.0.1</version>
-    </dependency>
+    <!-- <dependency> -->
+    <!-- <groupId>org.json</groupId> -->
+    <!-- <artifactId>json</artifactId> -->
+    <!-- <version>20070829</version> -->
+    <!-- </dependency> -->
+    <!-- <dependency> -->
+    <!-- <groupId>org.apache.httpcomponents</groupId> -->
+    <!-- <artifactId>httpclient</artifactId> -->
+    <!-- <version>4.0.1</version> -->
+    <!-- </dependency> -->
+    <!-- <dependency> -->
+    <!-- <groupId>org.apache.httpcomponents</groupId> -->
+    <!-- <artifactId>httpcore</artifactId> -->
+    <!-- <version>4.0.1</version> -->
+    <!-- </dependency> -->
     <!-- <dependency> -->
     <!-- <groupId>com.google.android</groupId> -->
     <!-- <artifactId>android</artifactId> -->
     <!-- <version>2.2.1</version> -->
     <!-- <scope>provided</scope> -->
     <!-- </dependency> -->
+    <dependency>
+      <groupId>org.nuxeo.android</groupId>
+      <artifactId>android-sdk</artifactId>
+      <version>2.2.1</version>
+      <scope>system</scope>
+      <systemPath>/opt/android-sdk-mac_x86/platforms/android-8/android.jar</systemPath>
+    </dependency>
   </dependencies>
 
   <build>
