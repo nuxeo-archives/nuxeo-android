@@ -88,7 +88,7 @@ public class MyDocumentsActivity extends WrappedSmartListActivity implements
             throws BusinessObjectUnavailableException {
 
         // Fetch data from Nuxeo Server
-        Documents docs = NuxeoAndroidServices.getInstance().getAllDocuments();
+        Documents docs = NuxeoAndroidServices.getInstance().getAllDocuments(true);
 
         List<BusinessViewWrapper<?>> wrappers = new ArrayList<BusinessViewWrapper<?>>();
 

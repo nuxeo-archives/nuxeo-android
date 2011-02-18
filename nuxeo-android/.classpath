@@ -1,18 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-<<<<<<< Updated upstream
-	<classpathentry kind="lib" path="libs/com.smartnsoft.droid4me.jar" sourcepath="/home/tiry/devs/android/droid4me/droid4me/src"/>
-	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/nuxeo-automation-thin-client"/>
-	<classpathentry kind="output" path="target/classes"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="lib" path="libs/com.smartnsoft.droid4me.jar"/>
+	<classpathentry kind="lib" path="libs/nuxeo-automation-thin-client-5.4.1-SNAPSHOT.jar"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
-=======
-  <classpathentry kind="src" path="target/generated-sources/r" including="**/*.java"/>
-  <classpathentry kind="output" path="target/classes"/>
-  <classpathentry kind="lib" path="/opt/dev-tools/android-sdk-mac_x86/platforms/android-8/android.jar"/>
-  <classpathentry kind="lib" path="libs/com.smartnsoft.droid4me.jar"/>
-  <classpathentry kind="src" path="/nuxeo-automation-thin-client"/>
-  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-</classpath>
->>>>>>> Stashed changes
