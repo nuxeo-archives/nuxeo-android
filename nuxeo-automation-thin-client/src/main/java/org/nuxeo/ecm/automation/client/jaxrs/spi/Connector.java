@@ -23,4 +23,6 @@ public interface Connector {
 
     Object execute(Request request);
 
+    Object execute(Request request, boolean forceRefresh, boolean cachable);
+
 }

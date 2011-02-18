@@ -16,7 +16,10 @@
  */
 package org.nuxeo.ecm.automation.client.jaxrs.impl;
 
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 import org.apache.http.Header;
@@ -33,6 +36,8 @@ import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.nuxeo.ecm.automation.client.cache.CacheEntry;
+import org.nuxeo.ecm.automation.client.cache.InputStreamCacheManager;
 import org.nuxeo.ecm.automation.client.jaxrs.RemoteException;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.Connector;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.Request;
@@ -50,6 +55,12 @@ public class HttpConnector implements Connector {
 
     protected String basicAuth;
 
+    protected InputStreamCacheManager cacheManager;
+
+    public void setCacheManager(InputStreamCacheManager manager) {
+        cacheManager = manager;
+    }
+
     public HttpConnector(HttpClient http) {
         this(http, new BasicHttpContext());
     }
@@ -60,8 +71,59 @@ public class HttpConnector implements Connector {
         this.ctx = ctx;
     }
 
+    protected String computeRequestKey(Request request) {
+
+        String url = request.getUrl();
+        if (url.endsWith("/login") || url.endsWith("/automation/")) {
+            return null;
+        }
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(request.getUrl());
+        sb.append(request.asStringEntity());
+
+        MessageDigest digest;
+        try {
+            digest = java.security.MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            return null;
+        }
+        digest.update(sb.toString().getBytes());
+        byte messageDigest[] = digest.digest();
+        StringBuffer hexString = new StringBuffer();
+        for (int i=0; i<messageDigest.length; i++)
+            hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+        return hexString.toString();
+    }
+
     @Override
     public Object execute(Request request) {
+        return execute(request, false, true);
+    }
+
+    @Override
+    public Object execute(Request request,  boolean forceRefresh, boolean cachable) {
+
+        String cacheKey=null;
+        CacheEntry cachedResult = null;
+        if (cacheManager!=null ) {
+            cacheKey = computeRequestKey(request);
+            cachedResult = cacheManager.getFromCache(cacheKey);
+            if (cachedResult!=null && !forceRefresh) {
+                System.out.println("Cache HIT");
+                try {
+                    return request.handleResult(200, cachedResult.getCtype(), cachedResult.getDisp(), cachedResult.getInputStream());
+                } catch (Exception e) {
+                    // NOP
+                }
+            }
+        }
+
+        if (!cachable) {
+            // desable caching if needed
+            cacheKey = null;
+        }
+
         HttpRequestBase httpRequest = null;
         if (request.getMethod() == Request.POST) {
             HttpPost post = new HttpPost(request.getUrl());
@@ -84,15 +146,23 @@ public class HttpConnector implements Connector {
             httpRequest = new HttpGet(request.getUrl());
         }
         try {
-            return execute(request, httpRequest);
+            return execute(request, httpRequest, cacheKey);
         } catch (RemoteException e) {
-            throw e;
+            if (cachedResult!=null) {
+                try {
+                    return request.handleResult(200, cachedResult.getCtype(), cachedResult.getDisp(), cachedResult.getInputStream());
+                } catch (Exception e2) {
+                    throw e;
+                }
+            } else {
+                throw e;
+            }
         } catch (Exception e) {
             throw new RuntimeException("Cannot execute " + request, e);
         }
     }
 
-    protected Object execute(Request request, HttpUriRequest httpReq)
+    protected Object execute(Request request, HttpUriRequest httpReq, String cacheKey)
             throws Exception {
         for (Map.Entry<String, String> entry : request.entrySet()) {
             httpReq.setHeader(entry.getKey(), entry.getValue());
@@ -122,7 +192,13 @@ public class HttpConnector implements Connector {
         if (hdisp != null && hdisp.length > 0) {
             disp = hdisp[0].getValue();
         }
-        return request.handleResult(status, ctype, disp, entity.getContent());
+
+        InputStream is = entity.getContent();
+        if (cacheKey!=null && cacheManager!=null && status==200) {
+            // store in cache
+            is = cacheManager.addToCache(cacheKey, new CacheEntry(ctype, disp, is));
+        }
+        return request.handleResult(status, ctype, disp, is);
     }
 
 }

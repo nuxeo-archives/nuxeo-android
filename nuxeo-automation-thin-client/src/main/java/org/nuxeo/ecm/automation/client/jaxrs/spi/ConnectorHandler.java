@@ -16,8 +16,14 @@ public class ConnectorHandler implements Connector {
     @Override
 
     public Object execute(Request request) {
+        return execute(request, false, true);
+    }
+
+    @Override
+    public Object execute(Request request, boolean forceRefresh,
+            boolean cachable) {
         interceptor.processRequest(request, connector);
-        return connector.execute(request);
+        return connector.execute(request, forceRefresh, cachable);
     }
 
 }

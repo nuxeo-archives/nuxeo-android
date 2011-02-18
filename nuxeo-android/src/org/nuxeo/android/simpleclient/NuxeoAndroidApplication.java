@@ -17,19 +17,17 @@
 package org.nuxeo.android.simpleclient;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Environment;
 
 import com.smartnsoft.droid4me.app.ActivityController;
+import com.smartnsoft.droid4me.app.SmartApplication;
+import com.smartnsoft.droid4me.cache.DbPersistence;
 import com.smartnsoft.droid4me.cache.Persistence;
-import com.smartnsoft.droid4me.ext.app.SmartApplication;
-import com.smartnsoft.droid4me.ext.cache.DbPersistence;
-import com.smartnsoft.droid4me.ext.download.AdvancedImageDownloader;
-import com.smartnsoft.droid4me.ext.download.ImageDownloader;
+import com.smartnsoft.droid4me.download.AdvancedImageDownloader;
+import com.smartnsoft.droid4me.download.ImageDownloader;
 
 /**
  * The entry point of the application.
@@ -38,27 +36,6 @@ import com.smartnsoft.droid4me.ext.download.ImageDownloader;
  * @since 2011.02.17
  */
 public final class NuxeoAndroidApplication extends SmartApplication {
-
-    public static class CacheInstructions extends
-            AdvancedImageDownloader.AdvancedAbstractInstructions {
-
-        @Override
-        public InputStream getInputStream(String imageUid, Object imageSpecs,
-                String url,
-                ImageDownloader.InputStreamDownloadInstructor downloadInstructor)
-                throws IOException {
-            return Persistence.getInstance(1).getRawInputStream(url);
-        }
-
-        @Override
-        public InputStream onInputStreamDownloaded(String imageUid,
-                Object imageSpecs, String url, InputStream inputStream) {
-            return Persistence.getInstance(1).cacheInputStream(url, inputStream);
-        }
-
-    }
-
-    public final static ImageDownloader.Instructions CACHE_IMAGE_INSTRUCTIONS = new NuxeoAndroidApplication.CacheInstructions();
 
     @Override
     protected int getLogLevel() {
@@ -113,6 +90,7 @@ public final class NuxeoAndroidApplication extends SmartApplication {
         ImageDownloader.LOW_LEVEL_MEMORY_WATER_MARK_IN_BYTES = new long[] { 1 * 1024 * 1024 };
         ImageDownloader.USE_REFERENCES = new boolean[] { false };
         ImageDownloader.RECYCLE_BITMAP = new boolean[] { false };
+
     }
 
     @Override
@@ -129,6 +107,16 @@ public final class NuxeoAndroidApplication extends SmartApplication {
                     } else {
                         return new Intent(activity,
                                 NuxeoAndroidSplashScreenActivity.class);
+                    }
+                }
+                // redirect to settings screen if prefs are not set
+                if ("".equals(getPreferences().getString(SettingsActivity.PREF_SERVER_URL, ""))) {
+                	if (activity.getComponentName() == null
+                            || activity.getComponentName().getClassName().equals(
+                            		SettingsActivity.class.getName()) == true) {
+                        return null;
+                    } else {
+                    	return new Intent(activity,SettingsActivity.class);
                     }
                 }
                 return null;
