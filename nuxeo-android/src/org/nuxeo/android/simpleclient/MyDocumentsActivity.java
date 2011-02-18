@@ -25,6 +25,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,6 +36,7 @@ import com.smartnsoft.droid4me.app.AppPublics.BroadcastListener;
 import com.smartnsoft.droid4me.app.WrappedSmartListActivity;
 import com.smartnsoft.droid4me.download.ImageDownloader;
 import com.smartnsoft.droid4me.framework.DetailsProvider.BusinessViewWrapper;
+import com.smartnsoft.droid4me.framework.DetailsProvider.ObjectEvent;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 
@@ -79,6 +81,10 @@ public class MyDocumentsActivity extends
         }
     }
 
+    public static final String DOCUMENT_ID = "document_id";
+
+    public static final String SOURCE_ACTIVITY = "source_activity";
+
     private final class DocumentWrapper extends BusinessViewWrapper<Document> {
 
         public DocumentWrapper(Document businessObject) {
@@ -103,6 +109,18 @@ public class MyDocumentsActivity extends
             ((DocumentAttributes) viewAttributes).update(activity,
                     getHandler(), businessObject);
         }
+
+        @Override
+        public Intent computeIntent(Activity activity, Object viewAttributes,
+                View view, Document businessObject, ObjectEvent objectEvent) {
+            if (objectEvent == ObjectEvent.Clicked) {
+                return new Intent(activity, DocumentViewActivity.class).putExtra(
+                        DOCUMENT_ID, businessObject.getId()).putExtra(
+                        SOURCE_ACTIVITY, DocumentViewActivity.MY_DOCUMENT);
+            }
+            return super.computeIntent(activity, view, objectEvent);
+        }
+
     }
 
     private boolean fromCache = true;
