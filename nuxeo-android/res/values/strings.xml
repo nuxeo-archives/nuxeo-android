@@ -51,7 +51,7 @@
   <string
     name="summary_server_url">Set server URL.</string>
   <string
-    name="title_server_login">login</string>
+    name="title_server_login">Login</string>
   <string
     name="summary_server_login">Login allowed to connect on the Nuxeo server.</string>
   <string

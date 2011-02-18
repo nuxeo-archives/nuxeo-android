@@ -33,7 +33,7 @@ import com.smartnsoft.droid4me.download.ImageDownloader;
 
 /**
  * The entry point of the application.
- *
+ * 
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.17
  */
@@ -113,13 +113,13 @@ public final class NuxeoAndroidApplication extends SmartApplication {
                     }
                 }
                 // redirect to settings screen if prefs are not set
-                if ("".equals(getPreferences().getString(SettingsActivity.PREF_SERVER_URL, ""))) {
-                	if (activity.getComponentName() == null
+                if (getPreferences().getBoolean("firstLogin", false) == false) {
+                    if (activity.getComponentName() == null
                             || activity.getComponentName().getClassName().equals(
-                            		SettingsActivity.class.getName()) == true) {
+                                    LoginScreenActivity.class.getName()) == true) {
                         return null;
                     } else {
-                    	return new Intent(activity,SettingsActivity.class);
+                        return new Intent(activity, LoginScreenActivity.class);
                     }
                 }
                 return null;

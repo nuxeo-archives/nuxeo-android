@@ -54,6 +54,10 @@
       android:configChanges="keyboardHidden|orientation"></activity>
 
     <activity
+      android:name=".LoginScreenActivity"
+      android:configChanges="keyboardHidden|orientation"></activity>
+
+    <activity
       android:name=".SettingsActivity"
       android:configChanges="keyboardHidden|orientation">
       <intent-filter>

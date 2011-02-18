@@ -4,4 +4,6 @@
   <dimen name="bodyText">14dip</dimen>
   <dimen name="titleText">18dip</dimen>
 
+  <dimen name="defaultPadding">10dip</dimen>
+
 </resources>
