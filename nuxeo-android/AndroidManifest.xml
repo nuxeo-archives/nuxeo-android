@@ -91,7 +91,9 @@
  
     <activity
       android:name=".LoginScreenActivity"
-      android:configChanges="keyboardHidden|orientation"></activity>
+      android:windowSoftInputMode="stateHidden|adjustPan"
+      android:configChanges="keyboardHidden|orientation"
+    />
 
     <activity
       android:name=".SettingsActivity"
