@@ -169,6 +169,7 @@ public final class NuxeoAndroidApplication extends SmartApplication {
     }
 
     static interface TitleBarShowSearchFeature {
+        void onTitleBarSearch();
     }
 
     final static class TitleBarAggregate extends
@@ -180,6 +181,8 @@ public final class NuxeoAndroidApplication extends SmartApplication {
 
         private NuxeoAndroidApplication.TitleBarRefreshFeature onRefresh;
 
+        private NuxeoAndroidApplication.TitleBarShowSearchFeature onSearch;
+
         public TitleBarAggregate(Activity activity, boolean customTitleSupported) {
             super(activity, true);
             this.customTitleSupported = customTitleSupported;
@@ -190,9 +193,15 @@ public final class NuxeoAndroidApplication extends SmartApplication {
         }
 
         private void setOnRefresh(
-                NuxeoAndroidApplication.TitleBarRefreshFeature titleVarRefreshFeature) {
-            this.onRefresh = titleVarRefreshFeature;
+                NuxeoAndroidApplication.TitleBarRefreshFeature titleBarRefreshFeature) {
+            this.onRefresh = titleBarRefreshFeature;
             attributes.setShowRefresh(this);
+        }
+
+        private void setOnSearch(
+                NuxeoAndroidApplication.TitleBarShowSearchFeature titleBarShowSearchFeature) {
+            this.onSearch = titleBarShowSearchFeature;
+            attributes.setShowSearch(true, this);
         }
 
         @Override
@@ -207,6 +216,8 @@ public final class NuxeoAndroidApplication extends SmartApplication {
                 getActivity().finish();
             } else if (view == attributes.refresh) {
                 onRefresh.onTitleBarRefresh();
+            } else if (view == attributes.search) {
+                onSearch.onTitleBarSearch();
             }
         }
 
@@ -345,9 +356,7 @@ public final class NuxeoAndroidApplication extends SmartApplication {
                                 titleBarAggregate.attributes.setShowRefresh(null);
                             }
                             if (activity instanceof NuxeoAndroidApplication.TitleBarShowHomeFeature) {
-                                titleBarAggregate.attributes.setShowHome(
-                                        R.drawable.ic_title_home,
-                                        titleBarAggregate);
+                                titleBarAggregate.setOnSearch((NuxeoAndroidApplication.TitleBarShowSearchFeature) activity);
                             }
                             // else
                             // {

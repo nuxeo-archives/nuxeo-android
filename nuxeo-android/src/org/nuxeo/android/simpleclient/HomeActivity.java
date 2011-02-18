@@ -96,7 +96,7 @@ public final class HomeActivity extends
     @Override
     public void onClick(View view) {
         if (view == searchDocuments) {
-            startSearch(null, true, null, false);
+            onTitleBarSearch();
         } else if (view == myDocuments) {
             startActivity(new Intent(getApplicationContext(),
                     MyDocumentsActivity.class));
@@ -107,6 +107,11 @@ public final class HomeActivity extends
             startActivity(new Intent(getApplicationContext(),
                     SavedSearchesDocumentsActivity.class));
         }
+    }
+
+    @Override
+    public void onTitleBarSearch() {
+        startSearch(null, true, null, false);
     }
 
 }
