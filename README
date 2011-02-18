@@ -2,3 +2,20 @@ export ANDROID_HOME=/path/to/your/AndroidSDK/ containing platforms/
 do not use maven-eclipse-plugin which badly defines:
 - JRE instead of Android SDK
 - target/generated-sources/ instead of src/
+
+http://maven-android-plugin-m2site.googlecode.com/svn/plugin-info.html
+android:deploy
+        Deploys the built apk file, or another specified apk, to a connected device.
+        Automatically performed when running mvn integration-test (or mvn install) on a project with instrumentation tests.
+android:deploy-dependencies
+        Deploys all directly declared dependencies of <type>apk</type> in this project's pom.
+        Usually used in a project with instrumentation tests, to deploy the apk to test onto the device before running the deploying and running the instrumentation tests apk.
+        Automatically performed when running mvn integration-test (or mvn install) on a project with instrumentation tests.
+android:dex
+        Converts compiled Java classes to the Android dex format.
+android:emulator-start
+        EmulatorStartMojo can start the Android Emulator with a specified Android Virtual Device (avd).
+android:emulator-stop
+        EmulatorStartMojo can stop the Android Emulator with a specified Android Virtual Device (avd).
+android:zipalign
+        ZipalignMojo can run the zipalign command against the apk.
