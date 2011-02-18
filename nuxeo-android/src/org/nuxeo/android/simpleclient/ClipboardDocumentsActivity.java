@@ -16,10 +16,19 @@
 
 package org.nuxeo.android.simpleclient;
 
+import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
+import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
+
+import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
+
 /**
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.18
  */
 public final class ClipboardDocumentsActivity extends MyDocumentsActivity {
 
+    protected Documents getDocuments(boolean refresh)
+            throws BusinessObjectUnavailableException {
+        return NuxeoAndroidServices.getInstance().getMyWorklistContent();
+    }
 }
