@@ -46,6 +46,6 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/defaultPadding"
     android:layout_below="@id/editPassword"
-    android:text="@string/title_server_login" />
+    android:text="@string/LoginScreen_connect" />
 
 </RelativeLayout>

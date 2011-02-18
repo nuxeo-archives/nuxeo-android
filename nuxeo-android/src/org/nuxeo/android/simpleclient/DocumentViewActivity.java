@@ -88,10 +88,16 @@ public final class DocumentViewActivity extends
 
                 if (key != null) {
                     try {
-                        textView.setText(key + " => "
-                                + document.getString(key, ""));
-                        layout.addView(textView);
-                    } catch (NullPointerException exception) {
+                        final String value = document.getString(key, "");
+                        if (value != null) {
+                            textView.setText(key + " => " + value);
+                            final int padding = getResources().getDimensionPixelSize(
+                                    R.dimen.defaultPadding);
+                            textView.setPadding(padding, padding, padding,
+                                    padding);
+                            layout.addView(textView);
+                        }
+                    } catch (Exception exception) {
                         if (log.isWarnEnabled()) {
                             log.warn("NULL", exception);
                         }

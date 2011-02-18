@@ -6,14 +6,14 @@
     <Preference
       android:key="server_url"
       android:title="@string/title_server_url"
-      android:summary="@string/summary_server_url"
       android:persistent="false"
+      android:enabled="false"
     />
     <Preference
       android:key="server_login"
       android:title="@string/title_server_login"
-      android:summary="@string/summary_server_login"
       android:persistent="false"
+      android:enabled="false"
     />
     <Preference
       android:key="signOut"

@@ -20,7 +20,7 @@
     android:layout_toRightOf="@id/icon"
     android:text="Title Document"
     android:textStyle="bold"
-    android:textSize="12dip"
+    android:textSize="16dip"
     android:padding="5dip" />
 
   <TextView

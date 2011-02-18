@@ -14,9 +14,16 @@
 
   <string name="NuxeoAndroidSplashScreen_dialogMessage_noSdCard">Aucune carte SD n\'est couramment accessible sur le terminal : l\'application ne peut démarrer !</string>
 
+  <string name="LoginScreen_connect">Se connecter</string>
+
   <string name="Settings_version">Version</string>
   <string name="Settings_signOut">Déconnexion</string>
   <string name="Settings_signOutExplanation">Se déconnecter du compte courant</string>
+  <string name="preferences_server">Serveur</string>
+  <string name="title_server_url">URL Serveur</string>
+  <string name="summary_server_url">Règle l\'URL du serveur</string>
+  <string name="title_server_login">Identifiant</string>
+  <string name="title_server_password">Mot de passe</string>
 
   <string name="Home_menu_settings">Réglages</string>
   <string name="Home_menu_about">À propos</string>
