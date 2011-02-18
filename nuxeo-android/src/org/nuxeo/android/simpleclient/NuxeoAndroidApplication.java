@@ -23,8 +23,16 @@ import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Environment;
+import android.util.AndroidRuntimeException;
+import android.view.View;
+import android.view.Window;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.smartnsoft.droid4me.app.ActivityController;
+import com.smartnsoft.droid4me.app.AppPublics;
+import com.smartnsoft.droid4me.app.ProgressHandler;
 import com.smartnsoft.droid4me.app.SmartApplication;
 import com.smartnsoft.droid4me.cache.DbPersistence;
 import com.smartnsoft.droid4me.cache.Persistence;
@@ -38,6 +46,171 @@ import com.smartnsoft.droid4me.download.ImageDownloader;
  * @since 2011.02.17
  */
 public final class NuxeoAndroidApplication extends SmartApplication {
+
+    static final class TitleBarAttributes extends ProgressHandler {
+
+        private boolean enabledRefresh;
+
+        private final ImageButton home;
+
+        // private final View separator1;
+
+        final TextView headerTitle;
+
+        private final View separator2;
+
+        final ImageButton action;
+
+        private final View separator3;
+
+        final ImageButton refresh;
+
+        private final ProgressBar refreshProgress;
+
+        private final View separator4;
+
+        private final ImageButton search;
+
+        public TitleBarAttributes(Activity activity, View view) {
+            home = (ImageButton) view.findViewById(R.id.home);
+            // separator1 = view.findViewById(R.id.separator1);
+            headerTitle = (TextView) view.findViewById(R.id.headerTitle);
+            setTitle(activity.getTitle());
+            separator2 = view.findViewById(R.id.separator2);
+            action = (ImageButton) view.findViewById(R.id.action);
+            separator3 = view.findViewById(R.id.separator3);
+            refresh = (ImageButton) view.findViewById(R.id.refresh);
+            refreshProgress = (ProgressBar) view.findViewById(R.id.refreshProgress);
+            separator4 = view.findViewById(R.id.separator4);
+            search = (ImageButton) view.findViewById(R.id.search);
+            // home.setOnClickListener(this);
+            setShowRefresh(null);
+            setShowSearch(false, null);
+            setShowAction(-1, null);
+        }
+
+        public void setTitle(CharSequence title) {
+            headerTitle.setText(title);
+        }
+
+        private void setShowHome(int iconResourceId,
+                View.OnClickListener onClickListener) {
+            if (iconResourceId != -1) {
+                home.setImageResource(iconResourceId);
+            } else {
+                home.setImageDrawable(null);
+            }
+            home.setOnClickListener(onClickListener);
+        }
+
+        public void setShowAction(int iconResourceId,
+                View.OnClickListener onClickListener) {
+            if (iconResourceId != -1) {
+                action.setImageResource(iconResourceId);
+            } else {
+                action.setImageDrawable(null);
+            }
+            action.setVisibility(onClickListener != null ? View.VISIBLE
+                    : View.GONE);
+            separator2.setVisibility(onClickListener != null ? View.VISIBLE
+                    : View.GONE);
+            action.setOnClickListener(onClickListener);
+        }
+
+        private void setShowRefresh(View.OnClickListener onClickListener) {
+            refresh.setVisibility(onClickListener != null ? View.VISIBLE
+                    : View.INVISIBLE);
+            separator3.setVisibility(onClickListener != null ? View.VISIBLE
+                    : View.INVISIBLE);
+            refresh.setOnClickListener(onClickListener);
+            enabledRefresh = onClickListener != null;
+        }
+
+        private void setShowSearch(boolean value,
+                View.OnClickListener onClickListener) {
+            search.setVisibility(value == true ? View.VISIBLE : View.GONE);
+            separator4.setVisibility(value == true ? View.VISIBLE : View.GONE);
+            search.setOnClickListener(onClickListener);
+        }
+
+        public void onProgress(boolean isLoading) {
+            toggleRefresh(isLoading);
+        }
+
+        public void toggleRefresh(boolean isLoading) {
+            if (enabledRefresh == true) {
+                refresh.setVisibility(isLoading == true ? View.INVISIBLE
+                        : View.VISIBLE);
+            }
+            refreshProgress.setVisibility(isLoading ? View.VISIBLE
+                    : View.INVISIBLE);
+        }
+
+        @Override
+        protected void dismiss(Activity activity, Object progressExtra) {
+            toggleRefresh(false);
+        }
+
+        @Override
+        protected void show(Activity activity, Object progressExtra) {
+            toggleRefresh(true);
+        }
+
+    }
+
+    static interface TitleBarDiscarded {
+    }
+
+    static interface TitleBarRefreshFeature {
+        void onTitleBarRefresh();
+    }
+
+    static interface TitleBarShowHomeFeature {
+    }
+
+    static interface TitleBarShowSearchFeature {
+    }
+
+    final static class TitleBarAggregate extends
+            AppPublics.LoadingBroadcastListener implements View.OnClickListener {
+
+        private final boolean customTitleSupported;
+
+        private NuxeoAndroidApplication.TitleBarAttributes attributes;
+
+        private NuxeoAndroidApplication.TitleBarRefreshFeature onRefresh;
+
+        public TitleBarAggregate(Activity activity, boolean customTitleSupported) {
+            super(activity, true);
+            this.customTitleSupported = customTitleSupported;
+        }
+
+        NuxeoAndroidApplication.TitleBarAttributes getAttributes() {
+            return attributes;
+        }
+
+        private void setOnRefresh(
+                NuxeoAndroidApplication.TitleBarRefreshFeature titleVarRefreshFeature) {
+            this.onRefresh = titleVarRefreshFeature;
+            attributes.setShowRefresh(this);
+        }
+
+        @Override
+        protected void onLoading(boolean isLoading) {
+            attributes.toggleRefresh(isLoading);
+        }
+
+        public void onClick(View view) {
+            if (view == attributes.home) {
+                getActivity().startActivity(
+                        new Intent(getActivity(), HomeActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                getActivity().finish();
+            } else if (view == attributes.refresh) {
+                onRefresh.onTitleBarRefresh();
+            }
+        }
+
+    }
 
     @Override
     protected int getLogLevel() {
@@ -132,6 +305,68 @@ public final class NuxeoAndroidApplication extends SmartApplication {
         return new ActivityController.Interceptor() {
             public void onLifeCycleEvent(Activity activity,
                     ActivityController.Interceptor.InterceptorEvent event) {
+                if (event == ActivityController.Interceptor.InterceptorEvent.onSuperCreateBefore
+                        && !(activity instanceof NuxeoAndroidApplication.TitleBarDiscarded)) {
+                    if (activity.getParent() == null
+                            && activity instanceof AppPublics.CommonActivity<?>) {
+                        boolean requestWindowFeature;
+                        try {
+                            activity.setTheme(R.style.Theme_NuxeoAndroid);
+                            requestWindowFeature = activity.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+                        } catch (AndroidRuntimeException exception) {
+                            // This means that the activity does not support
+                            // custom titles
+                            return;
+                        }
+                        // We test whether we can customize the title bar
+                        final NuxeoAndroidApplication.TitleBarAggregate titleBarAggregate = new NuxeoAndroidApplication.TitleBarAggregate(
+                                activity, requestWindowFeature);
+                        final AppPublics.CommonActivity<NuxeoAndroidApplication.TitleBarAggregate> commonActivity = (AppPublics.CommonActivity<NuxeoAndroidApplication.TitleBarAggregate>) activity;
+                        commonActivity.setAggregate(titleBarAggregate);
+                    }
+                } else if (event == ActivityController.Interceptor.InterceptorEvent.onContentChanged
+                        && !(activity instanceof NuxeoAndroidApplication.TitleBarDiscarded)) {
+                    if (activity.getParent() == null
+                            && activity instanceof AppPublics.CommonActivity<?>) {
+                        final AppPublics.CommonActivity<NuxeoAndroidApplication.TitleBarAggregate> commonActivity = (AppPublics.CommonActivity<NuxeoAndroidApplication.TitleBarAggregate>) activity;
+                        final NuxeoAndroidApplication.TitleBarAggregate titleBarAggregate = (NuxeoAndroidApplication.TitleBarAggregate) commonActivity.getAggregate();
+                        if (titleBarAggregate != null
+                                && titleBarAggregate.customTitleSupported == true
+                                && titleBarAggregate.attributes == null) {
+                            activity.getWindow().setFeatureInt(
+                                    Window.FEATURE_CUSTOM_TITLE,
+                                    R.layout.title_bar);
+                            titleBarAggregate.attributes = new NuxeoAndroidApplication.TitleBarAttributes(
+                                    activity,
+                                    activity.findViewById(R.id.titleBar));
+                            if (activity instanceof NuxeoAndroidApplication.TitleBarRefreshFeature) {
+                                titleBarAggregate.setOnRefresh((NuxeoAndroidApplication.TitleBarRefreshFeature) activity);
+                            } else {
+                                titleBarAggregate.attributes.setShowRefresh(null);
+                            }
+                            if (activity instanceof NuxeoAndroidApplication.TitleBarShowHomeFeature) {
+                                titleBarAggregate.attributes.setShowHome(
+                                        R.drawable.ic_title_home,
+                                        titleBarAggregate);
+                            }
+                            // else
+                            // {
+                            // titleBarAggregate.attributes.setShowHome(-1,
+                            // null);
+                            // }
+                            if (activity instanceof NuxeoAndroidApplication.TitleBarShowSearchFeature) {
+                                titleBarAggregate.attributes.setShowSearch(
+                                        true, titleBarAggregate);
+                            } else {
+                                titleBarAggregate.attributes.setShowSearch(
+                                        false, null);
+                            }
+
+                            // We register the receivers
+                            commonActivity.registerBroadcastListeners(new AppPublics.BroadcastListener[] { titleBarAggregate });
+                        }
+                    }
+                }
             }
         };
     }

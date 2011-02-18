@@ -5,7 +5,8 @@
     name="Theme.NuxeoAndroid"
     parent="android:Theme.Light"
   >
-    <!--item name="android:tabWidgetStyle">@style/Widget.Button.Small.NuxeoAndroid</item-->
+    <item name="android:windowTitleBackgroundStyle">@style/Kapps.WindowTitleBackground</item>
+    <item name="android:windowTitleSize">@dimen/headerHeight</item>
   </style>
 
   <style

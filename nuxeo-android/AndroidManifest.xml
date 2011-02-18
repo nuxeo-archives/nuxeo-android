@@ -40,7 +40,9 @@
       android:configChanges="keyboardHidden|orientation"
       android:alwaysRetainTaskState="true"
       android:excludeFromRecents="true"
-      android:multiprocess="true" />
+      android:multiprocess="true"
+      android:theme="@style/Theme.NuxeoAndroid.NoTitle"
+    />
 
     <activity
       android:name=".HomeActivity"

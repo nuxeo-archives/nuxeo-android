@@ -34,7 +34,7 @@ import com.smartnsoft.droid4me.menu.StaticMenuCommand;
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.17
  */
-public final class HomeActivity extends SmartActivity<Void> implements
+public final class HomeActivity extends SmartActivity<NuxeoAndroidApplication.TitleBarAggregate> implements
         View.OnClickListener {
 
     private ImageButton search;
