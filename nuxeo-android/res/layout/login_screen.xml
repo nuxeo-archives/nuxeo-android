@@ -17,6 +17,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/defaultPadding"
     android:layout_centerInParent="true"
+    android:singleLine="true"
     android:hint="@string/title_server_login" />
 
   <EditText
@@ -25,6 +26,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/defaultPadding"
     android:layout_above="@id/editLogin"
+    android:singleLine="true"
     android:hint="@string/title_server_url"
     android:inputType="textUri" />
 
@@ -34,6 +36,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/defaultPadding"
     android:layout_below="@id/editLogin"
+    android:singleLine="true"
     android:hint="@string/title_server_password"
     android:inputType="textPassword" />
 

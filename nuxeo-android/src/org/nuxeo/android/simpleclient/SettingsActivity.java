@@ -18,15 +18,14 @@
 
 package org.nuxeo.android.simpleclient;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
 
+import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.preference.EditTextPreference;
 import android.preference.Preference;
-import android.preference.Preference.OnPreferenceChangeListener;
 
 import com.smartnsoft.droid4me.app.SmartPreferenceActivity;
+import com.smartnsoft.droid4me.app.SmartSplashScreenActivity;
 
 /**
  * The activity which enables to tune the application.
@@ -34,11 +33,9 @@ import com.smartnsoft.droid4me.app.SmartPreferenceActivity;
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.17
  */
-public final class SettingsActivity extends SmartPreferenceActivity<NuxeoAndroidApplication.TitleBarAggregate>
-        implements OnPreferenceChangeListener,
-        NuxeoAndroidApplication.TitleBarShowHomeFeature {
-
-    public static final String PREF_SERVER_NAME = "server_name";
+public final class SettingsActivity extends
+        SmartPreferenceActivity<NuxeoAndroidApplication.TitleBarAggregate>
+        implements NuxeoAndroidApplication.TitleBarShowHomeFeature {
 
     public static final String PREF_SERVER_URL = "server_url";
 
@@ -48,13 +45,13 @@ public final class SettingsActivity extends SmartPreferenceActivity<NuxeoAndroid
 
     public static final String PREF_PASSWORD = "server_password";
 
-    private EditTextPreference serverName;
+    private static final String SIGN_OUT = "signOut";
 
-    private EditTextPreference serverURL;
+    private Preference serverURL;
 
-    private EditTextPreference login;
+    private Preference login;
 
-    // private EditTextPreference password;
+    private Preference signOut;
 
     public void onRetrieveDisplayObjects() {
         addPreferencesFromResource(R.xml.settings);
@@ -73,53 +70,28 @@ public final class SettingsActivity extends SmartPreferenceActivity<NuxeoAndroid
             }
         }
 
-        serverName = (EditTextPreference) findPreference(PREF_SERVER_NAME);
-        serverURL = (EditTextPreference) findPreference(PREF_SERVER_URL);
-        login = (EditTextPreference) findPreference(PREF_LOGIN);
-        // password = (EditTextPreference) findPreference(PREF_PASSWORD);
+        serverURL = (Preference) findPreference(PREF_SERVER_URL);
+        login = (Preference) findPreference(PREF_LOGIN);
+        signOut = (Preference) findPreference(SIGN_OUT);
     }
 
     @Override
     public void onFulfillDisplayObjects() {
         super.onFulfillDisplayObjects();
-        setPreferenceSummary(serverName);
-        serverName.setOnPreferenceChangeListener(this);
-        setPreferenceSummary(serverURL);
-        serverURL.setOnPreferenceChangeListener(this);
-        setPreferenceSummary(login);
-        login.setOnPreferenceChangeListener(this);
-    }
-
-    private void setPreferenceSummary(EditTextPreference pref) {
-        setPreferenceSummary(pref, null);
-    }
-
-    public void setPreferenceSummary(EditTextPreference editTextPreference,
-            String newValue) {
-        if (editTextPreference.getText().length() > 0) {
-            String value = (newValue != null ? newValue
-                    : editTextPreference.getText());
-            editTextPreference.setSummary(value);
-        }
-    }
-
-    public boolean onPreferenceChange(Preference preference,
-            Object newValueObject) {
-        if (preference instanceof EditTextPreference) {
-            String newValue = (String) newValueObject;
-            if (newValue == null || newValue.length() == 0) {
-                return false;
+        serverURL.setSummary(getPreferences().getString(PREF_SERVER_URL, null));
+        login.setSummary(getPreferences().getString(PREF_LOGIN, null));
+        signOut.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                getPreferences().edit().remove(PREF_LOGIN).remove(PREF_PASSWORD).commit();
+                NuxeoAndroidServices.getInstance().release();
+                SmartSplashScreenActivity.markAsUnitialized(NuxeoAndroidSplashScreenActivity.class);
+                startActivity(new Intent(getApplicationContext(),
+                        HomeActivity.class));
+                finish();
+                return true;
             }
-            if (PREF_SERVER_URL.equals(preference.getKey())) {
-                try {
-                    new URL(newValue);
-                } catch (MalformedURLException e) {
-                    return false;
-                }
-            }
-
-            setPreferenceSummary((EditTextPreference) preference, newValue);
-        }
-        return true;
+        });
     }
+
 }

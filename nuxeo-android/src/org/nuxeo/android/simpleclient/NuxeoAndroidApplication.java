@@ -335,7 +335,8 @@ public final class NuxeoAndroidApplication extends SmartApplication {
                     }
                 }
                 // redirect to settings screen if prefs are not set
-                if (getPreferences().getBoolean("firstLogin", false) == false) {
+                if (getPreferences().getString(SettingsActivity.PREF_LOGIN,
+                        null) == null) {
                     if (activity.getComponentName() == null
                             || activity.getComponentName().getClassName().equals(
                                     LoginScreenActivity.class.getName()) == true) {
@@ -393,7 +394,7 @@ public final class NuxeoAndroidApplication extends SmartApplication {
                             } else {
                                 titleBarAggregate.attributes.setShowRefresh(null);
                             }
-                            if (activity instanceof NuxeoAndroidApplication.TitleBarShowHomeFeature) {
+                            if (activity instanceof NuxeoAndroidApplication.TitleBarShowSearchFeature) {
                                 titleBarAggregate.setOnSearch((NuxeoAndroidApplication.TitleBarShowSearchFeature) activity);
                             }
                             // else

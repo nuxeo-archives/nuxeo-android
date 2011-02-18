@@ -46,12 +46,10 @@
   <string name="DocumentsSearchActivity_search_text_hint">Keywords</string>
   <string name="DocumentsSearchActivity_search_voice_prompt">Please, say your keywords</string>
 
+  <string name="Settings_signOut">Sign out</string>
+  <string name="Settings_signOutExplanation">Signs out from the current account</string>
   <string
     name="preferences_server">Server</string>
-  <string
-    name="title_server_name">Server Name</string>
-  <string
-    name="summary_server_name">Choose a name for that server.</string>
   <string
     name="title_server_url">Server URL</string>
   <string
