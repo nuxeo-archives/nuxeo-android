@@ -17,7 +17,10 @@
   <string name="Settings_version">Version</string>
 
   <string name="Home_menu_settings">Réglages</string>
-  <string name="Home_menu_sharing">Partager</string>
   <string name="Home_menu_about">À propos</string>
+  <string name="Home_search">Recherche</string>
+  <string name="Home_myDocuments">Mes Documents</string>
+  <string name="Home_clipboard">Presse-Papier</string>
+  <string name="Home_savedSearches">Recherches Sauvegardées</string>
 
 </resources>

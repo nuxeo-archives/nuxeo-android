@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
+import android.view.View;
+import android.widget.ImageButton;
 
 import com.smartnsoft.droid4me.app.SmartActivity;
 import com.smartnsoft.droid4me.framework.Commands;
@@ -28,26 +30,38 @@ import com.smartnsoft.droid4me.menu.StaticMenuCommand;
 
 /**
  * The starting screen of the application.
- *
+ * 
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.17
  */
-public final class HomeActivity extends SmartActivity<Void> {
+public final class HomeActivity extends SmartActivity<Void> implements
+        View.OnClickListener {
+
+    private ImageButton search;
+
+    private ImageButton myDocuments;
+
+    private ImageButton clipboard;
+
+    private ImageButton savedSearches;
 
     public void onRetrieveDisplayObjects() {
-        // TODO Auto-generated method stub
-
+        setContentView(R.layout.home);
+        search = (ImageButton) findViewById(R.id.search);
+        myDocuments = (ImageButton) findViewById(R.id.myDocuments);
+        clipboard = (ImageButton) findViewById(R.id.clipboard);
+        savedSearches = (ImageButton) findViewById(R.id.savedSearches);
     }
 
     public void onRetrieveBusinessObjects()
             throws BusinessObjectUnavailableException {
-        // TODO Auto-generated method stub
-
     }
 
     public void onFulfillDisplayObjects() {
-        // TODO Auto-generated method stub
-
+        search.setOnClickListener(this);
+        myDocuments.setOnClickListener(this);
+        clipboard.setOnClickListener(this);
+        savedSearches.setOnClickListener(this);
     }
 
     public void onSynchronizeDisplayObjects() {
@@ -76,16 +90,25 @@ public final class HomeActivity extends SmartActivity<Void> {
                                 AboutActivity.class));
                     }
                 }));
-        commands.add(new StaticMenuCommand("My Documents", '2', 'a',
-                android.R.drawable.ic_menu_info_details,
-                new Commands.StaticEnabledExecutable() {
-                    @Override
-                    public void run() {
-                        startActivity(new Intent(getApplicationContext(),
-                                MyDocumentsActivity.class));
-                    }
-                }));
+
         return commands;
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view == search) {
+            startActivity(new Intent(getApplicationContext(),
+                    MyDocumentsActivity.class));
+        } else if (view == myDocuments) {
+            startActivity(new Intent(getApplicationContext(),
+                    MyDocumentsActivity.class));
+        } else if (view == clipboard) {
+            startActivity(new Intent(getApplicationContext(),
+                    MyDocumentsActivity.class));
+        } else if (view == savedSearches) {
+            startActivity(new Intent(getApplicationContext(),
+                    MyDocumentsActivity.class));
+        }
     }
 
 }
