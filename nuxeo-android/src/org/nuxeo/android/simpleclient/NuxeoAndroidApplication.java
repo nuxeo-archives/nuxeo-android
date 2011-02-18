@@ -43,8 +43,8 @@ import com.smartnsoft.droid4me.bo.Business.InputAtom;
 import com.smartnsoft.droid4me.cache.DbPersistence;
 import com.smartnsoft.droid4me.cache.Persistence;
 import com.smartnsoft.droid4me.download.AdvancedImageDownloader;
-import com.smartnsoft.droid4me.download.BasisImageDownloader.InputStreamDownloadInstructor;
 import com.smartnsoft.droid4me.download.ImageDownloader;
+import com.smartnsoft.droid4me.download.BasisImageDownloader.InputStreamDownloadInstructor;
 
 /**
  * The entry point of the application.
@@ -335,7 +335,7 @@ public final class NuxeoAndroidApplication extends SmartApplication {
                     }
                 }
                 // redirect to settings screen if prefs are not set
-                if (getPreferences().getString(SettingsActivity.PREF_LOGIN,
+                if (getPreferences().getString(SettingsActivity.PREF_PASSWORD,
                         null) == null) {
                     if (activity.getComponentName() == null
                             || activity.getComponentName().getClassName().equals(
@@ -394,8 +394,10 @@ public final class NuxeoAndroidApplication extends SmartApplication {
                             } else {
                                 titleBarAggregate.attributes.setShowRefresh(null);
                             }
-                            if (activity instanceof NuxeoAndroidApplication.TitleBarShowSearchFeature) {
-                                titleBarAggregate.setOnSearch((NuxeoAndroidApplication.TitleBarShowSearchFeature) activity);
+                            if (activity instanceof NuxeoAndroidApplication.TitleBarShowHomeFeature) {
+                                titleBarAggregate.attributes.setShowHome(
+                                        R.drawable.ic_title_home,
+                                        titleBarAggregate);
                             }
                             // else
                             // {
@@ -403,8 +405,7 @@ public final class NuxeoAndroidApplication extends SmartApplication {
                             // null);
                             // }
                             if (activity instanceof NuxeoAndroidApplication.TitleBarShowSearchFeature) {
-                                titleBarAggregate.attributes.setShowSearch(
-                                        true, titleBarAggregate);
+                                titleBarAggregate.setOnSearch((NuxeoAndroidApplication.TitleBarShowSearchFeature) activity);
                             } else {
                                 titleBarAggregate.attributes.setShowSearch(
                                         false, null);

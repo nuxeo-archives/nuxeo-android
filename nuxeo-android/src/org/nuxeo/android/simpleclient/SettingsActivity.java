@@ -83,7 +83,7 @@ public final class SettingsActivity extends
         signOut.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                getPreferences().edit().remove(PREF_LOGIN).remove(PREF_PASSWORD).commit();
+                getPreferences().edit().remove(PREF_PASSWORD).commit();
                 NuxeoAndroidServices.getInstance().release();
                 SmartSplashScreenActivity.markAsUnitialized(NuxeoAndroidSplashScreenActivity.class);
                 startActivity(new Intent(getApplicationContext(),
