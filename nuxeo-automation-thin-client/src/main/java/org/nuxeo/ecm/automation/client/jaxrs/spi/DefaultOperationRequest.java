@@ -190,4 +190,9 @@ public class DefaultOperationRequest implements OperationRequest {
     public boolean forceRefresh() {
         return refresh;
     }
+
+    public void forceCache() {
+        cachable=false;
+        refresh=false;
+    }
 }

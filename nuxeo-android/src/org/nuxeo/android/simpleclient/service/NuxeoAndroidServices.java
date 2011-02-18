@@ -83,13 +83,18 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements OnSh
 		String serverUrl = prefs.getString(SettingsActivity.PREF_SERVER_URL, "") + SettingsActivity.PREF_SERVER_URL_SUFFIX;
 		userLogin = prefs.getString(SettingsActivity.PREF_LOGIN,"");
         password = prefs.getString(SettingsActivity.PREF_PASSWORD, "");
-        //client = new CacheAwareHttpAutomationClient(serverUrl, new CacheManager());
-        client = new CacheAwareHttpAutomationClient(serverUrl, null);
+        client = new CacheAwareHttpAutomationClient(serverUrl, new CacheManager());
+        //client = new CacheAwareHttpAutomationClient(serverUrl, null);
 	}
 
 	protected Session getSession() {
 		if (session==null) {
 			session = client.getSession(userLogin, password);
+		} else {
+		    if (session.isOffline()) {
+		        // try to reconnect
+		        session = client.getSession(userLogin, password);
+		    }
 		}
 		return session;
 	}

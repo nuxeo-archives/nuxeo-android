@@ -89,7 +89,7 @@ public class SampleQuery {
     public static void main(String[] args) throws Exception {
         try {
 
-            HttpAutomationClient client = new CacheAwareHttpAutomationClient("http://127.0.0.1:8080/nuxeo/site/automation", new DummyCacheManager());
+            HttpAutomationClient client = new CacheAwareHttpAutomationClient("http://10.213.2.104:8080/nuxeo/site/automation", new DummyCacheManager());
             Session session = client.getSession("Administrator", "Administrator");
 
             Documents docs = (Documents) session.newRequest("Document.Query").set("query", "SELECT * FROM Document").execute();

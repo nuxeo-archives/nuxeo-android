@@ -56,4 +56,6 @@ public interface OperationRequest {
 
     boolean forceRefresh();
 
+    void forceCache();
+
 }

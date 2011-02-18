@@ -27,6 +27,7 @@ import java.util.Map;
 import org.nuxeo.ecm.automation.client.jaxrs.AdapterFactory;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.AutomationClient;
+import org.nuxeo.ecm.automation.client.jaxrs.DisconnectedSession;
 import org.nuxeo.ecm.automation.client.jaxrs.LoginInfo;
 import org.nuxeo.ecm.automation.client.jaxrs.RequestInterceptor;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
@@ -129,7 +130,18 @@ public abstract class AbstractAutomationClient implements AutomationClient {
 
     public Session getSession(final String username, final String password) {
         setRequestInterceptor(new BasicAuthInterceptor(username, password));
-        return getSession();
+        Session session=null;
+        try {
+            session = getSession();
+        } catch (Throwable t) {
+            LoginInfo fakeLoginInfo = new LoginInfo(username);
+            Connector connector = newConnector();
+            if (registry==null) {
+                registry = connect(connector);
+            }
+            session = new DisconnectedSession(this, connector, fakeLoginInfo);
+        }
+        return session;
     }
 
     public void getSession(final String username, final String password,

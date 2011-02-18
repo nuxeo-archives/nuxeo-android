@@ -163,7 +163,19 @@ public class HttpConnector implements Connector {
             } else {
                 throw e;
             }
-        } catch (Exception e) {
+        } catch (org.apache.http.conn.HttpHostConnectException e) {
+            // force offline
+            if (cachedResult!=null) {
+                try {
+                    return request.handleResult(200, cachedResult.getCtype(), cachedResult.getDisp(), cachedResult.getInputStream());
+                } catch (Throwable t) {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        }
+        catch (Exception e) {
             throw new RuntimeException("Cannot execute " + request, e);
         }
     }

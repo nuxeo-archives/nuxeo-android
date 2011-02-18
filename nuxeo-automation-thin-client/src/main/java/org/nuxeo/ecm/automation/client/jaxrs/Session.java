@@ -103,4 +103,7 @@ public interface Session {
      */
     <T> T getAdapter(Class<T> type);
 
+
+    boolean isOffline();
+
 }

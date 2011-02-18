@@ -173,4 +173,9 @@ public class DefaultSession implements Session {
         return client.getRegistry().getOperations();
     }
 
+    @Override
+    public boolean isOffline() {
+        return false;
+    }
+
 }

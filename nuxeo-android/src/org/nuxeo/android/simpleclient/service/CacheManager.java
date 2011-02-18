@@ -32,7 +32,15 @@ public class CacheManager implements InputStreamCacheManager {
 		}
 
 		String[] parts = ((String) atom.context).split(DELIMITER);
-		CacheEntry entry = new CacheEntry(parts[0], parts[1], atom.inputStream);
+		String ctype = parts[0];
+		if ("null".equals(ctype)) {
+		    ctype=null;
+		}
+		String disp = parts[1];
+		if ("null".equals(disp)) {
+            disp=null;
+        }
+		CacheEntry entry = new CacheEntry(ctype, disp, atom.inputStream);
 		return entry;
 	}
 
