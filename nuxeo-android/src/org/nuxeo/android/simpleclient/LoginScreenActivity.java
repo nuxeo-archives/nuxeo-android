@@ -3,15 +3,18 @@ package org.nuxeo.android.simpleclient;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.smartnsoft.droid4me.app.AppPublics;
 import com.smartnsoft.droid4me.app.SmartActivity;
+import com.smartnsoft.droid4me.app.AppPublics.BroadcastListener;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
 
-public class LoginScreenActivity extends SmartActivity<NuxeoAndroidApplication.TitleBarAggregate> implements
-        OnClickListener {
+public class LoginScreenActivity extends
+        SmartActivity<NuxeoAndroidApplication.TitleBarAggregate> implements
+        AppPublics.SendLoadingIntent, AppPublics.BroadcastListenerProvider,
+        View.OnClickListener {
 
     private EditText editPassword;
 
@@ -20,6 +23,15 @@ public class LoginScreenActivity extends SmartActivity<NuxeoAndroidApplication.T
     private EditText editServerUrl;
 
     private Button buttonLogin;
+
+    public BroadcastListener getBroadcastListener() {
+        return new AppPublics.LoadingBroadcastListener(this, true) {
+            @Override
+            protected void onLoading(boolean isLoading) {
+                getAggregate().getAttributes().toggleRefresh(isLoading);
+            }
+        };
+    }
 
     @Override
     public void onRetrieveDisplayObjects() {
@@ -50,8 +62,6 @@ public class LoginScreenActivity extends SmartActivity<NuxeoAndroidApplication.T
 
     @Override
     public void onSynchronizeDisplayObjects() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -66,7 +76,6 @@ public class LoginScreenActivity extends SmartActivity<NuxeoAndroidApplication.T
                     editPassword.getText().toString());
             editor.putString(SettingsActivity.PREF_SERVER_URL,
                     editServerUrl.getText().toString());
-            editor.putBoolean("firstLogin", true);
             editor.commit();
 
             startActivity(new Intent(this, HomeActivity.class));
