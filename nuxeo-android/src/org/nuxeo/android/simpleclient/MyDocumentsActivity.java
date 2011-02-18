@@ -32,7 +32,7 @@ import com.smartnsoft.droid4me.framework.DetailsProvider.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 
-public class MyDocumentsActivity extends WrappedSmartListActivity implements
+public class MyDocumentsActivity extends WrappedSmartListActivity<Void> implements
         BusinessObjectsRetrievalAsynchronousPolicy {
 
     private final static class DocumentAttributes {

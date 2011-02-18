@@ -40,7 +40,11 @@
   <string name="Home_search">Search</string>
   <string name="Home_myDocuments">My Documents</string>
   <string name="Home_clipboard">Clipboard</string>
-  <string name="Home_savedSearches">Saved Searches</string>
+  <string name="Home_savedSearches">History</string>
+
+  <string name="DocumentsSearchActivity_search_title">Search</string>
+  <string name="DocumentsSearchActivity_search_text_hint">Keywords</string>
+  <string name="DocumentsSearchActivity_search_voice_prompt">Please, say your keywords</string>
 
   <string
     name="preferences_server">Server</string>

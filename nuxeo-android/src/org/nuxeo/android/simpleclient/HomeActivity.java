@@ -95,8 +95,7 @@ public final class HomeActivity extends SmartActivity<Void> implements
     @Override
     public void onClick(View view) {
         if (view == search) {
-            startActivity(new Intent(getApplicationContext(),
-                    MyDocumentsActivity.class));
+            startSearch(null, true, null, false);
         } else if (view == myDocuments) {
             startActivity(new Intent(getApplicationContext(),
                     MyDocumentsActivity.class));
