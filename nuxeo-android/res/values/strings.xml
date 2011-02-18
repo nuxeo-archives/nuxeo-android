@@ -26,9 +26,10 @@
     name="unavailableItem">Cannot retrieve the element: sorry, the current activity cannot
     resume.\n\nHave you checked you Internet connection?\n\nPlease, press \"OK\"</string>
 
-  <string
-    name="NuxeoAndroidSplashScreen_dialogMessage_noSdCard">No SD card is currently mounted/available on the device: the
+  <string name="NuxeoAndroidSplashScreen_dialogMessage_noSdCard">No SD card is currently mounted/available on the device: the
     application cannot start!</string>
+
+  <string name="LoginScreen_connect">Connect</string>
 
   <string
     name="Settings_version">Version</string>
@@ -48,19 +49,10 @@
 
   <string name="Settings_signOut">Sign out</string>
   <string name="Settings_signOutExplanation">Signs out from the current account</string>
-  <string
-    name="preferences_server">Server</string>
-  <string
-    name="title_server_url">Server URL</string>
-  <string
-    name="summary_server_url">Set server URL.</string>
-  <string
-    name="title_server_login">Login</string>
-  <string
-    name="summary_server_login">Login allowed to connect on the Nuxeo server.</string>
-  <string
-    name="title_server_password">Password</string>
-  <string
-    name="summary_server_password">********</string>
+  <string name="preferences_server">Server</string>
+  <string name="title_server_url">Server URL</string>
+  <string name="summary_server_url">Sets the server URL</string>
+  <string name="title_server_login">Login</string>
+  <string name="title_server_password">Password</string>
 
 </resources>
