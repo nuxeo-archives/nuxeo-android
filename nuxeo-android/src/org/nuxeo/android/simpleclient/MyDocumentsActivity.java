@@ -24,16 +24,28 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.smartnsoft.droid4me.app.AppPublics;
+import com.smartnsoft.droid4me.app.AppPublics.BroadcastListener;
 import com.smartnsoft.droid4me.app.WrappedSmartListActivity;
+import com.smartnsoft.droid4me.download.ImageDownloader;
 import com.smartnsoft.droid4me.framework.DetailsProvider.BusinessViewWrapper;
+import com.smartnsoft.droid4me.framework.DetailsProvider.ObjectEvent;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 
-public class MyDocumentsActivity extends WrappedSmartListActivity<Void> implements
-        BusinessObjectsRetrievalAsynchronousPolicy {
+public class MyDocumentsActivity extends
+        WrappedSmartListActivity<NuxeoAndroidApplication.TitleBarAggregate>
+        implements BusinessObjectsRetrievalAsynchronousPolicy,
+        AppPublics.SendLoadingIntent, AppPublics.BroadcastListenerProvider,
+        NuxeoAndroidApplication.TitleBarShowHomeFeature,
+        NuxeoAndroidApplication.TitleBarRefreshFeature {
 
     private final static class DocumentAttributes {
 
@@ -41,12 +53,15 @@ public class MyDocumentsActivity extends WrappedSmartListActivity<Void> implemen
 
         private final TextView desc;
 
+        private final ImageView icon;
+
         public DocumentAttributes(View view) {
             title = (TextView) view.findViewById(R.id.title);
             desc = (TextView) view.findViewById(R.id.desc);
+            icon = (ImageView) view.findViewById(R.id.icon);
         }
 
-        public void update(Document doc) {
+        public void update(Context context, Handler handler, Document doc) {
             title.setText(doc.getTitle());
             String descString = doc.getProperties().getString("dc:description",
                     "");
@@ -54,12 +69,23 @@ public class MyDocumentsActivity extends WrappedSmartListActivity<Void> implemen
                 descString = "";
             }
             desc.setText(descString);
-        }
 
+            final String serverUrl = context.getSharedPreferences(
+                    "org.nuxeo.android.simpleclient_preferences", 0).getString(
+                    SettingsActivity.PREF_SERVER_URL, "");
+            String urlImage = serverUrl + (serverUrl.endsWith("/") ? "" : "/")
+                    + doc.getString("common:icon", "");
+
+            ImageDownloader.getInstance().get(icon, urlImage, null, handler,
+                    NuxeoAndroidApplication.CACHE_IMAGE_INSTRUCTIONS);
+        }
     }
 
-    private static final class DocumentWrapper extends
-            BusinessViewWrapper<Document> {
+    public static final String DOCUMENT_ID = "document_id";
+
+    public static final String SOURCE_ACTIVITY = "source_activity";
+
+    private final class DocumentWrapper extends BusinessViewWrapper<Document> {
 
         public DocumentWrapper(Document businessObject) {
             super(businessObject);
@@ -80,15 +106,40 @@ public class MyDocumentsActivity extends WrappedSmartListActivity<Void> implemen
         @Override
         protected void updateView(Activity activity, Object viewAttributes,
                 View view, Document businessObject, int position) {
-            ((DocumentAttributes) viewAttributes).update(businessObject);
+            ((DocumentAttributes) viewAttributes).update(activity,
+                    getHandler(), businessObject);
         }
+
+        @Override
+        public Intent computeIntent(Activity activity, Object viewAttributes,
+                View view, Document businessObject, ObjectEvent objectEvent) {
+            if (objectEvent == ObjectEvent.Clicked) {
+                return new Intent(activity, DocumentViewActivity.class).putExtra(
+                        DOCUMENT_ID, businessObject.getId()).putExtra(
+                        SOURCE_ACTIVITY, DocumentViewActivity.MY_DOCUMENT);
+            }
+            return super.computeIntent(activity, view, objectEvent);
+        }
+
+    }
+
+    private boolean fromCache = true;
+
+    public BroadcastListener getBroadcastListener() {
+        return new AppPublics.LoadingBroadcastListener(this, true) {
+            @Override
+            protected void onLoading(boolean isLoading) {
+                getAggregate().getAttributes().toggleRefresh(isLoading);
+            }
+        };
     }
 
     public List<? extends BusinessViewWrapper<?>> retrieveBusinessObjectsList()
             throws BusinessObjectUnavailableException {
 
         // Fetch data from Nuxeo Server
-        Documents docs = NuxeoAndroidServices.getInstance().getAllDocuments(true);
+        Documents docs = getDocuments(fromCache == false);
+        fromCache = true;
 
         List<BusinessViewWrapper<?>> wrappers = new ArrayList<BusinessViewWrapper<?>>();
 
@@ -98,12 +149,23 @@ public class MyDocumentsActivity extends WrappedSmartListActivity<Void> implemen
         return wrappers;
     }
 
+    protected Documents getDocuments(boolean refresh)
+            throws BusinessObjectUnavailableException {
+        return NuxeoAndroidServices.getInstance().getAllDocuments(refresh);
+    }
+
     @Override
     public void onFulfillDisplayObjects() {
         super.onFulfillDisplayObjects();
 
         getSmartListView().getListView().setEmptyView(
                 getLayoutInflater().inflate(R.layout.empty_list_view, null));
+    }
+
+    @Override
+    public void onTitleBarRefresh() {
+        fromCache = false;
+        refreshBusinessObjectsAndDisplayAndNotifyBusinessObjectsChanged(false);
     }
 
 }

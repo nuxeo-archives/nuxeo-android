@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
+  <style name="header">
+    <item name="android:orientation">horizontal</item>
+    <item name="android:background">@color/header_background</item>
+    <item name="android:layout_width">fill_parent</item>
+    <item name="android:layout_height">@dimen/headerHeight</item>
+  </style>
+
+  <style name="headerButton">
+    <item name="android:background">@drawable/btn_bg</item>
+    <item name="android:layout_height">@dimen/headerHeight</item>
+    <item name="android:layout_width">@dimen/headerHeight</item>
+  </style>
+
+  <style name="headerSeparator">
+    <item name="android:background">@color/header_separator</item>
+    <item name="android:layout_width">1px</item>
+    <item name="android:layout_height">fill_parent</item>
+  </style>
+
+  <style name="headerText">
+    <item name="android:textSize">@dimen/headerText</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:textColor">@color/header_text</item>
+    <item name="android:gravity">center_vertical</item>
+    <item name="android:paddingLeft">@dimen/headerMargin</item>
+    <item name="android:paddingRight">@dimen/headerMargin</item>
+    <item name="android:singleLine">true</item>
+    <item name="android:ellipsize">middle</item>
+    <item name="android:layout_width">fill_parent</item>
+  </style>
+
   <style name="Home_text">
     <item name="android:textSize">14dip</item>
     <item name="android:textStyle">bold</item>
@@ -12,6 +43,15 @@
     <item name="android:layout_height">56dip</item>
     <item name="android:gravity">center</item>
     <item name="android:background">@null</item>
+  </style>
+
+  <!-- From here, we overload the Android default theme -->
+
+  <style
+    name="Kapps.WindowTitleBackground"
+    parent="android:WindowTitleBackground"
+  >
+    <item name="android:background">@android:color/transparent</item>
   </style>
 
 </resources>

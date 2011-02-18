@@ -16,10 +16,57 @@
 
 package org.nuxeo.android.simpleclient;
 
+import org.nuxeo.android.simpleclient.provider.DocumentsSearchProvider;
+import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
+import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
+
+import android.app.SearchManager;
+import android.content.Intent;
+import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
+
+import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
+
 /**
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.18
  */
 public final class DocumentsSearchActivity extends MyDocumentsActivity {
+
+    private String queryText;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        final String action = getIntent().getAction();
+        if (Intent.ACTION_SEARCH.equals(action) == true) {
+            onSearch(getIntent());
+        }
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onNewIntent(Intent newIntent) {
+        super.onNewIntent(newIntent);
+
+        final String action = newIntent.getAction();
+        if (Intent.ACTION_SEARCH.equals(action) == true) {
+            onSearch(getIntent());
+        }
+    }
+
+    private void onSearch(Intent intent) {
+        queryText = intent.getStringExtra(SearchManager.QUERY);
+        final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
+                this, DocumentsSearchProvider.AUTHORITY,
+                DocumentsSearchProvider.MODE);
+        // We remember the search
+        suggestions.saveRecentQuery(queryText, null);
+    }
+
+    protected Documents getDocuments(boolean refresh)
+            throws BusinessObjectUnavailableException {
+        return NuxeoAndroidServices.getInstance().queryFullText(queryText,
+                refresh);
+    }
 
 }

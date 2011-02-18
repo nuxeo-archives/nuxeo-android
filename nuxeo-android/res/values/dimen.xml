@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <dimen name="bodyText">14dip</dimen>
-  <dimen name="titleText">18dip</dimen>
+  <dimen name="headerHeight">45dip</dimen>
+  <dimen name="headerText">18dip</dimen>
+  <dimen name="headerMargin">12dip</dimen>
 
   <dimen name="defaultPadding">10dip</dimen>
 
