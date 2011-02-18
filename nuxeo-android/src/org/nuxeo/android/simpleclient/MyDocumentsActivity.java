@@ -19,6 +19,7 @@ package org.nuxeo.android.simpleclient;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
@@ -80,14 +81,13 @@ public class MyDocumentsActivity extends WrappedSmartListActivity implements
                 View view, Document businessObject, int position) {
             ((DocumentAttributes) viewAttributes).update(businessObject);
         }
-
     }
 
     public List<? extends BusinessViewWrapper<?>> retrieveBusinessObjectsList()
             throws BusinessObjectUnavailableException {
 
     	// Fetch data from Nuxeo Server
-        Documents docs = NuxeoServiceProvider.instance(getApplicationContext()).getAllDocuments();
+        Documents docs = NuxeoAndroidServices.getInstance().getAllDocuments();
 
         List<BusinessViewWrapper<?>> wrappers = new ArrayList<BusinessViewWrapper<?>>();
 

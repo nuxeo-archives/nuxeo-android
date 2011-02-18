@@ -18,6 +18,8 @@ package org.nuxeo.android.simpleclient;
 
 import java.io.File;
 
+import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Environment;
@@ -91,6 +93,7 @@ public final class NuxeoAndroidApplication extends SmartApplication {
         ImageDownloader.USE_REFERENCES = new boolean[] { false };
         ImageDownloader.RECYCLE_BITMAP = new boolean[] { false };
 
+        NuxeoAndroidServices.init(getApplicationContext());
     }
 
     @Override
