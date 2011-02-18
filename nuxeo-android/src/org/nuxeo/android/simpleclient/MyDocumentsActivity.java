@@ -40,12 +40,20 @@ public class MyDocumentsActivity extends WrappedSmartListActivity implements
 
         private final TextView title;
 
+        private final TextView desc;
+
         public DocumentAttributes(View view) {
             title = (TextView) view.findViewById(R.id.title);
+            desc = (TextView) view.findViewById(R.id.desc);
         }
 
-        public void update(Document businessObject) {
-            title.setText(businessObject.getTitle());
+        public void update(Document doc) {
+            title.setText(doc.getTitle());
+            String descString = doc.getProperties().getString("dc:description","");
+            if ("null".equals(descString)) {
+            	descString="";
+            }
+            desc.setText(descString);
         }
 
     }
@@ -93,7 +101,11 @@ public class MyDocumentsActivity extends WrappedSmartListActivity implements
         try {
             docs = (Documents) session.newRequest("Document.Query").set(
                     "query",
-                    "SELECT * FROM Document where ecm:mixinType != 'HiddenInNavigation'").execute();
+                    "SELECT * FROM Document where " +
+                    "ecm:mixinType != 'HiddenInNavigation' " +
+                    "AND dc:title!='' ")
+                    .setHeader("X-NXDocumentProperties", "dublincore,common")
+                    .execute();
         } catch (Exception e) {
             throw new BusinessObjectUnavailableException(e);
         }

@@ -131,6 +131,16 @@ public final class NuxeoAndroidApplication extends SmartApplication {
                                 NuxeoAndroidSplashScreenActivity.class);
                     }
                 }
+                // redirect to settings screen if prefs are not set
+                if ("".equals(getPreferences().getString(SettingsActivity.PREF_SERVER_URL, ""))) {
+                	if (activity.getComponentName() == null
+                            || activity.getComponentName().getClassName().equals(
+                            		SettingsActivity.class.getName()) == true) {
+                        return null;
+                    } else {
+                    	return new Intent(activity,SettingsActivity.class);
+                    }
+                }
                 return null;
             }
         };
