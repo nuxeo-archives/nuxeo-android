@@ -70,6 +70,7 @@ public class LoginScreenActivity extends SmartActivity<Void> implements
             editor.commit();
 
             startActivity(new Intent(this, HomeActivity.class));
+            finish();
             break;
 
         default:
