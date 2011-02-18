@@ -24,12 +24,16 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
 import android.app.Activity;
+import android.content.Context;
+import android.os.Handler;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.smartnsoft.droid4me.app.AppPublics;
-import com.smartnsoft.droid4me.app.WrappedSmartListActivity;
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListener;
+import com.smartnsoft.droid4me.app.WrappedSmartListActivity;
+import com.smartnsoft.droid4me.download.ImageDownloader;
 import com.smartnsoft.droid4me.framework.DetailsProvider.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
@@ -47,12 +51,15 @@ public class MyDocumentsActivity extends
 
         private final TextView desc;
 
+        private final ImageView icon;
+
         public DocumentAttributes(View view) {
             title = (TextView) view.findViewById(R.id.title);
             desc = (TextView) view.findViewById(R.id.desc);
+            icon = (ImageView) view.findViewById(R.id.icon);
         }
 
-        public void update(Document doc) {
+        public void update(Context context, Handler handler, Document doc) {
             title.setText(doc.getTitle());
             String descString = doc.getProperties().getString("dc:description",
                     "");
@@ -60,12 +67,19 @@ public class MyDocumentsActivity extends
                 descString = "";
             }
             desc.setText(descString);
-        }
 
+            final String serverUrl = context.getSharedPreferences(
+                    "org.nuxeo.android.simpleclient_preferences", 0).getString(
+                    SettingsActivity.PREF_SERVER_URL, "");
+            String urlImage = serverUrl + (serverUrl.endsWith("/") ? "" : "/")
+                    + doc.getString("common:icon", "");
+
+            ImageDownloader.getInstance().get(icon, urlImage, null, handler,
+                    NuxeoAndroidApplication.CACHE_IMAGE_INSTRUCTIONS);
+        }
     }
 
-    private static final class DocumentWrapper extends
-            BusinessViewWrapper<Document> {
+    private final class DocumentWrapper extends BusinessViewWrapper<Document> {
 
         public DocumentWrapper(Document businessObject) {
             super(businessObject);
@@ -86,7 +100,8 @@ public class MyDocumentsActivity extends
         @Override
         protected void updateView(Activity activity, Object viewAttributes,
                 View view, Document businessObject, int position) {
-            ((DocumentAttributes) viewAttributes).update(businessObject);
+            ((DocumentAttributes) viewAttributes).update(activity,
+                    getHandler(), businessObject);
         }
     }
 

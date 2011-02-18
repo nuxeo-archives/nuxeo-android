@@ -17,16 +17,21 @@
 package org.nuxeo.android.simpleclient;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
 
 import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Environment;
 import android.util.AndroidRuntimeException;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -34,9 +39,11 @@ import com.smartnsoft.droid4me.app.ActivityController;
 import com.smartnsoft.droid4me.app.AppPublics;
 import com.smartnsoft.droid4me.app.ProgressHandler;
 import com.smartnsoft.droid4me.app.SmartApplication;
+import com.smartnsoft.droid4me.bo.Business.InputAtom;
 import com.smartnsoft.droid4me.cache.DbPersistence;
 import com.smartnsoft.droid4me.cache.Persistence;
 import com.smartnsoft.droid4me.download.AdvancedImageDownloader;
+import com.smartnsoft.droid4me.download.BasisImageDownloader.InputStreamDownloadInstructor;
 import com.smartnsoft.droid4me.download.ImageDownloader;
 
 /**
@@ -169,6 +176,7 @@ public final class NuxeoAndroidApplication extends SmartApplication {
     }
 
     static interface TitleBarShowSearchFeature {
+        void onTitleBarSearch();
     }
 
     final static class TitleBarAggregate extends
@@ -180,6 +188,8 @@ public final class NuxeoAndroidApplication extends SmartApplication {
 
         private NuxeoAndroidApplication.TitleBarRefreshFeature onRefresh;
 
+        private NuxeoAndroidApplication.TitleBarShowSearchFeature onSearch;
+
         public TitleBarAggregate(Activity activity, boolean customTitleSupported) {
             super(activity, true);
             this.customTitleSupported = customTitleSupported;
@@ -190,9 +200,15 @@ public final class NuxeoAndroidApplication extends SmartApplication {
         }
 
         private void setOnRefresh(
-                NuxeoAndroidApplication.TitleBarRefreshFeature titleVarRefreshFeature) {
-            this.onRefresh = titleVarRefreshFeature;
+                NuxeoAndroidApplication.TitleBarRefreshFeature titleBarRefreshFeature) {
+            this.onRefresh = titleBarRefreshFeature;
             attributes.setShowRefresh(this);
+        }
+
+        private void setOnSearch(
+                NuxeoAndroidApplication.TitleBarShowSearchFeature titleBarShowSearchFeature) {
+            this.onSearch = titleBarShowSearchFeature;
+            attributes.setShowSearch(true, this);
         }
 
         @Override
@@ -207,6 +223,8 @@ public final class NuxeoAndroidApplication extends SmartApplication {
                 getActivity().finish();
             } else if (view == attributes.refresh) {
                 onRefresh.onTitleBarRefresh();
+            } else if (view == attributes.search) {
+                onSearch.onTitleBarSearch();
             }
         }
 
@@ -233,6 +251,37 @@ public final class NuxeoAndroidApplication extends SmartApplication {
                 getText(R.string.dialogButton_unhandledProblem),
                 getString(R.string.progressDialogMessage_unhandledProblem));
     }
+
+    public static class CacheInstructions extends
+            AdvancedImageDownloader.AdvancedAbstractInstructions {
+
+        @Override
+        public final InputStream getInputStream(String imageUid,
+                Object imageSpecs, String url,
+                InputStreamDownloadInstructor arg3) throws IOException {
+            final InputAtom inputAtom = Persistence.getInstance(1).extractInputStream(
+                    url);
+            return inputAtom == null ? null : inputAtom.inputStream;
+        }
+
+        @Override
+        public InputStream onInputStreamDownloaded(String imageUid,
+                Object imageSpecs, String url, InputStream inputStream) {
+            return Persistence.getInstance(1).flushInputStream(url,
+                    new InputAtom(new Date(), inputStream)).inputStream;
+        }
+
+        @Override
+        public boolean onBindImage(boolean downloaded, ImageView imageView,
+                Bitmap bitmap, String imageUid, Object imageSpecs) {
+            imageView.setVisibility(View.VISIBLE);
+            return super.onBindImage(downloaded, imageView, bitmap, imageUid,
+                    imageSpecs);
+        }
+
+    }
+
+    public final static ImageDownloader.Instructions CACHE_IMAGE_INSTRUCTIONS = new NuxeoAndroidApplication.CacheInstructions();
 
     @Override
     protected String getLogReportRecipient() {
@@ -329,7 +378,7 @@ public final class NuxeoAndroidApplication extends SmartApplication {
                     if (activity.getParent() == null
                             && activity instanceof AppPublics.CommonActivity<?>) {
                         final AppPublics.CommonActivity<NuxeoAndroidApplication.TitleBarAggregate> commonActivity = (AppPublics.CommonActivity<NuxeoAndroidApplication.TitleBarAggregate>) activity;
-                        final NuxeoAndroidApplication.TitleBarAggregate titleBarAggregate = (NuxeoAndroidApplication.TitleBarAggregate) commonActivity.getAggregate();
+                        final NuxeoAndroidApplication.TitleBarAggregate titleBarAggregate = commonActivity.getAggregate();
                         if (titleBarAggregate != null
                                 && titleBarAggregate.customTitleSupported == true
                                 && titleBarAggregate.attributes == null) {
@@ -345,9 +394,7 @@ public final class NuxeoAndroidApplication extends SmartApplication {
                                 titleBarAggregate.attributes.setShowRefresh(null);
                             }
                             if (activity instanceof NuxeoAndroidApplication.TitleBarShowHomeFeature) {
-                                titleBarAggregate.attributes.setShowHome(
-                                        R.drawable.ic_title_home,
-                                        titleBarAggregate);
+                                titleBarAggregate.setOnSearch((NuxeoAndroidApplication.TitleBarShowSearchFeature) activity);
                             }
                             // else
                             // {
