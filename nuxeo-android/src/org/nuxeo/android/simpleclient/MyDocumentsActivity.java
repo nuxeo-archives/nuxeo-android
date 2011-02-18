@@ -19,8 +19,6 @@ package org.nuxeo.android.simpleclient;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.nuxeo.ecm.automation.client.jaxrs.Session;
-import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpAutomationClient;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
@@ -88,28 +86,8 @@ public class MyDocumentsActivity extends WrappedSmartListActivity implements
     public List<? extends BusinessViewWrapper<?>> retrieveBusinessObjectsList()
             throws BusinessObjectUnavailableException {
 
-        String serverUrl = getPreferences().getString(
-                SettingsActivity.PREF_SERVER_URL, "")
-                + SettingsActivity.PREF_SERVER_URL_SUFFIX;
-        HttpAutomationClient client = new HttpAutomationClient(serverUrl);
-        String login = getPreferences().getString(SettingsActivity.PREF_LOGIN,
-                "");
-        String password = getPreferences().getString(
-                SettingsActivity.PREF_PASSWORD, "");
-        Session session = client.getSession(login, password);
-        Documents docs;
-        try {
-            docs = (Documents) session.newRequest("Document.Query").set(
-                    "query",
-                    "SELECT * FROM Document where " +
-                    "ecm:mixinType != 'HiddenInNavigation' " +
-                    "AND dc:title!='' ")
-                    .setHeader("X-NXDocumentProperties", "dublincore,common")
-                    .execute();
-        } catch (Exception e) {
-            throw new BusinessObjectUnavailableException(e);
-        }
-        client.shutdown();
+    	// Fetch data from Nuxeo Server
+        Documents docs = NuxeoServiceProvider.instance(getApplicationContext()).getAllDocuments();
 
         List<BusinessViewWrapper<?>> wrappers = new ArrayList<BusinessViewWrapper<?>>();
 

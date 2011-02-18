@@ -17,17 +17,15 @@
 package org.nuxeo.android.simpleclient;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Environment;
 
 import com.smartnsoft.droid4me.app.ActivityController;
-import com.smartnsoft.droid4me.cache.Persistence;
 import com.smartnsoft.droid4me.app.SmartApplication;
 import com.smartnsoft.droid4me.cache.DbPersistence;
+import com.smartnsoft.droid4me.cache.Persistence;
 import com.smartnsoft.droid4me.download.AdvancedImageDownloader;
 import com.smartnsoft.droid4me.download.ImageDownloader;
 
@@ -92,6 +90,7 @@ public final class NuxeoAndroidApplication extends SmartApplication {
         ImageDownloader.LOW_LEVEL_MEMORY_WATER_MARK_IN_BYTES = new long[] { 1 * 1024 * 1024 };
         ImageDownloader.USE_REFERENCES = new boolean[] { false };
         ImageDownloader.RECYCLE_BITMAP = new boolean[] { false };
+
     }
 
     @Override

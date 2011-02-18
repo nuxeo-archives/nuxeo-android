@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="lib" path="libs/com.smartnsoft.droid4me.jar"/>
+	<classpathentry kind="lib" path="libs/com.smartnsoft.droid4me.jar" sourcepath="/home/tiry/devs/android/droid4me/droid4me/src"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="src" path="src"/>
