@@ -34,7 +34,7 @@ import com.smartnsoft.droid4me.app.SmartPreferenceActivity;
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.17
  */
-public final class SettingsActivity extends SmartPreferenceActivity implements
+public final class SettingsActivity extends SmartPreferenceActivity<Void> implements
         OnPreferenceChangeListener {
 
     public static final String PREF_SERVER_NAME = "server_name";

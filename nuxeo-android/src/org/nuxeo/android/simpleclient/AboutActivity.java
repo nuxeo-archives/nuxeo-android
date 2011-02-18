@@ -35,7 +35,7 @@ import com.smartnsoft.droid4me.ws.WebServiceCaller;
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.17
  */
-public final class AboutActivity extends SmartActivity implements
+public final class AboutActivity extends SmartActivity<Void> implements
         LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy {
 
     private String content;

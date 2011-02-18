@@ -10,7 +10,7 @@ import android.widget.EditText;
 import com.smartnsoft.droid4me.app.SmartActivity;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
 
-public class LoginScreenActivity extends SmartActivity implements
+public class LoginScreenActivity extends SmartActivity<Void> implements
         OnClickListener {
 
     private EditText editPassword;
