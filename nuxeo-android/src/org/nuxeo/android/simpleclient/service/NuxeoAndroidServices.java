@@ -88,85 +88,93 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
                 + SettingsActivity.PREF_SERVER_URL_SUFFIX;
         userLogin = prefs.getString(SettingsActivity.PREF_LOGIN, "");
         password = prefs.getString(SettingsActivity.PREF_PASSWORD, "");
-        client = new CacheAwareHttpAutomationClient(serverUrl, new CacheManager());
-        //client = new CacheAwareHttpAutomationClient(serverUrl, null);
-	}
+        client = new CacheAwareHttpAutomationClient(serverUrl,
+                new CacheManager());
+        // client = new CacheAwareHttpAutomationClient(serverUrl, null);
+    }
 
-	protected Session getSession() {
-		if (session==null) {
-			session = client.getSession(userLogin, password);
-		} else {
-		    if (session.isOffline()) {
-		        // try to reconnect
-		        session = client.getSession(userLogin, password);
-		    }
-		}
-		return session;
-	}
+    protected Session getSession() {
+        if (session == null) {
+            session = client.getSession(userLogin, password);
+        } else {
+            if (session.isOffline()) {
+                // try to reconnect
+                session = client.getSession(userLogin, password);
+            }
+        }
+        return session;
+    }
 
-	public void release() {
-		if (client!=null) {
-			client.shutdown();
-			client=null;
-			session=null;
-		}
-	}
+    public void release() {
+        if (client != null) {
+            client.shutdown();
+            client = null;
+            session = null;
+        }
+    }
 
-	public Documents getMyDocuments(boolean refresh) throws BusinessObjectUnavailableException {
-		String query = "SELECT * FROM Document WHERE dc:contributors = '" + userLogin +
-					"'? AND ecm:mixinType !='Folderish' AND ecm:mixinType != 'HiddenInNavigation' " +
-					" AND ecm:isCheckedInVersion = 0 AND ecm:isProxy = 0 " +
-					" AND ecm:currentLifeCycleState != 'deleted'" +
-					" ORDER BY dc:modified desc";
-		return queryDocuments(query, refresh, true);
-	}
+    public Documents getMyDocuments(boolean refresh)
+            throws BusinessObjectUnavailableException {
+        String query = "SELECT * FROM Document WHERE dc:contributors = '"
+                + userLogin
+                + "' AND ecm:mixinType !='Folderish' AND ecm:mixinType != 'HiddenInNavigation' "
+                + " AND ecm:isCheckedInVersion = 0 AND ecm:isProxy = 0 "
+                + " AND ecm:currentLifeCycleState != 'deleted'"
+                + " ORDER BY dc:modified desc";
+        return queryDocuments(query, refresh, true);
+    }
 
-	public Documents getLastPublishedDocuments(boolean refresh) throws BusinessObjectUnavailableException {
-		String query = "SELECT * FROM Document WHERE " +
-		               " ecm:mixinType !='Folderish' " +
-		                " AND ecm:mixinType != 'HiddenInNavigation' " +
-		                " AND ecm:isCheckedInVersion = 0 AND ecm:isProxy = 1" +
-					    " ORDER BY dc:modified desc";
-		return queryDocuments(query, refresh, true);
-	}
+    public Documents getLastPublishedDocuments(boolean refresh)
+            throws BusinessObjectUnavailableException {
+        String query = "SELECT * FROM Document WHERE "
+                + " ecm:mixinType !='Folderish' "
+                + " AND ecm:mixinType != 'HiddenInNavigation' "
+                + " AND ecm:isCheckedInVersion = 0 AND ecm:isProxy = 1"
+                + " ORDER BY dc:modified desc";
+        return queryDocuments(query, refresh, true);
+    }
 
-	public Documents getAllDocuments(boolean refresh) throws BusinessObjectUnavailableException {
-		String query = "SELECT * FROM Document where " +
-        				"ecm:mixinType != 'HiddenInNavigation' " +
-        				"AND dc:title!='' ";
-		return queryDocuments(query, refresh, true);
-	}
+    public Documents getAllDocuments(boolean refresh)
+            throws BusinessObjectUnavailableException {
+        String query = "SELECT * FROM Document where "
+                + "ecm:mixinType != 'HiddenInNavigation' "
+                + "AND dc:title!='' ";
+        return queryDocuments(query, refresh, true);
+    }
 
-	public Documents queryFullText(String pattern, boolean refresh) throws BusinessObjectUnavailableException {
-		String query = "SELECT * FROM Document WHERE ecm:fulltext LIKE '" + pattern + "' " +
-		               " AND ecm:mixinType !='HiddenInNavigation' " +
-		                " AND ecm:isCheckedInVersion = 0 " +
-		                " AND ecm:currentLifeCycleState != 'deleted'";
-		return queryDocuments(query, refresh, true);
-	}
+    public Documents queryFullText(String pattern, boolean refresh)
+            throws BusinessObjectUnavailableException {
+        String query = "SELECT * FROM Document WHERE ecm:fulltext LIKE '"
+                + pattern + "' " + " AND ecm:mixinType !='HiddenInNavigation' "
+                + " AND ecm:isCheckedInVersion = 0 "
+                + " AND ecm:currentLifeCycleState != 'deleted'";
+        return queryDocuments(query, refresh, true);
+    }
 
-	public Documents getMyWorklistContent() throws BusinessObjectUnavailableException {
-		// XXX need to add an Server Side operation for that
-		return new Documents();
-	}
+    public Documents getMyWorklistContent()
+            throws BusinessObjectUnavailableException {
+        // XXX need to add an Server Side operation for that
+        return new Documents();
+    }
 
-	public Documents getSavedSerach(String savedQueryName) throws BusinessObjectUnavailableException {
-		// XXX need to add an Server Side operation for that
-		return new Documents();
-	}
+    public Documents getSavedSerach(String savedQueryName)
+            throws BusinessObjectUnavailableException {
+        // XXX need to add an Server Side operation for that
+        return new Documents();
+    }
 
-
-	public Documents queryDocuments(String nxql, boolean refresh, boolean allowCaching) throws BusinessObjectUnavailableException {
-		Documents docs;
-	    try {
-	           docs = (Documents) getSession().newRequest("Document.Query").set(
-	                   "query", nxql).setHeader("X-NXDocumentProperties",
-	                   "dublincore,common").execute(refresh, allowCaching);
-	       } catch (Exception e) {
-	           throw new BusinessObjectUnavailableException(e);
-	       }
-	       return docs;
-	}
+    public Documents queryDocuments(String nxql, boolean refresh,
+            boolean allowCaching) throws BusinessObjectUnavailableException {
+        Documents docs;
+        try {
+            docs = (Documents) getSession().newRequest("Document.Query").set(
+                    "query", nxql).setHeader("X-NXDocumentProperties",
+                    "dublincore,common").execute(refresh, allowCaching);
+        } catch (Exception e) {
+            throw new BusinessObjectUnavailableException(e);
+        }
+        return docs;
+    }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,

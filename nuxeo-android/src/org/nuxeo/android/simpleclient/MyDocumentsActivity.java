@@ -151,7 +151,7 @@ public class MyDocumentsActivity extends
 
     protected Documents getDocuments(boolean refresh)
             throws BusinessObjectUnavailableException {
-        return NuxeoAndroidServices.getInstance().getAllDocuments(refresh);
+        return NuxeoAndroidServices.getInstance().getMyDocuments(refresh);
     }
 
     @Override
