@@ -73,25 +73,32 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements OnSh
 
 	protected String userLogin;
 
+	protected String password;
+
 	protected void initOnPrefs(SharedPreferences prefs) {
 
 		if (client!=null) {
 			release();
 		}
-
 		String serverUrl = prefs.getString(SettingsActivity.PREF_SERVER_URL, "") + SettingsActivity.PREF_SERVER_URL_SUFFIX;
 		userLogin = prefs.getString(SettingsActivity.PREF_LOGIN,"");
-        String password = prefs.getString(SettingsActivity.PREF_PASSWORD, "");
+        password = prefs.getString(SettingsActivity.PREF_PASSWORD, "");
+        //client = new CacheAwareHttpAutomationClient(serverUrl, new CacheManager());
+        client = new CacheAwareHttpAutomationClient(serverUrl, null);
+	}
 
-        client = new CacheAwareHttpAutomationClient(serverUrl, null); // XXX plug on a real cache provider
-        session = client.getSession(userLogin, password);
-
+	protected Session getSession() {
+		if (session==null) {
+			session = client.getSession(userLogin, password);
+		}
+		return session;
 	}
 
 	public void release() {
 		if (client!=null) {
 			client.shutdown();
 			client=null;
+			session=null;
 		}
 	}
 
@@ -101,37 +108,37 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements OnSh
 		initOnPrefs(sharedPreferences);
 	}
 
-	public Documents getMyDocuments() throws BusinessObjectUnavailableException {
+	public Documents getMyDocuments(boolean refresh) throws BusinessObjectUnavailableException {
 		String query = "SELECT * FROM Document WHERE dc:contributors = '" + userLogin +
 					"'? AND ecm:mixinType !='Folderish' AND ecm:mixinType != 'HiddenInNavigation' " +
 					" AND ecm:isCheckedInVersion = 0 AND ecm:isProxy = 0 " +
 					" AND ecm:currentLifeCycleState != 'deleted'" +
 					" ORDER BY dc:modified desc";
-		return queryDocuments(query);
+		return queryDocuments(query, refresh, true);
 	}
 
-	public Documents getLastPublishedDocuments() throws BusinessObjectUnavailableException {
+	public Documents getLastPublishedDocuments(boolean refresh) throws BusinessObjectUnavailableException {
 		String query = "SELECT * FROM Document WHERE " +
 		               " ecm:mixinType !='Folderish' " +
 		                " AND ecm:mixinType != 'HiddenInNavigation' " +
 		                " AND ecm:isCheckedInVersion = 0 AND ecm:isProxy = 1" +
 					    " ORDER BY dc:modified desc";
-		return queryDocuments(query);
+		return queryDocuments(query, refresh, true);
 	}
 
-	public Documents getAllDocuments() throws BusinessObjectUnavailableException {
+	public Documents getAllDocuments(boolean refresh) throws BusinessObjectUnavailableException {
 		String query = "SELECT * FROM Document where " +
         				"ecm:mixinType != 'HiddenInNavigation' " +
         				"AND dc:title!='' ";
-		return queryDocuments(query);
+		return queryDocuments(query, refresh, true);
 	}
 
-	public Documents queryFullText(String pattern) throws BusinessObjectUnavailableException {
+	public Documents queryFullText(String pattern, boolean refresh) throws BusinessObjectUnavailableException {
 		String query = "SELECT * FROM Document WHERE ecm:fulltext LIKE '" + pattern + "' " +
 		               " AND ecm:mixinType !='HiddenInNavigation' " +
 		                " AND ecm:isCheckedInVersion = 0 " +
 		                " AND ecm:currentLifeCycleState != 'deleted'";
-		return queryDocuments(query);
+		return queryDocuments(query, refresh, true);
 	}
 
 	public Documents getMyWorklistContent() throws BusinessObjectUnavailableException {
@@ -145,13 +152,13 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements OnSh
 	}
 
 
-	public Documents queryDocuments(String nxql) throws BusinessObjectUnavailableException {
+	public Documents queryDocuments(String nxql, boolean refresh, boolean allowCaching) throws BusinessObjectUnavailableException {
 		Documents docs;
         try {
-            docs = (Documents) session.newRequest("Document.Query").set(
+            docs = (Documents) getSession().newRequest("Document.Query").set(
                     "query", nxql)
                     .setHeader("X-NXDocumentProperties", "dublincore,common")
-                    .execute();
+                    .execute(refresh, allowCaching);
         } catch (Exception e) {
             throw new BusinessObjectUnavailableException(e);
         }

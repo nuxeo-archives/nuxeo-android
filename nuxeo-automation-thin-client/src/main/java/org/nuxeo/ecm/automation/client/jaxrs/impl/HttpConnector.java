@@ -74,8 +74,14 @@ public class HttpConnector implements Connector {
     protected String computeRequestKey(Request request) {
 
         String url = request.getUrl();
-        if (url.endsWith("/login") || url.endsWith("/automation/")) {
+        if (url.endsWith("/login")) {
+            // no caching
             return null;
+        }
+
+        if (url.endsWith("/automation/")) {
+            // automation operation definitions
+            return "automationDefinitions";
         }
 
         StringBuffer sb = new StringBuffer();

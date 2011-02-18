@@ -74,6 +74,7 @@ public final class SettingsActivity extends SmartPreferenceActivity implements
 
         serverName = (EditTextPreference) findPreference(PREF_SERVER_NAME);
         serverURL = (EditTextPreference) findPreference(PREF_SERVER_URL);
+        currentNuxeoURLPrefix = serverURL.getText();
         login = (EditTextPreference) findPreference(PREF_LOGIN);
         // password = (EditTextPreference) findPreference(PREF_PASSWORD);
     }
@@ -112,6 +113,7 @@ public final class SettingsActivity extends SmartPreferenceActivity implements
             if (PREF_SERVER_URL.equals(preference.getKey())) {
                 try {
                     new URL(newValue);
+                    currentNuxeoURLPrefix = newValue;
                 } catch (MalformedURLException e) {
                     return false;
                 }
@@ -121,4 +123,11 @@ public final class SettingsActivity extends SmartPreferenceActivity implements
         }
         return true;
     }
+
+    private static String currentNuxeoURLPrefix;
+
+    public static String getCurrentNuxeoURLPrefix() {
+    	return currentNuxeoURLPrefix;
+    }
+
 }
