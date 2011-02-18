@@ -48,16 +48,9 @@
     <dependency>
       <groupId>com.smartnsoft</groupId>
       <artifactId>droid4me</artifactId>
-      <version>1.0</version>
+      <version>2.0</version>
       <scope>system</scope>
       <systemPath>${project.basedir}/libs/com.smartnsoft.droid4me.jar</systemPath>
-    </dependency>
-    <dependency>
-      <groupId>com.smartnsoft</groupId>
-      <artifactId>droid4me.ext</artifactId>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/libs/com.smartnsoft.droid4me.ext.jar</systemPath>
-      <version>1.0</version>
     </dependency>
   </dependencies>
 
