@@ -27,13 +27,19 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.smartnsoft.droid4me.app.AppPublics;
 import com.smartnsoft.droid4me.app.WrappedSmartListActivity;
+import com.smartnsoft.droid4me.app.AppPublics.BroadcastListener;
 import com.smartnsoft.droid4me.framework.DetailsProvider.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 
-public class MyDocumentsActivity extends WrappedSmartListActivity<Void> implements
-        BusinessObjectsRetrievalAsynchronousPolicy {
+public class MyDocumentsActivity extends
+        WrappedSmartListActivity<NuxeoAndroidApplication.TitleBarAggregate>
+        implements BusinessObjectsRetrievalAsynchronousPolicy,
+        AppPublics.SendLoadingIntent, AppPublics.BroadcastListenerProvider,
+        NuxeoAndroidApplication.TitleBarShowHomeFeature,
+        NuxeoAndroidApplication.TitleBarRefreshFeature {
 
     private final static class DocumentAttributes {
 
@@ -84,11 +90,23 @@ public class MyDocumentsActivity extends WrappedSmartListActivity<Void> implemen
         }
     }
 
+    private boolean fromCache = true;
+
+    public BroadcastListener getBroadcastListener() {
+        return new AppPublics.LoadingBroadcastListener(this, true) {
+            @Override
+            protected void onLoading(boolean isLoading) {
+                getAggregate().getAttributes().toggleRefresh(isLoading);
+            }
+        };
+    }
+
     public List<? extends BusinessViewWrapper<?>> retrieveBusinessObjectsList()
             throws BusinessObjectUnavailableException {
 
         // Fetch data from Nuxeo Server
-        Documents docs = NuxeoAndroidServices.getInstance().getAllDocuments(true);
+        Documents docs = getDocuments(fromCache == false);
+        fromCache = true;
 
         List<BusinessViewWrapper<?>> wrappers = new ArrayList<BusinessViewWrapper<?>>();
 
@@ -98,12 +116,23 @@ public class MyDocumentsActivity extends WrappedSmartListActivity<Void> implemen
         return wrappers;
     }
 
+    protected Documents getDocuments(boolean refresh)
+            throws BusinessObjectUnavailableException {
+        return NuxeoAndroidServices.getInstance().getAllDocuments(refresh);
+    }
+
     @Override
     public void onFulfillDisplayObjects() {
         super.onFulfillDisplayObjects();
 
         getSmartListView().getListView().setEmptyView(
                 getLayoutInflater().inflate(R.layout.empty_list_view, null));
+    }
+
+    @Override
+    public void onTitleBarRefresh() {
+        fromCache = false;
+        refreshBusinessObjectsAndDisplayAndNotifyBusinessObjectsChanged(false);
     }
 
 }

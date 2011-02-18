@@ -41,7 +41,7 @@
         android:gravity="center_horizontal"
       >
         <ImageButton
-          android:id="@+id/search"
+          android:id="@+id/searchDocuments"
           android:src="@drawable/search"
           style="@style/Home_icon"
         />

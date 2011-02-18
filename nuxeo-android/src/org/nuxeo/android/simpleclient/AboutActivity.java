@@ -31,12 +31,14 @@ import com.smartnsoft.droid4me.ws.WebServiceCaller;
 
 /**
  * The "about" screen.
- *
+ * 
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.17
  */
-public final class AboutActivity extends SmartActivity<Void> implements
-        LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy {
+public final class AboutActivity extends
+        SmartActivity<NuxeoAndroidApplication.TitleBarAggregate> implements
+        LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy,
+        NuxeoAndroidApplication.TitleBarShowHomeFeature {
 
     private String content;
 

@@ -40,7 +40,9 @@
       android:configChanges="keyboardHidden|orientation"
       android:alwaysRetainTaskState="true"
       android:excludeFromRecents="true"
-      android:multiprocess="true" />
+      android:multiprocess="true"
+      android:theme="@style/Theme.NuxeoAndroid.NoTitle"
+    />
 
     <activity
       android:name=".HomeActivity"
@@ -60,7 +62,8 @@
 
     <activity
       android:name=".MyDocumentsActivity"
-      android:configChanges="keyboardHidden|orientation"></activity>
+      android:configChanges="keyboardHidden|orientation"
+    />
 
     <activity
       android:name=".DocumentsSearchActivity"
@@ -76,6 +79,16 @@
       />
     </activity>
 
+    <activity
+      android:name=".ClipboardDocumentsActivity"
+      android:configChanges="keyboardHidden|orientation"
+    />
+
+    <activity
+      android:name=".SavedSearchesDocumentsActivity"
+      android:configChanges="keyboardHidden|orientation"
+    />
+ 
     <activity
       android:name=".LoginScreenActivity"
       android:configChanges="keyboardHidden|orientation"></activity>

@@ -34,10 +34,11 @@ import com.smartnsoft.droid4me.menu.StaticMenuCommand;
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.17
  */
-public final class HomeActivity extends SmartActivity<Void> implements
-        View.OnClickListener {
+public final class HomeActivity extends
+        SmartActivity<NuxeoAndroidApplication.TitleBarAggregate> implements
+        View.OnClickListener, NuxeoAndroidApplication.TitleBarShowSearchFeature {
 
-    private ImageButton search;
+    private ImageButton searchDocuments;
 
     private ImageButton myDocuments;
 
@@ -47,7 +48,7 @@ public final class HomeActivity extends SmartActivity<Void> implements
 
     public void onRetrieveDisplayObjects() {
         setContentView(R.layout.home);
-        search = (ImageButton) findViewById(R.id.search);
+        searchDocuments = (ImageButton) findViewById(R.id.searchDocuments);
         myDocuments = (ImageButton) findViewById(R.id.myDocuments);
         clipboard = (ImageButton) findViewById(R.id.clipboard);
         savedSearches = (ImageButton) findViewById(R.id.savedSearches);
@@ -58,7 +59,7 @@ public final class HomeActivity extends SmartActivity<Void> implements
     }
 
     public void onFulfillDisplayObjects() {
-        search.setOnClickListener(this);
+        searchDocuments.setOnClickListener(this);
         myDocuments.setOnClickListener(this);
         clipboard.setOnClickListener(this);
         savedSearches.setOnClickListener(this);
@@ -94,17 +95,17 @@ public final class HomeActivity extends SmartActivity<Void> implements
 
     @Override
     public void onClick(View view) {
-        if (view == search) {
+        if (view == searchDocuments) {
             startSearch(null, true, null, false);
         } else if (view == myDocuments) {
             startActivity(new Intent(getApplicationContext(),
                     MyDocumentsActivity.class));
         } else if (view == clipboard) {
             startActivity(new Intent(getApplicationContext(),
-                    MyDocumentsActivity.class));
+                    ClipboardDocumentsActivity.class));
         } else if (view == savedSearches) {
             startActivity(new Intent(getApplicationContext(),
-                    MyDocumentsActivity.class));
+                    SavedSearchesDocumentsActivity.class));
         }
     }
 
