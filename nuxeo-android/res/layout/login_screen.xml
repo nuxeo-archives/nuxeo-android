@@ -33,7 +33,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/defaultPadding"
     android:layout_below="@id/editLogin"
-    android:hint="@string/title_server_password" />
+    android:hint="@string/title_server_password"
+    android:inputType="textPassword" />
 
   <Button
     android:id="@+id/loginButton"
