@@ -65,8 +65,6 @@ public final class HomeActivity extends SmartActivity<Void> implements
     }
 
     public void onSynchronizeDisplayObjects() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
