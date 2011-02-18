@@ -30,12 +30,13 @@ import com.smartnsoft.droid4me.app.SmartPreferenceActivity;
 
 /**
  * The activity which enables to tune the application.
- *
+ * 
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.17
  */
-public final class SettingsActivity extends SmartPreferenceActivity<Void> implements
-        OnPreferenceChangeListener {
+public final class SettingsActivity extends SmartPreferenceActivity<NuxeoAndroidApplication.TitleBarAggregate>
+        implements OnPreferenceChangeListener,
+        NuxeoAndroidApplication.TitleBarShowHomeFeature {
 
     public static final String PREF_SERVER_NAME = "server_name";
 

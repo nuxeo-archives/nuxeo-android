@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <color name="header_text">#656565</color>
-  <color name="header_background">#0F6936</color>
+  <color name="header_text">@color/android:white</color>
+  <color name="header_background">@color/android:black</color>
   <color name="header_separator">#40ffffff</color>
 
 </resources>

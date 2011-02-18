@@ -32,8 +32,10 @@ import com.smartnsoft.droid4me.framework.DetailsProvider.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 
-public class MyDocumentsActivity extends WrappedSmartListActivity<Void> implements
-        BusinessObjectsRetrievalAsynchronousPolicy {
+public class MyDocumentsActivity extends WrappedSmartListActivity<NuxeoAndroidApplication.TitleBarAggregate>
+        implements BusinessObjectsRetrievalAsynchronousPolicy,
+        NuxeoAndroidApplication.TitleBarShowHomeFeature,
+        NuxeoAndroidApplication.TitleBarRefreshFeature {
 
     private final static class DocumentAttributes {
 
@@ -88,7 +90,8 @@ public class MyDocumentsActivity extends WrappedSmartListActivity<Void> implemen
             throws BusinessObjectUnavailableException {
 
         // Fetch data from Nuxeo Server
-        Documents docs = NuxeoAndroidServices.getInstance().getAllDocuments(true);
+        Documents docs = NuxeoAndroidServices.getInstance().getAllDocuments(
+                true);
 
         List<BusinessViewWrapper<?>> wrappers = new ArrayList<BusinessViewWrapper<?>>();
 
@@ -104,6 +107,11 @@ public class MyDocumentsActivity extends WrappedSmartListActivity<Void> implemen
 
         getSmartListView().getListView().setEmptyView(
                 getLayoutInflater().inflate(R.layout.empty_list_view, null));
+    }
+
+    @Override
+    public void onTitleBarRefresh() {
+        refreshBusinessObjectsAndDisplayAndNotifyBusinessObjectsChanged(false);
     }
 
 }
