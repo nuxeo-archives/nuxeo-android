@@ -31,8 +31,7 @@
 
     <provider
       android:name=".provider.DocumentsSearchProvider"
-      android:authorities="org.nuxeo.android.simpleclient.provider.PartnersSearchProvider"
-    />
+      android:authorities="org.nuxeo.android.simpleclient.provider.PartnersSearchProvider" />
 
     <activity
       android:name=".NuxeoAndroidSplashScreenActivity"
@@ -41,8 +40,7 @@
       android:alwaysRetainTaskState="true"
       android:excludeFromRecents="true"
       android:multiprocess="true"
-      android:theme="@style/Theme.NuxeoAndroid.NoTitle"
-    />
+      android:theme="@style/Theme.NuxeoAndroid.NoTitle" />
 
     <activity
       android:name=".HomeActivity"
@@ -56,39 +54,39 @@
       </intent-filter>
       <meta-data
         android:name="android.app.default_searchable"
-        android:value=".DocumentsSearchActivity"
-      />
+        android:value=".DocumentsSearchActivity" />
     </activity>
 
     <activity
       android:name=".MyDocumentsActivity"
-      android:configChanges="keyboardHidden|orientation"
-    />
+      android:configChanges="keyboardHidden|orientation" />
+
+    <activity
+      android:name=".DocumentViewActivity"
+      android:configChanges="keyboardHidden|orientation" />
 
     <activity
       android:name=".DocumentsSearchActivity"
-      android:configChanges="keyboardHidden|orientation"
-    >
+      android:configChanges="keyboardHidden|orientation">
       <intent-filter>
-        <action android:name="android.intent.action.SEARCH"/>
-        <category android:name="android.intent.category.DEFAULT"/>
+        <action
+          android:name="android.intent.action.SEARCH" />
+        <category
+          android:name="android.intent.category.DEFAULT" />
       </intent-filter>
       <meta-data
         android:name="android.app.searchable"
-        android:resource="@xml/documents_search_searchable"
-      />
+        android:resource="@xml/documents_search_searchable" />
     </activity>
 
     <activity
       android:name=".ClipboardDocumentsActivity"
-      android:configChanges="keyboardHidden|orientation"
-    />
+      android:configChanges="keyboardHidden|orientation" />
 
     <activity
       android:name=".SavedSearchesDocumentsActivity"
-      android:configChanges="keyboardHidden|orientation"
-    />
- 
+      android:configChanges="keyboardHidden|orientation" />
+
     <activity
       android:name=".LoginScreenActivity"
       android:configChanges="keyboardHidden|orientation"></activity>
