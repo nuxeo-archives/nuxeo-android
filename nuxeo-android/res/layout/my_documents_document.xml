@@ -1,17 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_height="wrap_content"
-	android:layout_width="wrap_content">
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_height="wrap_content"
+  android:layout_width="wrap_content">
 
-	<ImageView android:id="@+id/icon" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:src="@drawable/icon" />
+  <ImageView
+    android:id="@+id/icon"
+    android:layout_width="32dip"
+    android:layout_height="32dip"
+    android:layout_centerVertical="true"
+    android:src="@drawable/icon"
+    android:scaleType="fitCenter"
+    android:padding="5dip" />
 
-	<TextView android:id="@+id/title" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:layout_toRightOf="@id/icon"
-		android:text="Title Document" />
+  <TextView
+    android:id="@+id/title"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_toRightOf="@id/icon"
+    android:text="Title Document"
+    android:textStyle="bold"
+    android:textSize="12dip"
+    android:padding="5dip" />
 
-	<TextView android:layout_toRightOf="@id/icon" android:layout_below="@id/title" android:id="@+id/desc"
-		android:text="description" android:layout_height="wrap_content"
-		android:layout_width="wrap_content"></TextView>
+  <TextView
+    android:layout_toRightOf="@id/icon"
+    android:layout_below="@id/title"
+    android:id="@+id/desc"
+    android:text="description"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:textStyle="italic"
+    android:textColor="#333"
+    android:padding="5dip"/>
 
 </RelativeLayout>
