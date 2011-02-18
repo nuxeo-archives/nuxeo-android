@@ -48,9 +48,10 @@ public class MyDocumentsActivity extends WrappedSmartListActivity implements
 
         public void update(Document doc) {
             title.setText(doc.getTitle());
-            String descString = doc.getProperties().getString("dc:description","");
+            String descString = doc.getProperties().getString("dc:description",
+                    "");
             if ("null".equals(descString)) {
-            	descString="";
+                descString = "";
             }
             desc.setText(descString);
         }
@@ -86,7 +87,7 @@ public class MyDocumentsActivity extends WrappedSmartListActivity implements
     public List<? extends BusinessViewWrapper<?>> retrieveBusinessObjectsList()
             throws BusinessObjectUnavailableException {
 
-    	// Fetch data from Nuxeo Server
+        // Fetch data from Nuxeo Server
         Documents docs = NuxeoAndroidServices.getInstance().getAllDocuments();
 
         List<BusinessViewWrapper<?>> wrappers = new ArrayList<BusinessViewWrapper<?>>();
@@ -96,4 +97,13 @@ public class MyDocumentsActivity extends WrappedSmartListActivity implements
         }
         return wrappers;
     }
+
+    @Override
+    public void onFulfillDisplayObjects() {
+        super.onFulfillDisplayObjects();
+
+        getSmartListView().getListView().setEmptyView(
+                getLayoutInflater().inflate(R.layout.empty_list_view, null));
+    }
+
 }
