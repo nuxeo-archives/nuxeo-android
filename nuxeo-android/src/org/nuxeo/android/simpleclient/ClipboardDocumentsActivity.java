@@ -29,6 +29,6 @@ public final class ClipboardDocumentsActivity extends MyDocumentsActivity {
 
     protected Documents getDocuments(boolean refresh)
             throws BusinessObjectUnavailableException {
-        return NuxeoAndroidServices.getInstance().getMyWorklistContent();
+        return NuxeoAndroidServices.getInstance().getMyWorklistContent(refresh);
     }
 }

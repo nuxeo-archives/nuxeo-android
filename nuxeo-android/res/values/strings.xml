@@ -41,7 +41,7 @@
   <string name="Home_search">Search</string>
   <string name="Home_myDocuments">My Documents</string>
   <string name="Home_clipboard">Clipboard</string>
-  <string name="Home_savedSearches">History</string>
+  <string name="Home_savedSearches">Saved Searches</string>
 
   <string name="DocumentsSearchActivity_search_title">Search</string>
   <string name="DocumentsSearchActivity_search_text_hint">Keywords</string>

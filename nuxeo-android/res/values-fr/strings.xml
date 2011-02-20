@@ -30,7 +30,7 @@
   <string name="Home_search">Recherche</string>
   <string name="Home_myDocuments">Mes Documents</string>
   <string name="Home_clipboard">Presse-Papier</string>
-  <string name="Home_savedSearches">Historique</string>
+  <string name="Home_savedSearches">Mes recherches</string>
 
   <string name="DocumentsSearchActivity_search_title">Recherche</string>
   <string name="DocumentsSearchActivity_search_text_hint">Mots-clé</string>

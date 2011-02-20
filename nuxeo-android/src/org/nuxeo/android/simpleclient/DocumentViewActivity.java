@@ -38,6 +38,12 @@ public final class DocumentViewActivity extends
 
     public final static int SEARCH = 1;
 
+    public static final String DOCUMENT_ID = "document_id";
+
+    public static final String DOCUMENT = "document";
+
+    public static final String SOURCE_ACTIVITY = "source_activity";
+
     private TextView description;
 
     private TextView title;
@@ -46,13 +52,12 @@ public final class DocumentViewActivity extends
 
     private LinearLayout layout;
 
-    private String sourceActivity;
+    protected boolean refresh = false;
 
     @Override
     public void onRetrieveDisplayObjects() {
 
         setContentView(R.layout.document_view_layout);
-
         layout = (LinearLayout) findViewById(R.id.documentLayout);
         title = (TextView) findViewById(R.id.title);
         description = (TextView) findViewById(R.id.description);
@@ -61,19 +66,15 @@ public final class DocumentViewActivity extends
     @Override
     public void onRetrieveBusinessObjects()
             throws BusinessObjectUnavailableException {
-        String docId = getIntent().getStringExtra(
-                MyDocumentsActivity.DOCUMENT_ID);
-        int sourceActivity = getIntent().getIntExtra(
-                MyDocumentsActivity.SOURCE_ACTIVITY, -1);
 
-        switch (sourceActivity) {
-        case MY_DOCUMENT:
-            document = NuxeoAndroidServices.getInstance().getDocument(
-                    sourceActivity, docId);
-            break;
+        String docId = getIntent().getStringExtra(DOCUMENT_ID);
 
-        default:
-            break;
+        if (document==null) {
+            document = (Document) getIntent().getSerializableExtra(DOCUMENT);
+        }
+
+        if (refresh || document==null) {
+            document = NuxeoAndroidServices.getInstance().getDocument(docId, true);
         }
     }
 
@@ -116,6 +117,7 @@ public final class DocumentViewActivity extends
 
     @Override
     public void onTitleBarRefresh() {
+        refresh = true;
         refreshBusinessObjectsAndDisplay(true);
     }
 

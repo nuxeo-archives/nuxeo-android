@@ -113,6 +113,11 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
         }
     }
 
+    public Document getDocument(String uuid , boolean refresh) throws BusinessObjectUnavailableException {
+        String query = "SELECT * FROM Document WHERE ecm:uuid = '" + uuid + "' ";
+        return queryDocuments(query, refresh, true).get(0);
+    }
+
     public Documents getMyDocuments(boolean refresh)
             throws BusinessObjectUnavailableException {
         String query = "SELECT * FROM Document WHERE dc:contributors = '"
@@ -151,13 +156,20 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
         return queryDocuments(query, refresh, true);
     }
 
-    public Documents getMyWorklistContent()
+    public Documents getMyWorklistContent(boolean refresh)
             throws BusinessObjectUnavailableException {
-        // XXX need to add an Server Side operation for that
-        return new Documents();
+
+        Documents docs;
+        try {
+            docs = (Documents) getSession().newRequest("Seam.FetchFromWorklist").setHeader("X-NXDocumentProperties",
+                    "dublincore,common").execute(refresh, true);
+        } catch (Exception e) {
+            throw new BusinessObjectUnavailableException(e);
+        }
+        return docs;
     }
 
-    public Documents getSavedSerach(String savedQueryName)
+    public Documents getSavedSearch(String savedQueryName)
             throws BusinessObjectUnavailableException {
         // XXX need to add an Server Side operation for that
         return new Documents();

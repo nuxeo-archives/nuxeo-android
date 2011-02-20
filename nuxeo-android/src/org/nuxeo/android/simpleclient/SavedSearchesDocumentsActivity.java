@@ -29,6 +29,6 @@ public final class SavedSearchesDocumentsActivity extends MyDocumentsActivity {
 
     protected Documents getDocuments(boolean refresh)
             throws BusinessObjectUnavailableException {
-        return NuxeoAndroidServices.getInstance().getSavedSerach("");
+        return NuxeoAndroidServices.getInstance().getSavedSearch("");
     }
 }

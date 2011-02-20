@@ -32,8 +32,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.smartnsoft.droid4me.app.AppPublics;
-import com.smartnsoft.droid4me.app.AppPublics.BroadcastListener;
 import com.smartnsoft.droid4me.app.WrappedSmartListActivity;
+import com.smartnsoft.droid4me.app.AppPublics.BroadcastListener;
 import com.smartnsoft.droid4me.download.ImageDownloader;
 import com.smartnsoft.droid4me.framework.DetailsProvider.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.DetailsProvider.ObjectEvent;
@@ -78,12 +78,9 @@ public class MyDocumentsActivity extends
 
             ImageDownloader.getInstance().get(icon, urlImage, null, handler,
                     NuxeoAndroidApplication.CACHE_IMAGE_INSTRUCTIONS);
+
         }
     }
-
-    public static final String DOCUMENT_ID = "document_id";
-
-    public static final String SOURCE_ACTIVITY = "source_activity";
 
     private final class DocumentWrapper extends BusinessViewWrapper<Document> {
 
@@ -112,11 +109,10 @@ public class MyDocumentsActivity extends
 
         @Override
         public Intent computeIntent(Activity activity, Object viewAttributes,
-                View view, Document businessObject, ObjectEvent objectEvent) {
+                View view, Document doc, ObjectEvent objectEvent) {
             if (objectEvent == ObjectEvent.Clicked) {
                 return new Intent(activity, DocumentViewActivity.class).putExtra(
-                        DOCUMENT_ID, businessObject.getId()).putExtra(
-                        SOURCE_ACTIVITY, DocumentViewActivity.MY_DOCUMENT);
+                        DocumentViewActivity.DOCUMENT_ID, doc.getId()).putExtra(DocumentViewActivity.DOCUMENT, doc);
             }
             return super.computeIntent(activity, view, objectEvent);
         }
