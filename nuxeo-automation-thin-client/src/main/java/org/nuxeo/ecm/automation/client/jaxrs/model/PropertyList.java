@@ -16,6 +16,7 @@
  */
 package org.nuxeo.ecm.automation.client.jaxrs.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,20 +24,22 @@ import java.util.List;
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  */
-public class PropertyList {
+public class PropertyList implements Serializable {
 
-    protected final List<Object> list;
+	private static final long serialVersionUID = 1L;
+
+	protected final List<Serializable> list;
 
     public PropertyList() {
-        list = new ArrayList<Object>();
+        list = new ArrayList<Serializable>();
     }
 
     public PropertyList(int size) {
-        list = new ArrayList<Object>(size);
+        list = new ArrayList<Serializable>(size);
     }
 
-    public PropertyList(List<Object> list) {
-        this.list = new ArrayList<Object>(list);
+    public PropertyList(List<Serializable> list) {
+        this.list = new ArrayList<Serializable>(list);
     }
 
     public int size() {
@@ -180,7 +183,7 @@ public class PropertyList {
         list.add(value);
     }
 
-    public List<Object> list() {
+    public List<Serializable> list() {
         return list;
     }
 

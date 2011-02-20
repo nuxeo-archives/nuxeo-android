@@ -16,12 +16,16 @@
  */
 package org.nuxeo.ecm.automation.client.jaxrs.model;
 
+import java.io.Serializable;
+
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  */
-public class DocRef implements OperationInput {
+public class DocRef implements OperationInput, Serializable {
 
-    protected final String ref;
+	private static final long serialVersionUID = 1L;
+
+	protected final String ref;
 
     public static DocRef newRef(String ref) {
         if (ref.startsWith("/")) {

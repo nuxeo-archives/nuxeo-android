@@ -16,8 +16,9 @@
  */
 package org.nuxeo.ecm.automation.client.jaxrs.model;
 
+import java.io.Serializable;
 import java.util.Date;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,24 +28,26 @@ import java.util.Set;
  *
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  */
-public class PropertyMap {
+public class PropertyMap implements Serializable {
 
-    protected final LinkedHashMap<String, Object> map;
+    private static final long serialVersionUID = 1L;
+
+	protected final HashMap<String, Object> map;
 
     public PropertyMap() {
-        map = new LinkedHashMap<String, Object>();
+        map = new HashMap<String, Object>();
     }
 
     public PropertyMap(PropertyMap props) {
-        map = new LinkedHashMap<String, Object>(props.map);
+        map = new HashMap<String, Object>(props.map);
     }
 
     public PropertyMap(Map<String, Object> map) {
-        this.map = new LinkedHashMap<String, Object>(map);
+        this.map = new HashMap<String, Object>(map);
     }
 
     public PropertyMap(int size) {
-        map = new LinkedHashMap<String, Object>(size);
+        map = new HashMap<String, Object>(size);
     }
 
     public String getString(String key) {

@@ -16,6 +16,7 @@
  */
 package org.nuxeo.ecm.automation.client.jaxrs.spi;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -127,6 +128,7 @@ public class JsonMarshalling {
     protected static Document readDocument(JSONObject json) throws JSONException {
         String uid = json.getString("uid");
         String path = json.getString("path");
+        String repoName = json.getString("repository");
         String type = json.getString("type");
         String state = json.optString("state", null);
         String lock = json.optString("lock", null);
@@ -141,20 +143,20 @@ public class JsonMarshalling {
         }
         props.set("dc:title", title);
         props.set("dc:modified", lastModified);
-        return new Document(uid, type, path, state, lock, props);
+        return new Document(repoName, uid, type, path, state, lock, props);
     }
 
     @SuppressWarnings("unchecked")
-    protected static Object readValue(Object o) throws JSONException {
+    protected static Serializable readValue(Object o) throws JSONException {
         if (o == null) {
             return null;
         }
         if (o instanceof JSONArray) {
             JSONArray ar = (JSONArray) o;
             PropertyList plist = new PropertyList();
-            List<Object> list = plist.list();
+            List<Serializable> list = plist.list();
             for (int i = 0, size = ar.length(); i < size; i++) {
-                Object v = readValue(ar.get(i));
+            	Serializable v = readValue(ar.get(i));
                 if (v != null) {
                     list.add(v);
                 }

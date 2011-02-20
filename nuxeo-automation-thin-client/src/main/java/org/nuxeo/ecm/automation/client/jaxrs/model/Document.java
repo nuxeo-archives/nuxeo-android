@@ -16,6 +16,7 @@
  */
 package org.nuxeo.ecm.automation.client.jaxrs.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -35,9 +36,11 @@ import java.util.Date;
  *
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  */
-public class Document extends DocRef {
+public class Document extends DocRef implements Serializable {
 
-    protected final String path;
+	private static final long serialVersionUID = 1L;
+
+	protected final String path;
 
     protected final String type;
 
@@ -47,13 +50,15 @@ public class Document extends DocRef {
 
     protected final String lock;
 
+    protected final String repoName;
+
     protected final PropertyMap properties;
 
     /**
      * Reserved to framework. Should be only called by client framework when
      * unmarshalling documents.
      */
-    public Document(String id, String type, String path, String state,
+    public Document(String repoName, String id, String type, String path, String state,
             String lock, PropertyMap properties) {
         super(id);
         this.path = path;
@@ -61,6 +66,7 @@ public class Document extends DocRef {
         this.state = state;
         this.lock = lock;
         this.properties = properties == null ? new PropertyMap() : properties;
+        this.repoName = repoName;
     }
 
     public String getId() {
@@ -147,4 +153,7 @@ public class Document extends DocRef {
         properties.set(key, defValue);
     }
 
+    public String getRelativeUrl() {
+    	return "/nxpath/" + repoName + path + "@view_documents";
+    }
 }
