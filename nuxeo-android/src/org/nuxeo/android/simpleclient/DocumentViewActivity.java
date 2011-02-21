@@ -6,53 +6,22 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.smartnsoft.droid4me.app.AppPublics;
-import com.smartnsoft.droid4me.app.AppPublics.BroadcastListener;
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListenerProvider;
 import com.smartnsoft.droid4me.app.AppPublics.SendLoadingIntent;
-import com.smartnsoft.droid4me.app.SmartActivity;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 
-public final class DocumentViewActivity extends
-        SmartActivity<NuxeoAndroidApplication.TitleBarAggregate> implements
+public final class DocumentViewActivity extends BaseDocumentViewActivity implements
         BusinessObjectsRetrievalAsynchronousPolicy, SendLoadingIntent,
         BroadcastListenerProvider,
         NuxeoAndroidApplication.TitleBarShowHomeFeature,
         NuxeoAndroidApplication.TitleBarRefreshFeature {
 
-    public BroadcastListener getBroadcastListener() {
-        return new AppPublics.LoadingBroadcastListener(this, true) {
-            @Override
-            protected void onLoading(boolean isLoading) {
-                getAggregate().getAttributes().toggleRefresh(isLoading);
-            }
-        };
-    }
-
-    enum SOURCE_ACTIVITY_ENUM {
-        MyDocument, SearchDocument
-    };
-
-    public final static int MY_DOCUMENT = 0;
-
-    public final static int SEARCH = 1;
-
-    public static final String DOCUMENT_ID = "document_id";
-
-    public static final String DOCUMENT = "document";
-
-    public static final String SOURCE_ACTIVITY = "source_activity";
-
     private TextView description;
 
     private TextView title;
 
-    private Document document = null;
-
     private LinearLayout layout;
-
-    protected boolean refresh = false;
 
     @Override
     public void onRetrieveDisplayObjects() {
@@ -66,16 +35,7 @@ public final class DocumentViewActivity extends
     @Override
     public void onRetrieveBusinessObjects()
             throws BusinessObjectUnavailableException {
-
-        String docId = getIntent().getStringExtra(DOCUMENT_ID);
-
-        if (document==null) {
-            document = (Document) getIntent().getSerializableExtra(DOCUMENT);
-        }
-
-        if (refresh || document==null) {
-            document = NuxeoAndroidServices.getInstance().getDocument(docId, true);
-        }
+        fetchDocument(false);
     }
 
     @Override
@@ -110,15 +70,8 @@ public final class DocumentViewActivity extends
     }
 
     @Override
-    public void onSynchronizeDisplayObjects() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void onTitleBarRefresh() {
-        refresh = true;
-        refreshBusinessObjectsAndDisplay(true);
+    protected String getSchemas() {
+        return NuxeoAndroidServices.DEFAULT_SCHEMAS;
     }
 
 }

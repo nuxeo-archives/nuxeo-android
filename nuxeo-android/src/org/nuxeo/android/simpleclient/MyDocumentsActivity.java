@@ -111,8 +111,13 @@ public class MyDocumentsActivity extends
         public Intent computeIntent(Activity activity, Object viewAttributes,
                 View view, Document doc, ObjectEvent objectEvent) {
             if (objectEvent == ObjectEvent.Clicked) {
-                return new Intent(activity, DocumentViewActivity.class).putExtra(
-                        DocumentViewActivity.DOCUMENT_ID, doc.getId()).putExtra(DocumentViewActivity.DOCUMENT, doc);
+                if ("Note".equals(doc.getType())) {
+                    return new Intent(activity, NoteViewActivity.class).putExtra(
+                            BaseDocumentViewActivity.DOCUMENT_ID, doc.getId()).putExtra(BaseDocumentViewActivity.DOCUMENT, doc);
+                } else {
+                    return new Intent(activity, DocumentViewActivity.class).putExtra(
+                            BaseDocumentViewActivity.DOCUMENT_ID, doc.getId()).putExtra(BaseDocumentViewActivity.DOCUMENT, doc);
+                }
             }
             return super.computeIntent(activity, view, objectEvent);
         }

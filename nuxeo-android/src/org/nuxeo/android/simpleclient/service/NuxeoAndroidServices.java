@@ -17,7 +17,6 @@
 package org.nuxeo.android.simpleclient.service;
 
 import org.nuxeo.android.simpleclient.Constants;
-import org.nuxeo.android.simpleclient.DocumentViewActivity;
 import org.nuxeo.android.simpleclient.SettingsActivity;
 import org.nuxeo.ecm.automation.client.cache.CacheAwareHttpAutomationClient;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
@@ -79,6 +78,8 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
 
     protected String password;
 
+    public static final String DEFAULT_SCHEMAS = "dublincore,common";
+
     protected void initOnPrefs(SharedPreferences prefs) {
 
         if (client != null) {
@@ -115,7 +116,12 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
 
     public Document getDocument(String uuid , boolean refresh) throws BusinessObjectUnavailableException {
         String query = "SELECT * FROM Document WHERE ecm:uuid = '" + uuid + "' ";
-        return queryDocuments(query, refresh, true).get(0);
+        return queryDocuments(query, DEFAULT_SCHEMAS, refresh, true).get(0);
+    }
+
+    public Document getDocument(String uuid , String schemas, boolean refresh) throws BusinessObjectUnavailableException {
+        String query = "SELECT * FROM Document WHERE ecm:uuid = '" + uuid + "' ";
+        return queryDocuments(query, schemas, refresh, true).get(0);
     }
 
     public Documents getMyDocuments(boolean refresh)
@@ -162,7 +168,7 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
         Documents docs;
         try {
             docs = (Documents) getSession().newRequest("Seam.FetchFromWorklist").setHeader("X-NXDocumentProperties",
-                    "dublincore,common").execute(refresh, true);
+                    DEFAULT_SCHEMAS).execute(refresh, true);
         } catch (Exception e) {
             throw new BusinessObjectUnavailableException(e);
         }
@@ -177,11 +183,16 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
 
     public Documents queryDocuments(String nxql, boolean refresh,
             boolean allowCaching) throws BusinessObjectUnavailableException {
+        return queryDocuments(nxql, DEFAULT_SCHEMAS, refresh, allowCaching);
+    }
+
+    public Documents queryDocuments(String nxql, String schemas, boolean refresh,
+            boolean allowCaching) throws BusinessObjectUnavailableException {
         Documents docs;
         try {
             docs = (Documents) getSession().newRequest("Document.Query").set(
                     "query", nxql).setHeader("X-NXDocumentProperties",
-                    "dublincore,common").execute(refresh, allowCaching);
+                    schemas).execute(refresh, allowCaching);
         } catch (Exception e) {
             throw new BusinessObjectUnavailableException(e);
         }
@@ -198,18 +209,6 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
     @Override
     protected String getUrlEncoding() {
         return Constants.WEBSERVICES_HTML_ENCODING;
-    }
-
-    public Document getDocument(int sourceActivity, String docId)
-            throws BusinessObjectUnavailableException {
-        Documents documents = getAllDocuments(false);
-
-        if (sourceActivity == DocumentViewActivity.MY_DOCUMENT)
-            for (Document document : documents) {
-                if (docId.equals(document.getId()))
-                    return document;
-            }
-        return null;
     }
 
 }
