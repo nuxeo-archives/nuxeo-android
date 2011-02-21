@@ -35,27 +35,27 @@ Maven build uses [maven-android-plugin](http://maven-android-plugin-m2site.googl
 Here's an overview of its main targets:
 
  * android:deploy
- Deploys the built apk file, or another specified apk, to a connected device.
- Automatically performed when running mvn integration-test (or mvn install) on a project with instrumentation tests.
+    Deploys the built apk file, or another specified apk, to a connected device.
+    Automatically performed when running mvn integration-test (or mvn install) on a project with instrumentation tests.
  * android:deploy-dependencies
- Deploys all directly declared dependencies of <type>apk</type> in this project's pom.
- Usually used in a project with instrumentation tests, to deploy the apk to test onto the device before running the deploying and running the instrumentation tests apk.
- Automatically performed when running mvn integration-test (or mvn install) on a project with instrumentation tests.
+    Deploys all directly declared dependencies of <type>apk</type> in this project's pom.
+    Usually used in a project with instrumentation tests, to deploy the apk to test onto the device before running the deploying and running the instrumentation tests apk.
+    Automatically performed when running mvn integration-test (or mvn install) on a project with instrumentation tests.
  * android:dex
- Converts compiled Java classes to the Android dex format.
+    Converts compiled Java classes to the Android dex format.
  * android:emulator-start
- EmulatorStartMojo can start the Android Emulator with a specified Android Virtual Device (avd).
+    EmulatorStartMojo can start the Android Emulator with a specified Android Virtual Device (avd).
  * android:emulator-stop
- EmulatorStartMojo can stop the Android Emulator with a specified Android Virtual Device (avd).
+    EmulatorStartMojo can stop the Android Emulator with a specified Android Virtual Device (avd).
  * android:zipalign
- ZipalignMojo can run the zipalign command against the apk.
+    ZipalignMojo can run the zipalign command against the apk.
 
 ## Modules description
  * Nuxeo Automation Thin Client
- It is a fork from [nuxeo-automation-client](http://hg.nuxeo.org/nuxeo/nuxeo-features/file/5.4/nuxeo-automation/nuxeo-automation-client/)
- making it usable with Google Android SDK 2.2 and to reduce its dependencies. At the end, it would be nicer to have nuxeo-automation-client depends on such a light module.
+    It is a fork from [nuxeo-automation-client](http://hg.nuxeo.org/nuxeo/nuxeo-features/file/5.4/nuxeo-automation/nuxeo-automation-client/)
+    making it usable with Google Android SDK 2.2 and to reduce its dependencies. At the end, it would be nicer to have nuxeo-automation-client depends on such a light module.
  * Nuxeo Android simple client
- The Nuxeo Android application based on Nuxeo Automation Thin Client and Droid4Me library.
+    The Nuxeo Android application based on Nuxeo Automation Thin Client and Droid4Me library.
 
 ## About Nuxeo
 
