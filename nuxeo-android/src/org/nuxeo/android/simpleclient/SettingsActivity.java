@@ -29,7 +29,7 @@ import com.smartnsoft.droid4me.app.SmartSplashScreenActivity;
 
 /**
  * The activity which enables to tune the application.
- * 
+ *
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.17
  */
@@ -70,9 +70,9 @@ public final class SettingsActivity extends
             }
         }
 
-        serverURL = (Preference) findPreference(PREF_SERVER_URL);
-        login = (Preference) findPreference(PREF_LOGIN);
-        signOut = (Preference) findPreference(SIGN_OUT);
+        serverURL = findPreference(PREF_SERVER_URL);
+        login = findPreference(PREF_LOGIN);
+        signOut = findPreference(SIGN_OUT);
     }
 
     @Override

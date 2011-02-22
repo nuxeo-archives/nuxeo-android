@@ -7,7 +7,7 @@
   android:installLocation="auto">
 
   <uses-sdk
-    android:minSdkVersion="4" />
+    android:minSdkVersion="8" />
 
   <!-- We need this permission, in order to access to Internet -->
   <uses-permission

@@ -29,8 +29,8 @@
     <dependency>
       <groupId>com.smartnsoft</groupId>
       <artifactId>droid4me</artifactId>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/libs/com.smartnsoft.droid4me.jar</systemPath>
+<!--      <scope>system</scope>-->
+<!--      <systemPath>${project.basedir}/libs/com.smartnsoft.droid4me.jar</systemPath>-->
       <version>1.0</version>
     </dependency>
   </dependencies>
@@ -59,6 +59,7 @@
   </profiles>
 
   <build>
+    <sourceDirectory>src</sourceDirectory>
     <plugins>
       <plugin>
         <groupId>com.jayway.maven.plugins.android.generation2</groupId>
@@ -69,6 +70,7 @@
             <platform>8</platform>
           </sdk>
           <deleteConflictingFiles>true</deleteConflictingFiles>
+          <undeployBeforeDeploy>true</undeployBeforeDeploy>
           <sign>
             <debug>false</debug>
           </sign>
@@ -99,6 +101,32 @@
               <alias>${keystore.alias}</alias>
               <storepass>${keystore.password}</storepass>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+        <artifactId>maven-android-plugin</artifactId>
+        <inherited>true</inherited>
+        <configuration>
+          <sign>
+            <debug>false</debug>
+          </sign>
+          <zipalign>
+            <verbose>true</verbose>
+            <inputApk>
+              ${project.build.directory}/${artifactId}-${version}.apk</inputApk>
+            <outputApk>
+              ${project.build.directory}/${artifactId}-${version}-signed-aligned.apk</outputApk>
+          </zipalign>
+        </configuration>
+        <executions>
+          <execution>
+            <id>alignApk</id>
+            <phase>package</phase>
+            <goals>
+              <goal>zipalign</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
