@@ -70,6 +70,10 @@
       android:configChanges="keyboardHidden|orientation" />
 
     <activity
+      android:name=".PictureViewActivity"
+      android:configChanges="keyboardHidden|orientation" />
+
+    <activity
       android:name=".DocumentsSearchActivity"
       android:configChanges="keyboardHidden|orientation">
       <intent-filter>

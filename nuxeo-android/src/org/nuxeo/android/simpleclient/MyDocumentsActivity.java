@@ -114,7 +114,12 @@ public class MyDocumentsActivity extends
                 if ("Note".equals(doc.getType())) {
                     return new Intent(activity, NoteViewActivity.class).putExtra(
                             BaseDocumentViewActivity.DOCUMENT_ID, doc.getId()).putExtra(BaseDocumentViewActivity.DOCUMENT, doc);
-                } else {
+                }
+                else if ("Picture".equals(doc.getType())) {
+                    return new Intent(activity, PictureViewActivity.class).putExtra(
+                            BaseDocumentViewActivity.DOCUMENT_ID, doc.getId()).putExtra(BaseDocumentViewActivity.DOCUMENT, doc);
+                }
+                else {
                     return new Intent(activity, DocumentViewActivity.class).putExtra(
                             BaseDocumentViewActivity.DOCUMENT_ID, doc.getId()).putExtra(BaseDocumentViewActivity.DOCUMENT, doc);
                 }

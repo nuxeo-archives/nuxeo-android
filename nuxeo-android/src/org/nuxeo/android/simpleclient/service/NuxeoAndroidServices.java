@@ -21,6 +21,8 @@ import org.nuxeo.android.simpleclient.SettingsActivity;
 import org.nuxeo.ecm.automation.client.cache.CacheAwareHttpAutomationClient;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpAutomationClient;
+import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
+import org.nuxeo.ecm.automation.client.jaxrs.model.DocRef;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
@@ -162,6 +164,7 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
         return queryDocuments(query, refresh, true);
     }
 
+
     public Documents getMyWorklistContent(boolean refresh)
             throws BusinessObjectUnavailableException {
 
@@ -197,6 +200,46 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
             throw new BusinessObjectUnavailableException(e);
         }
         return docs;
+    }
+
+
+    public Blob getPictureView(String uuid, String viewName, boolean refresh,
+            boolean allowCaching) throws BusinessObjectUnavailableException {
+
+        Blob blob;
+        try {
+            blob = (Blob) getSession().newRequest("Picture.getView").setInput(new DocRef(uuid)).set(
+                    "viewName", viewName).execute(refresh, allowCaching);
+        } catch (Exception e) {
+            throw new BusinessObjectUnavailableException(e);
+        }
+        return blob;
+    }
+
+
+    public Blob getBlob(String uuid, String xpath, boolean refresh,
+            boolean allowCaching) throws BusinessObjectUnavailableException {
+
+        Blob blob;
+        try {
+            blob = (Blob) getSession().newRequest("Blob.Get").setInput(new DocRef(uuid)).set(
+                    "xpath", xpath).execute(refresh, allowCaching);
+        } catch (Exception e) {
+            throw new BusinessObjectUnavailableException(e);
+        }
+        return blob;
+    }
+
+    public Blob getPDF(String uuid, boolean refresh,
+            boolean allowCaching) throws BusinessObjectUnavailableException {
+
+        Blob blob;
+        try {
+            blob = (Blob) getSession().newRequest("Blob.ToPDF").setInput(new DocRef(uuid)).execute(refresh, allowCaching);
+        } catch (Exception e) {
+            throw new BusinessObjectUnavailableException(e);
+        }
+        return blob;
     }
 
     @Override
