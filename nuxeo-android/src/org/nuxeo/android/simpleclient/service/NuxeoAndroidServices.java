@@ -80,20 +80,23 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
 
     protected String password;
 
+    protected String serverUrl;
+
     public static final String DEFAULT_SCHEMAS = "dublincore,common";
+
+    protected CacheManager cacheManager = new CacheManager();
 
     protected void initOnPrefs(SharedPreferences prefs) {
 
         if (client != null) {
             release();
         }
-        String serverUrl = prefs.getString(SettingsActivity.PREF_SERVER_URL, "")
+        serverUrl = prefs.getString(SettingsActivity.PREF_SERVER_URL, "")
                 + SettingsActivity.PREF_SERVER_URL_SUFFIX;
         userLogin = prefs.getString(SettingsActivity.PREF_LOGIN, "");
         password = prefs.getString(SettingsActivity.PREF_PASSWORD, "");
         client = new CacheAwareHttpAutomationClient(serverUrl,
-                new CacheManager());
-        // client = new CacheAwareHttpAutomationClient(serverUrl, null);
+                cacheManager);
     }
 
     protected Session getSession() {
@@ -106,6 +109,29 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
             }
         }
         return session;
+    }
+
+    public int getKnownOperationsCount() {
+        return getSession().getOperations().size();
+    }
+
+    public void refreshOperationCache() {
+        // XXX TODO
+    }
+
+    public boolean isOfflineMode() {
+        return getSession().isOffline();
+    }
+
+    public void flushCache() {
+        release();
+        cacheManager.flushCache();
+        client = new CacheAwareHttpAutomationClient(serverUrl,
+                cacheManager);
+    }
+
+    public long getCacheSize() {
+        return cacheManager.getSize();
     }
 
     public void release() {

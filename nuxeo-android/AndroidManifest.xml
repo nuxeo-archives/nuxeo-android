@@ -70,6 +70,10 @@
       android:configChanges="keyboardHidden|orientation" />
 
     <activity
+      android:name=".OfflineSettingsActivity"
+      android:configChanges="keyboardHidden|orientation" />
+
+    <activity
       android:name=".PictureViewActivity"
       android:configChanges="keyboardHidden|orientation" />
 

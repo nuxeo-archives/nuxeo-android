@@ -36,4 +36,8 @@
   <string name="DocumentsSearchActivity_search_text_hint">Mots-clé</string>
   <string name="DocumentsSearchActivity_search_voice_prompt">Prononcez les mots clés, SVP</string>
 
+  <string name="PdfViewAction">Voir en PDF</string>
+  <string name="DownloadAction">Download</string>
+
+
 </resources>

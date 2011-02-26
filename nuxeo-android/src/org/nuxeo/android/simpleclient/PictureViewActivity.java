@@ -1,19 +1,19 @@
 package org.nuxeo.android.simpleclient;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListenerProvider;
 import com.smartnsoft.droid4me.app.AppPublics.SendLoadingIntent;
@@ -30,6 +30,7 @@ public class PictureViewActivity extends BaseDocumentViewActivity implements
     private ImageView picture;
     private TextView description;
     private TextView title;
+    private Button downloadAction;
 
     @Override
     protected String getSchemas() {
@@ -50,6 +51,16 @@ public class PictureViewActivity extends BaseDocumentViewActivity implements
         }
         title.setText(document.getTitle());
         description.setText(document.getString("dc:description", ""));
+        downloadAction.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(PictureViewActivity.this,
+                        "started Picture Download",
+                        Toast.LENGTH_SHORT).show();
+                downloadAndDisplayBlob();
+            }
+        });
     }
 
     @Override
@@ -70,6 +81,17 @@ public class PictureViewActivity extends BaseDocumentViewActivity implements
         picture = (ImageView) findViewById(R.id.pictureView);
         title = (TextView) findViewById(R.id.title);
         description = (TextView) findViewById(R.id.description);
+        downloadAction = (Button) findViewById(R.id.downloadBtn);
+    }
+
+    @Override
+    protected Blob executeDownloadOperation() throws BusinessObjectUnavailableException {
+        return NuxeoAndroidServices.getInstance().getPictureView(document.getId(),"OriginalJpeg", refresh, true);
+    }
+
+    @Override
+    protected String getDownloadedMimeType(Blob blob) {
+        return "image/jpeg";
     }
 
 }

@@ -30,7 +30,7 @@ import com.smartnsoft.droid4me.menu.StaticMenuCommand;
 
 /**
  * The starting screen of the application.
- * 
+ *
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.17
  */
@@ -78,6 +78,15 @@ public final class HomeActivity extends
                     public void run() {
                         startActivity(new Intent(getApplicationContext(),
                                 SettingsActivity.class));
+                    }
+                }));
+        commands.add(new StaticMenuCommand(R.string.Home_menu_offline, '2', 'a',
+                android.R.drawable.ic_menu_manage,
+                new Commands.StaticEnabledExecutable() {
+                    @Override
+                    public void run() {
+                        startActivity(new Intent(getApplicationContext(),
+                                OfflineSettingsActivity.class));
                     }
                 }));
         commands.add(new StaticMenuCommand(R.string.Home_menu_about, '2', 'a',

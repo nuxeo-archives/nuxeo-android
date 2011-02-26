@@ -1,5 +1,6 @@
 package org.nuxeo.android.simpleclient.service;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.Date;
 
@@ -12,6 +13,22 @@ import com.smartnsoft.droid4me.cache.Persistence;
 public class CacheManager implements InputStreamCacheManager {
 
 	protected static final String DELIMITER = "__";
+
+	public void flushCache() {
+	    Persistence.getInstance(0).clear();
+	}
+
+	public long getSize() {
+	    long size=0;
+	    String fsPath = Persistence.getInstance(0).getStorageDirectoryPath();
+	    File dataDir = new File(fsPath);
+	    for (File file : dataDir.listFiles()) {
+	        if (!file.isDirectory() && file.getName().endsWith(".db")) {
+	            size += file.length();
+	        }
+	    }
+	    return size;
+	}
 
 	@Override
 	public InputStream addToCache(String key, CacheEntry entry) {

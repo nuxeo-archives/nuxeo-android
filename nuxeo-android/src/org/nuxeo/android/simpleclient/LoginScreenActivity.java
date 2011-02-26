@@ -52,11 +52,11 @@ public class LoginScreenActivity extends
     @Override
     public void onFulfillDisplayObjects() {
         editLogin.setText(getPreferences().getString(
-                SettingsActivity.PREF_LOGIN, ""));
+                SettingsActivity.PREF_LOGIN, "Administrator"));
         editPassword.setText(getPreferences().getString(
-                SettingsActivity.PREF_PASSWORD, ""));
+                SettingsActivity.PREF_PASSWORD, "Administrator"));
         editServerUrl.setText(getPreferences().getString(
-                SettingsActivity.PREF_SERVER_URL, ""));
+                SettingsActivity.PREF_SERVER_URL, "http://10.0.2.2:8080/nuxeo"));
         buttonLogin.setOnClickListener(this);
     }
 
