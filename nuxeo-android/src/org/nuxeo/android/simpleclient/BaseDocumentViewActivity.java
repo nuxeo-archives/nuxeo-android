@@ -141,9 +141,6 @@ public abstract  class BaseDocumentViewActivity extends
 
     }
 
-
-
-
     @Override
     public void onSynchronizeDisplayObjects() {
         // TODO Auto-generated method stub

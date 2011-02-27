@@ -25,12 +25,15 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListenerProvider;
 import com.smartnsoft.droid4me.app.AppPublics.SendLoadingIntent;
+import com.smartnsoft.droid4me.download.ImageDownloader;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 
@@ -40,25 +43,35 @@ public final class DocumentViewActivity extends BaseDocumentViewActivity
         NuxeoAndroidApplication.TitleBarShowHomeFeature,
         NuxeoAndroidApplication.TitleBarRefreshFeature {
 
-    private TextView description;
     private TextView title;
-    private LinearLayout layout;
+    private RelativeLayout layout;
+    private LinearLayout linearLayout;
     private Button pdfAction;
+    private ImageView icon;
 
     @Override
     public void onRetrieveDisplayObjects() {
 
         setContentView(R.layout.document_view_layout);
-        layout = (LinearLayout) findViewById(R.id.documentLayout);
+        layout = (RelativeLayout) findViewById(R.id.documentLayout);
+        linearLayout = (LinearLayout) findViewById(R.id.linearDocumentLayout);
         title = (TextView) findViewById(R.id.title);
-        description = (TextView) findViewById(R.id.description);
         pdfAction = (Button) findViewById(R.id.pdfBtn);
+        icon = (ImageView) findViewById(R.id.icon);
     }
 
     @Override
     public void onRetrieveBusinessObjects()
             throws BusinessObjectUnavailableException {
         fetchDocument(false);
+
+        final String serverUrl = getSharedPreferences(
+                "org.nuxeo.android.simpleclient_preferences", 0).getString(
+                SettingsActivity.PREF_SERVER_URL, "");
+        String urlImage = serverUrl + (serverUrl.endsWith("/") ? "" : "/")
+                + document.getString("common:icon", "");
+        ImageDownloader.getInstance().get(icon, urlImage, null, this.getHandler(),
+                NuxeoAndroidApplication.CACHE_IMAGE_INSTRUCTIONS);
     }
 
     @Override
@@ -66,8 +79,7 @@ public final class DocumentViewActivity extends BaseDocumentViewActivity
 
         if (document != null) {
             title.setText(document.getTitle());
-            description.setText(document.getString("dc:description", ""));
-            displayMetaData(layout, document);
+            displayMetaData(linearLayout, document);
             pdfAction.setOnClickListener(new OnClickListener() {
 
                 @Override

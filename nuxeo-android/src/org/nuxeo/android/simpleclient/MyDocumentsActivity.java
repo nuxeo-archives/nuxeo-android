@@ -16,6 +16,7 @@
 
 package org.nuxeo.android.simpleclient;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -47,6 +49,7 @@ public class MyDocumentsActivity extends
         NuxeoAndroidApplication.TitleBarShowHomeFeature,
         NuxeoAndroidApplication.TitleBarRefreshFeature {
 
+
     private final static class DocumentAttributes {
 
         private final TextView title;
@@ -54,6 +57,8 @@ public class MyDocumentsActivity extends
         private final TextView desc;
 
         private final ImageView icon;
+
+        protected final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
 
         public DocumentAttributes(View view) {
             title = (TextView) view.findViewById(R.id.title);
@@ -68,7 +73,14 @@ public class MyDocumentsActivity extends
             if ("null".equals(descString)) {
                 descString = "";
             }
-            desc.setText(descString);
+            if ("".equals(descString)) {
+                descString = "<b>Type </b>: " + doc.getType();
+                descString += "&nbsp;<b> State </b>: " + doc.getState();
+                descString += "&nbsp;<b> Modified </b>: " + dateFormat.format(doc.getLastModified());
+                desc.setText(Html.fromHtml(descString));
+            } else {
+                desc.setText(descString);
+            }
 
             final String serverUrl = context.getSharedPreferences(
                     "org.nuxeo.android.simpleclient_preferences", 0).getString(
