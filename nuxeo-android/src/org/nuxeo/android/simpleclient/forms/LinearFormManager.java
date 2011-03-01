@@ -26,28 +26,34 @@ public class LinearFormManager {
 
     public static void displayForm(Activity targetActivity,
             LinearLayout currentLayout, Document currentDocument) throws JSONException {
-       displayForm(targetActivity, currentLayout, currentDocument,new JSONArray(DEFAULT_FIELDS));
+       displayForm(targetActivity, currentLayout, currentDocument,DEFAULT_FIELDS, true);
     }
 
-    public  static void displayForm(Activity targetActivity,LinearLayout currentLayout,  Document doc, JSONArray fieldArray) throws JSONException {
+    public  static void displayForm(Activity targetActivity,LinearLayout currentLayout,  Document doc, String fieldDef, boolean showHeader) throws JSONException {
+        displayForm(targetActivity, currentLayout, doc ,new JSONArray(fieldDef), showHeader);
+    }
+
+    public  static void displayForm(Activity targetActivity,LinearLayout currentLayout,  Document doc, JSONArray fieldArray, boolean showHeader) throws JSONException {
 
         final int padding = targetActivity.getResources().getDimensionPixelSize(R.dimen.defaultPadding);
 
-        final TextView hTextView = new TextView(targetActivity);
-        String header ="&nbsp;&nbsp;<b><i>State</i></b> : "  + doc.getState();
-        String size = doc.getProperties().getString("common:size");
-        if (size!=null && !"null".equals(size)) {
-            header += "  &nbsp;&nbsp; <b><i> Size </i></b> : " + Integer.parseInt(size)/1024 + "KB";
-        }
-        hTextView.setText(Html.fromHtml(header));
-        currentLayout.addView(hTextView);
+        if (showHeader) {
+            final TextView hTextView = new TextView(targetActivity);
+            String header ="&nbsp;&nbsp;<b><i>State</i></b> : "  + doc.getState();
+            String size = doc.getProperties().getString("common:size");
+            if (size!=null && !"null".equals(size)) {
+                header += "  &nbsp;&nbsp; <b><i> Size </i></b> : " + Integer.parseInt(size)/1024 + "KB";
+            }
+            hTextView.setText(Html.fromHtml(header));
+            currentLayout.addView(hTextView);
 
-        String desc =doc.getProperties().getString("dc:description");
-        if (desc!=null && ! "null".equals(desc)) {
-            desc ="&nbsp;&nbsp;<b><i>Description</i></b> : "  + doc.getProperties().getString("dc:description");
-            final TextView descTextView = new TextView(targetActivity);
-            descTextView.setText(Html.fromHtml(desc));
-            currentLayout.addView(descTextView);
+            String desc =doc.getProperties().getString("dc:description");
+            if (desc!=null && ! "null".equals(desc)) {
+                desc ="&nbsp;&nbsp;<b><i>Description</i></b> : "  + doc.getProperties().getString("dc:description");
+                final TextView descTextView = new TextView(targetActivity);
+                descTextView.setText(Html.fromHtml(desc));
+                currentLayout.addView(descTextView);
+            }
         }
 
         for (int i = 0; i< fieldArray.length(); i++) {
@@ -75,7 +81,7 @@ public class LinearFormManager {
                     }
                 }
                 textView.setText(Html.fromHtml(txt));
-                textView.setPadding(padding, padding, padding,padding);
+                textView.setPadding(padding, 0, padding,0);
                 currentLayout.addView(textView);
             }
         }

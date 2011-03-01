@@ -37,20 +37,33 @@
 
 	</LinearLayout>
 
-	<ImageView android:id="@+id/pictureView" android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		android:layout_below="@id/buttonBarLayout"/>
+   <ScrollView
+        android:id="@+id/ScrollView"
+      android:layout_height="fill_parent"
+      android:layout_width="fill_parent"
+      android:layout_below="@id/buttonBarLayout">
 
+	    <LinearLayout
+		  xmlns:android="http://schemas.android.com/apk/res/android"
+		  android:id="@+id/extendedPictureView"
+		  android:layout_width="fill_parent"
+		  android:layout_height="fill_parent"
+		  android:orientation="vertical">
 
-    <LinearLayout
-	  xmlns:android="http://schemas.android.com/apk/res/android"
-	  android:id="@+id/linearDocumentLayout"
-	  android:layout_width="fill_parent"
-	  android:layout_height="fill_parent"
-	  android:orientation="vertical"
-	  android:layout_below="@+id/pictureView"
-	  >
+	    <LinearLayout
+		  xmlns:android="http://schemas.android.com/apk/res/android"
+		  android:id="@+id/linearDocumentLayout"
+		  android:layout_width="fill_parent"
+		  android:layout_height="wrap_content"
+		  android:orientation="vertical"
+		  >
+		</LinearLayout>
+
+		<ImageView android:id="@+id/pictureView" android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			/>
 
 	</LinearLayout>
+	</ScrollView>
 
 </RelativeLayout>

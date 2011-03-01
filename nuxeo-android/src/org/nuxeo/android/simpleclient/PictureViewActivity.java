@@ -2,17 +2,18 @@ package org.nuxeo.android.simpleclient;
 
 import java.io.IOException;
 
+import org.json.JSONException;
+import org.nuxeo.android.simpleclient.forms.LinearFormManager;
 import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
-import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,10 +32,17 @@ public class PictureViewActivity extends BaseDocumentViewActivity implements
     private ImageView picture;
     private TextView title;
     private ImageButton downloadAction;
+    private LinearLayout formLayout;
+
+    protected static String PICTURE_FIELDS = "[ { xpath : 'imd:orientation', label : 'Orientation'}, " +
+    " { xpath : 'imd:equipment', label : 'Equipement'}, " +
+    " { xpath : 'imd:date_time_original', label : 'Date'}," +
+    " { xpath : 'imd:pixel_xdimension', label : 'Original width'}," +
+    " { xpath : 'imd:pixel_ydimension', label : 'Original height'} ]";
 
     @Override
     protected String getSchemas() {
-        return NuxeoAndroidServices.DEFAULT_SCHEMAS;
+        return "dublincore,common,image_metadata";
     }
 
     @Override
@@ -50,7 +58,6 @@ public class PictureViewActivity extends BaseDocumentViewActivity implements
         }
         title.setText(document.getTitle());
         downloadAction.setOnClickListener(new OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 Toast.makeText(PictureViewActivity.this,
@@ -59,6 +66,13 @@ public class PictureViewActivity extends BaseDocumentViewActivity implements
                 downloadAndDisplayBlob(null);
             }
         });
+
+        try {
+            LinearFormManager.displayForm(this, formLayout, document,PICTURE_FIELDS, false);
+            formLayout.refreshDrawableState();
+        } catch (JSONException e) {
+           log.error("Error during form generation", e);
+        }
     }
 
     @Override
@@ -68,8 +82,8 @@ public class PictureViewActivity extends BaseDocumentViewActivity implements
             String docId = getIntent().getStringExtra(DOCUMENT_ID);
             blob = NuxeoAndroidServices.getInstance().getPictureView(docId, "Medium", refresh, true);
         }
-        if (document==null) {
-            document = (Document) getIntent().getSerializableExtra(DOCUMENT);
+        if (document==null || refresh || !document.getProperties().map().containsKey("imd:icc_profile")) {
+            fetchDocument(true);
         }
         fetchIcon(document);
     }
@@ -81,6 +95,7 @@ public class PictureViewActivity extends BaseDocumentViewActivity implements
         title = (TextView) findViewById(R.id.title);
         downloadAction = (ImageButton) findViewById(R.id.downloadBtn);
         icon = (ImageView) findViewById(R.id.icon);
+        formLayout = (LinearLayout) findViewById(R.id.linearDocumentLayout);
     }
 
     @Override
