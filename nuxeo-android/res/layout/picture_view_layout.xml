@@ -1,21 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/documentLayout" android:layout_width="fill_parent"
 	android:layout_height="fill_parent" android:orientation="vertical">
 
-	<TextView android:id="@+id/title" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:textSize="30dip"
-		android:textStyle="bold" android:padding="@dimen/defaultPadding" />
+     <ImageView android:id="@+id/icon" android:layout_width="32dip"
+		android:layout_height="32dip"
+		android:scaleType="fitCenter"
+		android:padding="5dip" />
 
-	<TextView android:id="@+id/description" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:padding="@dimen/defaultPadding" />
+	 <TextView
+    android:id="@+id/title"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:textSize="16dip"
+    android:textStyle="bold"
+    android:padding="@dimen/defaultPadding"
+    android:layout_toRightOf="@id/icon" />
 
-   <Button android:text="@string/DownloadAction" android:id="@+id/downloadBtn" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+
+    <LinearLayout
+	  xmlns:android="http://schemas.android.com/apk/res/android"
+	  android:id="@+id/buttonBarLayout"
+	  android:layout_width="fill_parent"
+	  android:layout_height="48dip"
+	  android:orientation="horizontal"
+	  android:gravity="right"
+	  android:layout_below="@id/title"
+	  >
+
+     <ImageButton
+     android:id="@+id/downloadBtn"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:gravity="center"
+     android:src="@drawable/download64"></ImageButton>
+
+	</LinearLayout>
 
 	<ImageView android:id="@+id/pictureView" android:layout_height="wrap_content"
-		android:src="@drawable/icon"
-		android:layout_width="fill_parent" />
+		android:layout_width="fill_parent"
+		android:layout_below="@id/buttonBarLayout"/>
 
 
+    <LinearLayout
+	  xmlns:android="http://schemas.android.com/apk/res/android"
+	  android:id="@+id/linearDocumentLayout"
+	  android:layout_width="fill_parent"
+	  android:layout_height="fill_parent"
+	  android:orientation="vertical"
+	  android:layout_below="@+id/pictureView"
+	  >
 
-</LinearLayout>
+	</LinearLayout>
+
+</RelativeLayout>

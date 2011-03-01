@@ -12,6 +12,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.smartnsoft.droid4me.app.AppPublics;
@@ -19,6 +20,7 @@ import com.smartnsoft.droid4me.app.SmartActivity;
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListener;
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListenerProvider;
 import com.smartnsoft.droid4me.app.AppPublics.SendLoadingIntent;
+import com.smartnsoft.droid4me.download.ImageDownloader;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 
@@ -36,6 +38,7 @@ public abstract  class BaseDocumentViewActivity extends
     protected boolean refresh = false;
 
     protected Document document = null;
+    protected ImageView icon;
 
     public BroadcastListener getBroadcastListener() {
         return new AppPublics.LoadingBroadcastListener(this, true) {
@@ -63,9 +66,19 @@ public abstract  class BaseDocumentViewActivity extends
     }
 
 
+    protected void fetchIcon(Document targetDocument) {
+        final String serverUrl = getSharedPreferences(
+                "org.nuxeo.android.simpleclient_preferences", 0).getString(
+                SettingsActivity.PREF_SERVER_URL, "");
+        String urlImage = serverUrl + (serverUrl.endsWith("/") ? "" : "/")
+        + targetDocument.getString("common:icon", "");
+        ImageDownloader.getInstance().get(icon, urlImage, null, this.getHandler(),
+                NuxeoAndroidApplication.CACHE_IMAGE_INSTRUCTIONS);
+    }
+
     //************* Download management
 
-    protected void downloadAndDisplayBlob() {
+    protected void downloadAndDisplayBlob(final String flag) {
 
         AppPublics.THREAD_POOL.execute(this, new Runnable() {
 
@@ -74,7 +87,7 @@ public abstract  class BaseDocumentViewActivity extends
 
                 Blob downloadedBlob = null;
                 try {
-                    downloadedBlob = executeDownloadOperation();
+                    downloadedBlob = executeDownloadOperation(flag);
                 } catch (BusinessObjectUnavailableException e) {
                     log.error("Error while getting file from server", e);
                    return;
@@ -82,7 +95,7 @@ public abstract  class BaseDocumentViewActivity extends
 
                 if (downloadedBlob!=null) {
                     final Blob blob = downloadedBlob;
-                    final File downloadedFile = new File(getDownloadedFilePath(downloadedBlob));
+                    final File downloadedFile = new File(getDownloadedFilePath(downloadedBlob, flag));
                     byte[] buffer = new byte[4096];
                     try  {
                         InputStream in = downloadedBlob.getStream();
@@ -101,7 +114,7 @@ public abstract  class BaseDocumentViewActivity extends
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            displayDownloadedFile(downloadedFile, getDownloadedMimeType(blob));
+                            displayDownloadedFile(downloadedFile, getDownloadedMimeType(blob, flag));
                         }
                     });
                 }
@@ -111,15 +124,15 @@ public abstract  class BaseDocumentViewActivity extends
         });
     }
 
-    protected Blob executeDownloadOperation() throws BusinessObjectUnavailableException {
+    protected Blob executeDownloadOperation(String flag) throws BusinessObjectUnavailableException {
         throw new UnsupportedOperationException("The download operation is not set");
     }
 
-    protected String getDownloadedFilePath(Blob blob) {
+    protected String getDownloadedFilePath(Blob blob, String flag) {
         return "/sdcard/NuxeoAndroid/nuxeo-downloaded-file.tmp";
     }
 
-    protected String getDownloadedMimeType(Blob blob) {
+    protected String getDownloadedMimeType(Blob blob, String flag) {
         return blob.getMimeType();
     }
 

@@ -4,7 +4,7 @@
 
   <ImageView android:id="@+id/icon" android:layout_width="32dip"
 		android:layout_height="32dip"
-		android:src="@drawable/icon" android:scaleType="fitCenter"
+		android:scaleType="fitCenter"
 		android:padding="5dip" />
 
   <TextView
@@ -20,14 +20,25 @@
 	  xmlns:android="http://schemas.android.com/apk/res/android"
 	  android:id="@+id/buttonBarLayout"
 	  android:layout_width="fill_parent"
-	  android:layout_height="32dip"
+	  android:layout_height="48dip"
 	  android:orientation="horizontal"
 	  android:gravity="right"
 	  android:layout_below="@id/title"
 	  >
 
-     <Button android:textSize="11dip" android:text="@string/PdfViewAction" android:id="@+id/pdfBtn" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-     <Button android:textSize="11dip" android:text="@string/DownloadAction" android:id="@+id/downloadBtn" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+     <ImageButton
+     android:id="@+id/pdfBtn"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:gravity="center"
+     android:src="@drawable/pdf64"></ImageButton>
+
+     <ImageButton
+     android:id="@+id/downloadBtn"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:gravity="center"
+     android:src="@drawable/download64"></ImageButton>
 
 	</LinearLayout>
 

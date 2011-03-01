@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,9 +29,8 @@ public class PictureViewActivity extends BaseDocumentViewActivity implements
 
     private Blob blob;
     private ImageView picture;
-    private TextView description;
     private TextView title;
-    private Button downloadAction;
+    private ImageButton downloadAction;
 
     @Override
     protected String getSchemas() {
@@ -45,12 +45,10 @@ public class PictureViewActivity extends BaseDocumentViewActivity implements
                 bitmap = BitmapFactory.decodeStream(blob.getStream());
                 picture.setImageBitmap(bitmap);
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
         title.setText(document.getTitle());
-        description.setText(document.getString("dc:description", ""));
         downloadAction.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -58,7 +56,7 @@ public class PictureViewActivity extends BaseDocumentViewActivity implements
                 Toast.makeText(PictureViewActivity.this,
                         "started Picture Download",
                         Toast.LENGTH_SHORT).show();
-                downloadAndDisplayBlob();
+                downloadAndDisplayBlob(null);
             }
         });
     }
@@ -73,6 +71,7 @@ public class PictureViewActivity extends BaseDocumentViewActivity implements
         if (document==null) {
             document = (Document) getIntent().getSerializableExtra(DOCUMENT);
         }
+        fetchIcon(document);
     }
 
     @Override
@@ -80,17 +79,17 @@ public class PictureViewActivity extends BaseDocumentViewActivity implements
         setContentView(R.layout.picture_view_layout);
         picture = (ImageView) findViewById(R.id.pictureView);
         title = (TextView) findViewById(R.id.title);
-        description = (TextView) findViewById(R.id.description);
-        downloadAction = (Button) findViewById(R.id.downloadBtn);
+        downloadAction = (ImageButton) findViewById(R.id.downloadBtn);
+        icon = (ImageView) findViewById(R.id.icon);
     }
 
     @Override
-    protected Blob executeDownloadOperation() throws BusinessObjectUnavailableException {
+    protected Blob executeDownloadOperation(String flag) throws BusinessObjectUnavailableException {
         return NuxeoAndroidServices.getInstance().getPictureView(document.getId(),"OriginalJpeg", refresh, true);
     }
 
     @Override
-    protected String getDownloadedMimeType(Blob blob) {
+    protected String getDownloadedMimeType(Blob blob, String flag) {
         return "image/jpeg";
     }
 

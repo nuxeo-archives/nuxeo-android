@@ -3,6 +3,9 @@ package org.nuxeo.android.simpleclient;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.text.Html;
+import android.webkit.WebView;
+import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListenerProvider;
@@ -16,16 +19,23 @@ public class NoteViewActivity extends BaseDocumentViewActivity implements
         NuxeoAndroidApplication.TitleBarShowHomeFeature,
         NuxeoAndroidApplication.TitleBarRefreshFeature {
 
-    private TextView description;
+;
     private TextView title;
     private TextView content;
+    private WebView htmlContent;
+    private ScrollView txtContainer;
+    private ScrollView htmlContainer;
+
 
     @Override
     public void onRetrieveDisplayObjects() {
         setContentView(R.layout.note_view_layout);
         title = (TextView) findViewById(R.id.title);
-        description = (TextView) findViewById(R.id.description);
         content = (TextView) findViewById(R.id.content);
+        htmlContent = (WebView) findViewById(R.id.htmlContent);
+        txtContainer = (ScrollView) findViewById(R.id.ScrollViewText);
+        htmlContainer = (ScrollView) findViewById(R.id.ScrollViewHtml);
+        icon = (ImageView) findViewById(R.id.icon);
     }
 
     @Override
@@ -35,22 +45,38 @@ public class NoteViewActivity extends BaseDocumentViewActivity implements
         if (mynote.getString("note:note")==null) {
             fetchDocument(true);
         }
+        fetchIcon(mynote);
+
     }
+
 
     @Override
     public void onFulfillDisplayObjects() {
 
         if (document != null) {
             title.setText(document.getTitle());
-            description.setText(document.getString("dc:description", ""));
-
+            boolean useWebView = false; // WebViews are buggy before 2.3
+            if (android.os.Build.VERSION.SDK_INT>8) {
+                useWebView = true;
+            }
             String mt = document.getString("note:mime_type", "text/plain");
             String contentText = document.getString("note:note", "");
 
             if ("text/html".equals(mt)) {
-                content.setText(Html.fromHtml(contentText),TextView.BufferType.SPANNABLE);
+                if (useWebView) {
+                    htmlContent.loadDataWithBaseURL(null, contentText, "text/html", "utf-8",null);
+                    htmlContainer.setVisibility(0);
+                    txtContainer.setVisibility(4);
+                } else {
+                    // Walkaround a WebView bug
+                    content.setText(Html.fromHtml(contentText));
+                    htmlContainer.setVisibility(4);
+                    txtContainer.setVisibility(0);
+                }
             } else {
                 content.setText(contentText);
+                htmlContainer.setVisibility(4);
+                txtContainer.setVisibility(0);
             }
         }
     }

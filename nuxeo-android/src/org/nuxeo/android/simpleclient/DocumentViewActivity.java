@@ -18,13 +18,15 @@
 
 package org.nuxeo.android.simpleclient;
 
+import org.json.JSONException;
+import org.nuxeo.android.simpleclient.forms.LinearFormManager;
 import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -46,8 +48,8 @@ public final class DocumentViewActivity extends BaseDocumentViewActivity
     private TextView title;
     private RelativeLayout layout;
     private LinearLayout linearLayout;
-    private Button pdfAction;
-    private ImageView icon;
+    private ImageButton pdfAction;
+    private ImageButton downloadAction;
 
     @Override
     public void onRetrieveDisplayObjects() {
@@ -56,7 +58,8 @@ public final class DocumentViewActivity extends BaseDocumentViewActivity
         layout = (RelativeLayout) findViewById(R.id.documentLayout);
         linearLayout = (LinearLayout) findViewById(R.id.linearDocumentLayout);
         title = (TextView) findViewById(R.id.title);
-        pdfAction = (Button) findViewById(R.id.pdfBtn);
+        pdfAction = (ImageButton) findViewById(R.id.pdfBtn);
+        downloadAction = (ImageButton) findViewById(R.id.downloadBtn);
         icon = (ImageView) findViewById(R.id.icon);
     }
 
@@ -64,14 +67,7 @@ public final class DocumentViewActivity extends BaseDocumentViewActivity
     public void onRetrieveBusinessObjects()
             throws BusinessObjectUnavailableException {
         fetchDocument(false);
-
-        final String serverUrl = getSharedPreferences(
-                "org.nuxeo.android.simpleclient_preferences", 0).getString(
-                SettingsActivity.PREF_SERVER_URL, "");
-        String urlImage = serverUrl + (serverUrl.endsWith("/") ? "" : "/")
-                + document.getString("common:icon", "");
-        ImageDownloader.getInstance().get(icon, urlImage, null, this.getHandler(),
-                NuxeoAndroidApplication.CACHE_IMAGE_INSTRUCTIONS);
+        fetchIcon(document);
     }
 
     @Override
@@ -81,40 +77,33 @@ public final class DocumentViewActivity extends BaseDocumentViewActivity
             title.setText(document.getTitle());
             displayMetaData(linearLayout, document);
             pdfAction.setOnClickListener(new OnClickListener() {
-
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(DocumentViewActivity.this,
                             "started PDF Conversion",
                             Toast.LENGTH_SHORT).show();
-                    downloadAndDisplayBlob();
+                    downloadAndDisplayBlob("pdf");
                 }
             });
-       }
+            downloadAction.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(DocumentViewActivity.this,
+                            "started download",
+                            Toast.LENGTH_SHORT).show();
+                    downloadAndDisplayBlob("file");
+                }
+            });
+
+        }
 
     }
 
     protected void displayMetaData(LinearLayout currentLayout,  Document currentDocument) {
-        for (String key : currentDocument.getProperties().getKeys()) {
-            final TextView textView = new TextView(this);
-
-            if (key != null) {
-                try {
-                    final String value = currentDocument.getString(key, "");
-                    if (value != null) {
-                        textView.setText(key + " => " + value);
-                        final int padding = getResources().getDimensionPixelSize(
-                                R.dimen.defaultPadding);
-                        textView.setPadding(padding, padding, padding,
-                                padding);
-                        currentLayout.addView(textView);
-                    }
-                } catch (Exception exception) {
-                    if (log.isWarnEnabled()) {
-                        log.warn("NULL", exception);
-                    }
-                }
-            }
+        try {
+            LinearFormManager.displayForm(this, currentLayout, currentDocument);
+        } catch (JSONException e) {
+            log.error("Error while generatic display form", e);
         }
     }
 
@@ -124,17 +113,28 @@ public final class DocumentViewActivity extends BaseDocumentViewActivity
     }
 
     @Override
-    protected Blob executeDownloadOperation() throws BusinessObjectUnavailableException {
-        return NuxeoAndroidServices.getInstance().getPDF(document.getId(), refresh, true);
+    protected Blob executeDownloadOperation(String flag) throws BusinessObjectUnavailableException {
+        if ("file".equals(flag)) {
+            return NuxeoAndroidServices.getInstance().getBlob(document.getId(), "file:content", refresh, false);
+        } else {
+            return NuxeoAndroidServices.getInstance().getPDF(document.getId(), refresh, true);
+        }
     }
 
     @Override
-    protected String getDownloadedFilePath(Blob blob) {
-        return "/sdcard/NuxeoAndroid/nuxeo-pdf-view.pdf";
+    protected String getDownloadedFilePath(Blob blob, String flag) {
+        if ("file".equals(flag)) {
+            return "/sdcard/NuxeoAndroid/nuxeo-doc";
+        } else {
+            return "/sdcard/NuxeoAndroid/nuxeo-pdf-view.pdf";
+        }
     }
 
     @Override
-    protected String getDownloadedMimeType(Blob blob) {
+    protected String getDownloadedMimeType(Blob blob, String flag) {
+        if ("file".equals(flag)) {
+            return super.getDownloadedMimeType(blob, flag);
+        }
         return "application/pdf";
     }
 
