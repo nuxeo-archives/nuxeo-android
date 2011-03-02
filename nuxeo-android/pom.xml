@@ -18,9 +18,9 @@
   <dependencies>
     <dependency>
       <groupId>com.google.android</groupId>
-      <artifactId>android-sdk-nx</artifactId>
-      <scope>system</scope>
-      <systemPath>${env.ANDROID_HOME}/platforms/android-8/android.jar</systemPath>
+      <artifactId>android</artifactId>
+<!--      <scope>system</scope>-->
+<!--      <systemPath>${env.ANDROID_HOME}/platforms/android-8/android.jar</systemPath>-->
     </dependency>
     <dependency>
       <groupId>org.nuxeo.ecm.automation</groupId>
@@ -29,8 +29,6 @@
     <dependency>
       <groupId>com.smartnsoft</groupId>
       <artifactId>droid4me</artifactId>
-<!--      <scope>system</scope>-->
-<!--      <systemPath>${project.basedir}/libs/com.smartnsoft.droid4me.jar</systemPath>-->
       <version>1.0</version>
     </dependency>
   </dependencies>

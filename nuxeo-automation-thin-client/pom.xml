@@ -18,7 +18,7 @@
   <dependencies>
     <dependency>
       <groupId>com.google.android</groupId>
-      <artifactId>android-sdk-nx</artifactId>
+      <artifactId>android</artifactId>
     </dependency>
   </dependencies>
 
