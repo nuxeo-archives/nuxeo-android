@@ -1,4 +1,8 @@
-package org.nuxeo.android.simpleclient;
+package org.nuxeo.android.simpleclient.menus;
+
+import org.nuxeo.android.simpleclient.HomeActivity;
+import org.nuxeo.android.simpleclient.R;
+import org.nuxeo.android.simpleclient.ui.TitleBarAggregate;
 
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
@@ -12,7 +16,7 @@ import com.smartnsoft.droid4me.app.AppPublics.BroadcastListener;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
 
 public class LoginScreenActivity extends
-        SmartActivity<NuxeoAndroidApplication.TitleBarAggregate> implements
+        SmartActivity<TitleBarAggregate> implements
         AppPublics.SendLoadingIntent, AppPublics.BroadcastListenerProvider,
         View.OnClickListener {
 

@@ -1,6 +1,9 @@
-package org.nuxeo.android.simpleclient;
+package org.nuxeo.android.simpleclient.menus;
 
+import org.nuxeo.android.simpleclient.R;
 import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
+import org.nuxeo.android.simpleclient.ui.TitleBarAggregate;
+import org.nuxeo.android.simpleclient.ui.TitleBarShowHomeFeature;
 
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -12,9 +15,9 @@ import com.smartnsoft.droid4me.framework.LifeCycle;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
 
 public class OfflineSettingsActivity extends
-        SmartActivity<NuxeoAndroidApplication.TitleBarAggregate> implements
+        SmartActivity<TitleBarAggregate> implements
         LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy,
-        NuxeoAndroidApplication.TitleBarShowHomeFeature {
+        TitleBarShowHomeFeature {
 
     private int operationCount;
     private long cacheSize;

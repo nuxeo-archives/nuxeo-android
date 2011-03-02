@@ -16,8 +16,17 @@
 
 package org.nuxeo.android.simpleclient.service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.nuxeo.android.simpleclient.Constants;
-import org.nuxeo.android.simpleclient.SettingsActivity;
+import org.nuxeo.android.simpleclient.menus.SettingsActivity;
 import org.nuxeo.ecm.automation.client.cache.CacheAwareHttpAutomationClient;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpAutomationClient;
@@ -202,6 +211,59 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
             throw new BusinessObjectUnavailableException(e);
         }
         return docs;
+    }
+
+    public List<JSONObject> getAuditEntries(String docId, boolean refresh) throws BusinessObjectUnavailableException {
+
+        List<JSONObject> result = new ArrayList<JSONObject>();
+        String auditQuery = "from LogEntry log"
+        + " WHERE log.docUUID = '" + docId + "'"
+        + "   AND log.docLifeCycle IS NOT NULL"
+        + "   AND log.docLifeCycle <> 'undefined'"
+        + " ORDER BY log.eventDate DESC";
+
+        Blob blob=null;
+        try {
+            blob = (Blob) getSession().newRequest("Audit.Query").set(
+                    "query", auditQuery).set("maxResults",5).execute(refresh, true);
+        } catch (Exception e) {
+            throw new BusinessObjectUnavailableException(e);
+        }
+        if (blob!=null) {
+            String jsonData = readBlobAsString(blob);
+            try {
+                JSONArray array = new JSONArray(jsonData);
+                for (int i = 0; i< array.length(); i++) {
+                    result.add(array.getJSONObject(i));
+                }
+            } catch (JSONException e) {
+                throw new BusinessObjectUnavailableException(e);
+            }
+        }
+        return result;
+    }
+
+    protected String readBlobAsString(Blob blob) throws BusinessObjectUnavailableException {
+        StringBuffer sb = new StringBuffer();
+        BufferedReader blobReader=null;
+        try {
+            blobReader = new BufferedReader(new InputStreamReader(blob.getStream()));
+            String line;
+            while ((line = blobReader.readLine()) != null) {
+                sb.append(line);
+            }
+        }
+        catch (Exception e) {
+            throw new BusinessObjectUnavailableException(e);
+        } finally {
+            if (blobReader != null) {
+                try {
+                    blobReader.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+        return sb.toString();
     }
 
     public Documents getSavedSearch(String savedQueryName)

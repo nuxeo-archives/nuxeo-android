@@ -19,6 +19,15 @@ package org.nuxeo.android.simpleclient;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.nuxeo.android.simpleclient.listing.ClipboardDocumentsActivity;
+import org.nuxeo.android.simpleclient.listing.MyDocumentsActivity;
+import org.nuxeo.android.simpleclient.listing.SavedSearchesDocumentsActivity;
+import org.nuxeo.android.simpleclient.menus.AboutActivity;
+import org.nuxeo.android.simpleclient.menus.OfflineSettingsActivity;
+import org.nuxeo.android.simpleclient.menus.SettingsActivity;
+import org.nuxeo.android.simpleclient.ui.TitleBarAggregate;
+import org.nuxeo.android.simpleclient.ui.TitleBarShowSearchFeature;
+
 import android.content.Intent;
 import android.view.View;
 import android.widget.ImageButton;
@@ -35,8 +44,8 @@ import com.smartnsoft.droid4me.menu.StaticMenuCommand;
  * @since 2011.02.17
  */
 public final class HomeActivity extends
-        SmartActivity<NuxeoAndroidApplication.TitleBarAggregate> implements
-        View.OnClickListener, NuxeoAndroidApplication.TitleBarShowSearchFeature {
+        SmartActivity<TitleBarAggregate> implements
+        View.OnClickListener, TitleBarShowSearchFeature {
 
     private ImageButton searchDocuments;
 

@@ -16,14 +16,20 @@
  *
  */
 
-package org.nuxeo.android.simpleclient;
+package org.nuxeo.android.simpleclient.docviews;
 
 import org.json.JSONException;
+import org.nuxeo.android.simpleclient.R;
 import org.nuxeo.android.simpleclient.forms.LinearFormManager;
+import org.nuxeo.android.simpleclient.otherviews.BaseMiscActivity;
+import org.nuxeo.android.simpleclient.otherviews.HistoryActivity;
 import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
+import org.nuxeo.android.simpleclient.ui.TitleBarRefreshFeature;
+import org.nuxeo.android.simpleclient.ui.TitleBarShowHomeFeature;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
+import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
@@ -35,21 +41,21 @@ import android.widget.Toast;
 
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListenerProvider;
 import com.smartnsoft.droid4me.app.AppPublics.SendLoadingIntent;
-import com.smartnsoft.droid4me.download.ImageDownloader;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 
 public final class DocumentViewActivity extends BaseDocumentViewActivity
         implements BusinessObjectsRetrievalAsynchronousPolicy,
         SendLoadingIntent, BroadcastListenerProvider,
-        NuxeoAndroidApplication.TitleBarShowHomeFeature,
-        NuxeoAndroidApplication.TitleBarRefreshFeature {
+        TitleBarShowHomeFeature,
+        TitleBarRefreshFeature {
 
     private TextView title;
     private RelativeLayout layout;
     private LinearLayout linearLayout;
     private ImageButton pdfAction;
     private ImageButton downloadAction;
+    private ImageButton historyAction;
 
     @Override
     public void onRetrieveDisplayObjects() {
@@ -60,6 +66,7 @@ public final class DocumentViewActivity extends BaseDocumentViewActivity
         title = (TextView) findViewById(R.id.title);
         pdfAction = (ImageButton) findViewById(R.id.pdfBtn);
         downloadAction = (ImageButton) findViewById(R.id.downloadBtn);
+        historyAction = (ImageButton) findViewById(R.id.historyBtn);
         icon = (ImageView) findViewById(R.id.icon);
     }
 
@@ -92,6 +99,14 @@ public final class DocumentViewActivity extends BaseDocumentViewActivity
                             "started download",
                             Toast.LENGTH_SHORT).show();
                     downloadAndDisplayBlob("file");
+                }
+            });
+            historyAction.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(DocumentViewActivity.this, HistoryActivity.class).putExtra(
+                            BaseMiscActivity.DOCUMENT, document));
+
                 }
             });
 

@@ -16,6 +16,8 @@
 
 package org.nuxeo.android.simpleclient;
 
+import org.nuxeo.android.simpleclient.ui.TitleBarDiscarded;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -30,14 +32,14 @@ import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableExce
 
 /**
  * The first activity displayed while the application is loading.
- * 
+ *
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.17
  */
 public final class NuxeoAndroidSplashScreenActivity extends
         SmartSplashScreenActivity implements
         LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy,
-        NuxeoAndroidApplication.TitleBarDiscarded {
+        TitleBarDiscarded {
 
     private final static int MISSING_SD_CARD_DIALOG_ID = 0;
 

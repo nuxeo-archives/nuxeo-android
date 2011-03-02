@@ -1,12 +1,19 @@
-package org.nuxeo.android.simpleclient;
+package org.nuxeo.android.simpleclient.docviews;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
+import org.json.JSONObject;
+import org.nuxeo.android.simpleclient.NuxeoAndroidApplication;
+import org.nuxeo.android.simpleclient.menus.SettingsActivity;
 import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
+import org.nuxeo.android.simpleclient.ui.TitleBarAggregate;
+import org.nuxeo.android.simpleclient.ui.TitleBarRefreshFeature;
+import org.nuxeo.android.simpleclient.ui.TitleBarShowHomeFeature;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
@@ -25,11 +32,11 @@ import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableExce
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 
 public abstract  class BaseDocumentViewActivity extends
-        SmartActivity<NuxeoAndroidApplication.TitleBarAggregate> implements
+        SmartActivity<TitleBarAggregate> implements
         BusinessObjectsRetrievalAsynchronousPolicy, SendLoadingIntent,
         BroadcastListenerProvider,
-        NuxeoAndroidApplication.TitleBarShowHomeFeature,
-        NuxeoAndroidApplication.TitleBarRefreshFeature {
+        TitleBarShowHomeFeature,
+        TitleBarRefreshFeature {
 
     public static final String DOCUMENT_ID = "document_id";
 
@@ -38,6 +45,7 @@ public abstract  class BaseDocumentViewActivity extends
     protected boolean refresh = false;
 
     protected Document document = null;
+
     protected ImageView icon;
 
     public BroadcastListener getBroadcastListener() {
@@ -51,20 +59,22 @@ public abstract  class BaseDocumentViewActivity extends
 
     protected abstract String getSchemas();
 
+    protected String getTargetDocId() {
+        return getIntent().getStringExtra(DOCUMENT_ID);
+    }
+
     protected Document fetchDocument(boolean forceRefresh) throws BusinessObjectUnavailableException {
 
-        String docId = getIntent().getStringExtra(DOCUMENT_ID);
-
+        String docId = getTargetDocId();
         if (document==null) {
             document = (Document) getIntent().getSerializableExtra(DOCUMENT);
         }
 
         if (refresh || forceRefresh || document==null) {
-            document = NuxeoAndroidServices.getInstance().getDocument(docId, getSchemas(),true);
+            document = NuxeoAndroidServices.getInstance().getDocument(docId, getSchemas(),refresh || forceRefresh);
         }
         return document;
     }
-
 
     protected void fetchIcon(Document targetDocument) {
         final String serverUrl = getSharedPreferences(

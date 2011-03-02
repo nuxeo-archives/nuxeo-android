@@ -16,9 +16,14 @@
  *
  */
 
-package org.nuxeo.android.simpleclient;
+package org.nuxeo.android.simpleclient.menus;
 
+import org.nuxeo.android.simpleclient.HomeActivity;
+import org.nuxeo.android.simpleclient.NuxeoAndroidSplashScreenActivity;
+import org.nuxeo.android.simpleclient.R;
 import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
+import org.nuxeo.android.simpleclient.ui.TitleBarAggregate;
+import org.nuxeo.android.simpleclient.ui.TitleBarShowHomeFeature;
 
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -34,8 +39,8 @@ import com.smartnsoft.droid4me.app.SmartSplashScreenActivity;
  * @since 2011.02.17
  */
 public final class SettingsActivity extends
-        SmartPreferenceActivity<NuxeoAndroidApplication.TitleBarAggregate>
-        implements NuxeoAndroidApplication.TitleBarShowHomeFeature {
+        SmartPreferenceActivity<TitleBarAggregate>
+        implements TitleBarShowHomeFeature {
 
     public static final String PREF_SERVER_URL = "server_url";
 

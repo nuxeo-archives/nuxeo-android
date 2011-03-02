@@ -14,7 +14,7 @@
  * Contributors:
  */
 
-package org.nuxeo.android.simpleclient;
+package org.nuxeo.android.simpleclient.listing;
 
 import org.nuxeo.android.simpleclient.provider.DocumentsSearchProvider;
 import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
@@ -31,7 +31,7 @@ import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableExce
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.18
  */
-public final class DocumentsSearchActivity extends MyDocumentsActivity {
+public final class DocumentsSearchActivity extends BaseDocumentListActivity {
 
     private String queryText;
 

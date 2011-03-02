@@ -1,5 +1,8 @@
-package org.nuxeo.android.simpleclient;
+package org.nuxeo.android.simpleclient.docviews;
 
+import org.nuxeo.android.simpleclient.R;
+import org.nuxeo.android.simpleclient.ui.TitleBarRefreshFeature;
+import org.nuxeo.android.simpleclient.ui.TitleBarShowHomeFeature;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.text.Html;
@@ -16,8 +19,8 @@ import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectsRetrievalAsync
 public class NoteViewActivity extends BaseDocumentViewActivity implements
         BusinessObjectsRetrievalAsynchronousPolicy, SendLoadingIntent,
         BroadcastListenerProvider,
-        NuxeoAndroidApplication.TitleBarShowHomeFeature,
-        NuxeoAndroidApplication.TitleBarRefreshFeature {
+        TitleBarShowHomeFeature,
+        TitleBarRefreshFeature {
 
 ;
     private TextView title;

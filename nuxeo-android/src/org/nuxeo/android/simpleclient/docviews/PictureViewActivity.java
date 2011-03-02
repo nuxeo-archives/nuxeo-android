@@ -1,10 +1,15 @@
-package org.nuxeo.android.simpleclient;
+package org.nuxeo.android.simpleclient.docviews;
 
 import java.io.IOException;
 
 import org.json.JSONException;
+import org.nuxeo.android.simpleclient.R;
+import org.nuxeo.android.simpleclient.R.id;
+import org.nuxeo.android.simpleclient.R.layout;
 import org.nuxeo.android.simpleclient.forms.LinearFormManager;
 import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
+import org.nuxeo.android.simpleclient.ui.TitleBarRefreshFeature;
+import org.nuxeo.android.simpleclient.ui.TitleBarShowHomeFeature;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 
 import android.graphics.Bitmap;
@@ -25,8 +30,8 @@ import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectsRetrievalAsync
 public class PictureViewActivity extends BaseDocumentViewActivity implements
         BusinessObjectsRetrievalAsynchronousPolicy, SendLoadingIntent,
         BroadcastListenerProvider,
-        NuxeoAndroidApplication.TitleBarShowHomeFeature,
-        NuxeoAndroidApplication.TitleBarRefreshFeature {
+        TitleBarShowHomeFeature,
+        TitleBarRefreshFeature {
 
     private Blob blob;
     private ImageView picture;

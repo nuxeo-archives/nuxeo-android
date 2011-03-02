@@ -15,12 +15,15 @@
  *
  */
 
-package org.nuxeo.android.simpleclient;
+package org.nuxeo.android.simpleclient.menus;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.http.protocol.HTTP;
+import org.nuxeo.android.simpleclient.R;
+import org.nuxeo.android.simpleclient.ui.TitleBarAggregate;
+import org.nuxeo.android.simpleclient.ui.TitleBarShowHomeFeature;
 
 import android.webkit.WebView;
 
@@ -31,14 +34,14 @@ import com.smartnsoft.droid4me.ws.WebServiceCaller;
 
 /**
  * The "about" screen.
- * 
+ *
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.17
  */
 public final class AboutActivity extends
-        SmartActivity<NuxeoAndroidApplication.TitleBarAggregate> implements
+        SmartActivity<TitleBarAggregate> implements
         LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy,
-        NuxeoAndroidApplication.TitleBarShowHomeFeature {
+        TitleBarShowHomeFeature {
 
     private String content;
 

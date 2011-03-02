@@ -1,26 +1,20 @@
-/*
- * (C) Copyright 2010-2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Lesser General Public License
- * (LGPL) version 2.1 which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/lgpl.html
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * Contributors:
- */
-
-package org.nuxeo.android.simpleclient;
+package org.nuxeo.android.simpleclient.listing;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.nuxeo.android.simpleclient.NuxeoAndroidApplication;
+import org.nuxeo.android.simpleclient.R;
+import org.nuxeo.android.simpleclient.docviews.BaseDocumentViewActivity;
+import org.nuxeo.android.simpleclient.docviews.DocumentViewActivity;
+import org.nuxeo.android.simpleclient.docviews.NoteViewActivity;
+import org.nuxeo.android.simpleclient.docviews.PictureViewActivity;
+import org.nuxeo.android.simpleclient.menus.SettingsActivity;
 import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
+import org.nuxeo.android.simpleclient.ui.TitleBarAggregate;
+import org.nuxeo.android.simpleclient.ui.TitleBarRefreshFeature;
+import org.nuxeo.android.simpleclient.ui.TitleBarShowHomeFeature;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
@@ -42,13 +36,11 @@ import com.smartnsoft.droid4me.framework.DetailsProvider.ObjectEvent;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 
-public class MyDocumentsActivity extends
-        WrappedSmartListActivity<NuxeoAndroidApplication.TitleBarAggregate>
-        implements BusinessObjectsRetrievalAsynchronousPolicy,
+public abstract class BaseDocumentListActivity extends
+        WrappedSmartListActivity<TitleBarAggregate> implements
+        BusinessObjectsRetrievalAsynchronousPolicy,
         AppPublics.SendLoadingIntent, AppPublics.BroadcastListenerProvider,
-        NuxeoAndroidApplication.TitleBarShowHomeFeature,
-        NuxeoAndroidApplication.TitleBarRefreshFeature {
-
+        TitleBarShowHomeFeature, TitleBarRefreshFeature {
 
     private final static class DocumentAttributes {
 
@@ -58,7 +50,8 @@ public class MyDocumentsActivity extends
 
         private final ImageView icon;
 
-        protected final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
+        protected final SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "dd/MM/yy");
 
         public DocumentAttributes(View view) {
             title = (TextView) view.findViewById(R.id.title);
@@ -76,7 +69,8 @@ public class MyDocumentsActivity extends
             if ("".equals(descString)) {
                 descString = "<b>Type </b>: " + doc.getType();
                 descString += "&nbsp;<b> State </b>: " + doc.getState();
-                descString += "&nbsp;<b> Modified </b>: " + dateFormat.format(doc.getLastModified());
+                descString += "&nbsp;<b> Modified </b>: "
+                        + dateFormat.format(doc.getLastModified());
                 desc.setText(Html.fromHtml(descString));
             } else {
                 desc.setText(descString);
@@ -125,15 +119,16 @@ public class MyDocumentsActivity extends
             if (objectEvent == ObjectEvent.Clicked) {
                 if ("Note".equals(doc.getType())) {
                     return new Intent(activity, NoteViewActivity.class).putExtra(
-                            BaseDocumentViewActivity.DOCUMENT_ID, doc.getId()).putExtra(BaseDocumentViewActivity.DOCUMENT, doc);
-                }
-                else if ("Picture".equals(doc.getType())) {
+                            BaseDocumentViewActivity.DOCUMENT_ID, doc.getId()).putExtra(
+                            BaseDocumentViewActivity.DOCUMENT, doc);
+                } else if ("Picture".equals(doc.getType())) {
                     return new Intent(activity, PictureViewActivity.class).putExtra(
-                            BaseDocumentViewActivity.DOCUMENT_ID, doc.getId()).putExtra(BaseDocumentViewActivity.DOCUMENT, doc);
-                }
-                else {
+                            BaseDocumentViewActivity.DOCUMENT_ID, doc.getId()).putExtra(
+                            BaseDocumentViewActivity.DOCUMENT, doc);
+                } else {
                     return new Intent(activity, DocumentViewActivity.class).putExtra(
-                            BaseDocumentViewActivity.DOCUMENT_ID, doc.getId()).putExtra(BaseDocumentViewActivity.DOCUMENT, doc);
+                            BaseDocumentViewActivity.DOCUMENT_ID, doc.getId()).putExtra(
+                            BaseDocumentViewActivity.DOCUMENT, doc);
                 }
             }
             return super.computeIntent(activity, view, objectEvent);
@@ -167,10 +162,7 @@ public class MyDocumentsActivity extends
         return wrappers;
     }
 
-    protected Documents getDocuments(boolean refresh)
-            throws BusinessObjectUnavailableException {
-        return NuxeoAndroidServices.getInstance().getMyDocuments(refresh);
-    }
+    protected abstract Documents getDocuments(boolean refresh)  throws BusinessObjectUnavailableException;
 
     @Override
     public void onFulfillDisplayObjects() {
@@ -185,5 +177,4 @@ public class MyDocumentsActivity extends
         fromCache = false;
         refreshBusinessObjectsAndDisplayAndNotifyBusinessObjectsChanged(false);
     }
-
 }

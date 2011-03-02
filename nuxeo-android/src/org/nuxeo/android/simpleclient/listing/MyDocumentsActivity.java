@@ -14,21 +14,16 @@
  * Contributors:
  */
 
-package org.nuxeo.android.simpleclient;
+package org.nuxeo.android.simpleclient.listing;
 
 import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
 
-/**
- * @author Nuxeo & Smart&Soft
- * @since 2011.02.18
- */
-public final class SavedSearchesDocumentsActivity extends MyDocumentsActivity {
+public class MyDocumentsActivity extends BaseDocumentListActivity {
 
-    protected Documents getDocuments(boolean refresh)
-            throws BusinessObjectUnavailableException {
-        return NuxeoAndroidServices.getInstance().getSavedSearch("");
+    protected Documents getDocuments(boolean refresh) throws BusinessObjectUnavailableException {
+        return NuxeoAndroidServices.getInstance().getMyDocuments(refresh);
     }
 }
