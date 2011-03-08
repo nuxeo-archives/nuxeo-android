@@ -91,6 +91,10 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
 
     protected String serverUrl;
 
+    protected long lastOnlineConnectionTest = 0;
+
+    protected static final long NETWORK_CHECK_INTERVAL_SEC = 120;
+
     public static final String DEFAULT_SCHEMAS = "dublincore,common";
 
     protected CacheManager cacheManager = new CacheManager();
@@ -113,15 +117,21 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
             session = client.getSession(userLogin, password);
         } else {
             if (session.isOffline()) {
-                // try to reconnect
-                session = client.getSession(userLogin, password);
-            }
-        }
+                // try to reconnect ?
+                if ((System.currentTimeMillis()-lastOnlineConnectionTest) /1000 > NETWORK_CHECK_INTERVAL_SEC) {
+                    lastOnlineConnectionTest  = System.currentTimeMillis();
+                    session = client.getSession(userLogin, password);
+                }
+            }        }
         return session;
     }
 
     public int getKnownOperationsCount() {
-        return getSession().getOperations().size();
+        if (session!=null) {
+            return session.getOperations().size();
+        } else {
+            return getSession().getOperations().size();
+        }
     }
 
     public void refreshOperationCache() {
@@ -129,7 +139,11 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
     }
 
     public boolean isOfflineMode() {
-        return getSession().isOffline();
+        if (session!=null) {
+            return session.isOffline();
+        } else {
+            return getSession().isOffline();
+        }
     }
 
     public void flushCache() {

@@ -5,6 +5,7 @@ import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
 import org.nuxeo.android.simpleclient.ui.TitleBarAggregate;
 import org.nuxeo.android.simpleclient.ui.TitleBarShowHomeFeature;
 
+import android.preference.Preference;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -77,6 +78,13 @@ public class OfflineSettingsActivity extends
         operationCount = NuxeoAndroidServices.getInstance().getKnownOperationsCount();
         offline = NuxeoAndroidServices.getInstance().isOfflineMode();
         cacheSize = NuxeoAndroidServices.getInstance().getCacheSize();
+        cacheSizeView.setText("Current cache size : " + (cacheSize/1024) + " KB");
+        operationCountView.setText(operationCount + " operation definitions (cached)");
+        if (offline) {
+            offlineView.setText("Nuxeo Client is currently offline");
+        } else {
+            offlineView.setText("Nuxeo Client is currently online");
+        }
     }
 
 }

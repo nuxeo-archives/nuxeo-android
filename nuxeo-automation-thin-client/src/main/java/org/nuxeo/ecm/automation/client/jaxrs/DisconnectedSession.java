@@ -13,7 +13,6 @@ public class DisconnectedSession extends DefaultSession implements Session {
 
     @Override
     public Object execute(OperationRequest request) throws Exception {
-        // XXX retry login;
         request.forceCache();
         return super.execute(request);
     }

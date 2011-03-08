@@ -163,21 +163,35 @@ public class HttpConnector implements Connector {
             } else {
                 throw e;
             }
-        } catch (org.apache.http.conn.HttpHostConnectException e) {
-            // force offline
-            if (cachedResult!=null) {
-                try {
-                    return request.handleResult(200, cachedResult.getCtype(), cachedResult.getDisp(), cachedResult.getInputStream());
-                } catch (Throwable t) {
-                    return null;
+        }
+        catch (Throwable t) {
+        	if (isNetworkError(t)) {
+        		if (cachedResult!=null) {
+                    try {
+                        return request.handleResult(200, cachedResult.getCtype(), cachedResult.getDisp(), cachedResult.getInputStream());
+                    } catch (Throwable t2) {
+                        throw new NotAvailableOffline("Can not fetch result from cache", t2);
+                    }
+                } else {
+                	throw new NotAvailableOffline("No data in cache, must be online");
                 }
-            } else {
-                return null;
-            }
+        	} else {
+        		throw new RuntimeException("Cannot execute " + request, t);
+        	}
         }
-        catch (Exception e) {
-            throw new RuntimeException("Cannot execute " + request, e);
-        }
+    }
+
+    protected boolean isNetworkError(Throwable t) {
+    	String className = t.getClass().getName();
+
+    	if (className.startsWith("java.net.")) {
+    		return true;
+    	}
+    	if (className.startsWith("org.apache.http.conn.")) {
+    		return true;
+    	}
+
+    	return false;
     }
 
     protected Object execute(Request request, HttpUriRequest httpReq, String cacheKey)
