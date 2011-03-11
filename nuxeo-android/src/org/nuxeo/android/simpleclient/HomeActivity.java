@@ -20,8 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.nuxeo.android.simpleclient.listing.ClipboardDocumentsActivity;
+import org.nuxeo.android.simpleclient.listing.DomainListingActivity;
 import org.nuxeo.android.simpleclient.listing.MyDocumentsActivity;
 import org.nuxeo.android.simpleclient.listing.SavedSearchesDocumentsActivity;
+import org.nuxeo.android.simpleclient.listing.TaskListActivity;
 import org.nuxeo.android.simpleclient.menus.AboutActivity;
 import org.nuxeo.android.simpleclient.menus.OfflineSettingsActivity;
 import org.nuxeo.android.simpleclient.menus.SettingsActivity;
@@ -48,12 +50,11 @@ public final class HomeActivity extends
         View.OnClickListener, TitleBarShowSearchFeature {
 
     private ImageButton searchDocuments;
-
     private ImageButton myDocuments;
-
     private ImageButton clipboard;
-
     private ImageButton savedSearches;
+    private ImageButton browse;
+    private ImageButton tasks;
 
     public void onRetrieveDisplayObjects() {
         setContentView(R.layout.home);
@@ -61,6 +62,8 @@ public final class HomeActivity extends
         myDocuments = (ImageButton) findViewById(R.id.myDocuments);
         clipboard = (ImageButton) findViewById(R.id.clipboard);
         savedSearches = (ImageButton) findViewById(R.id.savedSearches);
+        browse = (ImageButton) findViewById(R.id.explorer);
+        tasks = (ImageButton) findViewById(R.id.tasks);
     }
 
     public void onRetrieveBusinessObjects()
@@ -72,6 +75,8 @@ public final class HomeActivity extends
         myDocuments.setOnClickListener(this);
         clipboard.setOnClickListener(this);
         savedSearches.setOnClickListener(this);
+        browse.setOnClickListener(this);
+        tasks.setOnClickListener(this);
     }
 
     public void onSynchronizeDisplayObjects() {
@@ -124,7 +129,14 @@ public final class HomeActivity extends
         } else if (view == savedSearches) {
             startActivity(new Intent(getApplicationContext(),
                     SavedSearchesDocumentsActivity.class));
+        } else if (view == browse) {
+            startActivity(new Intent(getApplicationContext(),
+                    DomainListingActivity.class));
+        } else if (view == tasks) {
+            startActivity(new Intent(getApplicationContext(),
+                    TaskListActivity.class));
         }
+
     }
 
     @Override

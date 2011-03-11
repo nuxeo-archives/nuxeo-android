@@ -24,7 +24,7 @@
     <item name="android:textSize">@dimen/headerText</item>
     <item name="android:textStyle">bold</item>
     <item name="android:textColor">@color/header_text</item>
-    <item name="android:gravity">center_vertical</item>
+    <item name="android:gravity">center_vertical|center_horizontal</item>
     <item name="android:paddingLeft">@dimen/headerMargin</item>
     <item name="android:paddingRight">@dimen/headerMargin</item>
     <item name="android:singleLine">true</item>

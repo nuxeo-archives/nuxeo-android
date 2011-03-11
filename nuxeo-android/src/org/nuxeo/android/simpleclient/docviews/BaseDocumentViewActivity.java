@@ -5,9 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
 
-import org.json.JSONObject;
 import org.nuxeo.android.simpleclient.NuxeoAndroidApplication;
 import org.nuxeo.android.simpleclient.menus.SettingsActivity;
 import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;

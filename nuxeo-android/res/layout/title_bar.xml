@@ -16,11 +16,28 @@
   />
   <TextView
     android:id="@+id/headerTitle"
-    android:layout_width="0dip"
+    android:layout_width="wrap_content"
     android:layout_height="fill_parent"
     android:layout_weight="1"
     style="@style/headerText"
-    android:text="@string/applicationName"
+    android:paddingRight="1dip"
+    android:text="Nuxeo"
+  />
+  <ImageView
+    android:id="@+id/point"
+    android:src="@drawable/nxpoint"
+    android:layout_width="20dip"
+    android:layout_height="fill_parent"
+
+  />
+  <TextView
+    android:id="@+id/headerTitle2"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+    android:layout_weight="1"
+    style="@style/headerText"
+    android:paddingLeft="1dip"
+    android:text="Android"
   />
   <ImageView
     android:id="@+id/separator2"

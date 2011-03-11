@@ -186,6 +186,22 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
         return queryDocuments(query, refresh, true);
     }
 
+    public Documents getDomains(boolean refresh) throws BusinessObjectUnavailableException {
+            String query = "SELECT * FROM Domain WHERE ecm:currentLifeCycleState != 'deleted'"
+        + " ORDER BY dc:title";
+        return queryDocuments(query, refresh, true);
+    }
+
+    public Documents getChildren(String parentUUID, boolean refresh) throws BusinessObjectUnavailableException {
+        String query = "SELECT * FROM Document WHERE ecm:parentId = '"
+            + parentUUID
+            + "' AND ecm:mixinType != 'HiddenInNavigation' "
+            + " AND ecm:isCheckedInVersion = 0"
+            + " AND ecm:currentLifeCycleState != 'deleted'"
+            + " ORDER BY dc:title";
+        return queryDocuments(query, refresh, true);
+    }
+
     public Documents getLastPublishedDocuments(boolean refresh)
             throws BusinessObjectUnavailableException {
         String query = "SELECT * FROM Document WHERE "
@@ -240,6 +256,29 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
         try {
             blob = (Blob) getSession().newRequest("Audit.Query").set(
                     "query", auditQuery).set("maxResults",5).execute(refresh, true);
+        } catch (Exception e) {
+            throw new BusinessObjectUnavailableException(e);
+        }
+        if (blob!=null) {
+            String jsonData = readBlobAsString(blob);
+            try {
+                JSONArray array = new JSONArray(jsonData);
+                for (int i = 0; i< array.length(); i++) {
+                    result.add(array.getJSONObject(i));
+                }
+            } catch (JSONException e) {
+                throw new BusinessObjectUnavailableException(e);
+            }
+        }
+        return result;
+    }
+
+    public List<JSONObject> getTasks(boolean refresh) throws BusinessObjectUnavailableException {
+
+        List<JSONObject> result = new ArrayList<JSONObject>();
+        Blob blob=null;
+        try {
+            blob = (Blob) getSession().newRequest("Workflow.GetTask").execute(refresh, true);
         } catch (Exception e) {
             throw new BusinessObjectUnavailableException(e);
         }
@@ -317,7 +356,6 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
         }
         return blob;
     }
-
 
     public Blob getBlob(String uuid, String xpath, boolean refresh,
             boolean allowCaching) throws BusinessObjectUnavailableException {

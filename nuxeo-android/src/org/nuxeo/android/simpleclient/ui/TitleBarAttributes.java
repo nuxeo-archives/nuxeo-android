@@ -38,7 +38,7 @@ public class TitleBarAttributes  extends ProgressHandler {
             home = (ImageButton) view.findViewById(R.id.home);
             // separator1 = view.findViewById(R.id.separator1);
             headerTitle = (TextView) view.findViewById(R.id.headerTitle);
-            setTitle(activity.getTitle());
+            setTitle(activity.getText(R.string.applicationTitle));
             separator2 = view.findViewById(R.id.separator2);
             action = (ImageButton) view.findViewById(R.id.action);
             separator3 = view.findViewById(R.id.separator3);
@@ -53,7 +53,7 @@ public class TitleBarAttributes  extends ProgressHandler {
         }
 
         public void setTitle(CharSequence title) {
-            headerTitle.setText(title);
+            //headerTitle.setText(title);
         }
 
         public void setShowHome(int iconResourceId,

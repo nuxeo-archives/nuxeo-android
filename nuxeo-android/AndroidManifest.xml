@@ -81,6 +81,18 @@
 			android:configChanges="keyboardHidden|orientation" />
 
 		<activity
+			android:name="org.nuxeo.android.simpleclient.listing.DocumentChildrenListActivity"
+			android:configChanges="keyboardHidden|orientation" />
+
+		<activity
+			android:name="org.nuxeo.android.simpleclient.listing.TaskListActivity"
+			android:configChanges="keyboardHidden|orientation" />
+
+		<activity
+			android:name="org.nuxeo.android.simpleclient.listing.DomainListingActivity"
+			android:configChanges="keyboardHidden|orientation" />
+
+		<activity
 			android:name="org.nuxeo.android.simpleclient.menus.LoginScreenActivity"
 			android:windowSoftInputMode="stateHidden|adjustPan"
 			android:configChanges="keyboardHidden|orientation" />

@@ -7,6 +7,9 @@
   <string
     name="applicationDescription">Simple Nuxeo Android application.</string>
 
+ <string
+    name="applicationTitle">Nuxeo Android Client</string>
+
   <string
     name="problem">Problem</string>
   <string
@@ -45,6 +48,8 @@
   <string name="Home_myDocuments">My Documents</string>
   <string name="Home_clipboard">Clipboard</string>
   <string name="Home_savedSearches">Saved Searches</string>
+  <string name="Home_browse">Browse</string>
+  <string name="Home_tasks">Tasks</string>
 
   <string name="DocumentsSearchActivity_search_title">Search</string>
   <string name="DocumentsSearchActivity_search_text_hint">Keywords</string>
