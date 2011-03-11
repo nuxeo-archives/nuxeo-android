@@ -4,14 +4,13 @@ import java.io.IOException;
 
 import org.json.JSONException;
 import org.nuxeo.android.simpleclient.R;
-import org.nuxeo.android.simpleclient.R.id;
-import org.nuxeo.android.simpleclient.R.layout;
 import org.nuxeo.android.simpleclient.forms.LinearFormManager;
 import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
 import org.nuxeo.android.simpleclient.ui.TitleBarRefreshFeature;
 import org.nuxeo.android.simpleclient.ui.TitleBarShowHomeFeature;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.View;
@@ -38,6 +37,7 @@ public class PictureViewActivity extends BaseDocumentViewActivity implements
     private TextView title;
     private ImageButton downloadAction;
     private LinearLayout formLayout;
+    private ImageButton documentBtn;
 
     protected static String PICTURE_FIELDS = "[ { xpath : 'imd:orientation', label : 'Orientation'}, " +
     " { xpath : 'imd:equipment', label : 'Equipement'}, " +
@@ -71,6 +71,13 @@ public class PictureViewActivity extends BaseDocumentViewActivity implements
                 downloadAndDisplayBlob(null);
             }
         });
+        documentBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(PictureViewActivity.this, DocumentViewActivity.class).putExtra(
+                        BaseDocumentViewActivity.DOCUMENT, document));
+            }
+        });
 
         try {
             LinearFormManager.displayForm(this, formLayout, document,PICTURE_FIELDS, false);
@@ -101,6 +108,7 @@ public class PictureViewActivity extends BaseDocumentViewActivity implements
         downloadAction = (ImageButton) findViewById(R.id.downloadBtn);
         icon = (ImageView) findViewById(R.id.icon);
         formLayout = (LinearLayout) findViewById(R.id.linearDocumentLayout);
+        documentBtn = (ImageButton) findViewById(R.id.documentBtn);
     }
 
     @Override

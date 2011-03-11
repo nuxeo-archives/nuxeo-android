@@ -243,6 +243,18 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
         return docs;
     }
 
+    public void addToMyWorklist(String uuid) throws BusinessObjectUnavailableException {
+        try {
+            // add to work list
+            getSession().newRequest("Seam.AddToWorklist").setInput(new DocRef(uuid)).execute(true, false);
+            // force refresh the cache
+            getMyWorklistContent(true);
+
+        } catch (Exception e) {
+            throw new BusinessObjectUnavailableException(e);
+        }
+    }
+
     public List<JSONObject> getAuditEntries(String docId, boolean refresh) throws BusinessObjectUnavailableException {
 
         List<JSONObject> result = new ArrayList<JSONObject>();

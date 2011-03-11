@@ -14,21 +14,6 @@ import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableExce
 
 public class DocumentChildrenListActivity extends BaseDocumentListActivity {
 
-    // For now Facets are not integrated into JSON export ...
-    protected static final String[] folderishTypes = { "Domain",
-            "WorkspaceRoot", "Workspace", "SectionRoot", "Section",
-            "TemplateRoot", "PictureBook", "Folder", "OrderedFolder",
-            "UserWorkspace" };
-
-    protected boolean isFolderish(Document doc) {
-        for (String fType : folderishTypes) {
-            if (fType.equals(doc.getType())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
     protected Documents getDocuments(boolean refresh)
             throws BusinessObjectUnavailableException {
@@ -39,7 +24,7 @@ public class DocumentChildrenListActivity extends BaseDocumentListActivity {
     @Override
     public Intent handleDocumentEventOnListItem(Activity activity, Object viewAttributes, View view, Document doc, ObjectEvent objectEvent) {
         if (objectEvent == ObjectEvent.Clicked) {
-            if (isFolderish(doc)) {
+            if (DocumentHelper.isFolderish(doc)) {
                 return new Intent(activity, DocumentChildrenListActivity.class).putExtra(
                         BaseDocumentViewActivity.DOCUMENT_ID, doc.getId()).putExtra(
                         BaseDocumentViewActivity.DOCUMENT, doc);

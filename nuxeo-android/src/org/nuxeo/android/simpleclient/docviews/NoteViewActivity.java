@@ -5,8 +5,12 @@ import org.nuxeo.android.simpleclient.ui.TitleBarRefreshFeature;
 import org.nuxeo.android.simpleclient.ui.TitleBarShowHomeFeature;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
+import android.content.Intent;
 import android.text.Html;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.webkit.WebView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -28,7 +32,7 @@ public class NoteViewActivity extends BaseDocumentViewActivity implements
     private WebView htmlContent;
     private ScrollView txtContainer;
     private ScrollView htmlContainer;
-
+    private ImageButton documentBtn;
 
     @Override
     public void onRetrieveDisplayObjects() {
@@ -39,6 +43,7 @@ public class NoteViewActivity extends BaseDocumentViewActivity implements
         txtContainer = (ScrollView) findViewById(R.id.ScrollViewText);
         htmlContainer = (ScrollView) findViewById(R.id.ScrollViewHtml);
         icon = (ImageView) findViewById(R.id.icon);
+        documentBtn = (ImageButton) findViewById(R.id.documentBtn);
     }
 
     @Override
@@ -81,6 +86,14 @@ public class NoteViewActivity extends BaseDocumentViewActivity implements
                 htmlContainer.setVisibility(4);
                 txtContainer.setVisibility(0);
             }
+
+            documentBtn.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(NoteViewActivity.this, DocumentViewActivity.class).putExtra(
+                            BaseDocumentViewActivity.DOCUMENT, document));
+                }
+            });
         }
     }
 

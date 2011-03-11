@@ -84,6 +84,32 @@ public abstract  class BaseDocumentViewActivity extends
                 NuxeoAndroidApplication.CACHE_IMAGE_INSTRUCTIONS);
     }
 
+    //*************
+    protected void addToClipBoard(final String uuid) {
+
+        AppPublics.THREAD_POOL.execute(this, new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    NuxeoAndroidServices.getInstance().addToMyWorklist(uuid);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(BaseDocumentViewActivity.this,
+                                    "Document added to worklist",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                catch (Exception e) {
+                    log.error("Error while adding to clipboard", e);
+                    return;
+                }
+            }
+        });
+    }
+
     //************* Download management
 
     protected void downloadAndDisplayBlob(final String flag) {

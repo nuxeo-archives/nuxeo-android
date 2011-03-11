@@ -28,12 +28,19 @@
 	  android:layout_below="@id/title"
 	  >
 
+    <ImageButton
+     android:id="@+id/documentBtn"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:gravity="center"
+     android:src="@drawable/document"></ImageButton>
+
      <ImageButton
      android:id="@+id/downloadBtn"
      android:layout_width="wrap_content"
      android:layout_height="wrap_content"
      android:gravity="center"
-     android:src="@drawable/download64"></ImageButton>
+     android:src="@drawable/download"></ImageButton>
 
 	</LinearLayout>
 

@@ -29,7 +29,12 @@ public abstract class BaseDocumentListActivity extends
 
     public Intent handleDocumentEventOnListItem(Activity activity, Object viewAttributes, View view, Document doc, ObjectEvent objectEvent) {
         if (objectEvent == ObjectEvent.Clicked) {
-            if ("Note".equals(doc.getType())) {
+            if (DocumentHelper.isFolderish(doc)) {
+                return new Intent(activity, DocumentChildrenListActivity.class).putExtra(
+                        BaseDocumentViewActivity.DOCUMENT_ID, doc.getId()).putExtra(
+                        BaseDocumentViewActivity.DOCUMENT, doc);
+            }
+            else if ("Note".equals(doc.getType())) {
                 return new Intent(activity, NoteViewActivity.class).putExtra(
                         BaseDocumentViewActivity.DOCUMENT_ID, doc.getId()).putExtra(
                         BaseDocumentViewActivity.DOCUMENT, doc);

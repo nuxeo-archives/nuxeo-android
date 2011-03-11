@@ -15,6 +15,13 @@
     android:padding="@dimen/defaultPadding"
     android:layout_toRightOf="@id/icon"/>
 
+    <ImageButton
+     android:id="@+id/documentBtn"
+     android:layout_width="wrap_content"
+     android:layout_height="36dip"
+     android:gravity="center"
+     android:src="@drawable/document"></ImageButton>
+
     <ScrollView
         android:id="@+id/ScrollViewText"
       android:layout_height="fill_parent"

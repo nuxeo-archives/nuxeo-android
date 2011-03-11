@@ -56,6 +56,7 @@ public final class DocumentViewActivity extends BaseDocumentViewActivity
     private ImageButton pdfAction;
     private ImageButton downloadAction;
     private ImageButton historyAction;
+    private ImageButton addClipboardAction;
 
     @Override
     public void onRetrieveDisplayObjects() {
@@ -68,6 +69,7 @@ public final class DocumentViewActivity extends BaseDocumentViewActivity
         downloadAction = (ImageButton) findViewById(R.id.downloadBtn);
         historyAction = (ImageButton) findViewById(R.id.historyBtn);
         icon = (ImageView) findViewById(R.id.icon);
+        addClipboardAction = (ImageButton) findViewById(R.id.clipboardAddBtn);
     }
 
     @Override
@@ -107,6 +109,15 @@ public final class DocumentViewActivity extends BaseDocumentViewActivity
                     startActivity(new Intent(DocumentViewActivity.this, HistoryActivity.class).putExtra(
                             BaseMiscActivity.DOCUMENT, document));
 
+                }
+            });
+            addClipboardAction.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(DocumentViewActivity.this,
+                            "Adding Document " + document.getTitle() + " to worklist",
+                            Toast.LENGTH_SHORT).show();
+                    addToClipBoard(document.getId());
                 }
             });
 
