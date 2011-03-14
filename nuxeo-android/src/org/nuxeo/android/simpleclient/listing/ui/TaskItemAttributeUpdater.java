@@ -22,7 +22,7 @@ public class TaskItemAttributeUpdater implements ObjectItemViewUpdater {
     private final TextView dates;
 
     protected final SimpleDateFormat dateFormat = new SimpleDateFormat(
-            "dd/MM/yy");
+            "dd/MM/yyyy");
 
     protected Date readDate(JSONObject dateObject) throws JSONException {
         return new Date(dateObject.getLong("time"));
@@ -41,19 +41,29 @@ public class TaskItemAttributeUpdater implements ObjectItemViewUpdater {
             String directive = task.getString("directive");
             String txtcomment = task.getString("comment");
             Date creationDate = readDate(task.getJSONObject("startDate"));
-            Date dueDate = readDate(task.getJSONObject("dueDate"));
+            Date dueDate = null;
+            if (task.has("dueDate")) {
+                dueDate = readDate(task.getJSONObject("dueDate"));
+            }
+
 
             if ("workflowDirectiveValidation".equals(directive)) {
                 title.setText("Validate Document");
-            } else {
+            }
+            else if ("workflowDirectiveOpinion".equals(directive)) {
+                title.setText("Give your opinion");
+            }
+            else {
                 title.setText(directive);
             }
             comment.setText(txtcomment);
             StringBuffer datesBuffer = new StringBuffer();
             datesBuffer.append("<b>created : </b>");
             datesBuffer.append(dateFormat.format(creationDate));
-            datesBuffer.append(" <b style=\"color:red\">due : </b>");
-            datesBuffer.append(dateFormat.format(dueDate));
+            if (dueDate!=null) {
+                datesBuffer.append(" <b style=\"color:red\">due : </b>");
+                datesBuffer.append(dateFormat.format(dueDate));
+            }
             dates.setText(Html.fromHtml(datesBuffer.toString()));
         } catch (JSONException e) {
             // TODO Auto-generated catch block

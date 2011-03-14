@@ -4,7 +4,6 @@ import org.nuxeo.android.simpleclient.R;
 import org.nuxeo.android.simpleclient.ui.TitleBarAggregate;
 import org.nuxeo.android.simpleclient.ui.TitleBarRefreshFeature;
 import org.nuxeo.android.simpleclient.ui.TitleBarShowHomeFeature;
-import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -8,7 +8,7 @@
 		android:padding="5dip" />
   <TextView
     android:id="@+id/title"
-    android:layout_width="fill_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:textSize="18dip"
     android:textStyle="bold"
@@ -18,9 +18,10 @@
     <ImageButton
      android:id="@+id/documentBtn"
      android:layout_width="wrap_content"
-     android:layout_height="36dip"
+     android:layout_height="32dip"
      android:gravity="center"
-     android:src="@drawable/document"></ImageButton>
+     android:src="@drawable/document"
+     android:layout_toRightOf="@id/title"/>
 
     <ScrollView
         android:id="@+id/ScrollViewText"

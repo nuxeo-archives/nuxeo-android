@@ -49,5 +49,4 @@ public class TaskItemViewWrapper extends BusinessViewWrapper<JSONObject> {
                 }
                 return this.computeIntent(activity, view, objectEvent);
             }
-
 }

@@ -3,7 +3,10 @@ package org.nuxeo.android.simpleclient.listing;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.nuxeo.android.simpleclient.docviews.BaseDocumentViewActivity;
+import org.nuxeo.android.simpleclient.docviews.DocumentViewActivity;
 import org.nuxeo.android.simpleclient.listing.ui.TaskItemViewWrapper;
 import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
 
@@ -36,8 +39,23 @@ public class TaskListActivity extends BaseObjectListActivity {
     public Intent handleEventOnListItem(Activity activity,
             Object viewAttributes, View view, Object obj,
             ObjectEvent objectEvent) {
-        // TODO Auto-generated method stub
-        return null;
+
+        JSONObject task = (JSONObject) obj;
+
+        if (task.has("docref")) {
+            String docRef;
+            try {
+                docRef = task.getString("docref");
+                return new Intent(activity, DocumentViewActivity.class).putExtra(
+                        BaseDocumentViewActivity.DOCUMENT_ID, docRef);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+        } else {
+            return null;
+        }
     }
 
 }
