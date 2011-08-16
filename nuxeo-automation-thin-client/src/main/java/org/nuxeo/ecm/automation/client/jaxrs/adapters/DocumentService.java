@@ -85,8 +85,6 @@ public class DocumentService {
 
     public static final String FireEvent = "Notification.SendEvent";
 
-    // The following are not yet implemented
-
     public static final String CheckOut = "Document.CheckOut";
 
     public static final String CheckIn = "Document.CheckIn";
@@ -347,7 +345,7 @@ public class DocumentService {
     /**
      * Increment is one of "None", "Major", "Minor". If null the server default
      * will be used.
-     * 
+     *
      * See {@link VersionIncrement}
      */
     public Document createVersion(DocRef doc, String increment)

@@ -13,10 +13,6 @@ public class AutomationSampleActivityTest extends
 	protected Button connectBtn;
 	protected Spinner spinner;
 
-//	public AutomationSampleActivityTest(Class<AutomationSampleActivity> activityClass) {
-//		super(activityClass);
-//	}
-
 	public AutomationSampleActivityTest() {
 		super("org.nuxeo.android.automationsample", AutomationSampleActivity.class);
 	}

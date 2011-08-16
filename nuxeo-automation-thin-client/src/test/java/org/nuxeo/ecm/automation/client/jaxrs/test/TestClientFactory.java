@@ -1,9 +1,9 @@
-package org.nuxeo.android.automationsample;
+package org.nuxeo.ecm.automation.client.jaxrs.test;
 
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpAutomationClient;
 
-public class AutomationClientFactory {
+public class TestClientFactory {
 
 	public static final String TEST_SERVER = "http://android.demo.nuxeo.com/nuxeo/site/automation";
 	public static final String TEST_USER = "droidUser";
