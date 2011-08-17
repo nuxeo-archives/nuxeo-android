@@ -6,13 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.nuxeo.android.context.NuxeoContext;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
+import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyList;
 
-import android.content.Context;
 import android.database.AbstractCursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,38 +30,44 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 
 	protected final UUIDMapper mapper;
 
-	protected final Context context;
+	protected final Session session;
 
-	protected final String nxqlQuery;
+	protected OperationRequest fetchOperation;
 
-	protected final String[] queryParams;
+	protected final String pageParameterName;
 
-	protected final String sortOrder;
-
-	protected final String schemas;
-
-	public NuxeoDocumentCursor(Context context, String nxql, String[] queryParams, String sortOrder, String schemas, int pageSize, UUIDMapper mapper) {
+	public NuxeoDocumentCursor (Session session, String nxql, String[] queryParams, String sortOrder, String schemas, int pageSize, UUIDMapper mapper) {
 
 		this.pageSize = pageSize;
 		this.currentPage = 0;
-		this.mapper = mapper;
-		this.context = context;
-
-		if (nxql!=null) {
-			nxql = "select * from Document where " + nxql;
+		if (mapper!=null) {
+			this.mapper = mapper;
 		} else {
-			nxql = "select * from Document";
+			this.mapper = new UUIDMapper();
 		}
 
-		if (sortOrder!=null && !sortOrder.equals("")) {
-			nxql = nxql + " order by " + sortOrder;
-		}
+		this.session=session;
+		this.pageParameterName = "page";
 
-		nxqlQuery=nxql;
-		this.queryParams=queryParams;
-		this.sortOrder=sortOrder;
-		this.schemas = schemas;
-		pages.put(currentPage, queryDocuments(nxql, queryParams, currentPage, schemas, false, false));
+		fetchOperation = session.newRequest("Document.PageProvider").set(
+				"query", nxql).set("pageSize",pageSize).set(pageParameterName,0);
+		if (queryParams!=null) {
+			fetchOperation.set("queryParams", queryParams);
+		}
+		// define returned properties
+		fetchOperation.setHeader("X-NXDocumentProperties", schemas);
+
+		pages.put(currentPage, queryDocuments(currentPage, false, false));
+	}
+
+	public NuxeoDocumentCursor (OperationRequest fetchOperation, String pageParametrerName) {
+
+		this.pageParameterName = pageParametrerName;
+		this.currentPage = 0;
+     	this.mapper = new UUIDMapper();
+		this.session=fetchOperation.getSession();
+		this.fetchOperation = fetchOperation;
+		pages.put(currentPage, queryDocuments(currentPage, false, false));
 	}
 
 	protected Documents getCurrentPage() {
@@ -83,22 +88,16 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 	}
 
 	protected void fetchPage(int targetPage) {
-		pages.put(targetPage, queryDocuments(nxqlQuery, queryParams, targetPage, schemas, false, false));
+		pages.put(targetPage, queryDocuments(targetPage, false, false));
 		onChange(true);
 	}
 
-	protected Documents queryDocuments(String nxql, String[] queryParams, int page, String schemas,
-			boolean refresh, boolean allowCaching) {
+	protected Documents queryDocuments(int page, boolean refresh, boolean allowCaching) {
 		Documents docs;
 		try {
-			OperationRequest request = NuxeoContext.get(context).getSession().newRequest("Document.PageProvider").set(
-					"query", nxql).set("pageSize",pageSize).set("page",page);
-			if (queryParams!=null) {
-				request.set("queryParams", queryParams);
-			}
-			// define returned properties
-			request.setHeader("X-NXDocumentProperties", schemas);
-			docs = (Documents) request.execute(refresh, allowCaching);
+			fetchOperation.set(pageParameterName, page);
+			docs = (Documents) fetchOperation.execute(refresh, allowCaching);
+			pageSize = docs.getPageSize();
 		} catch (Exception e) {
 			return null;
 		}
@@ -176,7 +175,6 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 			return 0;
 		}
 		if (getCurrentPage().isBatched()) {
-			//return getCurrentPage().getTotalSize();
 			int actualSize = 0;
 			for (Documents docs : pages.values()) {
 				actualSize += docs.size();
@@ -231,7 +229,6 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 	public boolean isNull(int column) {
 		return getCurrentDocument().getString(columns[column])==null;
 	}
-
 
 	@Override
 	public void close() {

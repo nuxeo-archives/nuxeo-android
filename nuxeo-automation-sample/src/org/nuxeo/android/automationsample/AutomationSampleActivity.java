@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.nuxeo.android.context.NuxeoContext;
-import org.nuxeo.ecm.automation.client.jaxrs.Session;
-import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpAutomationClient;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -19,6 +17,7 @@ public class AutomationSampleActivity extends Activity implements View.OnClickLi
 
 	protected Button connectBtn;
 	protected Button cpBtn;
+	protected Button cursorBtn;
 
 	protected Spinner spinner;
 
@@ -37,6 +36,10 @@ public class AutomationSampleActivity extends Activity implements View.OnClickLi
 
         spinner = (Spinner) findViewById(R.id.opList);
         spinner.setVisibility(4);
+
+        cursorBtn = (Button) findViewById(R.id.cursorBtn);
+        cursorBtn.setOnClickListener(this);
+
     }
 
 
@@ -74,6 +77,9 @@ public class AutomationSampleActivity extends Activity implements View.OnClickLi
             startActivity(new Intent(getApplicationContext(),
                     ContentProviderSampleActivity.class));
 		}
-
+		else if (view == cursorBtn) {
+            startActivity(new Intent(getApplicationContext(),
+                    CursorSampleActivity.class));
+		}
 	}
 }
