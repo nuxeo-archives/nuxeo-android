@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
@@ -57,7 +58,7 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 		// define returned properties
 		fetchOperation.setHeader("X-NXDocumentProperties", schemas);
 
-		pages.put(currentPage, queryDocuments(currentPage, false, false));
+		pages.put(currentPage, queryDocuments(currentPage, CacheBehavior.STORE));
 	}
 
 	public NuxeoDocumentCursor (OperationRequest fetchOperation, String pageParametrerName) {
@@ -67,7 +68,7 @@ public class NuxeoDocumentCursor extends AbstractCursor {
      	this.mapper = new UUIDMapper();
 		this.session=fetchOperation.getSession();
 		this.fetchOperation = fetchOperation;
-		pages.put(currentPage, queryDocuments(currentPage, false, false));
+		pages.put(currentPage, queryDocuments(currentPage, CacheBehavior.STORE));
 	}
 
 	protected Documents getCurrentPage() {
@@ -88,15 +89,15 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 	}
 
 	protected void fetchPage(int targetPage) {
-		pages.put(targetPage, queryDocuments(targetPage, false, false));
+		pages.put(targetPage, queryDocuments(targetPage, CacheBehavior.STORE));
 		onChange(true);
 	}
 
-	protected Documents queryDocuments(int page, boolean refresh, boolean allowCaching) {
+	protected Documents queryDocuments(int page, byte cacheFlags) {
 		Documents docs;
 		try {
 			fetchOperation.set(pageParameterName, page);
-			docs = (Documents) fetchOperation.execute(refresh, allowCaching);
+			docs = (Documents) fetchOperation.execute(cacheFlags);
 			pageSize = docs.getPageSize();
 		} catch (Exception e) {
 			return null;
@@ -269,5 +270,7 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 		return null;
 	}
 
-
+	public Document getDocument() {
+		return getCurrentDocument();
+	}
 }

@@ -21,21 +21,15 @@ import static org.nuxeo.ecm.automation.client.jaxrs.Constants.CTYPE_ENTITY;
 import static org.nuxeo.ecm.automation.client.jaxrs.Constants.CTYPE_MULTIPART_MIXED;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.entity.FileEntity;
-import org.apache.http.impl.entity.EntityDeserializer;
-import org.apache.http.impl.entity.LaxContentLengthStrategy;
 import org.nuxeo.ecm.automation.client.jaxrs.RemoteException;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
-import org.nuxeo.ecm.automation.client.jaxrs.model.Blobs;
 import org.nuxeo.ecm.automation.client.jaxrs.model.FileBlob;
 import org.nuxeo.ecm.automation.client.jaxrs.util.IOUtils;
-import org.nuxeo.ecm.automation.client.jaxrs.util.InputStreamDataSource;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>

@@ -49,8 +49,6 @@ public interface Session {
      */
     OperationRequest newRequest(String id) ;
 
-    OperationRequest newRequest(String id, boolean cachable);
-
     /**
      * Create a new operation request given an operation ID and an operation
      * context map.

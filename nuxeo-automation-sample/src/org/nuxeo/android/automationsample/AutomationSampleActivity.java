@@ -7,6 +7,7 @@ import org.nuxeo.android.context.NuxeoContext;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -81,5 +82,32 @@ public class AutomationSampleActivity extends Activity implements View.OnClickLi
             startActivity(new Intent(getApplicationContext(),
                     CursorSampleActivity.class));
 		}
+		else {
+			// start activity
+			// See openIntend
+			startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), 0);
+		}
 	}
+
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		if (resultCode == Activity.RESULT_OK) {
+			Uri uri = data.getData();
+
+			//getContentResolver().openAssetFileDescriptor(uri, "r").createInputStream();
+			//setResult(resultCode, data)
+
+
+
+		}
+
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+
+
+
 }

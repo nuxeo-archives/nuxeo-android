@@ -39,7 +39,7 @@ public interface OperationRequest {
 
     OperationRequest setContextProperty(String key, String value);
 
-    Object execute(boolean forceRefresh, boolean cachable) throws Exception;
+    Object execute(byte cacheFlags) throws Exception;
 
     Object execute() throws Exception;
 

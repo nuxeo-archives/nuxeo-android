@@ -32,14 +32,14 @@ public class DummyInMemoryCache implements InputStreamCacheManager {
 	public InputStream addToCache(String key, CacheEntry entry) {
 
 		cacheEntries.put(key, entry);
-		InputStream is = entry.getInputStream();
+		InputStream is = entry.getResponseStream();
 
 		byte[] buffer;
 		try {
 			buffer = StreamHelper.readBytes(is);
 			BufferedInputStream bis = new BufferedInputStream(
 					new ByteArrayInputStream(buffer));
-			entry.setInputStream(bis);
+			entry.setResponseStream(bis);
 			return bis;
 		} catch (IOException e) {
 			throw new RuntimeException("Unable to cache Stream", e);
@@ -52,7 +52,7 @@ public class DummyInMemoryCache implements InputStreamCacheManager {
 		CacheEntry entry = cacheEntries.get(key);
 		if (entry != null) {
 			try {
-				entry.getInputStream().reset();
+				entry.getResponseStream().reset();
 			} catch (IOException e) {
 				throw new RuntimeException("Unable to reset Stream", e);
 			}

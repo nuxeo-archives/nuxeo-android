@@ -2,43 +2,83 @@ package org.nuxeo.ecm.automation.client.cache;
 
 import java.io.InputStream;
 
+import org.nuxeo.ecm.automation.client.jaxrs.spi.Request;
+
 public class CacheEntry {
 
+    /**
+     * Stream of the response
+     */
     protected InputStream is;
 
+    /**
+     * Content Type of the response
+     */
     protected String ctype;
 
+    /**
+     * Content Disposition of the response
+     */
     protected String disp;
 
+    protected int rqMethod;
 
-    public CacheEntry(String ctype, String disp, InputStream is) {
+    protected String rqEntity;
+
+    public CacheEntry(String ctype, String disp, InputStream is, Request request) {
         this.is = is;
         this.ctype=ctype;
         this.disp = disp;
+
+        if (request!=null) {
+        	rqMethod = request.getMethod();
+        	if (request.getEntity()!=null) {
+        		rqEntity = request.getEntity().toString();
+        	}
+        }
     }
 
-    public InputStream getInputStream() {
+    public InputStream getResponseStream() {
         return is;
     }
 
-    public void setInputStream(InputStream is) {
+    public void setResponseStream(InputStream is) {
         this.is = is;
     }
 
-    public String getCtype() {
+    public String getReponseContentType() {
         return ctype;
     }
 
-    public void setCtype(String ctype) {
+    public void setResponseContentType(String ctype) {
         this.ctype = ctype;
     }
 
-    public String getDisp() {
+    public String getResponseContentDisposition() {
         return disp;
     }
 
-    public void setDisp(String disp) {
+    public void setResponseContentDisposition(String disp) {
         this.disp = disp;
     }
+
+    public int getRequestMethod() {
+    	return rqMethod;
+    }
+
+    public String getRequestEntity() {
+    	return rqEntity;
+    }
+
+	public void setRequestMethod(int rqMethod) {
+		this.rqMethod = rqMethod;
+	}
+
+	public void setRequestEntity(String rqEntity) {
+		this.rqEntity = rqEntity;
+	}
+
+
+
 
 }

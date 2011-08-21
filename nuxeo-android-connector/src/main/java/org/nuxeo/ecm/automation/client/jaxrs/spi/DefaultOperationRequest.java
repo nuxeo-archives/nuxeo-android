@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.model.DateUtils;
@@ -160,9 +161,9 @@ public class DefaultOperationRequest implements OperationRequest {
         return params;
     }
 
-    public Object execute(boolean forceRefresh, boolean cachable) throws Exception {
-        this.refresh=forceRefresh;
-        this.cachable=cachable;
+    public Object execute(byte cacheFlags) throws Exception {
+        this.refresh=(cacheFlags & CacheBehavior.FORCE_REFRESH)==CacheBehavior.FORCE_REFRESH;
+        this.cachable=(cacheFlags & CacheBehavior.STORE)==CacheBehavior.STORE;
         return session.execute(this);
     }
 

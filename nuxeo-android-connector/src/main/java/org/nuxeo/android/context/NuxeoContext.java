@@ -3,10 +3,13 @@ package org.nuxeo.android.context;
 import org.nuxeo.android.config.NuxeoOfflineSettings;
 import org.nuxeo.android.config.NuxeoServerConfig;
 import org.nuxeo.android.repository.DocumentManager;
+import org.nuxeo.ecm.automation.client.cache.CacheAwareHttpAutomationClient;
+import org.nuxeo.ecm.automation.client.cache.InputStreamCacheManager;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpAutomationClient;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
 
 /**
  *
@@ -23,7 +26,13 @@ public class NuxeoContext {
 
 	protected HttpAutomationClient nuxeoClient;
 
+	protected InputStreamCacheManager cacheManager;
+
 	protected Session nuxeoSession;
+
+	protected ConnectivityManager connectivityManager;
+
+	protected NetworkStatusBroadCastReceiver networkStatusBroadCastReceiver;
 
 	public static NuxeoContext get(Context context) {
 		if (context instanceof NuxeoContextProvider) {
@@ -55,8 +64,12 @@ public class NuxeoContext {
 
 	public synchronized Session getSession() {
 		if (nuxeoSession==null) {
-			nuxeoClient = new HttpAutomationClient(
-					serverConfig.getAutomationUrl());
+			if (cacheManager==null) {
+				nuxeoClient = new HttpAutomationClient(
+						serverConfig.getAutomationUrl());
+			} else {
+				nuxeoClient = new CacheAwareHttpAutomationClient(serverConfig.getAutomationUrl(), cacheManager);
+			}
 			nuxeoSession = nuxeoClient.getSession(
 					serverConfig.getLogin(),
 					serverConfig.getPassword());
@@ -67,5 +80,30 @@ public class NuxeoContext {
 	public DocumentManager getDocumentManager() {
 		return new DocumentManager(getSession());
 	}
+
+	public ConnectivityManager getConnectivityManager() {
+		return connectivityManager;
+	}
+
+	public void setConnectivityManager(ConnectivityManager connectivityManager) {
+		this.connectivityManager = connectivityManager;
+	}
+
+	public NetworkStatusBroadCastReceiver getNetworkStatusBroadCastReceiver() {
+		if (networkStatusBroadCastReceiver==null) {
+			networkStatusBroadCastReceiver = new NetworkStatusBroadCastReceiver(getServerConfig(), getOfflineSettings());
+		}
+		return networkStatusBroadCastReceiver;
+	}
+
+	public InputStreamCacheManager getCacheManager() {
+		return cacheManager;
+	}
+
+	public void setCacheManager(InputStreamCacheManager cacheManager) {
+		this.cacheManager = cacheManager;
+	}
+
+
 
 }

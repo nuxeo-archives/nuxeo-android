@@ -40,7 +40,7 @@ public class DocumentManager {
 		throw new UnsupportedOperationException();
 	}
 
-	public Documents query(String nxql, String[] queryParams, String[] sortInfo, String schemaList, int page, int pageSize, boolean forceRefresh, boolean cachable) throws Exception {
+	public Documents query(String nxql, String[] queryParams, String[] sortInfo, String schemaList, int page, int pageSize, byte cacheFlags) throws Exception {
 
 		OperationRequest fetchOperation = session.newRequest("Document.PageProvider").set(
 				"query", nxql).set("pageSize",pageSize).set("page",0);
@@ -56,7 +56,7 @@ public class DocumentManager {
 		}
 		fetchOperation.setHeader("X-NXDocumentProperties", schemaList);
 
-		Documents docs = (Documents) fetchOperation.execute(forceRefresh, cachable);
+		Documents docs = (Documents) fetchOperation.execute(cacheFlags);
 		return docs;
 
 	}

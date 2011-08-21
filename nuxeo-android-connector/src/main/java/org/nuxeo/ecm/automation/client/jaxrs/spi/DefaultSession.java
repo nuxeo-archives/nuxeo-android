@@ -154,11 +154,8 @@ public class DefaultSession implements Session {
         });
     }
 
-    public OperationRequest newRequest(String id) {
-        return newRequest(id, false);
-    }
 
-    public OperationRequest newRequest(String id, boolean cachable) {
+    public OperationRequest newRequest(String id) {
         return newRequest(id, new HashMap<String, String>());
     }
 

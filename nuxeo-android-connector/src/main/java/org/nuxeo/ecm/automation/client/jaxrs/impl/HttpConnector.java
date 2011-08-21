@@ -18,8 +18,6 @@ package org.nuxeo.ecm.automation.client.jaxrs.impl;
 
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 import org.apache.http.Header;
@@ -71,37 +69,6 @@ public class HttpConnector implements Connector {
         this.ctx = ctx;
     }
 
-    protected String computeRequestKey(Request request) {
-
-        String url = request.getUrl();
-        if (url.endsWith("/login")) {
-            // no caching
-            return null;
-        }
-
-        if (url.endsWith("/automation/")) {
-            // automation operation definitions
-            return "automationDefinitions";
-        }
-
-        StringBuffer sb = new StringBuffer();
-        sb.append(request.getUrl());
-        sb.append(request.asStringEntity());
-
-        MessageDigest digest;
-        try {
-            digest = java.security.MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            return null;
-        }
-        digest.update(sb.toString().getBytes());
-        byte messageDigest[] = digest.digest();
-        StringBuffer hexString = new StringBuffer();
-        for (int i=0; i<messageDigest.length; i++)
-            hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
-        return hexString.toString();
-    }
-
     @Override
     public Object execute(Request request) {
         return execute(request, false, true);
@@ -113,12 +80,12 @@ public class HttpConnector implements Connector {
         String cacheKey=null;
         CacheEntry cachedResult = null;
         if (cacheManager!=null ) {
-            cacheKey = computeRequestKey(request);
+            cacheKey = CacheKeyHelper.computeRequestKey(request);
             cachedResult = cacheManager.getFromCache(cacheKey);
             if (cachedResult!=null && !forceRefresh) {
                 System.out.println("Cache HIT");
                 try {
-                    return request.handleResult(200, cachedResult.getCtype(), cachedResult.getDisp(), cachedResult.getInputStream());
+                    return request.handleResult(200, cachedResult.getReponseContentType(), cachedResult.getResponseContentDisposition(), cachedResult.getResponseStream());
                 } catch (Exception e) {
                     // NOP
                 }
@@ -126,7 +93,7 @@ public class HttpConnector implements Connector {
         }
 
         if (!cachable) {
-            // desable caching if needed
+            // disable caching if needed
             cacheKey = null;
         }
 
@@ -156,7 +123,7 @@ public class HttpConnector implements Connector {
         } catch (RemoteException e) {
             if (cachedResult!=null) {
                 try {
-                    return request.handleResult(200, cachedResult.getCtype(), cachedResult.getDisp(), cachedResult.getInputStream());
+                    return request.handleResult(200, cachedResult.getReponseContentType(), cachedResult.getResponseContentDisposition(), cachedResult.getResponseStream());
                 } catch (Exception e2) {
                     throw e;
                 }
@@ -168,7 +135,7 @@ public class HttpConnector implements Connector {
         	if (isNetworkError(t)) {
         		if (cachedResult!=null) {
                     try {
-                        return request.handleResult(200, cachedResult.getCtype(), cachedResult.getDisp(), cachedResult.getInputStream());
+                        return request.handleResult(200, cachedResult.getReponseContentType(), cachedResult.getResponseContentDisposition(), cachedResult.getResponseStream());
                     } catch (Throwable t2) {
                         throw new NotAvailableOffline("Can not fetch result from cache", t2);
                     }
@@ -228,7 +195,7 @@ public class HttpConnector implements Connector {
         InputStream is = entity.getContent();
         if (cacheKey!=null && cacheManager!=null && status==200) {
             // store in cache
-            is = cacheManager.addToCache(cacheKey, new CacheEntry(ctype, disp, is));
+            is = cacheManager.addToCache(cacheKey, new CacheEntry(ctype, disp, is, request));
         }
         return request.handleResult(status, ctype, disp, is);
     }

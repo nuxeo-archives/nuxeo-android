@@ -2,6 +2,7 @@ package org.nuxeo.android.automationsample;
 
 import org.nuxeo.android.contentprovider.NuxeoDocumentCursor;
 import org.nuxeo.android.context.NuxeoContext;
+import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
 import android.app.Activity;
@@ -40,7 +41,7 @@ public class CursorSampleActivity extends Activity implements
 				public void run() {
 
 					try {
-						Documents docs = NuxeoContext.get(getApplicationContext()).getDocumentManager().query("select * from Document", null, null, null, 0, 5, false, false);
+						Documents docs = NuxeoContext.get(getApplicationContext()).getDocumentManager().query("select * from Document", null, null, null, 0, 5, CacheBehavior.STORE);
 						final NuxeoDocumentCursor cur = docs.asCursor();
 						final String[] columns = new String[] { "_ID", "dc:title" };
 	  	                final int[] to = new int[] { R.id.id_entry, R.id.title_entry };
