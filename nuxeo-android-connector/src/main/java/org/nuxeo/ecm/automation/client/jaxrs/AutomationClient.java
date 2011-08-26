@@ -104,5 +104,6 @@ public interface AutomationClient {
      */
     void shutdown();
 
+    boolean isOffline();
 
 }

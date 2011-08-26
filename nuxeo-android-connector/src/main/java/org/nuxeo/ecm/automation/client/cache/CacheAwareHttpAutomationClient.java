@@ -1,5 +1,6 @@
 package org.nuxeo.ecm.automation.client.cache;
 
+import org.nuxeo.android.network.NuxeoNetworkStatus;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpAutomationClient;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpConnector;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.Connector;
@@ -8,17 +9,22 @@ public class CacheAwareHttpAutomationClient extends HttpAutomationClient {
 
     protected InputStreamCacheManager cacheManager;
 
-    public CacheAwareHttpAutomationClient(String url, InputStreamCacheManager cacheManager) {
+    protected NuxeoNetworkStatus offlineSettings;
+
+    public CacheAwareHttpAutomationClient(String url, InputStreamCacheManager cacheManager, NuxeoNetworkStatus offlineSettings) {
         super(url);
         this.cacheManager = cacheManager;
+        this.offlineSettings = offlineSettings;
     }
 
     @Override
     protected Connector newConnector() {
-        HttpConnector con =  new HttpConnector(http);
-        if (cacheManager!=null) {
-            con.setCacheManager(cacheManager);
-        }
+        HttpConnector con =  new CachedHttpConnector(http, cacheManager, offlineSettings);
         return con;
     }
+
+    public boolean isOffline() {
+    	return offlineSettings.isForceOffline() || !offlineSettings.isNetworkReachable();
+    }
+
 }

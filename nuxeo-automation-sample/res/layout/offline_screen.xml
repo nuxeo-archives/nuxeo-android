@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical">
+
+  <TextView
+    android:id="@+id/networkStatusLabel"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:textSize="16dip"
+    android:text="Network status:"
+     />
+
+   <CheckBox android:layout_height="wrap_content" android:id="@+id/networkReachableChk" android:layout_alignParentLeft="true" android:text="Network reachable" android:layout_width="wrap_content" android:editable="false"></CheckBox>
+   <CheckBox android:layout_height="wrap_content" android:id="@+id/serverReachableChk" android:layout_alignParentLeft="true" android:text="Nuxeo Server reachable" android:layout_width="wrap_content" android:editable="false"></CheckBox>
+   <CheckBox android:layout_height="wrap_content" android:id="@+id/forceOfflineChk" android:layout_alignParentLeft="true" android:text="Force Offline" android:layout_width="wrap_content"></CheckBox>
+
+  <TextView
+    android:id="@+id/cacheLabel"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:textSize="16dip"
+    android:text="Caching info:"
+     />
+
+  <TextView
+    android:id="@+id/cacheEntriesCount"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:textSize="16dip"/>
+
+  <Button
+    android:id="@+id/clearCacheBtn"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="Clear Cache"
+   />
+
+  <Button
+    android:id="@+id/refreshBtn"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="Refresh Screen"
+   />
+
+</LinearLayout>

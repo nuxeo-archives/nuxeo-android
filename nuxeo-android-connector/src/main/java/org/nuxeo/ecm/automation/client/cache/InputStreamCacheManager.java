@@ -4,8 +4,11 @@ import java.io.InputStream;
 
 public interface InputStreamCacheManager {
 
-    CacheEntry getFromCache(String key);
+	CacheEntry getFromCache(String key);
 
     InputStream addToCache(String key, CacheEntry entry);
 
+    long getEntryCount();
+
+    void clear();
 }

@@ -4,6 +4,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.spi.AbstractAutomationClient;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.Connector;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.DefaultSession;
 
+@Deprecated
 public class DisconnectedSession extends DefaultSession implements Session {
 
     public DisconnectedSession(AbstractAutomationClient client,

@@ -9,6 +9,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -95,12 +98,8 @@ public class AutomationSampleActivity extends Activity implements View.OnClickLi
 
 		if (resultCode == Activity.RESULT_OK) {
 			Uri uri = data.getData();
-
 			//getContentResolver().openAssetFileDescriptor(uri, "r").createInputStream();
 			//setResult(resultCode, data)
-
-
-
 		}
 
 		// TODO Auto-generated method stub
@@ -108,6 +107,26 @@ public class AutomationSampleActivity extends Activity implements View.OnClickLi
 	}
 
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.simplemenu, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+
+	 @Override
+	 public boolean onOptionsItemSelected(MenuItem item) {
+	        // Handle all of the possible menu actions.
+	        switch (item.getItemId()) {
+
+	        case R.id.itemOfflineConfig:
+	        	startActivity(new Intent(getApplicationContext(),
+                    NetworkSettingsActivity.class));
+	        	break;
+	        }
+	        return super.onOptionsItemSelected(item);
+	 }
 
 
 }

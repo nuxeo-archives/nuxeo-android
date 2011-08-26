@@ -94,6 +94,14 @@ public class SQLCacheHelper extends SQLiteOpenHelper {
 		}
 	}
 
+	public long getEntryCount() {
+		SQLiteDatabase db = getReadableDatabase();
+
+		String sql = "select count(*) from " + TBLNAME ;
+		SQLiteStatement statement = db.compileStatement(sql);
+		return statement.simpleQueryForLong();
+	}
+
 	public CacheEntry getEntry(String key) {
 		SQLiteDatabase db = getReadableDatabase();
 
@@ -120,5 +128,14 @@ public class SQLCacheHelper extends SQLiteOpenHelper {
 				cursor.close();
 			}
 		}
+	}
+
+	public void clear() {
+		SQLiteDatabase db = getWritableDatabase();
+		String sql = "delete  from " + TBLNAME ;
+		db.beginTransaction();
+		db.execSQL(sql);
+		db.setTransactionSuccessful();
+		db.endTransaction();
 	}
 }

@@ -8,6 +8,7 @@
 
 	<!-- We need this permission, in order to access to Internet -->
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:name="org.nuxeo.android.automationsample.NuxeoSampleApplication">
@@ -17,6 +18,9 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+         <activity android:name="NetworkSettingsActivity"
+                  android:label="Nuxeo Offline Settings">
         </activity>
         <activity android:name=".ContentProviderSampleActivity"
                   android:label="Content Provider sample">

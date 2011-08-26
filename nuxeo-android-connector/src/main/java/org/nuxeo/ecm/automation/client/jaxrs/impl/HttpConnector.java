@@ -27,7 +27,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.AbstractHttpClient;
@@ -35,10 +34,10 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.nuxeo.ecm.automation.client.cache.CacheEntry;
-import org.nuxeo.ecm.automation.client.cache.InputStreamCacheManager;
 import org.nuxeo.ecm.automation.client.jaxrs.RemoteException;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.Connector;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.Request;
+import org.nuxeo.ecm.automation.client.jaxrs.spi.Response;
 
 /**
  * Connector wrapping a {@link HttpClient} instance.
@@ -52,12 +51,6 @@ public class HttpConnector implements Connector {
     protected final HttpContext ctx;
 
     protected String basicAuth;
-
-    protected InputStreamCacheManager cacheManager;
-
-    public void setCacheManager(InputStreamCacheManager manager) {
-        cacheManager = manager;
-    }
 
     public HttpConnector(HttpClient http) {
         this(http, new BasicHttpContext());
@@ -76,28 +69,35 @@ public class HttpConnector implements Connector {
 
     @Override
     public Object execute(Request request,  boolean forceRefresh, boolean cachable) {
-
-        String cacheKey=null;
-        CacheEntry cachedResult = null;
-        if (cacheManager!=null ) {
-            cacheKey = CacheKeyHelper.computeRequestKey(request);
-            cachedResult = cacheManager.getFromCache(cacheKey);
-            if (cachedResult!=null && !forceRefresh) {
-                System.out.println("Cache HIT");
-                try {
-                    return request.handleResult(200, cachedResult.getReponseContentType(), cachedResult.getResponseContentDisposition(), cachedResult.getResponseStream());
-                } catch (Exception e) {
-                    // NOP
-                }
+        try {
+            Response response =  doExecute(request);
+            if (response!=null) {
+            	return response.getResult(request);
+            } else {
+            	throw new RuntimeException("Cannot execute " + request);
             }
-        }
+        } catch (Throwable t) {
+        	throw new RuntimeException("Cannot execute " + request, t);
+        	}
+    }
 
-        if (!cachable) {
-            // disable caching if needed
-            cacheKey = null;
-        }
+    protected boolean isNetworkError(Throwable t) {
+    	String className = t.getClass().getName();
 
-        HttpRequestBase httpRequest = null;
+    	if (className.startsWith("java.net.")) {
+    		return true;
+    	}
+    	if (className.startsWith("org.apache.http.conn.")) {
+    		return true;
+    	}
+
+    	return false;
+    }
+
+    protected Response doExecute(Request request)
+            throws Exception {
+
+    	HttpRequestBase httpReq = null;
         if (request.getMethod() == Request.POST) {
             HttpPost post = new HttpPost(request.getUrl());
             Object obj = request.getEntity();
@@ -114,55 +114,11 @@ public class HttpConnector implements Connector {
                 }
                 post.setEntity(entity);
             }
-            httpRequest = post;
+            httpReq = post;
         } else {
-            httpRequest = new HttpGet(request.getUrl());
+        	httpReq = new HttpGet(request.getUrl());
         }
-        try {
-            return execute(request, httpRequest, cacheKey);
-        } catch (RemoteException e) {
-            if (cachedResult!=null) {
-                try {
-                    return request.handleResult(200, cachedResult.getReponseContentType(), cachedResult.getResponseContentDisposition(), cachedResult.getResponseStream());
-                } catch (Exception e2) {
-                    throw e;
-                }
-            } else {
-                throw e;
-            }
-        }
-        catch (Throwable t) {
-        	if (isNetworkError(t)) {
-        		if (cachedResult!=null) {
-                    try {
-                        return request.handleResult(200, cachedResult.getReponseContentType(), cachedResult.getResponseContentDisposition(), cachedResult.getResponseStream());
-                    } catch (Throwable t2) {
-                        throw new NotAvailableOffline("Can not fetch result from cache", t2);
-                    }
-                } else {
-                	throw new NotAvailableOffline("No data in cache, must be online");
-                }
-        	} else {
-        		throw new RuntimeException("Cannot execute " + request, t);
-        	}
-        }
-    }
 
-    protected boolean isNetworkError(Throwable t) {
-    	String className = t.getClass().getName();
-
-    	if (className.startsWith("java.net.")) {
-    		return true;
-    	}
-    	if (className.startsWith("org.apache.http.conn.")) {
-    		return true;
-    	}
-
-    	return false;
-    }
-
-    protected Object execute(Request request, HttpUriRequest httpReq, String cacheKey)
-            throws Exception {
         for (Map.Entry<String, String> entry : request.entrySet()) {
             httpReq.setHeader(entry.getKey(), entry.getValue());
         }
@@ -193,11 +149,10 @@ public class HttpConnector implements Connector {
         }
 
         InputStream is = entity.getContent();
-        if (cacheKey!=null && cacheManager!=null && status==200) {
-            // store in cache
-            is = cacheManager.addToCache(cacheKey, new CacheEntry(ctype, disp, is, request));
-        }
-        return request.handleResult(status, ctype, disp, is);
+
+        Response response = new Response(status,ctype, disp, is);
+
+        return response;
     }
 
 }

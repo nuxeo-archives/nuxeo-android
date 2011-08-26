@@ -60,4 +60,14 @@ public class DummyInMemoryCache implements InputStreamCacheManager {
 		return entry;
 	}
 
+	@Override
+	public long getEntryCount() {
+		return cacheEntries.size();
+	}
+
+	@Override
+	public void clear() {
+		cacheEntries.clear();
+	}
+
 }

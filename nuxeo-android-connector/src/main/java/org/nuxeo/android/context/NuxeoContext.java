@@ -1,7 +1,8 @@
 package org.nuxeo.android.context;
 
-import org.nuxeo.android.config.NuxeoOfflineSettings;
 import org.nuxeo.android.config.NuxeoServerConfig;
+import org.nuxeo.android.network.NetworkStatusBroadCastReceiver;
+import org.nuxeo.android.network.NuxeoNetworkStatus;
 import org.nuxeo.android.repository.DocumentManager;
 import org.nuxeo.ecm.automation.client.cache.CacheAwareHttpAutomationClient;
 import org.nuxeo.ecm.automation.client.cache.InputStreamCacheManager;
@@ -20,9 +21,9 @@ public class NuxeoContext {
 
 	protected static NuxeoContext instance = null;
 
-	protected NuxeoServerConfig serverConfig = new NuxeoServerConfig();
+	protected NuxeoServerConfig serverConfig;
 
-	protected NuxeoOfflineSettings offlineSettings = new NuxeoOfflineSettings();
+	protected NuxeoNetworkStatus networkStatus;
 
 	protected HttpAutomationClient nuxeoClient;
 
@@ -46,20 +47,19 @@ public class NuxeoContext {
 		}
 	}
 
+	public NuxeoContext() {
+		serverConfig = new NuxeoServerConfig();
+	}
+
 	public NuxeoServerConfig getServerConfig() {
 		return serverConfig;
 	}
 
-	public void setServerConfig(NuxeoServerConfig serverConfig) {
-		this.serverConfig = serverConfig;
-	}
-
-	public NuxeoOfflineSettings getOfflineSettings() {
-		return offlineSettings;
-	}
-
-	public void setOfflineSettings(NuxeoOfflineSettings offlineSettings) {
-		this.offlineSettings = offlineSettings;
+	public NuxeoNetworkStatus getNetworkStatus() {
+		if (networkStatus==null) {
+			networkStatus = new NuxeoNetworkStatus(serverConfig, connectivityManager);
+		}
+		return networkStatus;
 	}
 
 	public synchronized Session getSession() {
@@ -68,7 +68,7 @@ public class NuxeoContext {
 				nuxeoClient = new HttpAutomationClient(
 						serverConfig.getAutomationUrl());
 			} else {
-				nuxeoClient = new CacheAwareHttpAutomationClient(serverConfig.getAutomationUrl(), cacheManager);
+				nuxeoClient = new CacheAwareHttpAutomationClient(serverConfig.getAutomationUrl(), cacheManager, networkStatus);
 			}
 			nuxeoSession = nuxeoClient.getSession(
 					serverConfig.getLogin(),
@@ -87,11 +87,14 @@ public class NuxeoContext {
 
 	public void setConnectivityManager(ConnectivityManager connectivityManager) {
 		this.connectivityManager = connectivityManager;
+		if (networkStatus==null) {
+			networkStatus = new NuxeoNetworkStatus(serverConfig, connectivityManager);
+		}
 	}
 
 	public NetworkStatusBroadCastReceiver getNetworkStatusBroadCastReceiver() {
 		if (networkStatusBroadCastReceiver==null) {
-			networkStatusBroadCastReceiver = new NetworkStatusBroadCastReceiver(getServerConfig(), getOfflineSettings());
+			networkStatusBroadCastReceiver = new NetworkStatusBroadCastReceiver(getNetworkStatus());
 		}
 		return networkStatusBroadCastReceiver;
 	}

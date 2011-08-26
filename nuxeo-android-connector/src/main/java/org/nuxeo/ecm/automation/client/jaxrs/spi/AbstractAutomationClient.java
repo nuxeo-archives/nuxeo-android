@@ -184,4 +184,7 @@ public abstract class AbstractAutomationClient implements AutomationClient {
 
     protected abstract Connector newConnector();
 
+    public boolean isOffline() {
+    	return false;
+    }
 }

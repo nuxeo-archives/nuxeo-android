@@ -81,4 +81,14 @@ public class DefaultCacheManager implements InputStreamCacheManager {
 		return entry;
 	}
 
+	@Override
+	public long getEntryCount() {
+		return sqlHelper.getEntryCount();
+	}
+
+	@Override
+	public void clear() {
+		sqlHelper.clear();
+		// XXX delete files !!!
+	}
 }
