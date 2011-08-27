@@ -35,6 +35,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.OperationInput;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
+ * @author tiry
  */
 public class DefaultSession implements Session {
 
@@ -108,17 +109,9 @@ public class DefaultSession implements Session {
         return result;
     }
 
-    public void execute(final OperationRequest request,
+    public String execute(final OperationRequest request,
             final AsyncCallback<Object> cb) {
-        client.asyncExec(new Runnable() {
-            public void run() {
-                try {
-                    cb.onSuccess(execute(request));
-                } catch (Throwable t) {
-                    cb.onError(t);
-                }
-            }
-        });
+    	return client.asyncExec(this, request, cb);
     }
 
     public Blob getFile(String path) throws Exception {
@@ -131,30 +124,34 @@ public class DefaultSession implements Session {
         return (Blobs) connector.execute(req);
     }
 
-    public void getFile(final String path, final AsyncCallback<Blob> cb)
+    public String getFile(final String path, final AsyncCallback<Blob> cb)
             throws Exception {
+    	final String requestKey="file:" + path;
         client.asyncExec(new Runnable() {
             public void run() {
                 try {
-                    cb.onSuccess(getFile(path));
+                    cb.onSuccess(requestKey,getFile(path));
                 } catch (Throwable t) {
-                    cb.onError(t);
+                    cb.onError(requestKey,t);
                 }
             }
         });
+        return requestKey;
     }
 
-    public void getFiles(final String path, final AsyncCallback<Blobs> cb)
+    public String getFiles(final String path, final AsyncCallback<Blobs> cb)
             throws Exception {
+    	final String requestKey="files:" + path;
         client.asyncExec(new Runnable() {
             public void run() {
                 try {
-                    cb.onSuccess(getFiles(path));
+                    cb.onSuccess(requestKey,getFiles(path));
                 } catch (Throwable t) {
-                    cb.onError(t);
+                    cb.onError(requestKey,t);
                 }
             }
         });
+        return requestKey;
     }
 
 

@@ -29,12 +29,14 @@ import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.AutomationClient;
 import org.nuxeo.ecm.automation.client.jaxrs.DisconnectedSession;
 import org.nuxeo.ecm.automation.client.jaxrs.LoginInfo;
+import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.RequestInterceptor;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.auth.BasicAuthInterceptor;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
+ * @author tiry
  */
 public abstract class AbstractAutomationClient implements AutomationClient {
 
@@ -156,9 +158,9 @@ public abstract class AbstractAutomationClient implements AutomationClient {
                 try {
                     Session session = getSession();
                     // TODO handle failures
-                    cb.onSuccess(session);
+                    cb.onSuccess(null,session);
                 } catch (Throwable t) {
-                    cb.onError(t);
+                    cb.onError(null,t);
                 }
             }
         });
@@ -179,6 +181,10 @@ public abstract class AbstractAutomationClient implements AutomationClient {
     }
 
     public void asyncExec(Runnable runnable) {
+    	throw new UnsupportedOperationException("Async execution not supported");
+    }
+
+    public String asyncExec(final Session session, final OperationRequest request, final AsyncCallback<Object> cb) {
         throw new UnsupportedOperationException("Async execution not supported");
     }
 

@@ -32,6 +32,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.OperationDocumentation.Param;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
+ * @author tiry
  */
 public class DefaultOperationRequest implements OperationRequest {
 
@@ -161,18 +162,27 @@ public class DefaultOperationRequest implements OperationRequest {
         return params;
     }
 
+    protected void setCacheFlags(byte cacheFlags) {
+    	 this.refresh=(cacheFlags & CacheBehavior.FORCE_REFRESH)==CacheBehavior.FORCE_REFRESH;
+         this.cachable=(cacheFlags & CacheBehavior.STORE)==CacheBehavior.STORE;
+    }
+
     public Object execute(byte cacheFlags) throws Exception {
-        this.refresh=(cacheFlags & CacheBehavior.FORCE_REFRESH)==CacheBehavior.FORCE_REFRESH;
-        this.cachable=(cacheFlags & CacheBehavior.STORE)==CacheBehavior.STORE;
-        return session.execute(this);
+    	setCacheFlags(cacheFlags);
+    	return session.execute(this);
     }
 
     public Object execute() throws Exception {
         return session.execute(this);
     }
 
-    public void execute(AsyncCallback<Object> cb) {
-        session.execute(this, cb);
+    public String execute(AsyncCallback<Object> cb) {
+        return session.execute(this, cb);
+    }
+
+    public String execute(AsyncCallback<Object> cb, byte cacheFlags) {
+    	setCacheFlags(cacheFlags);
+    	return session.execute(this, cb);
     }
 
     public OperationRequest setHeader(String key, String value) {

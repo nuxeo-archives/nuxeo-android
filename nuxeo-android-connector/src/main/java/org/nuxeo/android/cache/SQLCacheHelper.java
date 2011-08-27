@@ -1,5 +1,7 @@
 package org.nuxeo.android.cache;
 
+import java.beans.Statement;
+
 import org.nuxeo.ecm.automation.client.cache.CacheEntry;
 
 import android.content.Context;
@@ -85,12 +87,15 @@ public class SQLCacheHelper extends SQLiteOpenHelper {
 
 		String sql = "select count(*) from " + TBLNAME + " where " + KEY_COLUMN + "= '" + key + "'";
 		SQLiteStatement statement = db.compileStatement(sql);
-		long nb = statement.simpleQueryForLong();
-
-		if (nb>0) {
-			updateEntry(db, key, entry);
-		} else {
-			addEntry(db, key, entry);
+		try {
+			long nb = statement.simpleQueryForLong();
+			if (nb>0) {
+				updateEntry(db, key, entry);
+			} else {
+				addEntry(db, key, entry);
+			}
+		}finally {
+			statement.close();
 		}
 	}
 
@@ -98,8 +103,15 @@ public class SQLCacheHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = getReadableDatabase();
 
 		String sql = "select count(*) from " + TBLNAME ;
-		SQLiteStatement statement = db.compileStatement(sql);
-		return statement.simpleQueryForLong();
+		SQLiteStatement statement=null;
+		try {
+			statement = db.compileStatement(sql);
+			return statement.simpleQueryForLong();
+		} finally {
+			if (statement!=null) {
+				statement.close();
+			}
+		}
 	}
 
 	public CacheEntry getEntry(String key) {

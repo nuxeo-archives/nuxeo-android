@@ -67,6 +67,7 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
 			getNuxeoContext().getCacheManager().clear();
 			updateCacheInfoDisplay(getNuxeoContext().getCacheManager());
 		} else if (view == refreshButton) {
+			reset();
 			refreshAll();
 		}
 	}

@@ -18,11 +18,12 @@ package org.nuxeo.ecm.automation.client.jaxrs;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
+ * @author tiry
  */
 public interface AsyncCallback<T> {
 
-    void onError(Throwable e);
+    void onError(String executionId,Throwable e);
 
-    void onSuccess(T data);
+    void onSuccess(String executionId, T data);
 
 }

@@ -24,6 +24,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.OperationDocumentation;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
+ * @author tiry
  */
 public interface Session {
 
@@ -63,7 +64,7 @@ public interface Session {
 
     Object execute(OperationRequest request) throws Exception;
 
-    void execute(OperationRequest request, AsyncCallback<Object> cb);
+    String execute(OperationRequest request, AsyncCallback<Object> cb);
 
     /**
      * Get a file from the server given a path identifying the file.
@@ -82,9 +83,9 @@ public interface Session {
      */
     Blobs getFiles(String path) throws Exception;
 
-    void getFile(String path, AsyncCallback<Blob> cb) throws Exception;
+    String getFile(String path, AsyncCallback<Blob> cb) throws Exception;
 
-    void getFiles(String path, AsyncCallback<Blobs> cb) throws Exception;
+    String getFiles(String path, AsyncCallback<Blobs> cb) throws Exception;
 
     OperationDocumentation getOperation(String id);
 

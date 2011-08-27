@@ -23,6 +23,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.OperationDocumentation.Param;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
+ * @author tiry
  */
 // TODO: comment me.
 public interface OperationRequest {
@@ -43,7 +44,9 @@ public interface OperationRequest {
 
     Object execute() throws Exception;
 
-    void execute(AsyncCallback<Object> cb);
+    String execute(AsyncCallback<Object> cb);
+
+    String execute(AsyncCallback<Object> cb, byte cacheFlags);
 
     Map<String, String> getParameters();
 

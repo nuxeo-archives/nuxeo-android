@@ -37,6 +37,17 @@ public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity 
 		refreshAll();
 	}
 
+	public void reset() {
+		Runnable tester = new Runnable() {
+			@Override
+			public void run() {
+				getNuxeoContext().getNetworkStatus().reset();
+				updateOfflineDisplay(getNuxeoContext().getNetworkStatus());
+			}
+		};
+		new Thread(tester).start();
+	}
+
 	protected void refreshAll() {
 		updateOfflineDisplay(getNuxeoContext().getNetworkStatus());
 		updateCacheInfoDisplay(getNuxeoContext().getCacheManager());

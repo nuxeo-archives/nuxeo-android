@@ -5,8 +5,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
+import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
@@ -21,8 +24,6 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 
 	protected Map<Integer, Documents> pages = new ConcurrentHashMap<Integer,Documents>();
 
-	protected ConcurrentHashMap<Integer, Thread> fetchInProgress = new ConcurrentHashMap<Integer,Thread>();
-
 	protected String[] columns;
 
 	protected int currentPage = 0;
@@ -36,6 +37,8 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 	protected OperationRequest fetchOperation;
 
 	protected final String pageParameterName;
+
+	protected CopyOnWriteArrayList<String> loadingInProgress = new CopyOnWriteArrayList<String>();
 
 	public NuxeoDocumentCursor (Session session, String nxql, String[] queryParams, String sortOrder, String schemas, int pageSize, UUIDMapper mapper) {
 
@@ -58,7 +61,7 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 		// define returned properties
 		fetchOperation.setHeader("X-NXDocumentProperties", schemas);
 
-		pages.put(currentPage, queryDocuments(currentPage, CacheBehavior.STORE));
+		pages.put(currentPage, queryDocuments(currentPage, CacheBehavior.STORE, null));
 	}
 
 	public NuxeoDocumentCursor (OperationRequest fetchOperation, String pageParametrerName) {
@@ -68,7 +71,7 @@ public class NuxeoDocumentCursor extends AbstractCursor {
      	this.mapper = new UUIDMapper();
 		this.session=fetchOperation.getSession();
 		this.fetchOperation = fetchOperation;
-		pages.put(currentPage, queryDocuments(currentPage, CacheBehavior.STORE));
+		pages.put(currentPage, queryDocuments(currentPage, CacheBehavior.STORE, null));
 	}
 
 	protected Documents getCurrentPage() {
@@ -88,21 +91,40 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 		return true;
 	}
 
-	protected void fetchPage(int targetPage) {
-		pages.put(targetPage, queryDocuments(targetPage, CacheBehavior.STORE));
-		onChange(true);
+	protected void fetchPage(final int targetPage) {
+		if (loadingInProgress.addIfAbsent(""+targetPage)) {
+			queryDocuments(targetPage,CacheBehavior.STORE, new AsyncCallback<Object>() {
+					@Override
+					public void onError(String executionId, Throwable e) {
+						Log.e(NuxeoDocumentCursor.class.getSimpleName(), "Error during async page fetching", e);
+						loadingInProgress.remove(""+ targetPage);
+					}
+					@Override
+					public void onSuccess(String executionId, Object data) {
+						loadingInProgress.remove(""+targetPage);
+						pages.put(targetPage, (Documents) data);
+						onChange(true);
+					}
+			});
+		}
 	}
 
-	protected Documents queryDocuments(int page, byte cacheFlags) {
+	protected Documents queryDocuments(int page, byte cacheFlags, AsyncCallback<Object> cb) {
 		Documents docs;
 		try {
 			fetchOperation.set(pageParameterName, page);
-			docs = (Documents) fetchOperation.execute(cacheFlags);
-			pageSize = docs.getPageSize();
+			if (cb==null) {
+				docs = (Documents) fetchOperation.execute(cacheFlags);
+				pageSize = docs.getPageSize();
+				return docs;
+			} else {
+				fetchOperation.execute(cb, cacheFlags);
+				return null;
+			}
 		} catch (Exception e) {
+			Log.e(NuxeoDocumentCursor.class.getSimpleName(), "Error while fetching documents",e);
 			return null;
 		}
-		return docs;
 	}
 
 	protected int getRelativePosition() {
@@ -125,6 +147,11 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 		if (pos > 0.7 * pageSize) {
 			final int pageToFetch = currentPage +1;
 
+			if (!pages.containsKey(pageToFetch)) {
+				fetchPage(pageToFetch);
+			}
+
+			/**
 			if (!pages.containsKey(pageToFetch) && !fetchInProgress.containsKey(pageToFetch)) {
 				Runnable fetcher = new Runnable() {
 					@Override
@@ -136,7 +163,7 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 				Thread fetcherThread = new Thread(fetcher);
 				fetchInProgress.putIfAbsent(pageToFetch, fetcherThread);
 				fetcherThread.start();
-			}
+			}**/
 		}
 	}
 
@@ -272,5 +299,9 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 
 	public Document getDocument() {
 		return getCurrentDocument();
+	}
+
+	public Integer getLoadingPagesCount() {
+		return loadingInProgress.size();
 	}
 }
