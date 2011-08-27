@@ -1,7 +1,7 @@
 package org.nuxeo.android.activities;
 
 import org.nuxeo.android.network.NuxeoNetworkStatus;
-import org.nuxeo.ecm.automation.client.cache.InputStreamCacheManager;
+import org.nuxeo.ecm.automation.client.cache.RequestCacheManager;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -55,7 +55,7 @@ public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity 
 
 	protected abstract void updateOfflineDisplay(NuxeoNetworkStatus settings);
 
-	protected abstract void updateCacheInfoDisplay(InputStreamCacheManager cacheManager);
+	protected abstract void updateCacheInfoDisplay(RequestCacheManager cacheManager);
 
 
 }

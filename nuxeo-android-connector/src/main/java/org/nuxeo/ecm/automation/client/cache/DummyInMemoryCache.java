@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class DummyInMemoryCache implements InputStreamCacheManager {
+public class DummyInMemoryCache implements RequestCacheManager {
 
     protected static class LRUCache<K, V> extends LinkedHashMap<K, V> {
         private static final long serialVersionUID = 1L;
@@ -68,6 +68,10 @@ public class DummyInMemoryCache implements InputStreamCacheManager {
 	@Override
 	public void clear() {
 		cacheEntries.clear();
+	}
+
+	public long getSize() {
+		return -1;
 	}
 
 }

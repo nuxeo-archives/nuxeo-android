@@ -7,11 +7,11 @@ import org.nuxeo.ecm.automation.client.jaxrs.spi.Connector;
 
 public class CacheAwareHttpAutomationClient extends HttpAutomationClient {
 
-    protected InputStreamCacheManager cacheManager;
+    protected RequestCacheManager cacheManager;
 
     protected NuxeoNetworkStatus offlineSettings;
 
-    public CacheAwareHttpAutomationClient(String url, InputStreamCacheManager cacheManager, NuxeoNetworkStatus offlineSettings) {
+    public CacheAwareHttpAutomationClient(String url, RequestCacheManager cacheManager, NuxeoNetworkStatus offlineSettings) {
         super(url);
         this.cacheManager = cacheManager;
         this.offlineSettings = offlineSettings;

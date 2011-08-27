@@ -52,78 +52,43 @@ public class CacheEntry {
         }
     }
 
-
-    /* (non-Javadoc)
-	 * @see org.nuxeo.ecm.automation.client.cache.CallResult#getResponseStream()
-	 */
     public InputStream getResponseStream() {
         return is;
     }
 
-    /* (non-Javadoc)
-	 * @see org.nuxeo.ecm.automation.client.cache.CallResult#setResponseStream(java.io.InputStream)
-	 */
     public void setResponseStream(InputStream is) {
         this.is = is;
     }
 
-    /* (non-Javadoc)
-	 * @see org.nuxeo.ecm.automation.client.cache.CallResult#getReponseContentType()
-	 */
     public String getReponseContentType() {
         return ctype;
     }
 
-    /* (non-Javadoc)
-	 * @see org.nuxeo.ecm.automation.client.cache.CallResult#setResponseContentType(java.lang.String)
-	 */
     public void setResponseContentType(String ctype) {
         this.ctype = ctype;
     }
 
-    /* (non-Javadoc)
-	 * @see org.nuxeo.ecm.automation.client.cache.CallResult#getResponseContentDisposition()
-	 */
     public String getResponseContentDisposition() {
         return disp;
     }
 
-    /* (non-Javadoc)
-	 * @see org.nuxeo.ecm.automation.client.cache.CallResult#setResponseContentDisposition(java.lang.String)
-	 */
     public void setResponseContentDisposition(String disp) {
         this.disp = disp;
     }
 
-    /* (non-Javadoc)
-	 * @see org.nuxeo.ecm.automation.client.cache.CallResult#getRequestMethod()
-	 */
     public int getRequestMethod() {
     	return rqMethod;
     }
 
-    /* (non-Javadoc)
-	 * @see org.nuxeo.ecm.automation.client.cache.CallResult#getRequestEntity()
-	 */
     public String getRequestEntity() {
     	return rqEntity;
     }
 
-	/* (non-Javadoc)
-	 * @see org.nuxeo.ecm.automation.client.cache.CallResult#setRequestMethod(int)
-	 */
 	public void setRequestMethod(int rqMethod) {
 		this.rqMethod = rqMethod;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nuxeo.ecm.automation.client.cache.CallResult#setRequestEntity(java.lang.String)
-	 */
 	public void setRequestEntity(String rqEntity) {
 		this.rqEntity = rqEntity;
 	}
-
-
-
-
 }

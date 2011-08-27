@@ -2,7 +2,7 @@ package org.nuxeo.ecm.automation.client.cache;
 
 import java.io.InputStream;
 
-public interface InputStreamCacheManager {
+public interface RequestCacheManager {
 
 	CacheEntry getFromCache(String key);
 
@@ -11,4 +11,6 @@ public interface InputStreamCacheManager {
     long getEntryCount();
 
     void clear();
+
+    long getSize();
 }

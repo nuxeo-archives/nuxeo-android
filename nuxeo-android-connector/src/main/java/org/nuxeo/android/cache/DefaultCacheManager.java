@@ -5,14 +5,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.List;
 
 import org.nuxeo.ecm.automation.client.cache.CacheEntry;
-import org.nuxeo.ecm.automation.client.cache.InputStreamCacheManager;
+import org.nuxeo.ecm.automation.client.cache.RequestCacheManager;
 import org.nuxeo.ecm.automation.client.cache.StreamHelper;
 
 import android.content.Context;
 
-public class DefaultCacheManager implements InputStreamCacheManager {
+public class DefaultCacheManager implements RequestCacheManager {
 
 	protected final SQLCacheHelper sqlHelper;
 	protected final File cacheDir;
@@ -88,7 +89,22 @@ public class DefaultCacheManager implements InputStreamCacheManager {
 
 	@Override
 	public void clear() {
+		List<String> keys = sqlHelper.getKeys();
+		for (String key : keys) {
+			File streamFile = new File(cacheDir, key);
+			streamFile.delete();
+		}
 		sqlHelper.clear();
-		// XXX delete files !!!
+	}
+
+	@Override
+	public long getSize() {
+		long size = 0;
+		List<String> keys = sqlHelper.getKeys();
+		for (String key : keys) {
+			File streamFile = new File(cacheDir, key);
+			size += streamFile.length();
+		}
+		return size;
 	}
 }

@@ -5,7 +5,7 @@ import org.nuxeo.android.network.NetworkStatusBroadCastReceiver;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
 import org.nuxeo.android.repository.DocumentManager;
 import org.nuxeo.ecm.automation.client.cache.CacheAwareHttpAutomationClient;
-import org.nuxeo.ecm.automation.client.cache.InputStreamCacheManager;
+import org.nuxeo.ecm.automation.client.cache.RequestCacheManager;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpAutomationClient;
 
@@ -27,7 +27,7 @@ public class NuxeoContext {
 
 	protected HttpAutomationClient nuxeoClient;
 
-	protected InputStreamCacheManager cacheManager;
+	protected RequestCacheManager cacheManager;
 
 	protected Session nuxeoSession;
 
@@ -99,11 +99,11 @@ public class NuxeoContext {
 		return networkStatusBroadCastReceiver;
 	}
 
-	public InputStreamCacheManager getCacheManager() {
+	public RequestCacheManager getCacheManager() {
 		return cacheManager;
 	}
 
-	public void setCacheManager(InputStreamCacheManager cacheManager) {
+	public void setCacheManager(RequestCacheManager cacheManager) {
 		this.cacheManager = cacheManager;
 	}
 

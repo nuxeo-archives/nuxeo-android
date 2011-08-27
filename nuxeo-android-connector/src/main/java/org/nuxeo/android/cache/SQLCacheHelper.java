@@ -1,6 +1,7 @@
 package org.nuxeo.android.cache;
 
-import java.beans.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.nuxeo.ecm.automation.client.cache.CacheEntry;
 
@@ -135,6 +136,28 @@ public class SQLCacheHelper extends SQLiteOpenHelper {
 			else {
 				return null;
 			}
+		} finally {
+			if (cursor!=null) {
+				cursor.close();
+			}
+		}
+	}
+
+	public List<String> getKeys() {
+
+		List<String> keys = new ArrayList<String>();
+		SQLiteDatabase db = getReadableDatabase();
+
+		String sql = "select " + KEY_COLUMN + " from " + TBLNAME;
+		Cursor cursor = db.rawQuery(sql,null);
+
+		try {
+			if (cursor.getCount()>0 && cursor.moveToFirst()) {
+				do {
+					keys.add(cursor.getString(cursor.getColumnIndex(KEY_COLUMN)));
+				} while (cursor.moveToNext());
+			}
+			return keys;
 		} finally {
 			if (cursor!=null) {
 				cursor.close();

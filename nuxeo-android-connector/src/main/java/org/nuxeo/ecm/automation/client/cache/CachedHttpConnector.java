@@ -14,11 +14,11 @@ import org.nuxeo.ecm.automation.client.jaxrs.spi.Response;
 
 public class CachedHttpConnector extends HttpConnector implements Connector {
 
-	protected final InputStreamCacheManager cacheManager;
+	protected final RequestCacheManager cacheManager;
 
 	protected final NuxeoNetworkStatus offlineSettings;
 
-	public CachedHttpConnector(HttpClient http, InputStreamCacheManager cacheManager, NuxeoNetworkStatus offlineSettings) {
+	public CachedHttpConnector(HttpClient http, RequestCacheManager cacheManager, NuxeoNetworkStatus offlineSettings) {
 		super(http);
 		this.cacheManager = cacheManager;
 		this.offlineSettings = offlineSettings;

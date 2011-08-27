@@ -2,7 +2,7 @@ package org.nuxeo.android.automationsample;
 
 import org.nuxeo.android.activities.AbstractNetworkSettingsActivity;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
-import org.nuxeo.ecm.automation.client.cache.InputStreamCacheManager;
+import org.nuxeo.ecm.automation.client.cache.RequestCacheManager;
 
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +16,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity implements OnCheckedChangeListener, OnClickListener{
 
     private TextView cacheEntriesCount;
+    private TextView cacheSize;
     private CheckBox forceOfflineChk;
     private CheckBox networkReachable;
     private CheckBox serverReachable;
@@ -31,6 +32,7 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
         networkReachable = (CheckBox) findViewById(R.id.networkReachableChk);
         serverReachable = (CheckBox) findViewById(R.id.serverReachableChk);
         cacheEntriesCount = (TextView) findViewById(R.id.cacheEntriesCount);
+        cacheSize = (TextView) findViewById(R.id.cacheSize);
         clearCacheButton = (Button) findViewById(R.id.clearCacheBtn);
         refreshButton = (Button) findViewById(R.id.refreshBtn);
 
@@ -49,8 +51,9 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
 	}
 
 	@Override
-	protected void updateCacheInfoDisplay(InputStreamCacheManager cacheManager) {
-		cacheEntriesCount.setText("Cache contains " + cacheManager.getEntryCount());
+	protected void updateCacheInfoDisplay(RequestCacheManager cacheManager) {
+		cacheEntriesCount.setText("Cache contains " + cacheManager.getEntryCount() + " entries");
+		cacheSize.setText("Cache size : " + cacheManager.getSize() + "(bytes)" );
 	}
 
 	@Override
