@@ -4,12 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
-import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
@@ -18,164 +13,53 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyList;
 
 import android.database.AbstractCursor;
 import android.os.Bundle;
-import android.util.Log;
 
 public class NuxeoDocumentCursor extends AbstractCursor {
 
-	protected Map<Integer, Documents> pages = new ConcurrentHashMap<Integer,Documents>();
-
 	protected String[] columns;
-
-	protected int currentPage = 0;
-
-	protected int pageSize = 20;
 
 	protected final UUIDMapper mapper;
 
-	protected final Session session;
-
-	protected OperationRequest fetchOperation;
-
-	protected final String pageParameterName;
-
-	protected CopyOnWriteArrayList<String> loadingInProgress = new CopyOnWriteArrayList<String>();
+	protected final LazyDocumentsList docList;
 
 	public NuxeoDocumentCursor (Session session, String nxql, String[] queryParams, String sortOrder, String schemas, int pageSize, UUIDMapper mapper) {
-
-		this.pageSize = pageSize;
-		this.currentPage = 0;
 		if (mapper!=null) {
 			this.mapper = mapper;
 		} else {
 			this.mapper = new UUIDMapper();
 		}
-
-		this.session=session;
-		this.pageParameterName = "page";
-
-		fetchOperation = session.newRequest("Document.PageProvider").set(
-				"query", nxql).set("pageSize",pageSize).set(pageParameterName,0);
-		if (queryParams!=null) {
-			fetchOperation.set("queryParams", queryParams);
-		}
-		// define returned properties
-		fetchOperation.setHeader("X-NXDocumentProperties", schemas);
-
-		pages.put(currentPage, queryDocuments(currentPage, CacheBehavior.STORE, null));
+		docList = new LazyDocumentsList(session, nxql, queryParams, sortOrder, schemas, pageSize);
+		docList.registerListener(new LazyDocumentsList.ChangeListener() {
+			@Override
+			public void notifyContentChanged(int page) {
+				onChange(true);
+			}
+		});
 	}
 
 	public NuxeoDocumentCursor (OperationRequest fetchOperation, String pageParametrerName) {
-
-		this.pageParameterName = pageParametrerName;
-		this.currentPage = 0;
      	this.mapper = new UUIDMapper();
-		this.session=fetchOperation.getSession();
-		this.fetchOperation = fetchOperation;
-		pages.put(currentPage, queryDocuments(currentPage, CacheBehavior.STORE, null));
-	}
-
-	protected Documents getCurrentPage() {
-		return pages.get(currentPage);
-	}
-
-	protected boolean fetchAndChangeCurrentPage(int targetPage) {
-		if (!getCurrentPage().isBatched()) {
-			return false;
-		}
-		if (targetPage < getCurrentPage().getPageCount()) {
-			currentPage = targetPage;
-		} else {
-			return false;
-		}
-		fetchPage(targetPage);
-		return true;
-	}
-
-	protected void fetchPage(final int targetPage) {
-		if (loadingInProgress.addIfAbsent(""+targetPage)) {
-			queryDocuments(targetPage,CacheBehavior.STORE, new AsyncCallback<Object>() {
-					@Override
-					public void onError(String executionId, Throwable e) {
-						Log.e(NuxeoDocumentCursor.class.getSimpleName(), "Error during async page fetching", e);
-						loadingInProgress.remove(""+ targetPage);
-					}
-					@Override
-					public void onSuccess(String executionId, Object data) {
-						loadingInProgress.remove(""+targetPage);
-						pages.put(targetPage, (Documents) data);
-						onChange(true);
-					}
-			});
-		}
-	}
-
-	protected Documents queryDocuments(int page, byte cacheFlags, AsyncCallback<Object> cb) {
-		Documents docs;
-		try {
-			fetchOperation.set(pageParameterName, page);
-			if (cb==null) {
-				docs = (Documents) fetchOperation.execute(cacheFlags);
-				pageSize = docs.getPageSize();
-				return docs;
-			} else {
-				fetchOperation.execute(cb, cacheFlags);
-				return null;
+     	docList = new LazyDocumentsList(fetchOperation, pageParametrerName);
+		docList.registerListener(new LazyDocumentsList.ChangeListener() {
+			@Override
+			public void notifyContentChanged(int page) {
+				onChange(true);
 			}
-		} catch (Exception e) {
-			Log.e(NuxeoDocumentCursor.class.getSimpleName(), "Error while fetching documents",e);
-			return null;
-		}
+		});
 	}
 
-	protected int getRelativePosition() {
-		int pos = getPosition();
-
-		int targetPageIndex = pos / pageSize;
-		if (!pages.containsKey(targetPageIndex)) {
-			fetchAndChangeCurrentPage(targetPageIndex);
-		}
-
-		currentPage = targetPageIndex;
-		pos = pos - currentPage * pageSize;
-
-		prefetchIfNeeded(pos);
-
-		return pos;
-	}
-
-	protected void prefetchIfNeeded(int pos) {
-		if (pos > 0.7 * pageSize) {
-			final int pageToFetch = currentPage +1;
-
-			if (!pages.containsKey(pageToFetch)) {
-				fetchPage(pageToFetch);
-			}
-
-			/**
-			if (!pages.containsKey(pageToFetch) && !fetchInProgress.containsKey(pageToFetch)) {
-				Runnable fetcher = new Runnable() {
-					@Override
-					public void run() {
-						fetchPage(pageToFetch);
-						fetchInProgress.remove(pageToFetch);
-					}
-				};
-				Thread fetcherThread = new Thread(fetcher);
-				fetchInProgress.putIfAbsent(pageToFetch, fetcherThread);
-				fetcherThread.start();
-			}**/
-		}
+	@Override
+	public boolean onMove(int oldPosition, int newPosition) {
+		docList.setCurrentPosition(newPosition);
+		return super.onMove(oldPosition, newPosition);
 	}
 
 	protected Document getCurrentDocument() {
-		int pos = getRelativePosition();
-		Documents currentDocs = getCurrentPage();
-		if (currentDocs.size()> pos) {
-			return currentDocs.get(pos);
-		} else {
-			Log.e("NuxeoDocumentCursor", "wrong index");
-			return null;
-		}
+		return docList.getCurrentDocument();
+	}
+
+	protected Documents getCurrentPage() {
+		return docList.getCurrentPage();
 	}
 
 	protected Long getCurrentIdentifier() {
@@ -199,18 +83,7 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 
 	@Override
 	public int getCount() {
-		if (getCurrentPage()==null) {
-			return 0;
-		}
-		if (getCurrentPage().isBatched()) {
-			int actualSize = 0;
-			for (Documents docs : pages.values()) {
-				actualSize += docs.size();
-			}
-			return actualSize;
-		} else {
-			return getCurrentPage().size();
-		}
+		return docList.getCurrentSize();
 	}
 
 	@Override
@@ -261,7 +134,7 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 	@Override
 	public void close() {
 		super.close();
-		for (Documents docs : pages.values()) {
+		for (Documents docs : docList.getLoadedPages()) {
 			mapper.release(docs);
 		}
 	}
@@ -302,6 +175,6 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 	}
 
 	public Integer getLoadingPagesCount() {
-		return loadingInProgress.size();
+		return docList.getLoadingPagesCount();
 	}
 }
