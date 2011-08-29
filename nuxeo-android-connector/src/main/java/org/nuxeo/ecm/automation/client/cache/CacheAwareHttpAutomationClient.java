@@ -17,10 +17,11 @@ public class CacheAwareHttpAutomationClient extends HttpAutomationClient {
     protected NuxeoNetworkStatus networkStatus;
 
 
-    public CacheAwareHttpAutomationClient(String url, ResponseCacheManager cacheManager, NuxeoNetworkStatus offlineSettings) {
+    public CacheAwareHttpAutomationClient(String url, ResponseCacheManager cacheManager, NuxeoNetworkStatus offlineSettings, DeferredUpdatetManager deferredUpdatetManager) {
         super(url);
         this.cacheManager = cacheManager;
         this.networkStatus = offlineSettings;
+        this.deferredUpdatetManager = deferredUpdatetManager;
     }
 
     @Override

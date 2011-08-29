@@ -109,4 +109,28 @@ public class PropertiesHelper {
         throw new IllegalArgumentException("Property is not a map: " + v);
     }
 
+    public static String toStringProperties(PropertyMap props) {
+    	StringBuffer sb = new StringBuffer();
+    	for (String propName : props.getKeys()) {
+    		sb.append(propName);
+    		sb.append("=");
+    		sb.append(encodePropertyAsString(props.map().get(propName)));
+    		sb.append("\n");
+    	}
+    	return sb.toString();
+    }
+
+    public static String encodePropertyAsString(Object prop) {
+    	if (prop instanceof PropertyList) {
+    		PropertyList list = (PropertyList) prop;
+    		StringBuffer sb = new StringBuffer();
+    		for (Object item : list.list()) {
+    			sb.append(encodePropertyAsString(item));
+    			sb.append(";");
+    		}
+    		return sb.toString();
+    	} else {
+    		return prop.toString();
+    	}
+    }
 }

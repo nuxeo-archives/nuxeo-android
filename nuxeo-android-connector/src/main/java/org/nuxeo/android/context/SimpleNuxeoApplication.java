@@ -17,6 +17,7 @@ public class SimpleNuxeoApplication extends Application implements NuxeoContextP
 			nuxeoContext = new NuxeoContext();
 			nuxeoContext.setCacheManager(new DefaultResponseCacheManager(this));
 			nuxeoContext.setDeferredUpdateManager(new DefaultDeferedUpdateManager(this));
+			nuxeoContext.setDeferredUpdateManager(new DefaultDeferedUpdateManager(this));
 			ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 			nuxeoContext.setConnectivityManager(cm);
 			registerReceiver(nuxeoContext.getNetworkStatusBroadCastReceiver(), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));

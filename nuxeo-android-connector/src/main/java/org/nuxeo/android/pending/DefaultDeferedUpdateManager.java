@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
@@ -54,7 +55,7 @@ public class DefaultDeferedUpdateManager implements DeferredUpdatetManager {
 						clientCB.onSuccess(requestKey, data);
 					}
 				}
-			});
+			},CacheBehavior.FORCE_REFRESH);
 		}
 		return requestKey;
 	}

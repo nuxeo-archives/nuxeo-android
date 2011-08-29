@@ -71,7 +71,7 @@ public class NuxeoContext {
 				nuxeoClient = new HttpAutomationClient(
 						serverConfig.getAutomationUrl());
 			} else {
-				nuxeoClient = new CacheAwareHttpAutomationClient(serverConfig.getAutomationUrl(), cacheManager, networkStatus);
+				nuxeoClient = new CacheAwareHttpAutomationClient(serverConfig.getAutomationUrl(), cacheManager, networkStatus, deferredUpdateManager);
 			}
 			nuxeoSession = nuxeoClient.getSession(
 					serverConfig.getLogin(),

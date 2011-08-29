@@ -24,7 +24,7 @@ public class StorageHelper extends SQLiteOpenHelper {
 
 	protected static final int VERSION = 1;
 
-	protected static final String DBNAME = "NuxeoCacheDB";
+	protected static final String DBNAME = "NuxeoCachePendingDB";
 
 	protected static final String TBLNAME = "NuxeoPendingEntries";
 

@@ -17,7 +17,10 @@
 package org.nuxeo.ecm.automation.client.jaxrs.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A immutable document. You cannot modify documents. Documents are as they are
@@ -35,6 +38,7 @@ import java.util.Date;
  * <ul>
  *
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
+ * @author tiry
  */
 public class Document extends DocRef implements Serializable {
 
@@ -44,8 +48,6 @@ public class Document extends DocRef implements Serializable {
 
     protected final String type;
 
-    // TODO can be stored in map
-
     protected final String state;
 
     protected final String lock;
@@ -53,6 +55,8 @@ public class Document extends DocRef implements Serializable {
     protected final String repoName;
 
     protected final PropertyMap properties;
+
+    protected final List<String> dirtyFields = new ArrayList<String>();
 
     /**
      * Reserved to framework. Should be only called by client framework when
@@ -139,21 +143,41 @@ public class Document extends DocRef implements Serializable {
 
     public void set(String key, String defValue) {
         properties.set(key, defValue);
+        dirtyFields.add(key);
     }
 
     public void set(String key, Date defValue) {
         properties.set(key, defValue);
+        dirtyFields.add(key);
     }
 
     public void set(String key, Long defValue) {
         properties.set(key, defValue);
+        dirtyFields.add(key);
     }
 
     public void set(String key, Double defValue) {
         properties.set(key, defValue);
+        dirtyFields.add(key);
     }
 
     public String getRelativeUrl() {
     	return "/nxpath/" + repoName + path + "@view_documents";
+    }
+
+    public boolean isDirty() {
+    	return dirtyFields.size()>0;
+    }
+
+    public PropertyMap getDirtyProperties() {
+    	PropertyMap dirtyProps = new PropertyMap();
+    	for (String key : dirtyFields) {
+    		dirtyProps.map().put(key, properties.map().get(key));
+    	}
+    	return dirtyProps;
+    }
+
+    public String getDirtyPropertiesAsPropertiesString() {
+    	return PropertiesHelper.toStringProperties(getDirtyProperties());
     }
 }
