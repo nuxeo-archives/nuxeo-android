@@ -54,8 +54,8 @@ public class CursorSampleActivity extends Activity implements
 					try {
 						Documents docs = NuxeoContext.get(getApplicationContext()).getDocumentManager().query("select * from Document", null, null, null, 0, 5, CacheBehavior.STORE);
 						documentCursor = docs.asCursor();
-						final String[] columns = new String[] { "_ID", "dc:title" };
-	  	                final int[] to = new int[] { R.id.id_entry, R.id.title_entry };
+						final String[] columns = new String[] { "_ID", "dc:title" , "status"};
+	  	                final int[] to = new int[] { R.id.id_entry, R.id.title_entry , R.id.status_entry};
 						// wait for UI thread to do the display
 						runOnUiThread(new Runnable() {
 							@Override

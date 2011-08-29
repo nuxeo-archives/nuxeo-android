@@ -115,6 +115,10 @@ public class NuxeoContext {
 		this.deferredUpdateManager = deferredUpdateManager;
 	}
 
+	public DeferredUpdatetManager getDeferredUpdatetManager() {
+		return deferredUpdateManager;
+	}
+
 
 
 

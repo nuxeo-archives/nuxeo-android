@@ -71,9 +71,9 @@ public class DefaultOperationRequest implements OperationRequest {
             OperationDocumentation op, Map<String, String> params, Map<String, String> headers, Map<String, String> ctx, OperationInput input) {
         this.session = session;
         this.op = op;
-        this.params = params;
-        this.headers = headers;
-        this.ctx = ctx;
+        this.params = new HashMap<String, String>(params);
+        this.headers = new HashMap<String, String>(headers);
+        this.ctx = new HashMap<String, String>(ctx);
         this.input = input;
     }
 

@@ -8,6 +8,8 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.OperationInput;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.JsonMarshalling;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.Request;
 
+import android.util.Log;
+
 public class CacheKeyHelper {
 
 	  public static String computeRequestKey(Request request) {
@@ -38,6 +40,10 @@ public class CacheKeyHelper {
 	        StringBuffer hexString = new StringBuffer();
 	        for (int i=0; i<messageDigest.length; i++)
 	            hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+
+	        Log.i(CacheKeyHelper.class.getSimpleName(), "Generated key for query " + url + " : " + hexString.toString());
+	        Log.i(CacheKeyHelper.class.getSimpleName(), sb.toString());
+
 	        return hexString.toString();
 	    }
 

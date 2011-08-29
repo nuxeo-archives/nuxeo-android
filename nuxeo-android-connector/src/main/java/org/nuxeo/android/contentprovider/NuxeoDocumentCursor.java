@@ -73,10 +73,8 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 					.getProperties().getKeys());
 			Collections.sort(cols);
 			cols.add(0,"_ID");
+			cols.add(1,"status");
 			columns = cols.toArray(new String[0]);
-			for (int i=0; i< columns.length; i++) {
-
-			}
 		}
 		return columns;
 	}
@@ -122,6 +120,8 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 	public String getString(int column) {
 		if (column==0) {
 			return getCurrentIdentifier().toString();
+		} else if (column==1) {
+			return getCurrentDocument().getStatusFlag();
 		}
 		return getCurrentDocument().getString(columns[column]);
 	}

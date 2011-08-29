@@ -114,12 +114,16 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 		}
 	}
 
-	protected void fetchPageAsync(final int targetPage) {
-		if (pages.containsKey(targetPage)) {
+	protected void fetchPageAsync(final int targetPage, boolean refresh) {
+		if (pages.containsKey(targetPage) && !refresh) {
 			return;
 		}
 		if (loadingInProgress.addIfAbsent(""+targetPage)) {
-			queryDocuments(targetPage,CacheBehavior.STORE, new AsyncCallback<Object>() {
+			byte cacheSetting = CacheBehavior.STORE;
+			if (refresh) {
+				cacheSetting = (byte) (cacheSetting | CacheBehavior.FORCE_REFRESH);
+			}
+			queryDocuments(targetPage,cacheSetting, new AsyncCallback<Object>() {
 					@Override
 					public void onError(String executionId, Throwable e) {
 						Log.e(LazyDocumentsListImpl.class.getSimpleName(), "Error during async page fetching", e);
@@ -135,6 +139,12 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 						notifyContentChanged(targetPage);
 					}
 			});
+		}
+	}
+
+	public void refreshAll() {
+		for (Integer idx : pages.keySet()) {
+			fetchPageAsync(idx, true);
 		}
 	}
 
@@ -207,7 +217,7 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 			final int pageToFetch = currentPage +1;
 
 			if (!pages.containsKey(pageToFetch)) {
-				fetchPageAsync(pageToFetch);
+				fetchPageAsync(pageToFetch, false);
 			}
 		}
 	}

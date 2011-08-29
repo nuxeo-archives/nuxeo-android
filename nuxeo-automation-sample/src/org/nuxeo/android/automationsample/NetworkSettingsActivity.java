@@ -3,6 +3,7 @@ package org.nuxeo.android.automationsample;
 import org.nuxeo.android.activities.AbstractNetworkSettingsActivity;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
 import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
+import org.nuxeo.ecm.automation.client.pending.DeferredUpdatetManager;
 
 import android.os.Bundle;
 import android.view.View;
@@ -51,7 +52,7 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
 	}
 
 	@Override
-	protected void updateCacheInfoDisplay(ResponseCacheManager cacheManager) {
+	protected void updateCacheInfoDisplay(ResponseCacheManager cacheManager, DeferredUpdatetManager deferredUpdatetManager) {
 		cacheEntriesCount.setText("Cache contains " + cacheManager.getEntryCount() + " entries");
 		cacheSize.setText("Cache size : " + cacheManager.getSize() + "(bytes)" );
 	}
@@ -59,19 +60,16 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
 	@Override
 	public void onCheckedChanged(CompoundButton view, boolean checked) {
 		if (view == forceOfflineChk) {
-			getNuxeoContext().getNetworkStatus().setForceOffline(checked);
-			updateOfflineDisplay(getNuxeoContext().getNetworkStatus());
+			goOffline(checked);
 		}
 	}
 
 	@Override
 	public void onClick(View view) {
 		if (view == clearCacheButton) {
-			getNuxeoContext().getCacheManager().clear();
-			updateCacheInfoDisplay(getNuxeoContext().getCacheManager());
+			flushCache();
 		} else if (view == refreshButton) {
-			reset();
-			refreshAll();
+			resetAndRefresh();
 		}
 	}
 

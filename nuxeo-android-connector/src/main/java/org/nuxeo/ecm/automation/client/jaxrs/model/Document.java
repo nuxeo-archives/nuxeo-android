@@ -180,4 +180,14 @@ public class Document extends DocRef implements Serializable {
     public String getDirtyPropertiesAsPropertiesString() {
     	return PropertiesHelper.toStringProperties(getDirtyProperties());
     }
+
+    public String getStatusFlag() {
+    	if (isDirty()) {
+    		return "U";
+    	}
+    	if (ref==null) {
+    		return "N";
+    	}
+    	return "";
+    }
 }

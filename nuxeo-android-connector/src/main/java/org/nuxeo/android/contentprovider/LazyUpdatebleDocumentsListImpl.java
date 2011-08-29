@@ -53,6 +53,8 @@ public class LazyUpdatebleDocumentsListImpl extends LazyDocumentsListImpl
 				@Override
 				public void onSuccess(String executionId, Object data) {
 					notifyContentChanged(page);
+					// start refreshing
+					refreshAll();
 				}
 
 				@Override
