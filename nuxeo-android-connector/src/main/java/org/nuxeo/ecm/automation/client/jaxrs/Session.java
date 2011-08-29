@@ -105,4 +105,6 @@ public interface Session {
 
     boolean isOffline();
 
+    String execDeferredUpdate(OperationRequest request,
+			AsyncCallback<Object> cb);
 }

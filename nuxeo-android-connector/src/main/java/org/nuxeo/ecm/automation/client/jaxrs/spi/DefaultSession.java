@@ -180,4 +180,9 @@ public class DefaultSession implements Session {
         return false;
     }
 
+    @Override
+    public String execDeferredUpdate(OperationRequest request,
+			AsyncCallback<Object> cb) {
+    	return client.execDeferredUpdate(request, cb);
+    }
 }

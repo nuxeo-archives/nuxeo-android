@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class DummyInMemoryCache implements RequestCacheManager {
+public class DummyInMemoryCache implements ResponseCacheManager {
 
     protected static class LRUCache<K, V> extends LinkedHashMap<K, V> {
         private static final long serialVersionUID = 1L;
@@ -26,10 +26,10 @@ public class DummyInMemoryCache implements RequestCacheManager {
         }
     }
 
-	protected static Map<String, CacheEntry> cacheEntries = new LRUCache<String, CacheEntry>(20);
+	protected static Map<String, ResponseCacheEntry> cacheEntries = new LRUCache<String, ResponseCacheEntry>(20);
 
 	@Override
-	public InputStream addToCache(String key, CacheEntry entry) {
+	public InputStream storeResponse(String key, ResponseCacheEntry entry) {
 
 		cacheEntries.put(key, entry);
 		InputStream is = entry.getResponseStream();
@@ -47,9 +47,9 @@ public class DummyInMemoryCache implements RequestCacheManager {
 	}
 
 	@Override
-	public CacheEntry getFromCache(String key) {
+	public ResponseCacheEntry getResponseFromCache(String key) {
 
-		CacheEntry entry = cacheEntries.get(key);
+		ResponseCacheEntry entry = cacheEntries.get(key);
 		if (entry != null) {
 			try {
 				entry.getResponseStream().reset();

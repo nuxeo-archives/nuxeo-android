@@ -193,4 +193,9 @@ public abstract class AbstractAutomationClient implements AutomationClient {
     public boolean isOffline() {
     	return false;
     }
+
+    public String execDeferredUpdate(OperationRequest request,
+			AsyncCallback<Object> cb) {
+    	throw new UnsupportedOperationException("No defered update managger");
+    }
 }

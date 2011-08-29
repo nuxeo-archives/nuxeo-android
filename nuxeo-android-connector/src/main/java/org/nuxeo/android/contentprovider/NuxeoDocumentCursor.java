@@ -20,7 +20,7 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 
 	protected final UUIDMapper mapper;
 
-	protected final LazyDocumentsList docList;
+	protected final LazyUpdatableDocumentsList docList;
 
 	public NuxeoDocumentCursor (Session session, String nxql, String[] queryParams, String sortOrder, String schemas, int pageSize, UUIDMapper mapper) {
 		if (mapper!=null) {
@@ -28,8 +28,8 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 		} else {
 			this.mapper = new UUIDMapper();
 		}
-		docList = new LazyDocumentsList(session, nxql, queryParams, sortOrder, schemas, pageSize);
-		docList.registerListener(new LazyDocumentsList.ChangeListener() {
+		docList = new LazyUpdatebleDocumentsListImpl(session, nxql, queryParams, sortOrder, schemas, pageSize);
+		docList.registerListener(new DocumentsListChangeListener() {
 			@Override
 			public void notifyContentChanged(int page) {
 				onChange(true);
@@ -39,8 +39,8 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 
 	public NuxeoDocumentCursor (OperationRequest fetchOperation, String pageParametrerName) {
      	this.mapper = new UUIDMapper();
-     	docList = new LazyDocumentsList(fetchOperation, pageParametrerName);
-		docList.registerListener(new LazyDocumentsList.ChangeListener() {
+     	docList = new LazyUpdatebleDocumentsListImpl(fetchOperation, pageParametrerName);
+		docList.registerListener(new DocumentsListChangeListener() {
 			@Override
 			public void notifyContentChanged(int page) {
 				onChange(true);
@@ -54,7 +54,7 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 		return super.onMove(oldPosition, newPosition);
 	}
 
-	protected Document getCurrentDocument() {
+	public Document getCurrentDocument() {
 		return docList.getCurrentDocument();
 	}
 
@@ -170,11 +170,16 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 		return null;
 	}
 
-	public Document getDocument() {
-		return getCurrentDocument();
+	public Document getDocument(int index) {
+		return docList.getDocument(index);
 	}
 
 	public Integer getLoadingPagesCount() {
 		return docList.getLoadingPagesCount();
 	}
+
+	public void documentChanged(Document doc) {
+		docList.updateDocument(doc);
+	}
 }
+

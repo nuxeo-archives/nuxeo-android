@@ -14,17 +14,17 @@ import org.nuxeo.ecm.automation.client.jaxrs.spi.Response;
 
 public class CachedHttpConnector extends HttpConnector implements Connector {
 
-	protected final RequestCacheManager cacheManager;
+	protected final ResponseCacheManager cacheManager;
 
 	protected final NuxeoNetworkStatus offlineSettings;
 
-	public CachedHttpConnector(HttpClient http, RequestCacheManager cacheManager, NuxeoNetworkStatus offlineSettings) {
+	public CachedHttpConnector(HttpClient http, ResponseCacheManager cacheManager, NuxeoNetworkStatus offlineSettings) {
 		super(http);
 		this.cacheManager = cacheManager;
 		this.offlineSettings = offlineSettings;
 	}
 
-    protected Object getResultFromCacheEntry(Request request, CacheEntry cachedResult) {
+    protected Object getResultFromCacheEntry(Request request, ResponseCacheEntry cachedResult) {
         System.out.println("Cache HIT");
         try {
         	return request.handleResult(200, cachedResult.getReponseContentType(), cachedResult.getResponseContentDisposition(), cachedResult.getResponseStream());
@@ -38,10 +38,10 @@ public class CachedHttpConnector extends HttpConnector implements Connector {
     public Object execute(Request request,  boolean forceRefresh, boolean cachable) {
 
     	String cacheKey=null;
-        CacheEntry cachedEntry = null;
+        ResponseCacheEntry cachedEntry = null;
         if (cacheManager!=null ) {
             cacheKey = CacheKeyHelper.computeRequestKey(request);
-            cachedEntry = cacheManager.getFromCache(cacheKey);
+            cachedEntry = cacheManager.getResponseFromCache(cacheKey);
             if (cachedEntry!=null && !forceRefresh) {
                 Object result = getResultFromCacheEntry(request, cachedEntry);
                 if (result!=null) {
@@ -109,7 +109,7 @@ public class CachedHttpConnector extends HttpConnector implements Connector {
 
     	if (cacheKey!=null && cacheManager!=null && response.getStatus()==200) {
             // store in cache
-            InputStream is = cacheManager.addToCache(cacheKey, new CacheEntry(request, response));
+            InputStream is = cacheManager.storeResponse(cacheKey, new ResponseCacheEntry(request, response));
             response.setInputStream(is);
         }
 

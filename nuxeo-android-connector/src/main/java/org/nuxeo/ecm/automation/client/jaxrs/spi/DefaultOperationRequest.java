@@ -25,6 +25,7 @@ import java.util.Map;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
+import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.model.DateUtils;
 import org.nuxeo.ecm.automation.client.jaxrs.model.OperationDocumentation;
 import org.nuxeo.ecm.automation.client.jaxrs.model.OperationInput;
@@ -64,6 +65,25 @@ public class DefaultOperationRequest implements OperationRequest {
         params = new HashMap<String, String>();
         headers = new HashMap<String, String>();
         this.ctx = ctx;
+    }
+
+    public DefaultOperationRequest(DefaultSession session,
+            OperationDocumentation op, Map<String, String> params, Map<String, String> headers, Map<String, String> ctx, OperationInput input) {
+        this.session = session;
+        this.op = op;
+        this.params = params;
+        this.headers = headers;
+        this.ctx = ctx;
+        this.input = input;
+    }
+
+    public OperationRequest clone() {
+    	return clone(session);
+    }
+
+    public OperationRequest clone(Session session) {
+    	DefaultOperationRequest clone = new DefaultOperationRequest((DefaultSession) session, op, params, headers, ctx, input);
+    	return clone;
     }
 
     public DefaultSession getSession() {
@@ -185,6 +205,11 @@ public class DefaultOperationRequest implements OperationRequest {
     	return session.execute(this, cb);
     }
 
+    public String execDeferredUpdate(OperationRequest request,
+			AsyncCallback<Object> cb) {
+    	return session.execDeferredUpdate(request, cb);
+    }
+
     public OperationRequest setHeader(String key, String value) {
         headers.put(key, value);
         return this;
@@ -205,5 +230,9 @@ public class DefaultOperationRequest implements OperationRequest {
     public void forceCache() {
         cachable=false;
         refresh=false;
+    }
+
+    public OperationDocumentation getDocumentation() {
+    	return op;
     }
 }

@@ -1,30 +1,46 @@
 package org.nuxeo.ecm.automation.client.cache;
 
 import org.nuxeo.android.network.NuxeoNetworkStatus;
+import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
+import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpAutomationClient;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpConnector;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.Connector;
+import org.nuxeo.ecm.automation.client.pending.DeferredUpdatetManager;
 
 public class CacheAwareHttpAutomationClient extends HttpAutomationClient {
 
-    protected RequestCacheManager cacheManager;
+    protected ResponseCacheManager cacheManager;
 
-    protected NuxeoNetworkStatus offlineSettings;
+    protected DeferredUpdatetManager deferredUpdatetManager;
 
-    public CacheAwareHttpAutomationClient(String url, RequestCacheManager cacheManager, NuxeoNetworkStatus offlineSettings) {
+    protected NuxeoNetworkStatus networkStatus;
+
+
+    public CacheAwareHttpAutomationClient(String url, ResponseCacheManager cacheManager, NuxeoNetworkStatus offlineSettings) {
         super(url);
         this.cacheManager = cacheManager;
-        this.offlineSettings = offlineSettings;
+        this.networkStatus = offlineSettings;
     }
 
     @Override
     protected Connector newConnector() {
-        HttpConnector con =  new CachedHttpConnector(http, cacheManager, offlineSettings);
+        HttpConnector con =  new CachedHttpConnector(http, cacheManager, networkStatus);
         return con;
     }
 
     public boolean isOffline() {
-    	return offlineSettings.isForceOffline() || !offlineSettings.isNetworkReachable();
+    	return networkStatus.isForceOffline() || !networkStatus.isNetworkReachable();
+    }
+
+    public String execDeferredUpdate(OperationRequest request,
+			AsyncCallback<Object> cb) {
+    	if (deferredUpdatetManager!=null) {
+    		boolean executeNow = networkStatus.canUseNetwork();
+    		return deferredUpdatetManager.execDeferredUpdate(request, cb, executeNow);
+    	} else {
+    		throw new UnsupportedOperationException("No DeferredUpdatetManager defined");
+    	}
     }
 
 }

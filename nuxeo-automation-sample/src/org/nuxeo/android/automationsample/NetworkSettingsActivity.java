@@ -2,7 +2,7 @@ package org.nuxeo.android.automationsample;
 
 import org.nuxeo.android.activities.AbstractNetworkSettingsActivity;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
-import org.nuxeo.ecm.automation.client.cache.RequestCacheManager;
+import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
 
 import android.os.Bundle;
 import android.view.View;
@@ -51,7 +51,7 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
 	}
 
 	@Override
-	protected void updateCacheInfoDisplay(RequestCacheManager cacheManager) {
+	protected void updateCacheInfoDisplay(ResponseCacheManager cacheManager) {
 		cacheEntriesCount.setText("Cache contains " + cacheManager.getEntryCount() + " entries");
 		cacheSize.setText("Cache size : " + cacheManager.getSize() + "(bytes)" );
 	}

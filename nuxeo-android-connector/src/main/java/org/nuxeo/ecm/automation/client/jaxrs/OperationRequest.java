@@ -18,6 +18,7 @@ package org.nuxeo.ecm.automation.client.jaxrs;
 
 import java.util.Map;
 
+import org.nuxeo.ecm.automation.client.jaxrs.model.OperationDocumentation;
 import org.nuxeo.ecm.automation.client.jaxrs.model.OperationInput;
 import org.nuxeo.ecm.automation.client.jaxrs.model.OperationDocumentation.Param;
 
@@ -48,6 +49,9 @@ public interface OperationRequest {
 
     String execute(AsyncCallback<Object> cb, byte cacheFlags);
 
+    String execDeferredUpdate(OperationRequest request,
+			AsyncCallback<Object> cb);
+
     Map<String, String> getParameters();
 
     Map<String, String> getContextParameters();
@@ -63,4 +67,11 @@ public interface OperationRequest {
     void forceCache();
 
     Param getParam(String key);
+
+    OperationRequest clone();
+
+    OperationRequest clone(Session session);
+
+    OperationDocumentation getDocumentation();
+
 }

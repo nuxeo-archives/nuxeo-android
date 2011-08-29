@@ -3,7 +3,7 @@ package org.nuxeo.android.cache;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.nuxeo.ecm.automation.client.cache.CacheEntry;
+import org.nuxeo.ecm.automation.client.cache.ResponseCacheEntry;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -44,7 +44,7 @@ public class SQLCacheHelper extends SQLiteOpenHelper {
 		// TODO Auto-generated method stub
 	}
 
-	protected void addEntry(SQLiteDatabase db, String key, CacheEntry entry ) {
+	protected void addEntry(SQLiteDatabase db, String key, ResponseCacheEntry entry ) {
 		String sql = "INSERT INTO " + TBLNAME + " (" + KEY_COLUMN + ","
 		+ CTYPE_COLUMN + ","
 		+ CDISP_COLUMN + ","
@@ -64,7 +64,7 @@ public class SQLCacheHelper extends SQLiteOpenHelper {
 		db.endTransaction();
 	}
 
-	protected void updateEntry(SQLiteDatabase db, String key, CacheEntry entry ) {
+	protected void updateEntry(SQLiteDatabase db, String key, ResponseCacheEntry entry ) {
 		String sql = "UPDATE " + TBLNAME + " set "
 		+ CTYPE_COLUMN + " = "
 		+ "'" + entry.getReponseContentType() + "',"
@@ -83,7 +83,7 @@ public class SQLCacheHelper extends SQLiteOpenHelper {
 		db.endTransaction();
 	}
 
-	public void storeCacheEntry(String key, CacheEntry entry) {
+	public void storeCacheEntry(String key, ResponseCacheEntry entry) {
 		SQLiteDatabase db = getWritableDatabase();
 
 		String sql = "select count(*) from " + TBLNAME + " where " + KEY_COLUMN + "= '" + key + "'";
@@ -115,7 +115,7 @@ public class SQLCacheHelper extends SQLiteOpenHelper {
 		}
 	}
 
-	public CacheEntry getEntry(String key) {
+	public ResponseCacheEntry getEntry(String key) {
 		SQLiteDatabase db = getReadableDatabase();
 
 		String sql = "select * from " + TBLNAME + " where " + KEY_COLUMN + "= '" + key + "'";
@@ -128,7 +128,7 @@ public class SQLCacheHelper extends SQLiteOpenHelper {
 				String rType = cursor.getString(cursor.getColumnIndex(RTYPE_COLUMN));
 				String entity = cursor.getString(cursor.getColumnIndex(RENTITY_COLUMN));
 
-				CacheEntry cEntry = new CacheEntry(cType, cDisp, null, null);
+				ResponseCacheEntry cEntry = new ResponseCacheEntry(cType, cDisp, null, null);
 				cEntry.setRequestMethod(Integer.parseInt(rType));
 				cEntry.setRequestEntity(entity);
 				return cEntry;

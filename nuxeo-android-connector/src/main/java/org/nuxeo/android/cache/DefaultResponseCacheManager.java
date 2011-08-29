@@ -7,18 +7,18 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.List;
 
-import org.nuxeo.ecm.automation.client.cache.CacheEntry;
-import org.nuxeo.ecm.automation.client.cache.RequestCacheManager;
+import org.nuxeo.ecm.automation.client.cache.ResponseCacheEntry;
+import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
 import org.nuxeo.ecm.automation.client.cache.StreamHelper;
 
 import android.content.Context;
 
-public class DefaultCacheManager implements RequestCacheManager {
+public class DefaultResponseCacheManager implements ResponseCacheManager {
 
 	protected final SQLCacheHelper sqlHelper;
 	protected final File cacheDir;
 
-	public DefaultCacheManager(Context context) {
+	public DefaultResponseCacheManager(Context context) {
 		sqlHelper = new SQLCacheHelper(context);
 		File dir = context.getExternalCacheDir();
 		if (dir==null) {
@@ -28,7 +28,7 @@ public class DefaultCacheManager implements RequestCacheManager {
 	}
 
 	@Override
-	public InputStream addToCache(String key, CacheEntry entry) {
+	public InputStream storeResponse(String key, ResponseCacheEntry entry) {
 
 		sqlHelper.storeCacheEntry(key, entry);
 		File cachedStream = storeStream(key, entry.getResponseStream());
@@ -67,9 +67,9 @@ public class DefaultCacheManager implements RequestCacheManager {
 	}
 
 	@Override
-	public CacheEntry getFromCache(String key) {
+	public ResponseCacheEntry getResponseFromCache(String key) {
 
-		CacheEntry entry = sqlHelper.getEntry(key);
+		ResponseCacheEntry entry = sqlHelper.getEntry(key);
 		if (entry!=null) {
 			InputStream is = getStream(key);
 			if (is==null) {

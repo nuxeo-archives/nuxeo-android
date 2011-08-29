@@ -28,6 +28,9 @@
         <activity android:name=".CursorSampleActivity"
                   android:label="Cursor sample">
         </activity>
+        <activity android:name=".CreateEditActivity"
+                  android:label="CreateEditActivity">
+        </activity>
 		<provider android:name="org.nuxeo.android.contentprovider.NuxeoDocumentContentProvider"
 		          android:authorities="org.nuxeo">
 		</provider>
