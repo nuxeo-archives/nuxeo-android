@@ -20,7 +20,6 @@ import android.widget.Spinner;
 public class AutomationSampleActivity extends Activity implements View.OnClickListener{
 
 	protected Button connectBtn;
-	protected Button cpBtn;
 	protected Button cursorBtn;
 
 	protected Spinner spinner;
@@ -34,9 +33,6 @@ public class AutomationSampleActivity extends Activity implements View.OnClickLi
 
         connectBtn = (Button) findViewById(R.id.connect);
         connectBtn.setOnClickListener(this);
-
-        cpBtn = (Button) findViewById(R.id.cp);
-        cpBtn.setOnClickListener(this);
 
         spinner = (Spinner) findViewById(R.id.opList);
         spinner.setVisibility(4);
@@ -76,10 +72,6 @@ public class AutomationSampleActivity extends Activity implements View.OnClickLi
 				};
 				new Thread(initTask).start();
 			}
-		}
-		else if (view == cpBtn) {
-            startActivity(new Intent(getApplicationContext(),
-                    ContentProviderSampleActivity.class));
 		}
 		else if (view == cursorBtn) {
             startActivity(new Intent(getApplicationContext(),

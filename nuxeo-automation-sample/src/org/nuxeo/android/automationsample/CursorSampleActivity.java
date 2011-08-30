@@ -1,16 +1,19 @@
 package org.nuxeo.android.automationsample;
 
+import org.nuxeo.android.activities.BaseNuxeoActivity;
+import org.nuxeo.android.contentprovider.NuxeoDocumentContentProvider;
 import org.nuxeo.android.contentprovider.NuxeoDocumentCursor;
-import org.nuxeo.android.context.NuxeoContext;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,61 +22,65 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
-public class CursorSampleActivity extends Activity implements
+public class CursorSampleActivity extends BaseNuxeoActivity implements
 		View.OnClickListener {
 
-	protected Button cpBtn;
+	protected Button refreshBtn;
 
 	protected ListView listView;
 
 	protected NuxeoDocumentCursor documentCursor;
+
+	protected TextView waitingMessage ;
+
+	protected static final int EDIT_DOCUMENT = 0;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.nxcp);
 
-		cpBtn = (Button) findViewById(R.id.cpbutton);
-		cpBtn.setOnClickListener(this);
+		waitingMessage = (TextView) findViewById(R.id.waitingMessage);
+
+		refreshBtn = (Button) findViewById(R.id.refreshBtn);
+		refreshBtn.setOnClickListener(this);
 
 		listView = (ListView) findViewById(R.id.myList);
 		registerForContextMenu(listView);
+
+		// trigger the data retrieval
+		runAsyncDataRetrieval();
 	}
 
+	// Called on the UIThread when Nuxeo data retrieval starts
+	protected void onNuxeoDataRetrievalStarted() {
+		waitingMessage.setText("Loading data ...");
+		waitingMessage.setVisibility(View.VISIBLE);
+		refreshBtn.setGravity(Gravity.RIGHT);
+		refreshBtn.setEnabled(false);
+	}
+
+	// Executed on the background thread to avoid freezing the UI
 	@Override
-	public void onClick(View view) {
-		if (view == cpBtn) {
-			final Activity activity = this;
-			// run in a separated thread to avoid freezing the UI in case of
-			// network lag
-			Runnable initTask = new Runnable() {
-				@Override
-				public void run() {
+	protected Object retrieveNuxeoData() throws Exception {
+		//Cursor cur = managedQuery(NuxeoDocumentContentProvider.CONTENT_URI,	null, null, null, null);
+		return  getNuxeoContext().getDocumentManager().query("select * from Document", null, null, null, 0, 5, CacheBehavior.STORE);
+	}
 
-					try {
-						Documents docs = NuxeoContext.get(getApplicationContext()).getDocumentManager().query("select * from Document", null, null, null, 0, 5, CacheBehavior.STORE);
-						documentCursor = docs.asCursor();
-						final String[] columns = new String[] { "_ID", "dc:title" , "status"};
-	  	                final int[] to = new int[] { R.id.id_entry, R.id.title_entry , R.id.status_entry};
-						// wait for UI thread to do the display
-						runOnUiThread(new Runnable() {
-							@Override
-							public void run() {
-								SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(activity, R.layout.list_item, documentCursor, columns, to);
-								listView.setAdapter(mAdapter);
-							}
-						});
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			};
-			new Thread(initTask).start();
-		}
+	// Called on the UIThread when Nuxeo data has been retrieved
+	@Override
+	protected void onNuxeoDataRetrieved(Object data) {
+		waitingMessage.setVisibility(View.INVISIBLE);
+		refreshBtn.setEnabled(true);
 
-
+		Documents docs = (Documents)data;
+		documentCursor = docs.asCursor();
+		final String[] columns = new String[] { "_ID", "dc:title" , "status"};
+        final int[] to = new int[] { R.id.id_entry, R.id.title_entry , R.id.status_entry};
+		SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, R.layout.list_item, documentCursor, columns, to);
+		listView.setAdapter(mAdapter);
 	}
 
 	@Override
@@ -88,7 +95,6 @@ public class CursorSampleActivity extends Activity implements
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
 
-	static final int EDIT_DOCUMENT = 0;
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
@@ -118,6 +124,12 @@ public class CursorSampleActivity extends Activity implements
 				documentCursor.documentChanged(editedDocument);
 			}
 		}
+	}
+
+	@Override
+	public void onClick(View arg0) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

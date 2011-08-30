@@ -10,8 +10,7 @@
     android:text="@string/hello"
     />
 <Button android:text="Connect on test server" android:id="@+id/connect" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-<Button android:text="Content Provider" android:id="@+id/cp" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-<Button android:text="Cursor Sample" android:id="@+id/cursorBtn" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+<Button android:text="Document List sample" android:id="@+id/cursorBtn" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
 
 <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/opList"></Spinner>
 </LinearLayout>

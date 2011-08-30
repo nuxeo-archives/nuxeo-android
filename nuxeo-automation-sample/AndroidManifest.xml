@@ -22,9 +22,6 @@
          <activity android:name="NetworkSettingsActivity"
                   android:label="Nuxeo Offline Settings">
         </activity>
-        <activity android:name=".ContentProviderSampleActivity"
-                  android:label="Content Provider sample">
-        </activity>
         <activity android:name=".CursorSampleActivity"
                   android:label="Cursor sample">
         </activity>
