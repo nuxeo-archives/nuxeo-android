@@ -1,5 +1,6 @@
 package org.nuxeo.android.context;
 
+import org.nuxeo.android.config.ConfigChangeListener;
 import org.nuxeo.android.config.NuxeoServerConfig;
 import org.nuxeo.android.network.NetworkStatusBroadCastReceiver;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
@@ -11,6 +12,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpAutomationClient;
 import org.nuxeo.ecm.automation.client.pending.DeferredUpdatetManager;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 
 /**
@@ -18,7 +20,7 @@ import android.net.ConnectivityManager;
  * @author tiry
  *
  */
-public class NuxeoContext {
+public class NuxeoContext implements ConfigChangeListener {
 
 	protected static NuxeoContext instance = null;
 
@@ -52,6 +54,7 @@ public class NuxeoContext {
 
 	public NuxeoContext() {
 		serverConfig = new NuxeoServerConfig();
+		serverConfig.registerOnChangeListener(this);
 	}
 
 	public NuxeoServerConfig getServerConfig() {
@@ -119,7 +122,14 @@ public class NuxeoContext {
 		return deferredUpdateManager;
 	}
 
+	public void setSharedPrefs(SharedPreferences sharedPrefs) {
+		serverConfig.setSharedPrefs(sharedPrefs);
+	}
 
-
+	@Override
+	public void onConfigChanged() {
+		nuxeoSession = null;
+		nuxeoClient = null;
+	}
 
 }

@@ -28,6 +28,9 @@
         <activity android:name=".CreateEditActivity"
                   android:label="CreateEditActivity">
         </activity>
+        <activity android:name=".ServerSettingsActivity"
+                  android:label="Settings">
+        </activity>
 		<provider android:name="org.nuxeo.android.contentprovider.NuxeoDocumentContentProvider"
 		          android:authorities="org.nuxeo">
 		</provider>

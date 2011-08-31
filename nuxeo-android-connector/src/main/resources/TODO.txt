@@ -1,0 +1,23 @@
+
+
+- Use native BroadCast system for Nuxeo state events (connectivity, settings changed )
+
+- Publish named DocumentsLists in a generic content provider : at least for getting single items.
+ => use path part of the content uri to point to a named DocuemntsLists
+
+- allow uuid resolution in content uri for Documents even if not standard
+
+- Allow better usage of the server side page providers
+
+- Integrate Nuxeo Actions to select Intents available on documents
+
+- Publish intents for Nuxeo screens ?
+
+- Extend Automation Documents to include WRITE/DELETE permissions infos
+
+- Plug the ContentResolver.getInputStream on the Nuxeo Blob
+
+- See if android.resource:/ scheme can be used to provide ready to re-use Screens/Activities with Gfx and resources
+
+- Digg on C2DM
+

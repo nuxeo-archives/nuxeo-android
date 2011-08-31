@@ -112,9 +112,13 @@ public class AutomationSampleActivity extends Activity implements View.OnClickLi
 	        // Handle all of the possible menu actions.
 	        switch (item.getItemId()) {
 
-	        case R.id.itemOfflineConfig:
+	        case R.id.itemNetworkConfig:
 	        	startActivity(new Intent(getApplicationContext(),
                     NetworkSettingsActivity.class));
+	        	break;
+	        case R.id.itemServerSettings:
+	        	startActivity(new Intent(getApplicationContext(),
+                    ServerSettingsActivity.class));
 	        	break;
 	        }
 	        return super.onOptionsItemSelected(item);
