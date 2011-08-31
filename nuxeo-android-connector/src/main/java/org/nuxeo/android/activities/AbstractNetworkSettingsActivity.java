@@ -20,7 +20,6 @@ public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity 
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-
 		handler = new Handler() {
 			@Override
 			public void handleMessage (Message msg) {
@@ -38,12 +37,14 @@ public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity 
 		refreshAll();
 	}
 
-	public void reset() {
+	public void reset(final Runnable afterReset) {
 		Runnable tester = new Runnable() {
 			@Override
 			public void run() {
 				getNuxeoContext().getNetworkStatus().reset();
-				updateOfflineDisplay(getNuxeoContext().getNetworkStatus());
+				if (afterReset!=null) {
+					runOnUiThread(afterReset);
+				}
 			}
 		};
 		new Thread(tester).start();
@@ -55,8 +56,12 @@ public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity 
 	}
 
 	protected void resetAndRefresh() {
-		reset();
-		refreshAll();
+		reset(new Runnable() {
+			@Override
+			public void run() {
+				refreshAll();
+			}
+		});
 	}
 
 	protected abstract void updateOfflineDisplay(NuxeoNetworkStatus settings);

@@ -11,9 +11,10 @@ import android.preference.PreferenceManager;
 
 public class AbstractNuxeoSettingsActivity extends BaseNuxeoActivity {
 
-	protected void saveNuxeoPreferences(Map<String, Object> prefData) {
+	protected boolean saveNuxeoPreferences(Map<String, Object> prefData) {
 
-		SharedPreferences prefs =  PreferenceManager.getDefaultSharedPreferences(this); //getPreferences(MODE_PRIVATE);
+		SharedPreferences prefs =  PreferenceManager.getDefaultSharedPreferences(getApplicationContext()); //getPreferences(MODE_PRIVATE);
+		//SharedPreferences prefs =  getPreferences(MODE_PRIVATE);
 
 		Editor prefEditor = prefs.edit();
 
@@ -37,7 +38,9 @@ public class AbstractNuxeoSettingsActivity extends BaseNuxeoActivity {
 				prefEditor.putInt(key, (Integer) value);
 			}
 		}
-		prefEditor.commit();
+		boolean commited = prefEditor.commit();
+
+		return commited;
 	}
 
 	protected Map<String, Object> getNuxeoPreferences() {
@@ -47,6 +50,7 @@ public class AbstractNuxeoSettingsActivity extends BaseNuxeoActivity {
 		nxPrefs.put(NuxeoServerConfig.PREF_SERVER_URL, getNuxeoContext().getServerConfig().getServerBaseUrl());
 		nxPrefs.put(NuxeoServerConfig.PREF_SERVER_LOGIN, getNuxeoContext().getServerConfig().getLogin());
 		nxPrefs.put(NuxeoServerConfig.PREF_SERVER_PASSWORD, getNuxeoContext().getServerConfig().getPassword());
+
 
 		// XXX cache settings here
 

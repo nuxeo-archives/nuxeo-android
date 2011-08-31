@@ -98,6 +98,7 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener{
 
 	public void setSharedPrefs(SharedPreferences sharedPrefs) {
 		this.sharedPrefs = sharedPrefs;
+		sharedPrefs.registerOnSharedPreferenceChangeListener(this);
 		initFromPrefs(sharedPrefs);
 	}
 

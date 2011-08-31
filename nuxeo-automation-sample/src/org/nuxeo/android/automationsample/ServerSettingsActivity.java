@@ -31,12 +31,22 @@ public class ServerSettingsActivity extends AbstractNuxeoSettingsActivity implem
 
         saveButton.setOnClickListener(this);
 
-        Map<String, Object> prefs = getNuxeoPreferences();
+        refreshDisplay();
+
+        super.onCreate(savedInstanceState);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		refreshDisplay();
+	}
+
+	protected void refreshDisplay() {
+		Map<String, Object> prefs = getNuxeoPreferences();
         serverUrl.setText(prefs.get(NuxeoServerConfig.PREF_SERVER_URL).toString());
         login.setText(prefs.get(NuxeoServerConfig.PREF_SERVER_LOGIN).toString());
         password.setText(prefs.get(NuxeoServerConfig.PREF_SERVER_PASSWORD).toString());
-
-        super.onCreate(savedInstanceState);
 	}
 
 	@Override
