@@ -31,7 +31,7 @@ public class CacheAwareHttpAutomationClient extends HttpAutomationClient {
     }
 
     public boolean isOffline() {
-    	return networkStatus.isForceOffline() || !networkStatus.isNetworkReachable();
+    	return !networkStatus.canUseNetwork();
     }
 
     public String execDeferredUpdate(OperationRequest request,

@@ -1,6 +1,6 @@
 package org.nuxeo.android.context;
 
-import org.nuxeo.android.config.ConfigChangeListener;
+import org.nuxeo.android.broadcast.NuxeoBroadcastMessages;
 import org.nuxeo.android.config.NuxeoServerConfig;
 import org.nuxeo.android.network.NetworkStatusBroadCastReceiver;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
@@ -11,8 +11,10 @@ import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpAutomationClient;
 import org.nuxeo.ecm.automation.client.pending.DeferredUpdatetManager;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 
 /**
@@ -20,7 +22,7 @@ import android.net.ConnectivityManager;
  * @author tiry
  *
  */
-public class NuxeoContext implements ConfigChangeListener {
+public class NuxeoContext extends BroadcastReceiver {
 
 	protected static NuxeoContext instance = null;
 
@@ -36,9 +38,7 @@ public class NuxeoContext implements ConfigChangeListener {
 
 	protected Session nuxeoSession;
 
-	protected ConnectivityManager connectivityManager;
-
-	protected NetworkStatusBroadCastReceiver networkStatusBroadCastReceiver;
+	protected final Context androidContext;
 
 	public static NuxeoContext get(Context context) {
 		if (context instanceof NuxeoContextProvider) {
@@ -46,15 +46,23 @@ public class NuxeoContext implements ConfigChangeListener {
 			return nxApp.getNuxeoContext();
 		} else {
 			if (instance==null) {
-				//instance = new NuxeoContext();
+				instance = new NuxeoContext(context);
+				// XXX should we allow that ???
 			}
 			return instance;
 		}
 	}
 
-	public NuxeoContext() {
-		serverConfig = new NuxeoServerConfig();
-		serverConfig.registerOnChangeListener(this);
+	public NuxeoContext(Context androidContext) {
+		this.androidContext=androidContext;
+		serverConfig = new NuxeoServerConfig(androidContext);
+		networkStatus = new NuxeoNetworkStatus(androidContext, serverConfig, (ConnectivityManager) androidContext.getSystemService(Context.CONNECTIVITY_SERVICE));
+		androidContext.registerReceiver(new NetworkStatusBroadCastReceiver(networkStatus), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+		// register this as listener
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(NuxeoBroadcastMessages.NUXEO_SETTINGS_CHANGED);
+		filter.addAction(NuxeoBroadcastMessages.NUXEO_SERVER_CONNECTIVITY_CHANGED);
+		androidContext.registerReceiver(this, filter);
 	}
 
 	public NuxeoServerConfig getServerConfig() {
@@ -62,9 +70,6 @@ public class NuxeoContext implements ConfigChangeListener {
 	}
 
 	public NuxeoNetworkStatus getNetworkStatus() {
-		if (networkStatus==null) {
-			networkStatus = new NuxeoNetworkStatus(serverConfig, connectivityManager);
-		}
 		return networkStatus;
 	}
 
@@ -87,23 +92,6 @@ public class NuxeoContext implements ConfigChangeListener {
 		return new DocumentManager(getSession());
 	}
 
-	public ConnectivityManager getConnectivityManager() {
-		return connectivityManager;
-	}
-
-	public void setConnectivityManager(ConnectivityManager connectivityManager) {
-		this.connectivityManager = connectivityManager;
-		if (networkStatus==null) {
-			networkStatus = new NuxeoNetworkStatus(serverConfig, connectivityManager);
-		}
-	}
-
-	public NetworkStatusBroadCastReceiver getNetworkStatusBroadCastReceiver() {
-		if (networkStatusBroadCastReceiver==null) {
-			networkStatusBroadCastReceiver = new NetworkStatusBroadCastReceiver(getNetworkStatus());
-		}
-		return networkStatusBroadCastReceiver;
-	}
 
 	public ResponseCacheManager getCacheManager() {
 		return cacheManager;
@@ -122,14 +110,23 @@ public class NuxeoContext implements ConfigChangeListener {
 		return deferredUpdateManager;
 	}
 
-	public void setSharedPrefs(SharedPreferences sharedPrefs) {
-		serverConfig.setSharedPrefs(sharedPrefs);
+	protected void onConfigChanged() {
+		nuxeoSession = null;
+		nuxeoClient = null;
+	}
+
+	protected void onConnectivityChanged() {
+		// NOP (Session automatically detects
 	}
 
 	@Override
-	public void onConfigChanged() {
-		nuxeoSession = null;
-		nuxeoClient = null;
+	public void onReceive(Context ctx, Intent intent) {
+		if (intent.getAction().equals(NuxeoBroadcastMessages.NUXEO_SETTINGS_CHANGED)) {
+			onConfigChanged();
+		}
+		else if (intent.getAction().equals(NuxeoBroadcastMessages.NUXEO_SERVER_CONNECTIVITY_CHANGED)) {
+			onConnectivityChanged();
+		}
 	}
 
 }

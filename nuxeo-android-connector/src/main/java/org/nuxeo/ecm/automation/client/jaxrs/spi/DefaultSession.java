@@ -177,7 +177,7 @@ public class DefaultSession implements Session {
 
     @Override
     public boolean isOffline() {
-        return false;
+        return client.isOffline();
     }
 
     @Override

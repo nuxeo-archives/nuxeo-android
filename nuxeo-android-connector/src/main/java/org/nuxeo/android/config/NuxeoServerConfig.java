@@ -4,17 +4,22 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
 
+import org.nuxeo.android.broadcast.NuxeoBroadcastMessages;
+
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.preference.PreferenceManager;
 
 public class NuxeoServerConfig implements OnSharedPreferenceChangeListener{
 
 	public static final String PREF_SERVER_URL = "nuxeo.serverUrl";
 	public static final String PREF_SERVER_LOGIN = "nuxeo.login";
 	public static final String PREF_SERVER_PASSWORD = "nuxeo.password";
+
+	protected Context androidContext;
 
 	protected SharedPreferences sharedPrefs;
 
@@ -24,7 +29,10 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener{
 
 	protected String password = "Administrator"; // "nuxeo4android";
 
-	protected List<ConfigChangeListener> listeners = new ArrayList<ConfigChangeListener>();
+	public NuxeoServerConfig(Context androidContext) {
+		this.androidContext=androidContext;
+		setSharedPrefs(PreferenceManager.getDefaultSharedPreferences(androidContext));
+	}
 
 	public String getLogin() {
 		return login;
@@ -96,7 +104,7 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener{
 		return sharedPrefs;
 	}
 
-	public void setSharedPrefs(SharedPreferences sharedPrefs) {
+	protected void setSharedPrefs(SharedPreferences sharedPrefs) {
 		this.sharedPrefs = sharedPrefs;
 		sharedPrefs.registerOnSharedPreferenceChangeListener(this);
 		initFromPrefs(sharedPrefs);
@@ -106,6 +114,7 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener{
 	public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
 		if (PREF_SERVER_LOGIN.equals(key) || PREF_SERVER_PASSWORD.equals(key) || PREF_SERVER_URL.equals(key)) {
 			initFromPrefs(prefs);
+			androidContext.sendBroadcast(new Intent(NuxeoBroadcastMessages.NUXEO_SETTINGS_CHANGED));
 		}
 	}
 
@@ -113,14 +122,7 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener{
 		serverBaseUrl = prefs.getString(PREF_SERVER_URL, serverBaseUrl);
 		login = prefs.getString(PREF_SERVER_LOGIN, login);
 		password = prefs.getString(PREF_SERVER_PASSWORD, password);
-	}
 
-	public void registerOnChangeListener(ConfigChangeListener listener) {
-		listeners.add(listener);
-	}
-
-	public void unregisterOnChangeListener(ConfigChangeListener listener) {
-		listeners.remove(listener);
 	}
 
 }

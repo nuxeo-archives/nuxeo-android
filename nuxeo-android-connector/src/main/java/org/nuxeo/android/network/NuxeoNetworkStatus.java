@@ -2,17 +2,19 @@ package org.nuxeo.android.network;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
+import org.nuxeo.android.broadcast.NuxeoBroadcastMessages;
 import org.nuxeo.android.config.NuxeoServerConfig;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
-import android.os.Handler;
 
-public class NuxeoNetworkStatus {
+public class NuxeoNetworkStatus extends BroadcastReceiver{
 
 	protected final NuxeoServerConfig serverConfig;
 
@@ -24,11 +26,17 @@ public class NuxeoNetworkStatus {
 
 	protected boolean nuxeoServerReachable = true;
 
-	protected List<Handler> handlers = new ArrayList<Handler>();
+	protected final Context androidContext;
 
-	public NuxeoNetworkStatus(NuxeoServerConfig serverConfig, ConnectivityManager cm) {
+	public NuxeoNetworkStatus(Context androidContext, NuxeoServerConfig serverConfig, ConnectivityManager cm) {
+		this.androidContext=androidContext;
 		this.serverConfig = serverConfig;
 		this.cm = cm;
+		androidContext.registerReceiver(this, new IntentFilter(NuxeoBroadcastMessages.NUXEO_SETTINGS_CHANGED));
+		resetAsync();
+	}
+
+	public void resetAsync() {
 		Runnable tester = new Runnable() {
 			@Override
 			public void run() {
@@ -55,18 +63,16 @@ public class NuxeoNetworkStatus {
 		}
 	}
 
-	public void notifyChanged() {
-		for (Handler handler : handlers) {
-			handler.sendEmptyMessage(0);
-		}
-	}
-
 	public boolean isForceOffline() {
 		return forceOffline;
 	}
 
 	public void setForceOffline(boolean forceOffline) {
+		boolean recheck = this.forceOffline && !forceOffline;
 		this.forceOffline = forceOffline;
+		if (recheck) {
+			resetAsync();
+		}
 	}
 
 	public boolean isNetworkReachable() {
@@ -76,9 +82,10 @@ public class NuxeoNetworkStatus {
 	public void setNetworkReachable(boolean networkReachable) {
 		this.networkReachable = networkReachable;
 		if (!networkReachable) {
-			this.nuxeoServerReachable = false;
+			setNuxeoServerReachable(false);
+		} else {
+			notifyChanged();
 		}
-		notifyChanged();
 	}
 
 	public boolean canUseNetwork() {
@@ -121,12 +128,15 @@ public class NuxeoNetworkStatus {
 		}
 	}
 
-	public void registerHandler(Handler handler) {
-		handlers.add(handler);
+	public void notifyChanged() {
+		androidContext.sendBroadcast(new Intent(NuxeoBroadcastMessages.NUXEO_SERVER_CONNECTIVITY_CHANGED));
 	}
 
-	public void unregisterHandler(Handler handler) {
-		handlers.remove(handler);
+	@Override
+	public void onReceive(Context ctx, Intent intent) {
+		if (intent.getAction().equals(NuxeoBroadcastMessages.NUXEO_SETTINGS_CHANGED)) {
+			resetAsync();
+		}
 	}
 
 }

@@ -1,40 +1,40 @@
 package org.nuxeo.android.activities;
 
+import org.nuxeo.android.broadcast.NuxeoBroadcastMessages;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
 import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
 import org.nuxeo.ecm.automation.client.pending.DeferredUpdatetManager;
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 
 public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity {
 
-    protected Handler handler;
-
-	@Override
-	public void finish() {
-		getNuxeoContext().getNetworkStatus().unregisterHandler(handler);
-		super.finish();
-	}
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		handler = new Handler() {
-			@Override
-			public void handleMessage (Message msg) {
-				updateOfflineDisplay(getNuxeoContext().getNetworkStatus());
-			}
-		};
-
-		getNuxeoContext().getNetworkStatus().registerHandler(handler);
-		super.onCreate(savedInstanceState);
-	}
+    protected BroadcastReceiver receiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context ctx, Intent intent) {
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					updateOfflineDisplay(getNuxeoContext().getNetworkStatus());
+				}
+			});
+		}
+    };
 
 	@Override
 	protected void onResume() {
-		super.onResume();
+		registerReceiver(receiver, new IntentFilter(NuxeoBroadcastMessages.NUXEO_SERVER_CONNECTIVITY_CHANGED));
 		refreshAll();
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		unregisterReceiver(receiver);
+		super.onPause();
 	}
 
 	public void reset(final Runnable afterReset) {
