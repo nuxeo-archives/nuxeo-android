@@ -211,7 +211,7 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 
 	protected int getRelativePositionOnPage() {
 		int pos = getCurrentPosition();
-		int targetPageIndex = pos / pageSize;
+		int targetPageIndex = computeTargetPage(pos);
 		return getRelativePositionOnPage(pos, targetPageIndex);
 	}
 
@@ -234,6 +234,7 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 		} else {
 			Log.e(LazyDocumentsListImpl.class.getSimpleName(), "global position : " + getCurrentPosition());
 			Log.e(LazyDocumentsListImpl.class.getSimpleName(), "total size : " + getCurrentSize());
+			Log.e(LazyDocumentsListImpl.class.getSimpleName(), "current page idex : " + currentPage);
 			Log.e(LazyDocumentsListImpl.class.getSimpleName(), "current page size : " + currentDocs.size());
 			throw new UnsupportedOperationException("Wrong index");
 		}
@@ -301,7 +302,7 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 
 	public Document getDocument(int index) {
 
-		int targetPage = index/pageSize;
+		int targetPage = computeTargetPage(index);
 		int offset = index - targetPage * pageSize;
 
 		if (pages.containsKey(targetPage)) {

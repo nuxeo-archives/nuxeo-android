@@ -1,9 +1,5 @@
 package org.nuxeo.android.contentprovider;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
@@ -16,9 +12,6 @@ import android.util.Log;
 
 public class LazyUpdatebleDocumentsListImpl extends LazyDocumentsListImpl
 		implements LazyUpdatableDocumentsList {
-
-	// store the pending created documents
-	protected LinkedHashMap<String, Document> pendingCreatedDocuments = new LinkedHashMap<String, Document>();
 
 	public LazyUpdatebleDocumentsListImpl (Session session, String nxql, String[] queryParams, String sortOrder, String schemas, int pageSize) {
 		super(session, nxql, queryParams, sortOrder, schemas, pageSize);
@@ -109,14 +102,28 @@ public class LazyUpdatebleDocumentsListImpl extends LazyDocumentsListImpl
 		createDocument(newDocument, null);
 	}
 
+	protected String addPendingCreatedDocument(Document newDoc) {
+		pages.get(0).add(0, newDoc);
+		notifyContentChanged(0);
+		return newDoc.getId();
+	}
+
+	protected void removePendingCreatedDocument(String uuid) {
+		Documents docs = pages.get(0);
+		for (int idx = 0 ; idx < docs.size(); idx++) {
+			if (docs.get(idx).getId().equals(uuid)) {
+				docs.remove(idx);
+				break;
+			}
+		}
+		notifyContentChanged(0);
+	}
+
 	@Override
 	public void createDocument(Document newDocument,
 			OperationRequest createOperation) {
 
-		final String key = "NEW-" + System.currentTimeMillis();
-		pendingCreatedDocuments.put(key, newDocument);
-
-		final int notifyPage = -1;
+		final String key = addPendingCreatedDocument(newDocument);
 
 		if (createOperation==null) {
 			createOperation = buildCreateOperation(session, newDocument);
@@ -125,8 +132,7 @@ public class LazyUpdatebleDocumentsListImpl extends LazyDocumentsListImpl
 
 			@Override
 			public void onSuccess(String executionId, Object data) {
-				pendingCreatedDocuments.remove(key);
-				notifyContentChanged(notifyPage);
+				removePendingCreatedDocument(key);
 				// start refreshing
 				refreshAll();
 			}
@@ -134,67 +140,29 @@ public class LazyUpdatebleDocumentsListImpl extends LazyDocumentsListImpl
 			@Override
 			public void onError(String executionId, Throwable e) {
 				// revert to previous
-				pendingCreatedDocuments.remove(key);
-				notifyContentChanged(notifyPage);
+				removePendingCreatedDocument(key);
+				Log.e(LazyUpdatebleDocumentsListImpl.class.getSimpleName(), "Deferred Creation failed", e);
 			}
 		});
-		// notify UI
-		notifyContentChanged(notifyPage);
 	}
 
 	@Override
 	protected int computeTargetPage(int position) {
-		return (position - pendingCreatedDocuments.size()) / pageSize;
+		if (position < pages.get(0).size()) {
+			return 0;
+		}
+		else {
+			return 1 + ( (position - pages.get(0).size()) / pageSize);
+		}
 	}
 
 	@Override
 	protected int getRelativePositionOnPage(int globalPosition, int pageIndex) {
 		if (pageIndex==0) {
-			return super.getRelativePositionOnPage(globalPosition, pageIndex)-pendingCreatedDocuments.size();
+			return globalPosition;
 		} else {
-			return super.getRelativePositionOnPage(globalPosition, pageIndex);
+			return globalPosition  - pages.get(0).size() - (pageIndex-1) * pageSize;
 		}
-	}
-
-	@Override
-	protected int getRelativePositionOnPage() {
-		int pendingCount =pendingCreatedDocuments.size();
-		if (pendingCount==0) {
-			return super.getRelativePositionOnPage();
-		} else {
-			int pos = getCurrentPosition();
-			if (pos < pendingCount) {
-				return -pos;
-			} else {
-				int targetPageIndex = computeTargetPage(pos);
-				return getRelativePositionOnPage((pos - pendingCount), targetPageIndex);
-			}
-		}
-	}
-
-	@Override
-	public Document getCurrentDocument() {
-		int pendingCount =pendingCreatedDocuments.size();
-		if (pendingCount==0) {
-			return super.getCurrentDocument();
-		}
-		Document doc = null;
-		int pos = getRelativePositionOnPage();
-		if (pos < 0) {
-			List<String> keys = new ArrayList<String>(pendingCreatedDocuments.keySet());
-			return pendingCreatedDocuments.get(keys.get(-pos-1));
-		}
-		Documents currentDocs = getCurrentPage();
-		if (currentDocs.size()> pos) {
-			return currentDocs.get(pos);
-		} else {
-			Log.e(LazyDocumentsListImpl.class.getSimpleName(), "wrong index");
-			return null;
-		}
-	}
-
-	public int getCurrentSize() {
-		return pendingCreatedDocuments.size() + super.getCurrentSize();
 	}
 
 }
