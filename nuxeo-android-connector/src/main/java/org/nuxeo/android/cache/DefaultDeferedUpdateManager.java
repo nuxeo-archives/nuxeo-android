@@ -1,31 +1,38 @@
-package org.nuxeo.android.pending;
+package org.nuxeo.android.cache;
 
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.nuxeo.android.cache.sql.DefferedUpdateTableWrapper;
+import org.nuxeo.android.cache.sql.SQLStateManager;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
+import org.nuxeo.ecm.automation.client.cache.DeferredUpdateManager;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.CacheKeyHelper;
-import org.nuxeo.ecm.automation.client.pending.DeferredUpdatetManager;
 
-import android.content.Context;
+import android.os.Handler;
 
-public class DefaultDeferedUpdateManager implements DeferredUpdatetManager {
+public class DefaultDeferedUpdateManager implements DeferredUpdateManager {
 
 	protected ConcurrentHashMap<String, AsyncCallback<Object>> pendingCallbacks = new ConcurrentHashMap<String, AsyncCallback<Object>>();
 
-	protected StorageHelper storage;
+	protected final SQLStateManager sqlStateManager;
 
-	public DefaultDeferedUpdateManager(Context context) {
-		storage = new StorageHelper(context);
+	public DefaultDeferedUpdateManager(SQLStateManager sqlStateManager) {
+		this.sqlStateManager=sqlStateManager;
+		sqlStateManager.registerWrapper(new DefferedUpdateTableWrapper());
+	}
+
+	protected DefferedUpdateTableWrapper getTableWrapper() {
+		return (DefferedUpdateTableWrapper) sqlStateManager.getTableWrapper(DefferedUpdateTableWrapper.TBLNAME);
 	}
 
 	@Override
 	public void deleteDeferredUpdate(String key) {
-		storage.deleteEntry(key);
+		getTableWrapper().deleteEntry(key);
 	}
 
 	@Override
@@ -50,6 +57,7 @@ public class DefaultDeferedUpdateManager implements DeferredUpdatetManager {
 
 				@Override
 				public void onSuccess(String executionId, Object data) {
+					deleteDeferredUpdate(requestKey);
 					AsyncCallback<Object> clientCB = pendingCallbacks.remove(requestKey);
 					if (clientCB!=null) {
 						clientCB.onSuccess(requestKey, data);
@@ -61,14 +69,18 @@ public class DefaultDeferedUpdateManager implements DeferredUpdatetManager {
 	}
 
 	protected OperationRequest storePendingRequest(String requestKey, OperationRequest request) {
-		return storage.storeRequest(requestKey, request);
+		return getTableWrapper().storeRequest(requestKey, request);
 	}
 
 	protected Map<String, OperationRequest> getPendingRequest(Session session) {
-		return storage.getPendingRequests(session);
+		return getTableWrapper().getPendingRequests(session);
 	}
 
 	public void executePendingRequests(Session session) {
+		executePendingRequests(session, null);
+	}
+
+	public void executePendingRequests(Session session, final Handler uiNotifier) {
 
 		for (Entry<String, OperationRequest> entry : getPendingRequest(session).entrySet()) {
 			final String requestKey = entry.getKey();
@@ -79,6 +91,9 @@ public class DefaultDeferedUpdateManager implements DeferredUpdatetManager {
 					if (clientCB!=null) {
 						clientCB.onError(requestKey, e);
 					}
+					if (uiNotifier!=null) {
+						uiNotifier.sendEmptyMessage(0);
+					}
 				}
 
 				@Override
@@ -87,12 +102,20 @@ public class DefaultDeferedUpdateManager implements DeferredUpdatetManager {
 					if (clientCB!=null) {
 						clientCB.onSuccess(requestKey, data);
 					}
+					if (uiNotifier!=null) {
+						uiNotifier.sendEmptyMessage(0);
+					}
 				}
 			});
 		}
 	}
 
 	public long getPendingRequestCount() {
-		return storage.getEntryCount();
+		return getTableWrapper().getCount();
+	}
+
+	@Override
+	public void purgePendingUpdates() {
+		getTableWrapper().clearTable();
 	}
 }

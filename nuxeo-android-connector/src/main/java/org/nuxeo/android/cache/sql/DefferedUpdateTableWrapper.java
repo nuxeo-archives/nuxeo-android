@@ -1,4 +1,4 @@
-package org.nuxeo.android.pending;
+package org.nuxeo.android.cache.sql;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,19 +14,12 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.OperationInput;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.DefaultOperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.DefaultSession;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
 
-public class StorageHelper extends SQLiteOpenHelper {
+public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
 
-	protected static final int VERSION = 1;
-
-	protected static final String DBNAME = "NuxeoCachePendingDB";
-
-	protected static final String TBLNAME = "NuxeoPendingEntries";
+	public static final String TBLNAME = "NuxeoPendingUpdates";
 
 	protected static final String KEY_COLUMN = "KEY";
 	protected static final String OPID_COLUMN = "OPERATIONID";
@@ -45,34 +38,19 @@ public class StorageHelper extends SQLiteOpenHelper {
 			+ INPUT_REF_COLUMN + " TEXT, "
 			+ INPUT_BINARY_COLUMN + " TEXT);";
 
-	public StorageHelper(Context context) {
-		super(context, DBNAME, null, VERSION);
+	@Override
+	public String getCreateStatement() {
+		return CREATE_STATEMENT;
 	}
 
 	@Override
-	public void onCreate(SQLiteDatabase db) {
-		db.execSQL(CREATE_STATEMENT);
+	public String getTableName() {
+		return TBLNAME;
 	}
 
 	@Override
-	public void onUpgrade(SQLiteDatabase db, int arg1, int arg2) {
-		// TODO Auto-generated method stub
-	}
-
-
-	public long getEntryCount() {
-		SQLiteDatabase db = getReadableDatabase();
-
-		String sql = "select count(*) from " + TBLNAME ;
-		SQLiteStatement statement=null;
-		try {
-			statement = db.compileStatement(sql);
-			return statement.simpleQueryForLong();
-		} finally {
-			if (statement!=null) {
-				statement.close();
-			}
-		}
+	public String getKeyColumnName() {
+		return KEY_COLUMN;
 	}
 
 	protected Map<String, String> readMapFromJson(String data) {
@@ -96,7 +74,7 @@ public class StorageHelper extends SQLiteOpenHelper {
 
 		SQLiteDatabase db = getWritableDatabase();
 
-		String sql = "INSERT INTO " + TBLNAME + " (" + KEY_COLUMN + ","
+		String sql = "INSERT INTO " + getTableName() + " (" + KEY_COLUMN + ","
 		+ OPID_COLUMN + ","
 		+ PARAMS_COLUMN + ","
 		+ HEADERS_COLUMN + ","
@@ -134,7 +112,7 @@ public class StorageHelper extends SQLiteOpenHelper {
 	public Map<String, OperationRequest> getPendingRequests(Session session) {
 		SQLiteDatabase db = getReadableDatabase();
 
-		String sql = "select * from " + TBLNAME ;
+		String sql = "select * from " + getTableName() ;
 		Cursor cursor = db.rawQuery(sql,null);
 
 		Map<String, OperationRequest> result = new HashMap<String, OperationRequest>();
@@ -197,21 +175,6 @@ public class StorageHelper extends SQLiteOpenHelper {
 		}
 	}
 
-	public void deleteEntry(String key) {
-		SQLiteDatabase db = getWritableDatabase();
-		String sql = "delete  from " + TBLNAME + " where " + KEY_COLUMN + "='" + key + "'";
-		db.beginTransaction();
-		db.execSQL(sql);
-		db.setTransactionSuccessful();
-		db.endTransaction();
-	}
 
-	public void clear() {
-		SQLiteDatabase db = getWritableDatabase();
-		String sql = "delete  from " + TBLNAME ;
-		db.beginTransaction();
-		db.execSQL(sql);
-		db.setTransactionSuccessful();
-		db.endTransaction();
-	}
+
 }

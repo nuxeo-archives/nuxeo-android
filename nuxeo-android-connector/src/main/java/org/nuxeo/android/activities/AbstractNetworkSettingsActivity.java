@@ -2,13 +2,15 @@ package org.nuxeo.android.activities;
 
 import org.nuxeo.android.broadcast.NuxeoBroadcastMessages;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
+import org.nuxeo.ecm.automation.client.cache.DeferredUpdateManager;
 import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
-import org.nuxeo.ecm.automation.client.pending.DeferredUpdatetManager;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
+import android.os.Message;
 
 public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity {
 
@@ -37,7 +39,7 @@ public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity 
 		super.onPause();
 	}
 
-	public void reset(final Runnable afterReset) {
+	protected void resetNetworkStatus(final Runnable afterReset) {
 		Runnable tester = new Runnable() {
 			@Override
 			public void run() {
@@ -52,11 +54,11 @@ public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity 
 
 	protected void refreshAll() {
 		updateOfflineDisplay(getNuxeoContext().getNetworkStatus());
-		updateCacheInfoDisplay(getNuxeoContext().getCacheManager(), getNuxeoContext().getDeferredUpdatetManager());
+		updateCacheInfoDisplay(getNuxeoContext().getResponseCacheManager(), getNuxeoContext().getDeferredUpdatetManager());
 	}
 
-	protected void resetAndRefresh() {
-		reset(new Runnable() {
+	protected void resetNetworkStatusAndRefresh() {
+		resetNetworkStatus(new Runnable() {
 			@Override
 			public void run() {
 				refreshAll();
@@ -64,14 +66,33 @@ public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity 
 		});
 	}
 
+	protected void executePendingUpdates() {
+		DeferredUpdateManager dum = getNuxeoContext().getDeferredUpdatetManager();
+		if (dum.getPendingRequestCount()>0) {
+			dum.executePendingRequests(getNuxeoSession(), new Handler() {
+				@Override
+				public void handleMessage(Message msg) {
+					refreshAll();
+					super.handleMessage(msg);
+				}
+			});
+		}
+	}
+
 	protected abstract void updateOfflineDisplay(NuxeoNetworkStatus settings);
 
-	protected abstract void updateCacheInfoDisplay(ResponseCacheManager cacheManager, DeferredUpdatetManager deferredUpdatetManager);
+	protected abstract void updateCacheInfoDisplay(ResponseCacheManager cacheManager, DeferredUpdateManager deferredUpdateManager);
 
-	protected void flushCache() {
-		getNuxeoContext().getCacheManager().clear();
-		updateCacheInfoDisplay(getNuxeoContext().getCacheManager(), getNuxeoContext().getDeferredUpdatetManager());
+	protected void flushResponseCache() {
+		getNuxeoContext().getResponseCacheManager().clear();
+		updateCacheInfoDisplay(getNuxeoContext().getResponseCacheManager(), getNuxeoContext().getDeferredUpdatetManager());
 	}
+
+	protected void flushDefferedUpdateManager() {
+		getNuxeoContext().getDeferredUpdatetManager().purgePendingUpdates();
+		updateCacheInfoDisplay(getNuxeoContext().getResponseCacheManager(), getNuxeoContext().getDeferredUpdatetManager());
+	}
+
 
 	protected void goOffline(boolean offline) {
 		getNuxeoContext().getNetworkStatus().setForceOffline(offline);

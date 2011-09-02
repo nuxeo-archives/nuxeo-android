@@ -2,8 +2,8 @@ package org.nuxeo.android.automationsample;
 
 import org.nuxeo.android.activities.AbstractNetworkSettingsActivity;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
+import org.nuxeo.ecm.automation.client.cache.DeferredUpdateManager;
 import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
-import org.nuxeo.ecm.automation.client.pending.DeferredUpdatetManager;
 
 import android.os.Bundle;
 import android.view.View;
@@ -23,6 +23,9 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
     private CheckBox serverReachable;
     private Button clearCacheButton;
     private Button refreshButton;
+    private TextView pendingCount;
+    private Button execPendingButton;
+    private Button clearPendingButton;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,12 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
         clearCacheButton.setOnClickListener(this);
         refreshButton.setOnClickListener(this);
 
+        pendingCount = (TextView) findViewById(R.id.pendingUpdatesCount);
+        execPendingButton = (Button) findViewById(R.id.execPendingBtn);
+        execPendingButton.setOnClickListener(this);
+        clearPendingButton= (Button) findViewById(R.id.clearPendingBtn);
+        clearPendingButton.setOnClickListener(this);
+
 		super.onCreate(savedInstanceState);
 	}
 
@@ -49,12 +58,14 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
 		forceOfflineChk.setChecked(settings.isForceOffline());
 		networkReachable.setChecked(settings.isNetworkReachable());
 		serverReachable.setChecked(settings.isNuxeoServerReachable());
+		execPendingButton.setEnabled(settings.canUseNetwork());
 	}
 
 	@Override
-	protected void updateCacheInfoDisplay(ResponseCacheManager cacheManager, DeferredUpdatetManager deferredUpdatetManager) {
+	protected void updateCacheInfoDisplay(ResponseCacheManager cacheManager, DeferredUpdateManager deferredUpdatetManager) {
 		cacheEntriesCount.setText("Cache contains " + cacheManager.getEntryCount() + " entries");
 		cacheSize.setText("Cache size : " + cacheManager.getSize() + "(bytes)" );
+		pendingCount.setText(deferredUpdatetManager.getPendingRequestCount() + " pending updates");
 	}
 
 	@Override
@@ -67,9 +78,13 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
 	@Override
 	public void onClick(View view) {
 		if (view == clearCacheButton) {
-			flushCache();
+			flushResponseCache();
 		} else if (view == refreshButton) {
-			resetAndRefresh();
+			resetNetworkStatusAndRefresh();
+		} else if (view == execPendingButton) {
+			executePendingUpdates();
+		} else if (view == clearPendingButton) {
+			flushDefferedUpdateManager();
 		}
 	}
 

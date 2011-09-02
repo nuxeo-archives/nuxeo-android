@@ -17,6 +17,13 @@
    <CheckBox android:layout_height="wrap_content" android:id="@+id/serverReachableChk" android:layout_alignParentLeft="true" android:text="Nuxeo Server reachable" android:layout_width="wrap_content" android:editable="false"></CheckBox>
    <CheckBox android:layout_height="wrap_content" android:id="@+id/forceOfflineChk" android:layout_alignParentLeft="true" android:text="Force Offline" android:layout_width="wrap_content"></CheckBox>
 
+  <Button
+    android:id="@+id/refreshBtn"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="Refresh Screen"
+   />
+
   <TextView
     android:id="@+id/cacheLabel"
     android:layout_width="fill_parent"
@@ -24,7 +31,6 @@
     android:textSize="16dip"
     android:text="Caching info:"
      />
-
   <TextView
     android:id="@+id/cacheEntriesCount"
     android:layout_width="fill_parent"
@@ -42,11 +48,29 @@
     android:text="Clear Cache"
    />
 
-  <Button
-    android:id="@+id/refreshBtn"
+  <TextView
+    android:id="@+id/pendingLabel"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:text="Refresh Screen"
+    android:textSize="16dip"
+    android:text="Pending updates :"
+     />
+  <TextView
+    android:id="@+id/pendingUpdatesCount"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:textSize="16dip"/>
+  <Button
+    android:id="@+id/execPendingBtn"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="Execute pending updates"
+   />
+  <Button
+    android:id="@+id/clearPendingBtn"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="Discard pending updates"
    />
 
 </LinearLayout>

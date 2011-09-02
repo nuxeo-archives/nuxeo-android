@@ -1,23 +1,17 @@
-package org.nuxeo.android.cache;
+package org.nuxeo.android.cache.sql;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.nuxeo.ecm.automation.client.cache.ResponseCacheEntry;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 
-public class SQLCacheHelper extends SQLiteOpenHelper {
+public class ResponseCacheTableWrapper extends AbstractSQLTableWrapper {
 
-	protected static final int VERSION = 1;
-
-	protected static final String DBNAME = "NuxeoCacheDB";
-
-	protected static final String TBLNAME = "NuxeoCacheEntries";
+	public static final String TBLNAME = "NuxeoCacheEntries";
 
 	protected static final String KEY_COLUMN = "KEY";
 	protected static final String CTYPE_COLUMN = "CTYPE";
@@ -30,18 +24,19 @@ public class SQLCacheHelper extends SQLiteOpenHelper {
 			+ CDISP_COLUMN + " TEXT, " + RTYPE_COLUMN + " TEXT, "
 			+ RENTITY_COLUMN + " TEXT);";
 
-	public SQLCacheHelper(Context context) {
-		super(context, DBNAME, null, VERSION);
+	@Override
+	public String getCreateStatement() {
+		return CREATE_STATEMENT;
 	}
 
 	@Override
-	public void onCreate(SQLiteDatabase db) {
-		db.execSQL(CREATE_STATEMENT);
+	public String getTableName() {
+		return TBLNAME;
 	}
 
 	@Override
-	public void onUpgrade(SQLiteDatabase db, int arg1, int arg2) {
-		// TODO Auto-generated method stub
+	public String getKeyColumnName() {
+		return KEY_COLUMN;
 	}
 
 	protected void addEntry(SQLiteDatabase db, String key, ResponseCacheEntry entry ) {
@@ -58,10 +53,7 @@ public class SQLCacheHelper extends SQLiteOpenHelper {
 		+ "'" + entry.getRequestEntity() + "'"
 		+ ");";
 
-		db.beginTransaction();
-		db.execSQL(sql);
-		db.setTransactionSuccessful();
-		db.endTransaction();
+		execTransactionalSQL(db, sql);
 	}
 
 	protected void updateEntry(SQLiteDatabase db, String key, ResponseCacheEntry entry ) {
@@ -77,10 +69,7 @@ public class SQLCacheHelper extends SQLiteOpenHelper {
 		+ " where " + KEY_COLUMN + " = "
 		+ "'" + key + "';";
 
-		db.beginTransaction();
-		db.execSQL(sql);
-		db.setTransactionSuccessful();
-		db.endTransaction();
+		execTransactionalSQL(db, sql);
 	}
 
 	public void storeCacheEntry(String key, ResponseCacheEntry entry) {
@@ -97,21 +86,6 @@ public class SQLCacheHelper extends SQLiteOpenHelper {
 			}
 		}finally {
 			statement.close();
-		}
-	}
-
-	public long getEntryCount() {
-		SQLiteDatabase db = getReadableDatabase();
-
-		String sql = "select count(*) from " + TBLNAME ;
-		SQLiteStatement statement=null;
-		try {
-			statement = db.compileStatement(sql);
-			return statement.simpleQueryForLong();
-		} finally {
-			if (statement!=null) {
-				statement.close();
-			}
 		}
 	}
 
@@ -165,12 +139,4 @@ public class SQLCacheHelper extends SQLiteOpenHelper {
 		}
 	}
 
-	public void clear() {
-		SQLiteDatabase db = getWritableDatabase();
-		String sql = "delete  from " + TBLNAME ;
-		db.beginTransaction();
-		db.execSQL(sql);
-		db.setTransactionSuccessful();
-		db.endTransaction();
-	}
 }

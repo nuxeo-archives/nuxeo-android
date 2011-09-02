@@ -6,18 +6,17 @@ import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpAutomationClient;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpConnector;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.Connector;
-import org.nuxeo.ecm.automation.client.pending.DeferredUpdatetManager;
 
 public class CacheAwareHttpAutomationClient extends HttpAutomationClient {
 
     protected ResponseCacheManager cacheManager;
 
-    protected DeferredUpdatetManager deferredUpdatetManager;
+    protected DeferredUpdateManager deferredUpdatetManager;
 
     protected NuxeoNetworkStatus networkStatus;
 
 
-    public CacheAwareHttpAutomationClient(String url, ResponseCacheManager cacheManager, NuxeoNetworkStatus offlineSettings, DeferredUpdatetManager deferredUpdatetManager) {
+    public CacheAwareHttpAutomationClient(String url, ResponseCacheManager cacheManager, NuxeoNetworkStatus offlineSettings, DeferredUpdateManager deferredUpdatetManager) {
         super(url);
         this.cacheManager = cacheManager;
         this.networkStatus = offlineSettings;

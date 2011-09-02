@@ -1,15 +1,18 @@
 package org.nuxeo.android.context;
 
 import org.nuxeo.android.broadcast.NuxeoBroadcastMessages;
+import org.nuxeo.android.cache.DefaultDeferedUpdateManager;
+import org.nuxeo.android.cache.DefaultResponseCacheManager;
+import org.nuxeo.android.cache.sql.SQLStateManager;
 import org.nuxeo.android.config.NuxeoServerConfig;
 import org.nuxeo.android.network.NetworkStatusBroadCastReceiver;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
 import org.nuxeo.android.repository.DocumentManager;
 import org.nuxeo.ecm.automation.client.cache.CacheAwareHttpAutomationClient;
+import org.nuxeo.ecm.automation.client.cache.DeferredUpdateManager;
 import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpAutomationClient;
-import org.nuxeo.ecm.automation.client.pending.DeferredUpdatetManager;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,13 +35,15 @@ public class NuxeoContext extends BroadcastReceiver {
 
 	protected HttpAutomationClient nuxeoClient;
 
-	protected ResponseCacheManager cacheManager;
+	protected ResponseCacheManager responseCacheManager;
 
-	protected DeferredUpdatetManager deferredUpdateManager;
+	protected DeferredUpdateManager deferredUpdateManager;
 
 	protected Session nuxeoSession;
 
 	protected final Context androidContext;
+
+	protected SQLStateManager sqlStateManager;
 
 	public static NuxeoContext get(Context context) {
 		if (context instanceof NuxeoContextProvider) {
@@ -63,6 +68,13 @@ public class NuxeoContext extends BroadcastReceiver {
 		filter.addAction(NuxeoBroadcastMessages.NUXEO_SETTINGS_CHANGED);
 		filter.addAction(NuxeoBroadcastMessages.NUXEO_SERVER_CONNECTIVITY_CHANGED);
 		androidContext.registerReceiver(this, filter);
+		initDefaultCaches();
+	}
+
+	protected void initDefaultCaches() {
+		sqlStateManager = new SQLStateManager(androidContext);
+		responseCacheManager = new DefaultResponseCacheManager(androidContext, sqlStateManager);
+		deferredUpdateManager = new DefaultDeferedUpdateManager(sqlStateManager);
 	}
 
 	public NuxeoServerConfig getServerConfig() {
@@ -75,11 +87,11 @@ public class NuxeoContext extends BroadcastReceiver {
 
 	public synchronized Session getSession() {
 		if (nuxeoSession==null) {
-			if (cacheManager==null) {
+			if (responseCacheManager==null) {
 				nuxeoClient = new HttpAutomationClient(
 						serverConfig.getAutomationUrl());
 			} else {
-				nuxeoClient = new CacheAwareHttpAutomationClient(serverConfig.getAutomationUrl(), cacheManager, networkStatus, deferredUpdateManager);
+				nuxeoClient = new CacheAwareHttpAutomationClient(serverConfig.getAutomationUrl(), responseCacheManager, networkStatus, deferredUpdateManager);
 			}
 			nuxeoSession = nuxeoClient.getSession(
 					serverConfig.getLogin(),
@@ -92,21 +104,20 @@ public class NuxeoContext extends BroadcastReceiver {
 		return new DocumentManager(getSession());
 	}
 
-
-	public ResponseCacheManager getCacheManager() {
-		return cacheManager;
+	public ResponseCacheManager getResponseCacheManager() {
+		return responseCacheManager;
 	}
 
-	public void setCacheManager(ResponseCacheManager cacheManager) {
-		this.cacheManager = cacheManager;
+	public void setResponseCacheManager(ResponseCacheManager cacheManager) {
+		this.responseCacheManager = cacheManager;
 	}
 
 	public void setDeferredUpdateManager(
-			DeferredUpdatetManager deferredUpdateManager) {
+			DeferredUpdateManager deferredUpdateManager) {
 		this.deferredUpdateManager = deferredUpdateManager;
 	}
 
-	public DeferredUpdatetManager getDeferredUpdatetManager() {
+	public DeferredUpdateManager getDeferredUpdatetManager() {
 		return deferredUpdateManager;
 	}
 
