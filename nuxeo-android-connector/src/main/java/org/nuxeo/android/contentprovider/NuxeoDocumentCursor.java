@@ -121,7 +121,7 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 		if (column==0) {
 			return getCurrentIdentifier().toString();
 		} else if (column==1) {
-			return getCurrentDocument().getStatusFlag();
+			return getCurrentDocument().getStatusFlag().toString();
 		}
 		return getCurrentDocument().getString(columns[column]);
 	}
@@ -178,8 +178,9 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 		return docList.getLoadingPagesCount();
 	}
 
-	public void documentChanged(Document doc) {
-		docList.updateDocument(doc);
+	public LazyUpdatableDocumentsList getDocumentsList() {
+		return docList;
 	}
+
 }
 

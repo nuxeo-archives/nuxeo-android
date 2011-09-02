@@ -35,4 +35,6 @@ public interface LazyDocumentsList {
 	public abstract void unregisterListener(DocumentsListChangeListener listener);
 
 	public abstract Document getDocument(int index);
+
+	public void refreshAll();
 }

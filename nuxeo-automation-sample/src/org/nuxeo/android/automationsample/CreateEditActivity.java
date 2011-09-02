@@ -55,8 +55,13 @@ public class CreateEditActivity extends BaseNuxeoActivity implements View.OnClic
 	@Override
 	public void onClick(View arg0) {
 		Document doc = getCurrentDocument();
-		doc.set("dc:title", doc.getTitle() + "--Edited--");
-		setResult(RESULT_OK, new Intent().putExtra(DOCUMENT, doc));
+		if (isEditMode()) {
+			doc.set("dc:title", doc.getTitle() + "--Edited--");
+			setResult(RESULT_OK, new Intent().putExtra(DOCUMENT, doc));
+		} else {
+			doc.set("dc:title", "YoHooo");
+			setResult(RESULT_OK, new Intent().putExtra(DOCUMENT, doc));
+		}
 		this.finish();
 	}
 

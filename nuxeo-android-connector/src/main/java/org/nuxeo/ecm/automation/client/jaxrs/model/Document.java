@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A immutable document. You cannot modify documents. Documents are as they are
@@ -42,9 +41,11 @@ import java.util.Map;
  */
 public class Document extends DocRef implements Serializable {
 
+	private static final String NEW_UUID_PREFIX = "NEW-";
+
 	private static final long serialVersionUID = 1L;
 
-	protected final String path;
+	protected final String parentPath;
 
     protected final String type;
 
@@ -58,6 +59,8 @@ public class Document extends DocRef implements Serializable {
 
     protected final List<String> dirtyFields = new ArrayList<String>();
 
+    protected String name;
+
     /**
      * Reserved to framework. Should be only called by client framework when
      * unmarshalling documents.
@@ -65,12 +68,33 @@ public class Document extends DocRef implements Serializable {
     public Document(String repoName, String id, String type, String path, String state,
             String lock, PropertyMap properties) {
         super(id);
-        this.path = path;
         this.type = type;
         this.state = state;
         this.lock = lock;
         this.properties = properties == null ? new PropertyMap() : properties;
         this.repoName = repoName;
+        // compute parent path and name
+        if (path.endsWith("/")) {
+        	path = path.substring(0, path.length()-1);
+        }
+        int idx = path.lastIndexOf("/");
+        this.parentPath = path.substring(0, idx);
+        this.name = path.substring(idx+1);
+    }
+
+    public Document(String parentPath, String name, String type) {
+    	super(NEW_UUID_PREFIX + System.currentTimeMillis());
+    	this.parentPath = parentPath;
+    	this.state=null;
+    	this.type=type;
+    	this.lock=null;
+    	this.properties = new PropertyMap();
+    	this.repoName = null;
+    	this.name=name;
+    }
+
+    public String getName() {
+    	return name;
     }
 
     public String getId() {
@@ -82,7 +106,7 @@ public class Document extends DocRef implements Serializable {
     }
 
     public String getPath() {
-        return path;
+        return parentPath + name;
     }
 
     public String getType() {
@@ -162,7 +186,7 @@ public class Document extends DocRef implements Serializable {
     }
 
     public String getRelativeUrl() {
-    	return "/nxpath/" + repoName + path + "@view_documents";
+    	return "/nxpath/" + repoName + getPath() + "@view_documents";
     }
 
     public boolean isDirty() {
@@ -181,13 +205,17 @@ public class Document extends DocRef implements Serializable {
     	return PropertiesHelper.toStringProperties(getDirtyProperties());
     }
 
-    public String getStatusFlag() {
+    public DocumentStatus getStatusFlag() {
+    	if (ref==null || ref.startsWith(NEW_UUID_PREFIX)) {
+    		return DocumentStatus.NEW;
+    	}
     	if (isDirty()) {
-    		return "U";
+    		return DocumentStatus.UPDATED;
     	}
-    	if (ref==null) {
-    		return "N";
-    	}
-    	return "";
+    	return DocumentStatus.SYNCHRONIZED;
+    }
+
+    public String getParentPath() {
+    	return parentPath;
     }
 }

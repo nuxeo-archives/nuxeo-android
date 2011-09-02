@@ -13,6 +13,12 @@ public class UUIDMapper {
 	protected Long lastID = new Long(0);
 
 	public Long getIdentifier(Document doc) {
+		if (doc==null) {
+			throw new UnsupportedOperationException("Can not not map a null Document");
+		}
+		if (doc.getId()==null) {
+			throw new UnsupportedOperationException("Can not not map a Document with null UUID");
+		}
 		return getIdentifier(doc.getId());
 	}
 

@@ -68,16 +68,10 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 		fetchPageSync(currentPage);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nuxeo.android.contentprovider.ILazyDocumentsList#getCurrentPage()
-	 */
 	public Documents getCurrentPage() {
 		return pages.get(currentPage);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nuxeo.android.contentprovider.ILazyDocumentsList#fetchAndChangeCurrentPage(int)
-	 */
 	public Documents fetchAndChangeCurrentPage(int targetPage) {
 		if (!getCurrentPage().isBatched()) {
 			return null;
@@ -134,11 +128,22 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 						Documents docs = (Documents) data;
 						loadingInProgress.remove(""+targetPage);
 						pages.put(targetPage, docs);
-						pageCount = docs.getPageCount();
+						setPageCount(docs.getPageCount());
 						totalSize = docs.getTotalSize();
 						notifyContentChanged(targetPage);
 					}
 			});
+		}
+	}
+
+	protected void setPageCount(int pc) {
+		pageCount = pc;
+		if (pageCount < pages.size()) {
+			// remove old pages that may correspond to document that were deleted
+			for (int i = pageCount ; i < pages.size(); i++) {
+				pages.remove(i);
+			}
+			notifyContentChanged(-1);
 		}
 	}
 
@@ -161,7 +166,7 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 				fetchOperation.set(pageParameterName, page);
 				docs = (Documents) fetchOperation.execute(cacheFlags);
 				pageSize = docs.getPageSize();
-				pageCount = docs.getPageCount();
+				setPageCount(docs.getPageCount());
 				loadingInProgress.remove(""+ page);
 				totalSize = docs.getTotalSize();
 				return docs;
@@ -177,19 +182,17 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nuxeo.android.contentprovider.ILazyDocumentsList#getCurrentPosition()
-	 */
+	protected int computeTargetPage(int position) {
+		return position / pageSize;
+	}
+
 	public int getCurrentPosition() {
 		return currentPosition;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nuxeo.android.contentprovider.ILazyDocumentsList#setCurrentPosition(int)
-	 */
 	public int setCurrentPosition(int position) {
 
-		int targetPageIndex = position / pageSize;
+		int targetPageIndex = computeTargetPage(position);
 		if (targetPageIndex>=pageCount) {
 			return currentPosition;
 		}
@@ -215,51 +218,39 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 	protected void prefetchIfNeeded(int pos) {
 		if (pos > PREFETCH_TRIGGER * pageSize) {
 			final int pageToFetch = currentPage +1;
-
-			if (!pages.containsKey(pageToFetch)) {
-				fetchPageAsync(pageToFetch, false);
+			if (pageToFetch < pageCount) {
+				if (!pages.containsKey(pageToFetch)) {
+					fetchPageAsync(pageToFetch, false);
+				}
 			}
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nuxeo.android.contentprovider.ILazyDocumentsList#getCurrentDocument()
-	 */
 	public Document getCurrentDocument() {
 		int pos = getRelativePositionOnPage();
 		Documents currentDocs = getCurrentPage();
 		if (currentDocs.size()> pos) {
 			return currentDocs.get(pos);
 		} else {
-			Log.e(LazyDocumentsListImpl.class.getSimpleName(), "wrong index");
-			return null;
+			Log.e(LazyDocumentsListImpl.class.getSimpleName(), "global position : " + getCurrentPosition());
+			Log.e(LazyDocumentsListImpl.class.getSimpleName(), "total size : " + getCurrentSize());
+			Log.e(LazyDocumentsListImpl.class.getSimpleName(), "current page size : " + currentDocs.size());
+			throw new UnsupportedOperationException("Wrong index");
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nuxeo.android.contentprovider.ILazyDocumentsList#getPageCount()
-	 */
 	public int getPageCount() {
 		return pageCount;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nuxeo.android.contentprovider.ILazyDocumentsList#getLoadedPageCount()
-	 */
 	public int getLoadedPageCount() {
 		return pages.size();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nuxeo.android.contentprovider.ILazyDocumentsList#getLoadingPagesCount()
-	 */
 	public Integer getLoadingPagesCount() {
 		return loadingInProgress.size();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nuxeo.android.contentprovider.ILazyDocumentsList#getIterator()
-	 */
 	public Iterator<Document> getIterator() {
 		return new Iterator<Document>() {
 
@@ -281,16 +272,10 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 		};
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nuxeo.android.contentprovider.ILazyDocumentsList#getLoadedPages()
-	 */
 	public Collection<Documents> getLoadedPages() {
 		return pages.values();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nuxeo.android.contentprovider.ILazyDocumentsList#getCurrentSize()
-	 */
 	public int getCurrentSize() {
 		if (getCurrentPage()==null) {
 			return 0;
@@ -306,16 +291,10 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nuxeo.android.contentprovider.ILazyDocumentsList#registerListener(org.nuxeo.android.contentprovider.DocumentsListChangeListener)
-	 */
 	public void registerListener(DocumentsListChangeListener listener) {
 		listeners.add(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.nuxeo.android.contentprovider.ILazyDocumentsList#unregisterListener(org.nuxeo.android.contentprovider.DocumentsListChangeListener)
-	 */
 	public void unregisterListener(DocumentsListChangeListener listener) {
 		listeners.remove(listener);
 	}

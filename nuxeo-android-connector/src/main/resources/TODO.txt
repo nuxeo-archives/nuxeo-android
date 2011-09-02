@@ -1,6 +1,6 @@
 
 
-- Use native BroadCast system for Nuxeo state events (connectivity, settings changed )
+NXMOB-8 : Use native BroadCast system for Nuxeo state events (connectivity, settings changed ): done
 
 - Publish named DocumentsLists in a generic content provider : at least for getting single items.
  => use path part of the content uri to point to a named DocuemntsLists
