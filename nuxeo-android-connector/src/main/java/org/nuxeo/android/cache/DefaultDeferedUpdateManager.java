@@ -62,6 +62,7 @@ public class DefaultDeferedUpdateManager implements DeferredUpdateManager {
 					if (clientCB!=null) {
 						clientCB.onSuccess(requestKey, data);
 					}
+
 				}
 			},CacheBehavior.FORCE_REFRESH);
 		}
@@ -98,6 +99,7 @@ public class DefaultDeferedUpdateManager implements DeferredUpdateManager {
 
 				@Override
 				public void onSuccess(String executionId, Object data) {
+					deleteDeferredUpdate(requestKey);
 					AsyncCallback<Object> clientCB = pendingCallbacks.remove(requestKey);
 					if (clientCB!=null) {
 						clientCB.onSuccess(requestKey, data);
@@ -106,7 +108,7 @@ public class DefaultDeferedUpdateManager implements DeferredUpdateManager {
 						uiNotifier.sendEmptyMessage(0);
 					}
 				}
-			});
+			},CacheBehavior.FORCE_REFRESH);
 		}
 	}
 
