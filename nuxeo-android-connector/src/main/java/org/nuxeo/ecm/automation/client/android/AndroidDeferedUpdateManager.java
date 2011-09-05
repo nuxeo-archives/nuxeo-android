@@ -1,27 +1,31 @@
-package org.nuxeo.android.cache;
+package org.nuxeo.ecm.automation.client.android;
 
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.nuxeo.android.cache.sql.DefferedUpdateTableWrapper;
 import org.nuxeo.android.cache.sql.SQLStateManager;
+import org.nuxeo.ecm.automation.client.broadcast.EventLifeCycle;
+import org.nuxeo.ecm.automation.client.broadcast.MessageHelper;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
+import org.nuxeo.ecm.automation.client.cache.CachedOperationRequest;
 import org.nuxeo.ecm.automation.client.cache.DeferredUpdateManager;
+import org.nuxeo.ecm.automation.client.cache.OperationType;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.CacheKeyHelper;
+import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.os.Handler;
 
-public class DefaultDeferedUpdateManager implements DeferredUpdateManager {
+public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
 
 	protected ConcurrentHashMap<String, AsyncCallback<Object>> pendingCallbacks = new ConcurrentHashMap<String, AsyncCallback<Object>>();
 
 	protected final SQLStateManager sqlStateManager;
 
-	public DefaultDeferedUpdateManager(SQLStateManager sqlStateManager) {
+	public AndroidDeferedUpdateManager(SQLStateManager sqlStateManager) {
 		this.sqlStateManager=sqlStateManager;
 		sqlStateManager.registerWrapper(new DefferedUpdateTableWrapper());
 	}
@@ -37,12 +41,13 @@ public class DefaultDeferedUpdateManager implements DeferredUpdateManager {
 
 	@Override
 	public String execDeferredUpdate(OperationRequest request,
-			AsyncCallback<Object> cb, boolean exeuteNow) {
+			AsyncCallback<Object> cb,final OperationType opType,  boolean exeuteNow) {
 
 		final String requestKey = CacheKeyHelper.computeRequestKey(request);
 		pendingCallbacks.put(requestKey, cb);
 
-		request = storePendingRequest(requestKey, request);
+		request = storePendingRequest(requestKey, request, opType);
+		final MessageHelper messageHelper =request.getSession().getMessageHelper();
 
 		if (exeuteNow) {
 			request.execute(new AsyncCallback<Object>() {
@@ -53,6 +58,8 @@ public class DefaultDeferedUpdateManager implements DeferredUpdateManager {
 					if (clientCB!=null) {
 						clientCB.onError(requestKey, e);
 					}
+					// Send Create/Update/Delete after event
+					messageHelper.notifyDocumentOperation(null,opType, EventLifeCycle.FAILED);
 				}
 
 				@Override
@@ -62,18 +69,24 @@ public class DefaultDeferedUpdateManager implements DeferredUpdateManager {
 					if (clientCB!=null) {
 						clientCB.onSuccess(requestKey, data);
 					}
-
+					// Send Create/Update/Delete after event
+					Document doc = null;
+					if (data!=null && data instanceof Document) {
+						doc = (Document) data;
+					}
+					messageHelper.notifyDocumentOperation(doc,opType, EventLifeCycle.SERVER);
 				}
+
 			},CacheBehavior.FORCE_REFRESH);
 		}
 		return requestKey;
 	}
 
-	protected OperationRequest storePendingRequest(String requestKey, OperationRequest request) {
-		return getTableWrapper().storeRequest(requestKey, request);
+	protected OperationRequest storePendingRequest(String requestKey, OperationRequest request, OperationType opType) {
+		return getTableWrapper().storeRequest(requestKey, request, opType);
 	}
 
-	protected Map<String, OperationRequest> getPendingRequest(Session session) {
+	protected List<CachedOperationRequest> getPendingRequest(Session session) {
 		return getTableWrapper().getPendingRequests(session);
 	}
 
@@ -83,9 +96,12 @@ public class DefaultDeferedUpdateManager implements DeferredUpdateManager {
 
 	public void executePendingRequests(Session session, final Handler uiNotifier) {
 
-		for (Entry<String, OperationRequest> entry : getPendingRequest(session).entrySet()) {
-			final String requestKey = entry.getKey();
-			entry.getValue().execute(new AsyncCallback<Object>() {
+		final MessageHelper messageHelper =session.getMessageHelper();
+
+		for (CachedOperationRequest op : getPendingRequest(session)) {
+			final String requestKey = op.getOperationKey();
+			final OperationType opType = op.getOpType();
+			op.getRequest().execute(new AsyncCallback<Object>() {
 				@Override
 				public void onError(String executionId, Throwable e) {
 					AsyncCallback<Object> clientCB = pendingCallbacks.remove(requestKey);
@@ -95,6 +111,8 @@ public class DefaultDeferedUpdateManager implements DeferredUpdateManager {
 					if (uiNotifier!=null) {
 						uiNotifier.sendEmptyMessage(0);
 					}
+					// Send Create/Update/Delete after event
+					messageHelper.notifyDocumentOperation(null,opType, EventLifeCycle.FAILED);
 				}
 
 				@Override
@@ -107,6 +125,12 @@ public class DefaultDeferedUpdateManager implements DeferredUpdateManager {
 					if (uiNotifier!=null) {
 						uiNotifier.sendEmptyMessage(0);
 					}
+					// Send Create/Update/Delete after event
+					Document doc = null;
+					if (data!=null && data instanceof Document) {
+						doc = (Document) data;
+					}
+					messageHelper.notifyDocumentOperation(doc,opType, EventLifeCycle.SERVER);
 				}
 			},CacheBehavior.FORCE_REFRESH);
 		}

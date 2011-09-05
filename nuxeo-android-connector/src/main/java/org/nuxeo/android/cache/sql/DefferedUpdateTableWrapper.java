@@ -1,11 +1,15 @@
 package org.nuxeo.android.cache.sql;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.nuxeo.ecm.automation.client.cache.CachedOperationRequest;
+import org.nuxeo.ecm.automation.client.cache.OperationType;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.model.FileBlob;
@@ -23,6 +27,7 @@ public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
 
 	protected static final String KEY_COLUMN = "KEY";
 	protected static final String OPID_COLUMN = "OPERATIONID";
+	protected static final String OPTYPE_COLUMN = "OPTYPE";
 	protected static final String PARAMS_COLUMN = "PARAMS";
 	protected static final String HEADERS_COLUMN = "HEADERS";
 	protected static final String CTX_COLUMN = "CTX";
@@ -34,6 +39,7 @@ public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
 			+ " (" + KEY_COLUMN + " TEXT, " + OPID_COLUMN + " TEXT, "
 			+ PARAMS_COLUMN + " TEXT, " + HEADERS_COLUMN + " TEXT, "
 			+ CTX_COLUMN + " TEXT, "
+			+ OPTYPE_COLUMN + " TEXT,"
 			+ INPUT_TYPE_COLUMN + " TEXT, "
 			+ INPUT_REF_COLUMN + " TEXT, "
 			+ INPUT_BINARY_COLUMN + " TEXT);";
@@ -70,7 +76,9 @@ public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
 		return result;
 	}
 
-	public OperationRequest storeRequest(String key, OperationRequest request) {
+	public OperationRequest storeRequest(String key, OperationRequest request, OperationType opType) {
+
+		// XXX TODO store opType !!!
 
 		SQLiteDatabase db = getWritableDatabase();
 
@@ -109,13 +117,13 @@ public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
 		return request;
 	}
 
-	public Map<String, OperationRequest> getPendingRequests(Session session) {
+	public List<CachedOperationRequest> getPendingRequests(Session session) {
 		SQLiteDatabase db = getReadableDatabase();
 
 		String sql = "select * from " + getTableName() ;
 		Cursor cursor = db.rawQuery(sql,null);
 
-		Map<String, OperationRequest> result = new HashMap<String, OperationRequest>();
+		List<CachedOperationRequest> result = new ArrayList<CachedOperationRequest>();
 
 		try {
 			if (cursor.getCount()>0 && cursor.moveToFirst()) {
@@ -123,6 +131,7 @@ public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
 				do {
 					String operationKey = cursor.getString(cursor.getColumnIndex(KEY_COLUMN));
 					String operationId = cursor.getString(cursor.getColumnIndex(OPID_COLUMN));
+					OperationType opType= OperationType.fromString(cursor.getString(cursor.getColumnIndex(OPTYPE_COLUMN)));
 					String jsonParams = cursor.getString(cursor.getColumnIndex(PARAMS_COLUMN));
 		            String jsonHeaders = cursor.getString(cursor.getColumnIndex(HEADERS_COLUMN));
 		            String jsonCtx = cursor.getString(cursor.getColumnIndex(CTX_COLUMN));
@@ -163,7 +172,7 @@ public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
 		            }
 
 					OperationRequest deferredRequest = new DefaultOperationRequest((DefaultSession) session,op, params, headers, ctx,input);
-					result.put(operationKey, deferredRequest);
+					result.add(new CachedOperationRequest(deferredRequest, operationKey, opType));
 
 				} while (cursor.moveToNext());
 			}
@@ -174,7 +183,5 @@ public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
 			}
 		}
 	}
-
-
 
 }

@@ -18,6 +18,8 @@ package org.nuxeo.ecm.automation.client.jaxrs;
 
 import java.util.Map;
 
+import org.nuxeo.ecm.automation.client.broadcast.MessageHelper;
+import org.nuxeo.ecm.automation.client.cache.OperationType;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blobs;
 import org.nuxeo.ecm.automation.client.jaxrs.model.OperationDocumentation;
@@ -106,5 +108,8 @@ public interface Session {
     boolean isOffline();
 
     String execDeferredUpdate(OperationRequest request,
-			AsyncCallback<Object> cb);
+			AsyncCallback<Object> cb, OperationType opType);
+
+    MessageHelper getMessageHelper();
+
 }

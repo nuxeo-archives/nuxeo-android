@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
+import org.nuxeo.ecm.automation.client.cache.OperationType;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
@@ -203,11 +204,6 @@ public class DefaultOperationRequest implements OperationRequest {
     public String execute(AsyncCallback<Object> cb, byte cacheFlags) {
     	setCacheFlags(cacheFlags);
     	return session.execute(this, cb);
-    }
-
-    public String execDeferredUpdate(OperationRequest request,
-			AsyncCallback<Object> cb) {
-    	return session.execDeferredUpdate(request, cb);
     }
 
     public OperationRequest setHeader(String key, String value) {

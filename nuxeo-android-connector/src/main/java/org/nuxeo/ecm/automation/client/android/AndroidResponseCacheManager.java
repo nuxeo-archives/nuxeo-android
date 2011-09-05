@@ -1,4 +1,4 @@
-package org.nuxeo.android.cache;
+package org.nuxeo.ecm.automation.client.android;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,15 +16,15 @@ import org.nuxeo.ecm.automation.client.cache.StreamHelper;
 import android.content.Context;
 import android.util.Log;
 
-public class DefaultResponseCacheManager implements ResponseCacheManager {
+public class AndroidResponseCacheManager implements ResponseCacheManager {
 
 	protected final SQLStateManager sqlStateManager;
 	protected final File cacheDir;
 
-	public DefaultResponseCacheManager(Context context, SQLStateManager sqlStateManager) {
+	public AndroidResponseCacheManager(Context context, SQLStateManager sqlStateManager) {
 		File dir = context.getExternalCacheDir();
 		if (dir==null) {
-			Log.w(DefaultResponseCacheManager.class.getSimpleName(), "No external directory accessible, using main storage");
+			Log.w(AndroidResponseCacheManager.class.getSimpleName(), "No external directory accessible, using main storage");
 			dir = context.getFilesDir();
 		}
 		cacheDir =dir;

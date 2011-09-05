@@ -8,7 +8,7 @@ import android.os.Handler;
 
 public interface DeferredUpdateManager {
 
-	String execDeferredUpdate(OperationRequest request, AsyncCallback<Object> cb, boolean exeuteNow);
+	String execDeferredUpdate(OperationRequest request, AsyncCallback<Object> cb, OperationType opType, boolean exeuteNow);
 
 	void deleteDeferredUpdate(String key);
 

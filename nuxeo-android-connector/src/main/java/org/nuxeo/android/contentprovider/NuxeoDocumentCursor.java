@@ -28,7 +28,7 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 		} else {
 			this.mapper = new UUIDMapper();
 		}
-		docList = new LazyUpdatebleDocumentsListImpl(session, nxql, queryParams, sortOrder, schemas, pageSize);
+		docList = new LazyUpdatableDocumentsListImpl(session, nxql, queryParams, sortOrder, schemas, pageSize);
 		docList.registerListener(new DocumentsListChangeListener() {
 			@Override
 			public void notifyContentChanged(int page) {
@@ -39,7 +39,7 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 
 	public NuxeoDocumentCursor (OperationRequest fetchOperation, String pageParametrerName) {
      	this.mapper = new UUIDMapper();
-     	docList = new LazyUpdatebleDocumentsListImpl(fetchOperation, pageParametrerName);
+     	docList = new LazyUpdatableDocumentsListImpl(fetchOperation, pageParametrerName);
 		docList.registerListener(new DocumentsListChangeListener() {
 			@Override
 			public void notifyContentChanged(int page) {

@@ -2,6 +2,8 @@
 
 NXMOB-8 : Use native BroadCast system for Nuxeo state events (connectivity, settings changed ): done
 
+NXMOB-9 - Integrate a transient state manager
+
 - Publish named DocumentsLists in a generic content provider : at least for getting single items.
  => use path part of the content uri to point to a named DocuemntsLists
 
@@ -14,6 +16,8 @@ NXMOB-8 : Use native BroadCast system for Nuxeo state events (connectivity, sett
 - Publish intents for Nuxeo screens ?
 
 - Extend Automation Documents to include WRITE/DELETE permissions infos
+
+- Manage Blobs
 
 - Plug the ContentResolver.getInputStream on the Nuxeo Blob
 

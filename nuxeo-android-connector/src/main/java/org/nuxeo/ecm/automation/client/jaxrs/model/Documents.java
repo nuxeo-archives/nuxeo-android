@@ -17,6 +17,7 @@
 package org.nuxeo.ecm.automation.client.jaxrs.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.nuxeo.android.contentprovider.NuxeoDocumentCursor;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
@@ -145,4 +146,43 @@ public class Documents extends ArrayList<Document> implements OperationInput {
 	public NuxeoDocumentCursor asCursor() {
 		return asCursor("page");
 	}
+
+	public void removeById(String uid) {
+		for (int i = 0; i< this.size(); i++) {
+			if (uid.equals(get(i).getId())) {
+				remove(i);
+				break;
+			}
+		}
+	}
+
+	public boolean containsDocWithId(String uid) {
+		for (int i = 0; i< this.size(); i++) {
+			if (uid.equals(get(i).getId())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public Document getById(String uid) {
+		for (int i = 0; i< this.size(); i++) {
+			if (uid.equals(get(i).getId())) {
+				return get(i);
+			}
+		}
+		return null;
+	}
+
+
+	public List<String> getIds() {
+		List<String> ids = new ArrayList<String>();
+		for (int i = 0; i< this.size(); i++) {
+			ids.add(get(i).getId());
+		}
+		return ids;
+	}
+
+
+
 }

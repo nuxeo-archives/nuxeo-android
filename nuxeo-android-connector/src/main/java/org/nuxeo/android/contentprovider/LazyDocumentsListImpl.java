@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
+import org.nuxeo.ecm.automation.client.broadcast.MessageHelper;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
@@ -68,6 +70,14 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 		fetchPageSync(currentPage);
 	}
 
+	protected AndroidAutomationClient getClient() {
+		return (AndroidAutomationClient) session.getClient();
+	}
+
+	protected MessageHelper getMessageHelper() {
+		return getClient().getMessageHelper();
+	}
+
 	public Documents getCurrentPage() {
 		return pages.get(currentPage);
 	}
@@ -84,6 +94,10 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 		return fetchPageSync(targetPage);
 	}
 
+	protected Documents afterPageFetch(int pageIdx, Documents docs) {
+		return docs;
+	}
+
 	protected Documents fetchPageSync(int targetPage) {
 		if (pages.containsKey(targetPage)) {
 			return pages.get(targetPage);
@@ -92,6 +106,7 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 		Documents docs = null;
 		if (loadingInProgress.addIfAbsent(""+targetPage)) {
 			docs = queryDocuments(targetPage, CacheBehavior.STORE, null);
+			docs = afterPageFetch(targetPage, docs);
 			pages.put(targetPage, docs);
 			notifyContentChanged(targetPage);
 			return docs;
@@ -126,6 +141,7 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 					@Override
 					public void onSuccess(String executionId, Object data) {
 						Documents docs = (Documents) data;
+						docs = afterPageFetch(targetPage, docs);
 						loadingInProgress.remove(""+targetPage);
 						pages.put(targetPage, docs);
 						setPageCount(docs.getPageCount());
@@ -135,6 +151,7 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 			});
 		}
 	}
+
 
 	protected void setPageCount(int pc) {
 		pageCount = pc;

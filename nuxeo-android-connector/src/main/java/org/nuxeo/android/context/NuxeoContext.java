@@ -1,18 +1,13 @@
 package org.nuxeo.android.context;
 
 import org.nuxeo.android.broadcast.NuxeoBroadcastMessages;
-import org.nuxeo.android.cache.DefaultDeferedUpdateManager;
-import org.nuxeo.android.cache.DefaultResponseCacheManager;
 import org.nuxeo.android.cache.sql.SQLStateManager;
 import org.nuxeo.android.config.NuxeoServerConfig;
 import org.nuxeo.android.network.NetworkStatusBroadCastReceiver;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
 import org.nuxeo.android.repository.DocumentManager;
-import org.nuxeo.ecm.automation.client.cache.CacheAwareHttpAutomationClient;
-import org.nuxeo.ecm.automation.client.cache.DeferredUpdateManager;
-import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
+import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
-import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpAutomationClient;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -33,33 +28,26 @@ public class NuxeoContext extends BroadcastReceiver {
 
 	protected NuxeoNetworkStatus networkStatus;
 
-	protected HttpAutomationClient nuxeoClient;
-
-	protected ResponseCacheManager responseCacheManager;
-
-	protected DeferredUpdateManager deferredUpdateManager;
+	protected AndroidAutomationClient nuxeoClient;
 
 	protected Session nuxeoSession;
 
-	protected final Context androidContext;
+    protected final SQLStateManager sqlStateManager;
 
-	protected SQLStateManager sqlStateManager;
+	protected final Context androidContext;
 
 	public static NuxeoContext get(Context context) {
 		if (context instanceof NuxeoContextProvider) {
 			NuxeoContextProvider nxApp = (NuxeoContextProvider) context;
 			return nxApp.getNuxeoContext();
 		} else {
-			if (instance==null) {
-				instance = new NuxeoContext(context);
-				// XXX should we allow that ???
-			}
-			return instance;
+			throw new UnsupportedOperationException("Your application Context should implement NuxeoContextProvider");
 		}
 	}
 
 	public NuxeoContext(Context androidContext) {
 		this.androidContext=androidContext;
+		sqlStateManager = new SQLStateManager(androidContext);
 		serverConfig = new NuxeoServerConfig(androidContext);
 		networkStatus = new NuxeoNetworkStatus(androidContext, serverConfig, (ConnectivityManager) androidContext.getSystemService(Context.CONNECTIVITY_SERVICE));
 		androidContext.registerReceiver(new NetworkStatusBroadCastReceiver(networkStatus), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
@@ -68,13 +56,6 @@ public class NuxeoContext extends BroadcastReceiver {
 		filter.addAction(NuxeoBroadcastMessages.NUXEO_SETTINGS_CHANGED);
 		filter.addAction(NuxeoBroadcastMessages.NUXEO_SERVER_CONNECTIVITY_CHANGED);
 		androidContext.registerReceiver(this, filter);
-		initDefaultCaches();
-	}
-
-	protected void initDefaultCaches() {
-		sqlStateManager = new SQLStateManager(androidContext);
-		responseCacheManager = new DefaultResponseCacheManager(androidContext, sqlStateManager);
-		deferredUpdateManager = new DefaultDeferedUpdateManager(sqlStateManager);
 	}
 
 	public NuxeoServerConfig getServerConfig() {
@@ -87,12 +68,7 @@ public class NuxeoContext extends BroadcastReceiver {
 
 	public synchronized Session getSession() {
 		if (nuxeoSession==null) {
-			if (responseCacheManager==null) {
-				nuxeoClient = new HttpAutomationClient(
-						serverConfig.getAutomationUrl());
-			} else {
-				nuxeoClient = new CacheAwareHttpAutomationClient(serverConfig.getAutomationUrl(), responseCacheManager, networkStatus, deferredUpdateManager);
-			}
+			nuxeoClient = new AndroidAutomationClient(serverConfig.getAutomationUrl(), androidContext,sqlStateManager,networkStatus);
 			nuxeoSession = nuxeoClient.getSession(
 					serverConfig.getLogin(),
 					serverConfig.getPassword());
@@ -102,23 +78,6 @@ public class NuxeoContext extends BroadcastReceiver {
 
 	public DocumentManager getDocumentManager() {
 		return new DocumentManager(getSession());
-	}
-
-	public ResponseCacheManager getResponseCacheManager() {
-		return responseCacheManager;
-	}
-
-	public void setResponseCacheManager(ResponseCacheManager cacheManager) {
-		this.responseCacheManager = cacheManager;
-	}
-
-	public void setDeferredUpdateManager(
-			DeferredUpdateManager deferredUpdateManager) {
-		this.deferredUpdateManager = deferredUpdateManager;
-	}
-
-	public DeferredUpdateManager getDeferredUpdatetManager() {
-		return deferredUpdateManager;
 	}
 
 	protected void onConfigChanged() {
@@ -140,4 +99,7 @@ public class NuxeoContext extends BroadcastReceiver {
 		}
 	}
 
+	public AndroidAutomationClient getNuxeoClient() {
+		return nuxeoClient;
+	}
 }

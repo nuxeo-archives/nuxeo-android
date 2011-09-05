@@ -1,6 +1,7 @@
 package org.nuxeo.android.activities;
 
 import org.nuxeo.android.context.NuxeoContext;
+import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 
 import android.app.Activity;
@@ -17,9 +18,11 @@ public class BaseNuxeoActivity extends Activity {
 		return getNuxeoContext().getSession();
 	}
 
+	protected AndroidAutomationClient getAutomationClient() {
+		return getNuxeoContext().getNuxeoClient();
+	}
+
 	protected class NuxeoAsyncTask extends AsyncTask<Void, Integer, Object> {
-
-
 
 		@Override
 		protected void onPreExecute() {

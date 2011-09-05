@@ -1,5 +1,9 @@
 package org.nuxeo.android.contentprovider;
 
+import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
+import org.nuxeo.ecm.automation.client.broadcast.EventLifeCycle;
+import org.nuxeo.ecm.automation.client.cache.OperationType;
+import org.nuxeo.ecm.automation.client.cache.TransientStateManager;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
@@ -10,14 +14,14 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.PathRef;
 
 import android.util.Log;
 
-public class LazyUpdatebleDocumentsListImpl extends LazyDocumentsListImpl
+public class LazyUpdatableDocumentsListImpl extends LazyDocumentsListImpl
 		implements LazyUpdatableDocumentsList {
 
-	public LazyUpdatebleDocumentsListImpl (Session session, String nxql, String[] queryParams, String sortOrder, String schemas, int pageSize) {
+	public LazyUpdatableDocumentsListImpl (Session session, String nxql, String[] queryParams, String sortOrder, String schemas, int pageSize) {
 		super(session, nxql, queryParams, sortOrder, schemas, pageSize);
 	}
 
-	public LazyUpdatebleDocumentsListImpl (OperationRequest fetchOperation, String pageParametrerName) {
+	public LazyUpdatableDocumentsListImpl (OperationRequest fetchOperation, String pageParametrerName) {
 		super(fetchOperation, pageParametrerName);
 	}
 
@@ -50,6 +54,7 @@ public class LazyUpdatebleDocumentsListImpl extends LazyDocumentsListImpl
 		}
 
 		if (updated) {
+			getMessageHelper().notifyDocumentUpdated(updatedDocument, EventLifeCycle.CLIENT);
 			// send update to server
 			final int page = updatedPage;
 			final Document originalDocument = beforeUpdateDocument;
@@ -72,7 +77,7 @@ public class LazyUpdatebleDocumentsListImpl extends LazyDocumentsListImpl
 					pages.get(page).set(docIdx, originalDocument);
 					notifyContentChanged(page);
 				}
-			});
+			}, OperationType.UPDATE);
 			// notify UI
 			notifyContentChanged(updatedPage);
 		}
@@ -128,6 +133,9 @@ public class LazyUpdatebleDocumentsListImpl extends LazyDocumentsListImpl
 		if (createOperation==null) {
 			createOperation = buildCreateOperation(session, newDocument);
 		}
+
+		getMessageHelper().notifyDocumentCreated(newDocument, EventLifeCycle.CLIENT);
+
 		session.execDeferredUpdate(createOperation, new AsyncCallback<Object>() {
 
 			@Override
@@ -141,9 +149,9 @@ public class LazyUpdatebleDocumentsListImpl extends LazyDocumentsListImpl
 			public void onError(String executionId, Throwable e) {
 				// revert to previous
 				removePendingCreatedDocument(key);
-				Log.e(LazyUpdatebleDocumentsListImpl.class.getSimpleName(), "Deferred Creation failed", e);
+				Log.e(LazyUpdatableDocumentsListImpl.class.getSimpleName(), "Deferred Creation failed", e);
 			}
-		});
+		}, OperationType.CREATE);
 	}
 
 	@Override
@@ -164,5 +172,13 @@ public class LazyUpdatebleDocumentsListImpl extends LazyDocumentsListImpl
 			return globalPosition  - pages.get(0).size() - (pageIndex-1) * pageSize;
 		}
 	}
+
+	@Override
+	protected Documents afterPageFetch(int pageIdx, Documents docs) {
+		TransientStateManager tsm = ((AndroidAutomationClient) session.getClient()).getTransientStateManager();
+		docs = tsm.mergeTransientState(docs, pageIdx==0);
+		return docs;
+	}
+
 
 }

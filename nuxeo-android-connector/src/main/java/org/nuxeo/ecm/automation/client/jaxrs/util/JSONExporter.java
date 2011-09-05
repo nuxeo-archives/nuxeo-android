@@ -26,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuxeo.ecm.automation.client.jaxrs.model.OperationDocumentation;
+import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyMap;
 import org.nuxeo.ecm.automation.client.jaxrs.model.OperationDocumentation.Param;
 
 /**
@@ -133,4 +134,8 @@ public class JSONExporter {
         return op;
     }
 
+    public static String toJSON(PropertyMap props) {
+    	JSONObject json = new JSONObject(props.map());
+    	return json.toString();
+    }
 }

@@ -93,6 +93,19 @@ public class Document extends DocRef implements Serializable {
     	this.name=name;
     }
 
+    public Document(String id, String path, String type, PropertyMap dirtyProps) {
+    	super(id);
+    	this.type=type;
+        int idx = path.lastIndexOf("/");
+        this.parentPath = path.substring(0, idx);
+        this.name = path.substring(idx+1);
+    	this.state=null;
+    	this.properties = dirtyProps;
+    	this.repoName = null;
+    	this.lock=null;
+    	dirtyFields.addAll(dirtyProps.map.keySet());
+    }
+
     public String getName() {
     	return name;
     }
@@ -218,4 +231,14 @@ public class Document extends DocRef implements Serializable {
     public String getParentPath() {
     	return parentPath;
     }
+
+	public String getRepoName() {
+		return repoName;
+	}
+
+	public List<String> getDirtyFields() {
+		return dirtyFields;
+	}
+
+
 }

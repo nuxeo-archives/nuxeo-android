@@ -54,7 +54,7 @@ public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity 
 
 	protected void refreshAll() {
 		updateOfflineDisplay(getNuxeoContext().getNetworkStatus());
-		updateCacheInfoDisplay(getNuxeoContext().getResponseCacheManager(), getNuxeoContext().getDeferredUpdatetManager());
+		updateCacheInfoDisplay(getAutomationClient().getResponseCacheManager(), getAutomationClient().getDeferredUpdatetManager());
 	}
 
 	protected void resetNetworkStatusAndRefresh() {
@@ -67,7 +67,7 @@ public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity 
 	}
 
 	protected void executePendingUpdates() {
-		DeferredUpdateManager dum = getNuxeoContext().getDeferredUpdatetManager();
+		DeferredUpdateManager dum = getAutomationClient().getDeferredUpdatetManager();
 		if (dum.getPendingRequestCount()>0) {
 			dum.executePendingRequests(getNuxeoSession(), new Handler() {
 				@Override
@@ -84,13 +84,13 @@ public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity 
 	protected abstract void updateCacheInfoDisplay(ResponseCacheManager cacheManager, DeferredUpdateManager deferredUpdateManager);
 
 	protected void flushResponseCache() {
-		getNuxeoContext().getResponseCacheManager().clear();
-		updateCacheInfoDisplay(getNuxeoContext().getResponseCacheManager(), getNuxeoContext().getDeferredUpdatetManager());
+		getAutomationClient().getResponseCacheManager().clear();
+		updateCacheInfoDisplay(getAutomationClient().getResponseCacheManager(), getAutomationClient().getDeferredUpdatetManager());
 	}
 
 	protected void flushDefferedUpdateManager() {
-		getNuxeoContext().getDeferredUpdatetManager().purgePendingUpdates();
-		updateCacheInfoDisplay(getNuxeoContext().getResponseCacheManager(), getNuxeoContext().getDeferredUpdatetManager());
+		getAutomationClient().getDeferredUpdatetManager().purgePendingUpdates();
+		updateCacheInfoDisplay(getAutomationClient().getResponseCacheManager(), getAutomationClient().getDeferredUpdatetManager());
 	}
 
 
