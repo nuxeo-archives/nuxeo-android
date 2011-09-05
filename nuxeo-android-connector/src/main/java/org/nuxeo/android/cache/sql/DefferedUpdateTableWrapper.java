@@ -84,6 +84,7 @@ public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
 
 		String sql = "INSERT INTO " + getTableName() + " (" + KEY_COLUMN + ","
 		+ OPID_COLUMN + ","
+		+ OPTYPE_COLUMN + ","
 		+ PARAMS_COLUMN + ","
 		+ HEADERS_COLUMN + ","
 		+ CTX_COLUMN ;
@@ -96,6 +97,7 @@ public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
 		String sqlValues =  " VALUES ("
 		+ "'" + key + "',"
 		+ "'" + operationId + "',"
+		+ "'" + opType.toString() + "',"
 		+ "'" + jsonParams + "',"
 		+ "'" + jsonHeaders + "',"
 		+ "'" + jsonCtx + "'";

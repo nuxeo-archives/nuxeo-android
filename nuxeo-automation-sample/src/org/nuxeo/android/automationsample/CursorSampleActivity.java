@@ -157,14 +157,14 @@ public class CursorSampleActivity extends BaseNuxeoActivity implements
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == EDIT_DOCUMENT) {
+		if (requestCode == EDIT_DOCUMENT && resultCode == RESULT_OK) {
 			if (data.hasExtra(CreateEditActivity.DOCUMENT)) {
 				Document editedDocument = (Document) data.getExtras().get(
 						CreateEditActivity.DOCUMENT);
 				documentCursor.getDocumentsList()
 						.updateDocument(editedDocument);
 			}
-		} else if (requestCode == CREATE_DOCUMENT) {
+		} else if (requestCode == CREATE_DOCUMENT && resultCode == RESULT_OK) {
 			if (data.hasExtra(CreateEditActivity.DOCUMENT)) {
 				Document newDocument = (Document) data.getExtras().get(
 						CreateEditActivity.DOCUMENT);

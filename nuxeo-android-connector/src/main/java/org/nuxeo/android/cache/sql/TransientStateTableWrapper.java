@@ -63,6 +63,7 @@ public class TransientStateTableWrapper extends AbstractSQLTableWrapper {
 		sql = sql + " VALUES ("
 		+ "'" + deltaSet.getId() + "',"
 		+ "'" + deltaSet.getPath() + "',"
+		+ "'" + deltaSet.getOperationType().toString() + "',"
 		+ "'" + deltaSet.getDocType() + "',"
 		+ "'" + JSONExporter.toJSON(deltaSet.getDirtyProps()) + "');";
 

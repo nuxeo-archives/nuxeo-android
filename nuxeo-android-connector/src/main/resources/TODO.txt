@@ -2,24 +2,28 @@
 
 NXMOB-8 : Use native BroadCast system for Nuxeo state events (connectivity, settings changed ): done
 
-NXMOB-9 - Integrate a transient state manager
+NXMOB-9 : Integrate a transient state manager : done
 
-- Publish named DocumentsLists in a generic content provider : at least for getting single items.
- => use path part of the content uri to point to a named DocuemntsLists
+NXMOB-6 : Publish named DocumentsLists in a generic content provider : at least for getting single items.
+  => use path part of the content uri to point to a named DocuemntsLists
+ - Plug the ContentResolver.getInputStream on the Nuxeo Blob
+ - allow uuid resolution in content uri for Documents even if not standard
 
-- allow uuid resolution in content uri for Documents even if not standard
+NXMOB-12 : Allow better usage of the server side page providers
 
-- Allow better usage of the server side page providers
-
-- Integrate Nuxeo Actions to select Intents available on documents
+NXMOB-11 : Integrate Nuxeo Actions to select Intents available on documents
 
 - Publish intents for Nuxeo screens ?
 
 - Extend Automation Documents to include WRITE/DELETE permissions infos
 
-- Manage Blobs
+NXMOB-10 : Manage Blobs
 
-- Plug the ContentResolver.getInputStream on the Nuxeo Blob
+NXMOB-13 : test app
+
+NXMOB-14 : Sync service
+
+NXMOB-15 : Maven
 
 - See if android.resource:/ scheme can be used to provide ready to re-use Screens/Activities with Gfx and resources
 
