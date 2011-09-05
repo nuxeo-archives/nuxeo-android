@@ -25,10 +25,14 @@ public class TransientStateTableWrapper extends AbstractSQLTableWrapper {
 	protected static final String OPTYPE_COLUMN = "OPTYPE";
 	protected static final String DOCTYPE_COLUMN = "DOCTYPE";
 	protected static final String PROPS_COLUMN = "PROPS";
+	protected static final String LISTNAME_COLUMN = "LISTNAME";
+	protected static final String REQUESTID_COLUMN = "REQUESTID";
+
 
 	protected static final String CREATE_STATEMENT = "CREATE TABLE " + TBLNAME
 			+ " (" + KEY_COLUMN + " TEXT, " + PATH_COLUMN + " TEXT, "
 			+ OPTYPE_COLUMN + " TEXT, " + DOCTYPE_COLUMN + " TEXT, "
+			+ LISTNAME_COLUMN + " TEXT, " + REQUESTID_COLUMN + " TEXT, "
 			+ PROPS_COLUMN + " TEXT); ";
 
 	@Override
@@ -94,8 +98,10 @@ public class TransientStateTableWrapper extends AbstractSQLTableWrapper {
 					if (jsonProps!=null) {
 						props = new PropertyMap(readMapFromJson(jsonProps));
 					}
+					String listName = cursor.getString(cursor.getColumnIndex(LISTNAME_COLUMN));
+					String requestId = cursor.getString(cursor.getColumnIndex(REQUESTID_COLUMN));
 
-					DocumentDeltaSet delta = new DocumentDeltaSet(opType,uuid, path, docType, props);
+					DocumentDeltaSet delta = new DocumentDeltaSet(opType,uuid, path, docType, props, listName, requestId);
 					result.add(delta);
 				} while (cursor.moveToNext());
 			}
@@ -122,5 +128,13 @@ public class TransientStateTableWrapper extends AbstractSQLTableWrapper {
 		}
 		return result;
 	}
+
+
+	public void deleteEntryByRequestId(String key) {
+		SQLiteDatabase db = getWritableDatabase();
+		String sql = "delete  from " + getTableName() + " where " + REQUESTID_COLUMN + "='" + key + "'";
+		execTransactionalSQL(db, sql);
+	}
+
 
 }

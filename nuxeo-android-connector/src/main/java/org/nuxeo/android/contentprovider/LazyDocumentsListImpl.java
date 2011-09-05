@@ -14,6 +14,7 @@ import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
+import org.nuxeo.ecm.automation.client.jaxrs.impl.CacheKeyHelper;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
@@ -36,6 +37,8 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 	protected int pageSize = 20;
 
 	protected int totalSize =0;
+
+	protected String name;
 
 	protected final Session session;
 
@@ -326,5 +329,18 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 			return pages.get(targetPage).get(offset);
 		}
 		return null;
+	}
+
+	public String getName() {
+		if (name==null) {
+			OperationRequest rq = fetchOperation.clone();
+			rq.set(pageParameterName, 0);
+			name = CacheKeyHelper.computeRequestKey(rq);
+		}
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

@@ -27,4 +27,8 @@ public class NuxeoBroadcastMessages {
 
 	public static final String EXTRA_DOCUMENT_PAYLOAD_KEY = "NuxeoDocument";
 
+	public static final String EXTRA_REQUESTID_PAYLOAD_KEY = "RequestId";
+
+	public static final String EXTRA_SOURCEDOCUMENTSLIST_PAYLOAD_KEY = "SourceDocumentsList";
+
 }

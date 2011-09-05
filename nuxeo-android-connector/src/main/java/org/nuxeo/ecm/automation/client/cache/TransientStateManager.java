@@ -11,7 +11,7 @@ public interface TransientStateManager {
 
 	List<DocumentDeltaSet> getDeltaSets(List<String> ids);
 
-	Documents mergeTransientState(Documents docs, boolean add);
+	Documents mergeTransientState(Documents docs, boolean add, String listName);
 
 	void flushTransientState(String uid);
 

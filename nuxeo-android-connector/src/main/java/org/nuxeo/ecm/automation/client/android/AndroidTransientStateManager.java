@@ -37,10 +37,14 @@ public class AndroidTransientStateManager extends BroadcastReceiver implements T
 		return (TransientStateTableWrapper) stateManager.getTableWrapper(TransientStateTableWrapper.TBLNAME);
 	}
 
-	public void storeDocumentState(Document doc, OperationType opType) {
-		DocumentDeltaSet delta = new DocumentDeltaSet(opType, doc);
+	public void storeDocumentState(Document doc, OperationType opType, String requestId, String listName) {
+		DocumentDeltaSet delta = new DocumentDeltaSet(opType, doc, requestId, listName);
 		getTableWrapper().storeDeltaSet(delta);
 		// XXX store Blobs too
+	}
+
+	public void storeDocumentState(Document doc, OperationType opType) {
+		storeDocumentState(doc, opType, null, null);
 	}
 
 	public List<DocumentDeltaSet> getDeltaSets(List<String> ids) {
@@ -49,12 +53,14 @@ public class AndroidTransientStateManager extends BroadcastReceiver implements T
 		return deltas;
 	}
 
-	public Documents mergeTransientState(Documents docs, boolean add) {
+	public Documents mergeTransientState(Documents docs, boolean add, String listName) {
 
 		List<DocumentDeltaSet> deltas = getDeltaSets(docs.getIds());
 		for (DocumentDeltaSet delta : deltas) {
 			if (add && delta.getOperationType()== OperationType.CREATE && ! docs.containsDocWithId(delta.getId())) {
-				docs.add(0, delta.apply(null));
+				if (listName == null || listName.equals(delta.getListName())) {
+					docs.add(0, delta.apply(null));
+				}
 			} else if (delta.getOperationType()== OperationType.UPDATE) {
 				Document doc2Update = docs.getById(delta.getId());
 				delta.apply(doc2Update);
@@ -65,7 +71,6 @@ public class AndroidTransientStateManager extends BroadcastReceiver implements T
 
 		return docs;
 	}
-
 
 	public void flushTransientState(String uid) {
 		getTableWrapper().deleteEntry(uid);
@@ -89,11 +94,20 @@ public class AndroidTransientStateManager extends BroadcastReceiver implements T
 		else if (eventName.equals(NuxeoBroadcastMessages.DOCUMENT_DELETED_CLIENT)) {
 			storeDocumentState(doc, OperationType.DELETE);
 		}
-		else if (eventName.equals(NuxeoBroadcastMessages.DOCUMENT_CREATED_SERVER) || eventName.equals(NuxeoBroadcastMessages.DOCUMENT_UPDATED_SERVER) || eventName.equals(NuxeoBroadcastMessages.DOCUMENT_DELETED_SERVER) ) {
+		else if (eventName.equals(NuxeoBroadcastMessages.DOCUMENT_UPDATED_SERVER) || eventName.equals(NuxeoBroadcastMessages.DOCUMENT_DELETED_SERVER) ) {
 			if (doc!=null) {
 				flushTransientState(doc.getId());
 			}
+			// XXX Trigger list refresh ?
 		}
+		else if (eventName.equals(NuxeoBroadcastMessages.DOCUMENT_CREATED_SERVER)) {
+			String requestId = intent.getExtras().getString(NuxeoBroadcastMessages.EXTRA_REQUESTID_PAYLOAD_KEY);
+			if (requestId!=null) {
+				getTableWrapper().deleteEntryByRequestId(requestId);
+			}
+			// XXX Trigger list refresh ?
+		}
+
 	}
 
 }

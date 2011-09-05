@@ -37,4 +37,7 @@ public interface LazyDocumentsList {
 	public abstract Document getDocument(int index);
 
 	public void refreshAll();
+
+	public String getName();
+
 }

@@ -3,6 +3,7 @@ package org.nuxeo.ecm.automation.client.android;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.nuxeo.android.broadcast.NuxeoBroadcastMessages;
 import org.nuxeo.android.cache.sql.DefferedUpdateTableWrapper;
 import org.nuxeo.android.cache.sql.SQLStateManager;
 import org.nuxeo.ecm.automation.client.broadcast.EventLifeCycle;
@@ -17,6 +18,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.CacheKeyHelper;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
+import android.os.Bundle;
 import android.os.Handler;
 
 public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
@@ -59,7 +61,9 @@ public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
 						clientCB.onError(requestKey, e);
 					}
 					// Send Create/Update/Delete after event
-					messageHelper.notifyDocumentOperation(null,opType, EventLifeCycle.FAILED);
+					Bundle extra = new Bundle();
+					extra.putString(NuxeoBroadcastMessages.EXTRA_REQUESTID_PAYLOAD_KEY, executionId);
+					messageHelper.notifyDocumentOperation(null,opType, EventLifeCycle.FAILED, extra);
 				}
 
 				@Override
@@ -74,7 +78,9 @@ public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
 					if (data!=null && data instanceof Document) {
 						doc = (Document) data;
 					}
-					messageHelper.notifyDocumentOperation(doc,opType, EventLifeCycle.SERVER);
+					Bundle extra = new Bundle();
+					extra.putString(NuxeoBroadcastMessages.EXTRA_REQUESTID_PAYLOAD_KEY, executionId);
+					messageHelper.notifyDocumentOperation(doc,opType, EventLifeCycle.SERVER, extra);
 				}
 
 			},CacheBehavior.FORCE_REFRESH);
@@ -112,7 +118,9 @@ public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
 						uiNotifier.sendEmptyMessage(0);
 					}
 					// Send Create/Update/Delete after event
-					messageHelper.notifyDocumentOperation(null,opType, EventLifeCycle.FAILED);
+					Bundle extra = new Bundle();
+					extra.putString(NuxeoBroadcastMessages.EXTRA_REQUESTID_PAYLOAD_KEY, executionId);
+					messageHelper.notifyDocumentOperation(null,opType, EventLifeCycle.FAILED, extra);
 				}
 
 				@Override
@@ -130,7 +138,9 @@ public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
 					if (data!=null && data instanceof Document) {
 						doc = (Document) data;
 					}
-					messageHelper.notifyDocumentOperation(doc,opType, EventLifeCycle.SERVER);
+					Bundle extra = new Bundle();
+					extra.putString(NuxeoBroadcastMessages.EXTRA_REQUESTID_PAYLOAD_KEY, executionId);
+					messageHelper.notifyDocumentOperation(doc,opType, EventLifeCycle.SERVER, extra);
 				}
 			},CacheBehavior.FORCE_REFRESH);
 		}

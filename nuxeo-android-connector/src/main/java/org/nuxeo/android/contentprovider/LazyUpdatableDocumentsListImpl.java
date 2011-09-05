@@ -1,5 +1,6 @@
 package org.nuxeo.android.contentprovider;
 
+import org.nuxeo.android.broadcast.NuxeoBroadcastMessages;
 import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
 import org.nuxeo.ecm.automation.client.broadcast.EventLifeCycle;
 import org.nuxeo.ecm.automation.client.cache.OperationType;
@@ -12,6 +13,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 import org.nuxeo.ecm.automation.client.jaxrs.model.PathRef;
 
+import android.os.Bundle;
 import android.util.Log;
 
 public class LazyUpdatableDocumentsListImpl extends LazyDocumentsListImpl
@@ -54,7 +56,7 @@ public class LazyUpdatableDocumentsListImpl extends LazyDocumentsListImpl
 		}
 
 		if (updated) {
-			getMessageHelper().notifyDocumentUpdated(updatedDocument, EventLifeCycle.CLIENT);
+			getMessageHelper().notifyDocumentUpdated(updatedDocument, EventLifeCycle.CLIENT, null);
 			// send update to server
 			final int page = updatedPage;
 			final Document originalDocument = beforeUpdateDocument;
@@ -134,9 +136,7 @@ public class LazyUpdatableDocumentsListImpl extends LazyDocumentsListImpl
 			createOperation = buildCreateOperation(session, newDocument);
 		}
 
-		getMessageHelper().notifyDocumentCreated(newDocument, EventLifeCycle.CLIENT);
-
-		session.execDeferredUpdate(createOperation, new AsyncCallback<Object>() {
+		String requestId = session.execDeferredUpdate(createOperation, new AsyncCallback<Object>() {
 
 			@Override
 			public void onSuccess(String executionId, Object data) {
@@ -152,6 +152,12 @@ public class LazyUpdatableDocumentsListImpl extends LazyDocumentsListImpl
 				Log.e(LazyUpdatableDocumentsListImpl.class.getSimpleName(), "Deferred Creation failed", e);
 			}
 		}, OperationType.CREATE);
+
+		Bundle extra = new Bundle();
+		extra.putString(NuxeoBroadcastMessages.EXTRA_REQUESTID_PAYLOAD_KEY, requestId);
+		extra.putString(NuxeoBroadcastMessages.EXTRA_SOURCEDOCUMENTSLIST_PAYLOAD_KEY, getName());
+		getMessageHelper().notifyDocumentCreated(newDocument, EventLifeCycle.CLIENT, extra);
+
 	}
 
 	@Override
@@ -176,7 +182,7 @@ public class LazyUpdatableDocumentsListImpl extends LazyDocumentsListImpl
 	@Override
 	protected Documents afterPageFetch(int pageIdx, Documents docs) {
 		TransientStateManager tsm = ((AndroidAutomationClient) session.getClient()).getTransientStateManager();
-		docs = tsm.mergeTransientState(docs, pageIdx==0);
+		docs = tsm.mergeTransientState(docs, pageIdx==0, getName());
 		return docs;
 	}
 

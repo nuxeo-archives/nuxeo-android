@@ -15,20 +15,28 @@ public class DocumentDeltaSet {
 
 	protected final String id;
 
-	public DocumentDeltaSet(OperationType opType,String id, String path, String docType, PropertyMap dirtyProps) {
+	protected final String requestId;
+
+	protected final String listName;
+
+	public DocumentDeltaSet(OperationType opType,String id, String path, String docType, PropertyMap dirtyProps, String requestId, String listName) {
 		this.dirtyProps = dirtyProps;
 		this.docType=docType;
 		this.path = path;
 		this.opType=opType;
 		this.id=id;
+		this.listName=listName;
+		this.requestId=requestId;
 	}
 
-	public DocumentDeltaSet(OperationType opType,Document doc) {
+	public DocumentDeltaSet(OperationType opType,Document doc, String requestId, String listName) {
 		this.dirtyProps = doc.getDirtyProperties();
 		this.docType=doc.getType();
 		this.path = doc.getPath();
 		this.opType=opType;
 		this.id = doc.getId();
+		this.listName=listName;
+		this.requestId=requestId;
 	}
 
 	public Document apply(Document doc) {
@@ -63,5 +71,11 @@ public class DocumentDeltaSet {
 		return id;
 	}
 
+	public String getRequestId() {
+		return requestId;
+	}
 
+	public String getListName() {
+		return listName;
+	}
 }
