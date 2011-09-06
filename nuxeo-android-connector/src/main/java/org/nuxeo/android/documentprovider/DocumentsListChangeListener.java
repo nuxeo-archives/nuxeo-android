@@ -1,4 +1,4 @@
-package org.nuxeo.android.contentprovider;
+package org.nuxeo.android.documentprovider;
 
 public interface DocumentsListChangeListener {
 

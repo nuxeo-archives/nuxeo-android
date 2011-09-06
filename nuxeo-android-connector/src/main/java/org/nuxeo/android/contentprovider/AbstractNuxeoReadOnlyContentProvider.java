@@ -1,6 +1,8 @@
 package org.nuxeo.android.contentprovider;
 
 import org.nuxeo.android.context.NuxeoContext;
+import org.nuxeo.android.cursor.NuxeoDocumentCursor;
+import org.nuxeo.android.cursor.UUIDMapper;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;

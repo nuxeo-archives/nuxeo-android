@@ -2,7 +2,7 @@ package org.nuxeo.android.automationsample;
 
 import org.nuxeo.android.activities.BaseNuxeoActivity;
 import org.nuxeo.android.contentprovider.NuxeoDocumentContentProvider;
-import org.nuxeo.android.contentprovider.NuxeoDocumentCursor;
+import org.nuxeo.android.cursor.NuxeoDocumentCursor;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;

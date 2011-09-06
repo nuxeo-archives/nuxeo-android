@@ -19,7 +19,7 @@ package org.nuxeo.ecm.automation.client.jaxrs.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.nuxeo.android.contentprovider.NuxeoDocumentCursor;
+import org.nuxeo.android.cursor.NuxeoDocumentCursor;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 
 

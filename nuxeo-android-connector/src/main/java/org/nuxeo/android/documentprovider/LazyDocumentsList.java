@@ -1,4 +1,4 @@
-package org.nuxeo.android.contentprovider;
+package org.nuxeo.android.documentprovider;
 
 import java.util.Collection;
 import java.util.Iterator;

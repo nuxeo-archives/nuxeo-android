@@ -1,4 +1,4 @@
-package org.nuxeo.android.contentprovider;
+package org.nuxeo.android.documentprovider;
 
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;

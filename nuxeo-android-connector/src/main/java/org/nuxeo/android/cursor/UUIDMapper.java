@@ -1,4 +1,4 @@
-package org.nuxeo.android.contentprovider;
+package org.nuxeo.android.cursor;
 
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;

@@ -1,10 +1,13 @@
-package org.nuxeo.android.contentprovider;
+package org.nuxeo.android.cursor;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.nuxeo.android.documentprovider.DocumentsListChangeListener;
+import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
+import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsListImpl;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;

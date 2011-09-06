@@ -3,6 +3,8 @@ package org.nuxeo.android.contentprovider;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.nuxeo.android.documentprovider.LazyDocumentsList;
+
 public class NuxeoDynamicProvidersRegistry {
 
 	protected final static Map<String, LazyDocumentsList> documentsLists = new ConcurrentHashMap<String, LazyDocumentsList>();

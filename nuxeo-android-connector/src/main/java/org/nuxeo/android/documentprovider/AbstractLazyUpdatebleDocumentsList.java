@@ -1,4 +1,4 @@
-package org.nuxeo.android.contentprovider;
+package org.nuxeo.android.documentprovider;
 
 import org.nuxeo.android.broadcast.NuxeoBroadcastMessages;
 import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
@@ -8,22 +8,21 @@ import org.nuxeo.ecm.automation.client.cache.TransientStateManager;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
-import org.nuxeo.ecm.automation.client.jaxrs.adapters.DocumentService;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
-import org.nuxeo.ecm.automation.client.jaxrs.model.PathRef;
 
 import android.os.Bundle;
 import android.util.Log;
 
-public class LazyUpdatableDocumentsListImpl extends LazyDocumentsListImpl
-		implements LazyUpdatableDocumentsList {
+public abstract class AbstractLazyUpdatebleDocumentsList extends LazyDocumentsListImpl implements LazyUpdatableDocumentsList{
 
-	public LazyUpdatableDocumentsListImpl (Session session, String nxql, String[] queryParams, String sortOrder, String schemas, int pageSize) {
+	public AbstractLazyUpdatebleDocumentsList(Session session, String nxql,
+			String[] queryParams, String sortOrder, String schemas, int pageSize) {
 		super(session, nxql, queryParams, sortOrder, schemas, pageSize);
 	}
 
-	public LazyUpdatableDocumentsListImpl (OperationRequest fetchOperation, String pageParametrerName) {
+	public AbstractLazyUpdatebleDocumentsList(OperationRequest fetchOperation,
+			String pageParametrerName) {
 		super(fetchOperation, pageParametrerName);
 	}
 
@@ -85,25 +84,6 @@ public class LazyUpdatableDocumentsListImpl extends LazyDocumentsListImpl
 		}
 	}
 
-	protected OperationRequest buildUpdateOperation(Session session, Document updatedDocument) {
-		OperationRequest updateOperation = session.newRequest(DocumentService.UpdateDocument).setInput(updatedDocument);
-		updateOperation.set("properties", updatedDocument.getDirtyPropertiesAsPropertiesString());
-		updateOperation.set("save", true);
-		return updateOperation;
-	}
-
-	protected OperationRequest buildCreateOperation(Session session, Document newDocument) {
-		PathRef parent = new PathRef(newDocument.getParentPath());
-		OperationRequest createOperation = session.newRequest(DocumentService.CreateDocument).setInput(parent);
-		createOperation.set("type", newDocument.getType());
-		createOperation.set("properties", newDocument.getDirtyPropertiesAsPropertiesString());
-		if (newDocument.getName()!=null) {
-			createOperation.set("name", newDocument.getName());
-		}
-		return createOperation;
-	}
-
-
 	@Override
 	public void createDocument(Document newDocument) {
 		createDocument(newDocument, null);
@@ -127,8 +107,7 @@ public class LazyUpdatableDocumentsListImpl extends LazyDocumentsListImpl
 	}
 
 	@Override
-	public void createDocument(Document newDocument,
-			OperationRequest createOperation) {
+	public void createDocument(Document newDocument, OperationRequest createOperation) {
 
 		final String key = addPendingCreatedDocument(newDocument);
 
@@ -186,5 +165,8 @@ public class LazyUpdatableDocumentsListImpl extends LazyDocumentsListImpl
 		return docs;
 	}
 
+	protected abstract OperationRequest buildUpdateOperation(Session session, Document updatedDocument);
+
+	protected abstract OperationRequest buildCreateOperation(Session session, Document newDocument);
 
 }
