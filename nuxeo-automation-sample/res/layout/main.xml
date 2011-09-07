@@ -4,6 +4,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
+<ImageView android:src="@drawable/icon"
+    android:layout_width="fill_parent" android:layout_height="30px" android:id="@+id/imageView1"></ImageView>
 <TextView
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -13,4 +15,5 @@
 <Button android:text="Document List sample" android:id="@+id/cursorBtn" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
 
 <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/opList"></Spinner>
+
 </LinearLayout>

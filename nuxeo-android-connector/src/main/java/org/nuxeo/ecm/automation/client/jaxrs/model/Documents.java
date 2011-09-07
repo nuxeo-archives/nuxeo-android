@@ -139,11 +139,20 @@ public class Documents extends ArrayList<Document> implements OperationInput {
 	}
 
 	public NuxeoDocumentCursor asCursor(String pageParameterName) {
-		NuxeoDocumentCursor cursor = new NuxeoDocumentCursor(sourceRequest, pageParameterName);
+		NuxeoDocumentCursor cursor = new NuxeoDocumentCursor(sourceRequest, pageParameterName, false);
 		return cursor;
 	}
 
 	public NuxeoDocumentCursor asCursor() {
+		return asCursor("page");
+	}
+
+	public NuxeoDocumentCursor asUpdatableCursor(String pageParameterName) {
+		NuxeoDocumentCursor cursor = new NuxeoDocumentCursor(sourceRequest, pageParameterName, true);
+		return cursor;
+	}
+
+	public NuxeoDocumentCursor asUpdatableCursor() {
 		return asCursor("page");
 	}
 

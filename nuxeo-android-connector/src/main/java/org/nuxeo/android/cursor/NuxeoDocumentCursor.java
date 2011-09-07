@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.nuxeo.android.documentprovider.DocumentsListChangeListener;
+import org.nuxeo.android.documentprovider.LazyDocumentsList;
+import org.nuxeo.android.documentprovider.LazyDocumentsListImpl;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsListImpl;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
@@ -23,15 +25,22 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 
 	protected final UUIDMapper mapper;
 
-	protected final LazyUpdatableDocumentsList docList;
+	protected final LazyDocumentsList docList;
 
-	public NuxeoDocumentCursor (Session session, String nxql, String[] queryParams, String sortOrder, String schemas, int pageSize, UUIDMapper mapper) {
+	protected final boolean updatable;
+
+	public NuxeoDocumentCursor (Session session, String nxql, String[] queryParams, String sortOrder, String schemas, int pageSize, UUIDMapper mapper, boolean updatable) {
 		if (mapper!=null) {
 			this.mapper = mapper;
 		} else {
 			this.mapper = new UUIDMapper();
 		}
-		docList = new LazyUpdatableDocumentsListImpl(session, nxql, queryParams, sortOrder, schemas, pageSize);
+		this.updatable=updatable;
+		if (updatable) {
+			docList = new LazyUpdatableDocumentsListImpl(session, nxql, queryParams, sortOrder, schemas, pageSize);
+		} else {
+			docList = new LazyDocumentsListImpl(session, nxql, queryParams, sortOrder, schemas, pageSize);
+		}
 		docList.registerListener(new DocumentsListChangeListener() {
 			@Override
 			public void notifyContentChanged(int page) {
@@ -40,9 +49,15 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 		});
 	}
 
-	public NuxeoDocumentCursor (OperationRequest fetchOperation, String pageParametrerName) {
+	public NuxeoDocumentCursor (OperationRequest fetchOperation, String pageParametrerName, boolean updatable) {
      	this.mapper = new UUIDMapper();
-     	docList = new LazyUpdatableDocumentsListImpl(fetchOperation, pageParametrerName);
+     	this.updatable=updatable;
+     	if (updatable) {
+     		docList = new LazyUpdatableDocumentsListImpl(fetchOperation, pageParametrerName);
+     	} else {
+     		docList = new LazyDocumentsListImpl(fetchOperation, pageParametrerName);
+     	}
+
 		docList.registerListener(new DocumentsListChangeListener() {
 			@Override
 			public void notifyContentChanged(int page) {
@@ -50,6 +65,24 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 			}
 		});
 	}
+
+	public NuxeoDocumentCursor (LazyDocumentsList docList) {
+     	this.mapper = new UUIDMapper();
+     	this.docList = docList;
+     	if (docList.getClass().isAssignableFrom(LazyUpdatableDocumentsList.class)) {
+     		this.updatable=true;
+     	} else {
+     		this.updatable=false;
+     	}
+		docList.registerListener(new DocumentsListChangeListener() {
+			@Override
+			public void notifyContentChanged(int page) {
+				onChange(true);
+			}
+		});
+	}
+
+
 
 	@Override
 	public boolean onMove(int oldPosition, int newPosition) {
@@ -181,8 +214,15 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 		return docList.getLoadingPagesCount();
 	}
 
-	public LazyUpdatableDocumentsList getDocumentsList() {
+	public LazyDocumentsList getDocumentsList() {
 		return docList;
+	}
+
+	public LazyUpdatableDocumentsList getUpdatableDocumentsList() {
+		if (updatable) {
+			return (LazyUpdatableDocumentsList) docList;
+		}
+		throw new UnsupportedOperationException("DocumentList is readOnly");
 	}
 
 }

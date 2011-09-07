@@ -165,8 +165,14 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends LazyDocumentsLi
 		return docs;
 	}
 
+	@Override
+	public boolean isReadOnly() {
+		return false;
+	}
+
 	protected abstract OperationRequest buildUpdateOperation(Session session, Document updatedDocument);
 
 	protected abstract OperationRequest buildCreateOperation(Session session, Document newDocument);
+
 
 }

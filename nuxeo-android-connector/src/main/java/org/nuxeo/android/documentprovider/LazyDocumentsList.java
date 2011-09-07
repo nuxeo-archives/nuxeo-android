@@ -3,6 +3,7 @@ package org.nuxeo.android.documentprovider;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
@@ -40,4 +41,11 @@ public interface LazyDocumentsList {
 
 	public String getName();
 
+	public boolean isReadOnly();
+
+	public OperationRequest getFetchOperation();
+
+	public String getPageParameterName();
+
+	public void setName(String name);
 }

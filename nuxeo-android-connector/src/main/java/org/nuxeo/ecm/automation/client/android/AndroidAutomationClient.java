@@ -1,6 +1,8 @@
 package org.nuxeo.ecm.automation.client.android;
 
 import org.nuxeo.android.cache.sql.SQLStateManager;
+import org.nuxeo.android.documentprovider.AndroidDocumentProvider;
+import org.nuxeo.android.documentprovider.DocumentProvider;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
 import org.nuxeo.ecm.automation.client.broadcast.MessageHelper;
 import org.nuxeo.ecm.automation.client.cache.CachedHttpConnector;
@@ -18,7 +20,7 @@ import android.content.Context;
 
 public class AndroidAutomationClient extends HttpAutomationClient {
 
-    protected final ResponseCacheManager cacheManager;
+    protected final ResponseCacheManager responseCacheManager;
 
     protected final DeferredUpdateManager deferredUpdatetManager;
 
@@ -30,22 +32,25 @@ public class AndroidAutomationClient extends HttpAutomationClient {
 
     protected final SQLStateManager sqlStateManager;
 
+    protected final DocumentProvider documentProvider;
+
     protected final Context androidContext;
 
     public AndroidAutomationClient(String url, Context androidContext, SQLStateManager sqlStateManager, NuxeoNetworkStatus offlineSettings) {
         super(url);
         this.sqlStateManager=sqlStateManager;
-        this.cacheManager = new AndroidResponseCacheManager(androidContext, sqlStateManager);
+        this.responseCacheManager = new AndroidResponseCacheManager(androidContext, sqlStateManager);
         this.deferredUpdatetManager = new AndroidDeferedUpdateManager(sqlStateManager);
         this.networkStatus = offlineSettings;
         this.androidContext = androidContext;
         this.messageHelper = new AndroidMessageHelper(androidContext);
         this.transientStateManager = new AndroidTransientStateManager(androidContext, sqlStateManager);
+        this.documentProvider = new AndroidDocumentProvider(sqlStateManager);
     }
 
     @Override
     protected Connector newConnector() {
-        HttpConnector con =  new CachedHttpConnector(http, cacheManager, networkStatus);
+        HttpConnector con =  new CachedHttpConnector(http, responseCacheManager, networkStatus);
         return con;
     }
 
@@ -64,7 +69,7 @@ public class AndroidAutomationClient extends HttpAutomationClient {
     }
 
 	public ResponseCacheManager getResponseCacheManager() {
-		return cacheManager;
+		return responseCacheManager;
 	}
 
 	public DeferredUpdateManager getDeferredUpdatetManager() {
@@ -85,6 +90,10 @@ public class AndroidAutomationClient extends HttpAutomationClient {
 
 	public TransientStateManager getTransientStateManager() {
 		return transientStateManager;
+	}
+
+	public DocumentProvider getDocumentProvider() {
+		return documentProvider;
 	}
 
 }

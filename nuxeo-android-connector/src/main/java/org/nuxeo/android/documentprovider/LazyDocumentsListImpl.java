@@ -62,6 +62,7 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 		}
 		// define returned properties
 		fetchOperation.setHeader("X-NXDocumentProperties", schemas);
+		this.name=nxql;
 		fetchPageSync(currentPage);
 	}
 
@@ -343,4 +344,18 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public boolean isReadOnly() {
+		return true;
+	}
+
+	public OperationRequest getFetchOperation() {
+		return fetchOperation;
+	}
+
+	public String getPageParameterName() {
+		return pageParameterName;
+	}
+
+
 }

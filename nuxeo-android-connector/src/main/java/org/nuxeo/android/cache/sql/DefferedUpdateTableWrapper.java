@@ -59,26 +59,7 @@ public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
 		return KEY_COLUMN;
 	}
 
-	protected Map<String, String> readMapFromJson(String data) {
-		Map<String, String> result = new HashMap<String, String>();
-		try {
-			JSONObject jsonMap = new JSONObject(data);
-			Iterator<String> keyIterator = jsonMap.keys();
-			while (keyIterator.hasNext()) {
-				String key = keyIterator.next();
-				result.put(key, jsonMap.getString(key));
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-
-		return result;
-	}
-
 	public OperationRequest storeRequest(String key, OperationRequest request, OperationType opType) {
-
-		// XXX TODO store opType !!!
 
 		SQLiteDatabase db = getWritableDatabase();
 
@@ -137,12 +118,17 @@ public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
 					String jsonParams = cursor.getString(cursor.getColumnIndex(PARAMS_COLUMN));
 		            String jsonHeaders = cursor.getString(cursor.getColumnIndex(HEADERS_COLUMN));
 		            String jsonCtx = cursor.getString(cursor.getColumnIndex(CTX_COLUMN));
+		            String inputType = cursor.getString(cursor.getColumnIndex(INPUT_TYPE_COLUMN));
+		            String inputRef = cursor.getString(cursor.getColumnIndex(INPUT_REF_COLUMN));
+		            Boolean inputBin = false;
+		            if (inputType!=null) {
+		            	inputBin = new Boolean(cursor.getString(cursor.getColumnIndex(INPUT_BINARY_COLUMN)));
+		            }
 
-
-					OperationDocumentation op = session.getOperation(operationId);
-		            Map<String, String> params = readMapFromJson(jsonParams);
-		            Map<String, String> headers = readMapFromJson(jsonHeaders);
-		            Map<String, String> ctx = readMapFromJson(jsonCtx);
+					/*OperationDocumentation op = session.getOperation(operationId);
+		            Map<String, String> params = JSONHelper.readMapFromJson(jsonParams);
+		            Map<String, String> headers = JSONHelper.readMapFromJson(jsonHeaders);
+		            Map<String, String> ctx = JSONHelper.readMapFromJson(jsonCtx);
 
 		            OperationInput input = null;
 		            if (!cursor.isNull(cursor.getColumnIndex(INPUT_TYPE_COLUMN))) {
@@ -173,7 +159,8 @@ public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
 			            }
 		            }
 
-					OperationRequest deferredRequest = new DefaultOperationRequest((DefaultSession) session,op, params, headers, ctx,input);
+					OperationRequest deferredRequest = new DefaultOperationRequest((DefaultSession) session,op, params, headers, ctx,input);*/
+					OperationRequest deferredRequest = OperationPersisterHelper.rebuildOperation(session, operationId, jsonParams, jsonHeaders, jsonCtx, inputType, inputRef, inputBin);
 					result.add(new CachedOperationRequest(deferredRequest, operationKey, opType));
 
 				} while (cursor.moveToNext());

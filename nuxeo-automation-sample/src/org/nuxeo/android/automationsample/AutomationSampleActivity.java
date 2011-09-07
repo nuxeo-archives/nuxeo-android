@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 public class AutomationSampleActivity extends Activity implements View.OnClickListener{
@@ -23,6 +24,8 @@ public class AutomationSampleActivity extends Activity implements View.OnClickLi
 	protected Button cursorBtn;
 
 	protected Spinner spinner;
+
+	protected ImageView imgTest;
 
 	protected List<String> opList;
 
@@ -40,6 +43,8 @@ public class AutomationSampleActivity extends Activity implements View.OnClickLi
         cursorBtn = (Button) findViewById(R.id.cursorBtn);
         cursorBtn.setOnClickListener(this);
 
+        imgTest = (ImageView) findViewById(R.id.imageView1);
+        imgTest.setImageURI(Uri.parse("content://nuxeo/icons/testMe"));
     }
 
 

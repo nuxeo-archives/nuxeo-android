@@ -32,7 +32,7 @@
                   android:label="Settings">
         </activity>
 		<provider android:name="org.nuxeo.android.contentprovider.NuxeoDocumentContentProvider"
-		          android:authorities="org.nuxeo">
+		          android:authorities="nuxeo">
 		</provider>
     </application>
 </manifest>

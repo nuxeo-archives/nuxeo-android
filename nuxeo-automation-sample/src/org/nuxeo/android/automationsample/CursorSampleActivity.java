@@ -1,15 +1,12 @@
 package org.nuxeo.android.automationsample;
 
 import org.nuxeo.android.activities.BaseNuxeoActivity;
-import org.nuxeo.android.contentprovider.NuxeoDocumentContentProvider;
 import org.nuxeo.android.cursor.NuxeoDocumentCursor;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -161,14 +158,14 @@ public class CursorSampleActivity extends BaseNuxeoActivity implements
 			if (data.hasExtra(CreateEditActivity.DOCUMENT)) {
 				Document editedDocument = (Document) data.getExtras().get(
 						CreateEditActivity.DOCUMENT);
-				documentCursor.getDocumentsList()
+				documentCursor.getUpdatableDocumentsList()
 						.updateDocument(editedDocument);
 			}
 		} else if (requestCode == CREATE_DOCUMENT && resultCode == RESULT_OK) {
 			if (data.hasExtra(CreateEditActivity.DOCUMENT)) {
 				Document newDocument = (Document) data.getExtras().get(
 						CreateEditActivity.DOCUMENT);
-				documentCursor.getDocumentsList().createDocument(newDocument);
+				documentCursor.getUpdatableDocumentsList().createDocument(newDocument);
 			}
 		}
 	}
