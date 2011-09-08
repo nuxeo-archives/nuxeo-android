@@ -38,7 +38,7 @@ import android.util.Log;
  */
 public abstract class AsyncAutomationClient extends AbstractAutomationClient {
 
-	protected static final int NB_THREADS = 3;
+	protected static final int NB_THREADS = 4;
 	protected static final int QUEUESIZE = 20;
 
     protected ExecutorService async;

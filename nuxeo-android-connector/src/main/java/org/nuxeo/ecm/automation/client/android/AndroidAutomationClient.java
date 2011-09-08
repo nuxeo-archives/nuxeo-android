@@ -1,13 +1,16 @@
 package org.nuxeo.ecm.automation.client.android;
 
+import org.nuxeo.android.cache.blob.BlobStoreManager;
 import org.nuxeo.android.cache.sql.SQLStateManager;
+import org.nuxeo.android.config.NuxeoServerConfig;
 import org.nuxeo.android.documentprovider.AndroidDocumentProvider;
 import org.nuxeo.android.documentprovider.DocumentProvider;
+import org.nuxeo.android.download.FileDownloader;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
 import org.nuxeo.ecm.automation.client.broadcast.MessageHelper;
 import org.nuxeo.ecm.automation.client.cache.CachedHttpConnector;
-import org.nuxeo.ecm.automation.client.cache.OperationType;
 import org.nuxeo.ecm.automation.client.cache.DeferredUpdateManager;
+import org.nuxeo.ecm.automation.client.cache.OperationType;
 import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
 import org.nuxeo.ecm.automation.client.cache.TransientStateManager;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
@@ -32,20 +35,30 @@ public class AndroidAutomationClient extends HttpAutomationClient {
 
     protected final SQLStateManager sqlStateManager;
 
+    protected final BlobStoreManager blobStoreManager;
+
     protected final DocumentProvider documentProvider;
 
     protected final Context androidContext;
 
-    public AndroidAutomationClient(String url, Context androidContext, SQLStateManager sqlStateManager, NuxeoNetworkStatus offlineSettings) {
+    protected final FileDownloader fileDownloader;
+
+    protected final NuxeoServerConfig serverConfig;
+
+    public AndroidAutomationClient(String url, Context androidContext, SQLStateManager sqlStateManager, BlobStoreManager blobStoreManager, NuxeoNetworkStatus offlineSettings, NuxeoServerConfig serverConfig) {
         super(url);
+        // XXX this.http = AndroidHttpClient.newInstance(userAgent, context);
         this.sqlStateManager=sqlStateManager;
-        this.responseCacheManager = new AndroidResponseCacheManager(androidContext, sqlStateManager);
+        this.blobStoreManager=blobStoreManager;
+        this.responseCacheManager = new AndroidResponseCacheManager(sqlStateManager,blobStoreManager);
         this.deferredUpdatetManager = new AndroidDeferedUpdateManager(sqlStateManager);
         this.networkStatus = offlineSettings;
         this.androidContext = androidContext;
         this.messageHelper = new AndroidMessageHelper(androidContext);
         this.transientStateManager = new AndroidTransientStateManager(androidContext, sqlStateManager);
         this.documentProvider = new AndroidDocumentProvider(sqlStateManager);
+        this.fileDownloader = new FileDownloader(this);
+        this.serverConfig=serverConfig;
     }
 
     @Override
@@ -96,4 +109,15 @@ public class AndroidAutomationClient extends HttpAutomationClient {
 		return documentProvider;
 	}
 
+	public BlobStoreManager getBlobStoreManager() {
+		return blobStoreManager;
+	}
+
+	public FileDownloader getFileDownloader() {
+		return fileDownloader;
+	}
+
+	public NuxeoServerConfig getServerConfig() {
+		return serverConfig;
+	}
 }

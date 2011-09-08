@@ -27,13 +27,13 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
-import org.nuxeo.ecm.automation.client.cache.ResponseCacheEntry;
 import org.nuxeo.ecm.automation.client.jaxrs.RemoteException;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.Connector;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.Request;
@@ -43,6 +43,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.spi.Response;
  * Connector wrapping a {@link HttpClient} instance.
  *
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
+ * @author tiry
  */
 public class HttpConnector implements Connector {
 
@@ -154,5 +155,10 @@ public class HttpConnector implements Connector {
 
         return response;
     }
+
+	@Override
+	public HttpResponse executeSimpleHttp(HttpUriRequest httpRequest) throws Exception {
+		return  http.execute(httpRequest, ctx);
+	}
 
 }

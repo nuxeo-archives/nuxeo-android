@@ -1,6 +1,7 @@
 package org.nuxeo.android.cursor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,8 @@ import android.database.AbstractCursor;
 import android.os.Bundle;
 
 public class NuxeoDocumentCursor extends AbstractCursor {
+
+	protected static final String[] FIXED_COLUMNS={"_ID","status", "iconUri"};
 
 	protected String[] columns;
 
@@ -105,11 +108,12 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 	@Override
 	public String[] getColumnNames() {
 		if (columns == null) {
-			List<String> cols = new ArrayList(getCurrentPage().get(0)
+			List<String> cols = new ArrayList<String>(getCurrentPage().get(0)
 					.getProperties().getKeys());
 			Collections.sort(cols);
-			cols.add(0,"_ID");
-			cols.add(1,"status");
+			cols.addAll(0, Arrays.asList(FIXED_COLUMNS));
+			//cols.add(0,"_ID");
+			//cols.add(1,"status");
 			columns = cols.toArray(new String[0]);
 		}
 		return columns;
@@ -158,6 +162,12 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 			return getCurrentIdentifier().toString();
 		} else if (column==1) {
 			return getCurrentDocument().getStatusFlag().toString();
+		} else if (column==2) {
+			String icon = getCurrentDocument().getString("common:icon", "");
+			if (icon==null || "".equals(icon)) {
+				return "";
+			}
+			return "content://nuxeo" + icon;
 		}
 		return getCurrentDocument().getString(columns[column]);
 	}

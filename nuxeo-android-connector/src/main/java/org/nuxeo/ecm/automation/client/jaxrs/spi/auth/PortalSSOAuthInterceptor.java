@@ -21,6 +21,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Random;
 
+import org.apache.http.HttpRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.RequestInterceptor;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.Connector;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.Request;
@@ -67,8 +68,33 @@ public class PortalSSOAuthInterceptor implements RequestInterceptor {
         request.put("NX_RD", String.valueOf(random));
         request.put("NX_TOKEN", base64HashedToken);
         request.put("NX_USER", username);
+    }
 
+    @Override
+    public void processHttpRequest(HttpRequest request) {
+                // compute token
 
+        long ts = new Date().getTime();
+        long random = new Random(ts).nextInt();
+
+        String clearToken = String.format("%d:%d:%s:%s", ts, random, secret, username);
+
+        byte[] hashedToken;
+
+        try {
+            hashedToken = MessageDigest.getInstance("MD5").digest(clearToken.getBytes());
+        } catch (NoSuchAlgorithmException e) {
+            throw new Error("Cannot compute token", e);
+        }
+
+        String base64HashedToken = Base64.encode(hashedToken);
+
+        // set request headers
+
+        request.addHeader("NX_TS", String.valueOf(ts));
+        request.addHeader("NX_RD", String.valueOf(random));
+        request.addHeader("NX_TOKEN", base64HashedToken);
+        request.addHeader("NX_USER", username);
     }
 
 }

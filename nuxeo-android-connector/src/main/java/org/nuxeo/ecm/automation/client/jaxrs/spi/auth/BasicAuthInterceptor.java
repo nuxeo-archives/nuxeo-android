@@ -16,6 +16,7 @@
  */
 package org.nuxeo.ecm.automation.client.jaxrs.spi.auth;
 
+import org.apache.http.HttpRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.RequestInterceptor;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.Connector;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.Request;
@@ -44,5 +45,11 @@ public class BasicAuthInterceptor implements RequestInterceptor {
     public void processRequest(Request request, Connector connector) {
         request.put("Authorization", token);
     }
+
+	@Override
+	public void processHttpRequest(HttpRequest request) {
+		request.addHeader("Authorization", token);
+	}
+
 
 }

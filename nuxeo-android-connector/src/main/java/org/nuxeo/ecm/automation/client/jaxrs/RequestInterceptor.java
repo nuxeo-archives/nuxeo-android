@@ -16,6 +16,7 @@
  */
 package org.nuxeo.ecm.automation.client.jaxrs;
 
+import org.apache.http.HttpRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.Connector;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.Request;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.auth.BasicAuthInterceptor;
@@ -32,5 +33,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.spi.auth.PortalSSOAuthInterceptor;
 public interface RequestInterceptor {
 
     void processRequest(Request request, Connector connector);
+
+    void processHttpRequest(HttpRequest request);
 
 }

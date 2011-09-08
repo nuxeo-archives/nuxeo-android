@@ -1,5 +1,7 @@
 package org.nuxeo.ecm.automation.client.jaxrs.spi;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.RequestInterceptor;
 
 public class ConnectorHandler implements Connector {
@@ -25,5 +27,11 @@ public class ConnectorHandler implements Connector {
         interceptor.processRequest(request, connector);
         return connector.execute(request, forceRefresh, cachable);
     }
+
+	@Override
+	public HttpResponse executeSimpleHttp(HttpUriRequest httpRequest) throws Exception {
+		interceptor.processHttpRequest(httpRequest);
+		return connector.executeSimpleHttp(httpRequest);
+	}
 
 }

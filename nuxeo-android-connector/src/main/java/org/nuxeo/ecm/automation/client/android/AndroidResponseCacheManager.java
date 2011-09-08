@@ -3,32 +3,26 @@ package org.nuxeo.ecm.automation.client.android;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.List;
 
+import org.nuxeo.android.cache.blob.BlobStore;
+import org.nuxeo.android.cache.blob.BlobStoreManager;
 import org.nuxeo.android.cache.sql.ResponseCacheTableWrapper;
 import org.nuxeo.android.cache.sql.SQLStateManager;
 import org.nuxeo.ecm.automation.client.cache.ResponseCacheEntry;
 import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
-import org.nuxeo.ecm.automation.client.cache.StreamHelper;
-
-import android.content.Context;
-import android.util.Log;
 
 public class AndroidResponseCacheManager implements ResponseCacheManager {
 
 	protected final SQLStateManager sqlStateManager;
-	protected final File cacheDir;
+	protected final BlobStore blobStore;
 
-	public AndroidResponseCacheManager(Context context, SQLStateManager sqlStateManager) {
-		File dir = context.getExternalCacheDir();
-		if (dir==null) {
-			Log.w(AndroidResponseCacheManager.class.getSimpleName(), "No external directory accessible, using main storage");
-			dir = context.getFilesDir();
-		}
-		cacheDir =dir;
+	protected final String BLOBSTORE_KEY = "responses";
+
+	public AndroidResponseCacheManager(SQLStateManager sqlStateManager, BlobStoreManager blobStoreManager) {
+
 		this.sqlStateManager = sqlStateManager;
+		this.blobStore = blobStoreManager.getBlobStore(BLOBSTORE_KEY);
 		sqlStateManager.registerWrapper(new ResponseCacheTableWrapper());
 	}
 
@@ -50,22 +44,14 @@ public class AndroidResponseCacheManager implements ResponseCacheManager {
 	}
 
 	protected File storeStream(String key, InputStream is) {
-
-		File streamFile = new File(cacheDir, key);
-		try {
-			FileOutputStream out = new FileOutputStream(streamFile);
-			StreamHelper.copy(is, out);
-			is.close();
-			out.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-		return streamFile;
+		return blobStore.storeBlob(key, is);
 	}
 
 	protected InputStream getStream(String key) {
-		File streamFile = new File(cacheDir, key);
+		File streamFile = blobStore.getBlob(key);
+		if (streamFile==null) {
+			return null;
+		}
 		try {
 			FileInputStream is = new FileInputStream(streamFile);
 			return is;
@@ -98,22 +84,12 @@ public class AndroidResponseCacheManager implements ResponseCacheManager {
 
 	@Override
 	public void clear() {
-		List<String> keys = getTableWrapper().getKeys();
-		for (String key : keys) {
-			File streamFile = new File(cacheDir, key);
-			streamFile.delete();
-		}
+		blobStore.clear();
 		getTableWrapper().clearTable();
 	}
 
 	@Override
 	public long getSize() {
-		long size = 0;
-		List<String> keys = getTableWrapper().getKeys();
-		for (String key : keys) {
-			File streamFile = new File(cacheDir, key);
-			size += streamFile.length();
-		}
-		return size;
+		return blobStore.getSize();
 	}
 }

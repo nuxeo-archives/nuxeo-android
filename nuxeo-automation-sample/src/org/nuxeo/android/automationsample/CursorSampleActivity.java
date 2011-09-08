@@ -68,7 +68,7 @@ public class CursorSampleActivity extends BaseNuxeoActivity implements
 		// Cursor cur = managedQuery(NuxeoDocumentContentProvider.CONTENT_URI,
 		// null, null, null, null);
 		return getNuxeoContext().getDocumentManager().query(
-				"select * from Document", null, null, null, 0, 5,
+				"select * from Document", null, null, null, 0, 10,
 				CacheBehavior.STORE);
 	}
 
@@ -80,9 +80,10 @@ public class CursorSampleActivity extends BaseNuxeoActivity implements
 
 		Documents docs = (Documents) data;
 		documentCursor = docs.asCursor();
-		final String[] columns = new String[] { "_ID", "dc:title", "status" };
-		final int[] to = new int[] { R.id.id_entry, R.id.title_entry,
-				R.id.status_entry };
+		//final String[] columns = new String[] { "_ID", "dc:title", "status" };
+		//final int[] to = new int[] { R.id.id_entry, R.id.title_entry, R.id.status_entry};
+		final String[] columns = new String[] { "_ID", "dc:title", "status", "iconUri" };
+		final int[] to = new int[] { R.id.id_entry, R.id.title_entry, R.id.status_entry, R.id.iconView };
 		SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this,
 				R.layout.list_item, documentCursor, columns, to);
 		listView.setAdapter(mAdapter);

@@ -118,10 +118,7 @@ public abstract class AbstractAutomationClient implements AutomationClient {
     }
 
     public Session getSession() {
-        Connector connector = newConnector();
-        if (requestInterceptor != null) {
-            connector = new ConnectorHandler(connector, requestInterceptor);
-        }
+        Connector connector = getConnector();
         if (registry == null) { // not yet connected
             synchronized (this) {
                 if (registry == null) {
@@ -130,6 +127,14 @@ public abstract class AbstractAutomationClient implements AutomationClient {
             }
         }
         return login(connector);
+    }
+
+    public Connector getConnector() {
+    	Connector connector = newConnector();
+        if (requestInterceptor != null) {
+            connector = new ConnectorHandler(connector, requestInterceptor);
+        }
+        return connector;
     }
 
     public Session getSession(final String username, final String password) {

@@ -1,6 +1,7 @@
 package org.nuxeo.android.context;
 
 import org.nuxeo.android.broadcast.NuxeoBroadcastMessages;
+import org.nuxeo.android.cache.blob.BlobStoreManager;
 import org.nuxeo.android.cache.sql.SQLStateManager;
 import org.nuxeo.android.config.NuxeoServerConfig;
 import org.nuxeo.android.network.NetworkStatusBroadCastReceiver;
@@ -36,6 +37,8 @@ public class NuxeoContext extends BroadcastReceiver {
 
 	protected final Context androidContext;
 
+	protected final BlobStoreManager blobStore;
+
 	public static NuxeoContext get(Context context) {
 		if (context instanceof NuxeoContextProvider) {
 			NuxeoContextProvider nxApp = (NuxeoContextProvider) context;
@@ -47,11 +50,16 @@ public class NuxeoContext extends BroadcastReceiver {
 
 	public NuxeoContext(Context androidContext) {
 		this.androidContext=androidContext;
+
+		// persistence managers
 		sqlStateManager = new SQLStateManager(androidContext);
+		blobStore = new BlobStoreManager(androidContext);
+		// config related services
 		serverConfig = new NuxeoServerConfig(androidContext);
 		networkStatus = new NuxeoNetworkStatus(androidContext, serverConfig, (ConnectivityManager) androidContext.getSystemService(Context.CONNECTIVITY_SERVICE));
 		androidContext.registerReceiver(new NetworkStatusBroadCastReceiver(networkStatus), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-		// register this as listener
+
+		// register this as listener for global config changes
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(NuxeoBroadcastMessages.NUXEO_SETTINGS_CHANGED);
 		filter.addAction(NuxeoBroadcastMessages.NUXEO_SERVER_CONNECTIVITY_CHANGED);
@@ -68,7 +76,7 @@ public class NuxeoContext extends BroadcastReceiver {
 
 	public synchronized Session getSession() {
 		if (nuxeoSession==null) {
-			nuxeoClient = new AndroidAutomationClient(serverConfig.getAutomationUrl(), androidContext,sqlStateManager,networkStatus);
+			nuxeoClient = new AndroidAutomationClient(serverConfig.getAutomationUrl(), androidContext,sqlStateManager,blobStore,networkStatus,serverConfig);
 			nuxeoSession = nuxeoClient.getSession(
 					serverConfig.getLogin(),
 					serverConfig.getPassword());

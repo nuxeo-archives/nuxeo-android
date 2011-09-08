@@ -16,13 +16,19 @@
  */
 package org.nuxeo.ecm.automation.client.jaxrs.spi;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
+ * @author tiry
  */
 public interface Connector {
 
     Object execute(Request request);
 
     Object execute(Request request, boolean forceRefresh, boolean cachable);
+
+    HttpResponse executeSimpleHttp(HttpUriRequest httpRequest) throws Exception ;
 
 }
