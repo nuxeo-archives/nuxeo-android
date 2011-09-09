@@ -1,12 +1,17 @@
 package org.nuxeo.android.activities;
 
+import java.io.File;
+
 import org.nuxeo.android.context.NuxeoContext;
 import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 public class BaseNuxeoActivity extends Activity {
 
@@ -64,4 +69,26 @@ public class BaseNuxeoActivity extends Activity {
 	protected void onNuxeoDataRetrieved(Object data) {
 
 	}
+
+    protected void startViewerFromBlob(File tmpFile, String mimeTye) {
+        Uri path = Uri.fromFile(tmpFile);
+        startViewerFromBlob(path, mimeTye);
+    }
+
+    protected void startViewerFromBlob(Uri uri, String mimeTye) {
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(uri, mimeTye);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        try {
+            startActivity(intent);
+        }
+        catch (android.content.ActivityNotFoundException e) {
+            Toast.makeText(this,
+                "No Application Available to View " + mimeTye,
+                Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }

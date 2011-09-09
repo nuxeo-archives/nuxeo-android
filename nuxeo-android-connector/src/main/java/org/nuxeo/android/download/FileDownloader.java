@@ -11,6 +11,8 @@ import org.nuxeo.android.cache.blob.BlobStore;
 import org.nuxeo.android.cache.blob.BlobStoreManager;
 import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
+import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
+import org.nuxeo.ecm.automation.client.jaxrs.model.FileBlob;
 
 import android.util.Log;
 
@@ -33,22 +35,22 @@ public class FileDownloader {
 		return "download:" + System.currentTimeMillis();
 	}
 
-	public File getBlob(String uid) {
+	public FileBlob getBlob(String uid) {
 		return getBlob(uid, 0);
 	}
 
-	public File getBlob(String uid, Integer idx) {
+	public FileBlob getBlob(String uid, Integer idx) {
 		if (idx==null) {
 			idx = 0;
 		}
-		String pattern = "nxbigfile/default" + uid + "/blobHolder:" + idx + "/";
+		String pattern = "nxbigfile/default/" + uid + "/blobholder:" + idx + "/";
 		String url = client.getServerConfig().getServerBaseUrl() + pattern;
 		return getBlob(BLOB_KEY, url, null, null);
 	}
 
-	public String getBlob(String url, AsyncCallback<File> cb) {
+	public String getBlob(String url, AsyncCallback<Blob> cb) {
 		String execId = getExecutionId(url);
-		File blob = null;
+		Blob blob = null;
 		try {
 			blob= getBlob(BLOB_KEY, url, cb, execId);
 			return execId;
@@ -71,14 +73,14 @@ public class FileDownloader {
 		return url + urlPattern + suffix;
 	}
 
-	public File getIcon(String url) {
+	public FileBlob getIcon(String url) {
 		url = buildUrl("icons", url);
 		return getBlob(ICONS_KEY, url, null, null);
 	}
 
-	public String getIcon(String url, AsyncCallback<File> cb) {
+	public String getIcon(String url, AsyncCallback<Blob> cb) {
 		String execId = getExecutionId(url);
-		File blob = null;
+		Blob blob = null;
 		try {
 			blob= getBlob(ICONS_KEY, url, cb, execId);
 			return execId;
@@ -104,11 +106,12 @@ public class FileDownloader {
         return hexString.toString();
 	}
 
-	protected File getBlob(String assetType, String url, AsyncCallback<File> cb, String execId) {
+
+	protected FileBlob getBlob(String assetType, String url, AsyncCallback<Blob> cb, String execId) {
 		BlobStore store = blobStoreManager.getBlobStore(assetType);
 
 		String key = getRequestKey(url);
-		File blob = store.getBlob(key);
+		FileBlob blob = store.getBlob(key);
 
 		if (blob!=null) {
 			return blob;
@@ -120,7 +123,7 @@ public class FileDownloader {
 		return blob;
 	}
 
-	protected File downloadAndStoreBlob(final BlobStore store, final String url,final  String key, final AsyncCallback<File> cb, final String execId) {
+	protected FileBlob downloadAndStoreBlob(final BlobStore store, final String url,final  String key, final AsyncCallback<Blob> cb, final String execId) {
 
 		boolean added = pendingDownload.addIfAbsent(url);
 		if (added) {
@@ -129,9 +132,9 @@ public class FileDownloader {
 				public void run() {
 					try {
 						HttpResponse response = client.getConnector().executeSimpleHttp(new HttpGet(url));
-						File file = null;
+						Blob file = null;
 						if (response.getStatusLine().getStatusCode()==200) {
-							file = store.storeBlob(key, response.getEntity().getContent());
+							file = store.storeBlob(key, new HttpBlob(response));
 						} else {
 							Log.e(FileDownloader.class.getSimpleName(), "Can not download file, return code " + response.getStatusLine().getStatusCode());
 						}
@@ -153,8 +156,8 @@ public class FileDownloader {
 				client.asyncExec(new Runnable() {
 					@Override
 					public void run() {
-						File file = waitUntilCompletion(store, key, url);
-						cb.onSuccess(execId, file);
+						Blob blob = waitUntilCompletion(store, key, url);
+						cb.onSuccess(execId, blob);
 					}
 				});
 			}
@@ -166,7 +169,7 @@ public class FileDownloader {
 		return null;
 	}
 
-	protected File waitUntilCompletion(BlobStore store, String key, String url) {
+	protected FileBlob waitUntilCompletion(BlobStore store, String key, String url) {
 		while (pendingDownload.contains(url)) {
 			try {
 				Thread.sleep(100);

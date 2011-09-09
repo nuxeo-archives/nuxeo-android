@@ -11,6 +11,7 @@ import org.nuxeo.android.cache.sql.ResponseCacheTableWrapper;
 import org.nuxeo.android.cache.sql.SQLStateManager;
 import org.nuxeo.ecm.automation.client.cache.ResponseCacheEntry;
 import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
+import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 
 public class AndroidResponseCacheManager implements ResponseCacheManager {
 
@@ -44,18 +45,17 @@ public class AndroidResponseCacheManager implements ResponseCacheManager {
 	}
 
 	protected File storeStream(String key, InputStream is) {
-		return blobStore.storeBlob(key, is);
+		return blobStore.storeBlob(key, is, null, null);
 	}
 
 	protected InputStream getStream(String key) {
-		File streamFile = blobStore.getBlob(key);
-		if (streamFile==null) {
+		Blob blob = blobStore.getBlob(key);
+		if (blob==null) {
 			return null;
 		}
 		try {
-			FileInputStream is = new FileInputStream(streamFile);
-			return is;
-		} catch (FileNotFoundException e) {
+			return blob.getStream();
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}

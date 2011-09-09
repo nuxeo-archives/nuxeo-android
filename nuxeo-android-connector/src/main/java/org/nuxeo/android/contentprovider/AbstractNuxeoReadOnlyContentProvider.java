@@ -13,6 +13,7 @@ import org.nuxeo.android.documentprovider.LazyDocumentsList;
 import org.nuxeo.android.download.FileDownloader;
 import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
+import org.nuxeo.ecm.automation.client.jaxrs.model.FileBlob;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -152,21 +153,24 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 
 		if (resourceType.equals("icons")) {
 			String subPath = uri.getEncodedPath().toString().replace("/icons", "");
-			File iconFile = downloader.getIcon(subPath);
-			return ParcelFileDescriptor.open(iconFile, ParcelFileDescriptor.MODE_READ_ONLY);
+			FileBlob iconFile = downloader.getIcon(subPath);
+			if (iconFile!=null) {
+				return ParcelFileDescriptor.open(iconFile.getFile(), ParcelFileDescriptor.MODE_READ_ONLY);
+			}
 		}
 		else if (resourceType.equals("blobs")) {
-			String uid = uri.getPathSegments().get(2);
+			String uid = uri.getPathSegments().get(1);
 			String suffix = null;
 			Integer idx = null;
-			if (uri.getPathSegments().size()>3) {
-				suffix = uri.getPathSegments().get(3);
+			if (uri.getPathSegments().size()>2) {
+				suffix = uri.getPathSegments().get(2);
 				idx = Integer.parseInt(suffix);
 			}
-			File blob = downloader.getBlob(uid, idx);
-			return ParcelFileDescriptor.open(blob, ParcelFileDescriptor.MODE_READ_ONLY);
+			FileBlob blob = downloader.getBlob(uid, idx);
+			if (blob!=null) {
+				return ParcelFileDescriptor.open(blob.getFile(), ParcelFileDescriptor.MODE_READ_ONLY);
+			}
 		}
-
 		return super.openFile(uri, mode);
 	}
 

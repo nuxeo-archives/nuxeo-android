@@ -44,7 +44,7 @@ public class AutomationSampleActivity extends Activity implements View.OnClickLi
         cursorBtn.setOnClickListener(this);
 
         imgTest = (ImageView) findViewById(R.id.imageView1);
-        imgTest.setImageURI(Uri.parse("content://nuxeo/icons/testMe"));
+        imgTest.setImageURI(Uri.parse("content://nuxeo/blobs/5d72ce2a-2cbd-47b9-a0a5-93cb5fd56793"));
     }
 
 

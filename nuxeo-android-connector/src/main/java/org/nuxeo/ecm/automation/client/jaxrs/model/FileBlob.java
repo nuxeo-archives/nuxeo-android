@@ -23,6 +23,7 @@ import java.io.InputStream;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
+ * @author tiry
  */
 public class FileBlob extends Blob implements HasFile {
 
@@ -30,6 +31,11 @@ public class FileBlob extends Blob implements HasFile {
 
     public FileBlob(File file) {
         super(file.getName(), getMimeTypeFromExtension(file.getPath()));
+        this.file = file;
+    }
+
+    public FileBlob(File file, String filename, String mimeType) {
+        super(filename, mimeType);
         this.file = file;
     }
 
