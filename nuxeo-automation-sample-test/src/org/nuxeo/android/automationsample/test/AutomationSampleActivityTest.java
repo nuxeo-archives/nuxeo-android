@@ -1,6 +1,6 @@
 package org.nuxeo.android.automationsample.test;
 
-import org.nuxeo.android.automationsample.AutomationSampleActivity;
+import org.nuxeo.android.automationsample.HomeSampleActivity;
 import org.nuxeo.android.automationsample.R;
 
 import android.test.ActivityInstrumentationTestCase2;
@@ -8,19 +8,19 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 public class AutomationSampleActivityTest extends
-		ActivityInstrumentationTestCase2<AutomationSampleActivity> {
+		ActivityInstrumentationTestCase2<HomeSampleActivity> {
 
 	protected Button connectBtn;
 	protected Spinner spinner;
 
 	public AutomationSampleActivityTest() {
-		super("org.nuxeo.android.automationsample", AutomationSampleActivity.class);
+		super("org.nuxeo.android.automationsample", HomeSampleActivity.class);
 	}
 
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		AutomationSampleActivity mainActivity = getActivity();
+		HomeSampleActivity mainActivity = getActivity();
 
 		connectBtn = (Button) mainActivity.findViewById(R.id.connect);
 		spinner = (Spinner) mainActivity.findViewById(R.id.opList);

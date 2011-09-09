@@ -12,14 +12,21 @@
 
 
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:name="org.nuxeo.android.automationsample.NuxeoSampleApplication">
-        <activity android:name=".AutomationSampleActivity"
+        <activity android:name="HomeSampleActivity"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-         <activity android:name="NetworkSettingsActivity"
+        <activity android:name="ConnectSampleActivity"
+                  android:label="Connect to Nuxeo Server">
+        </activity>
+        <activity android:name="SimpleFetchSampleActivty"
+                  android:label="Simple Data retrieval">
+        </activity>
+
+        <activity android:name="NetworkSettingsActivity"
                   android:label="Nuxeo Offline Settings">
         </activity>
         <activity android:name=".CursorSampleActivity"

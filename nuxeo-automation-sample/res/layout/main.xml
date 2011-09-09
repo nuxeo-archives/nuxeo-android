@@ -4,15 +4,20 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-<ImageView android:src="@drawable/icon"
-    android:layout_width="fill_parent" android:layout_height="30px" android:id="@+id/imageView1"></ImageView>
 <TextView
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:text="@string/hello"
     />
-<Button android:text="Connect on test server" android:id="@+id/connect" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-<Button android:text="Document List sample" android:id="@+id/cursorBtn" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+<Button android:text="Connect on test server" android:id="@+id/connect" android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
+
+<Button android:text="Fetch document and associated resources" android:id="@+id/contentUriBtn" android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
+
+<Button android:text="Simple Document Lists" android:id="@+id/docListBtn" android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
+
+<Button android:text="Using DocumentProvider" android:id="@+id/docProviderBtn" android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
+
+<Button android:text="Using Content Provider" android:id="@+id/contentProviderBtn" android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
 
 <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/opList"></Spinner>
 

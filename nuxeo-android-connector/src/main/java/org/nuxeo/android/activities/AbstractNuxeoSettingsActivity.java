@@ -5,12 +5,11 @@ import java.util.Map;
 
 import org.nuxeo.android.config.NuxeoServerConfig;
 
-import android.content.BroadcastReceiver;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
-public class AbstractNuxeoSettingsActivity extends BaseNuxeoActivity {
+public abstract class AbstractNuxeoSettingsActivity extends BaseNuxeoActivity {
 
 	protected boolean saveNuxeoPreferences(Map<String, Object> prefData) {
 

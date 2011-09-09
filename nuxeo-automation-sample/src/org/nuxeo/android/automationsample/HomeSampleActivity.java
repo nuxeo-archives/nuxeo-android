@@ -15,17 +15,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Spinner;
 
-public class AutomationSampleActivity extends Activity implements View.OnClickListener{
+public class HomeSampleActivity extends Activity implements View.OnClickListener{
 
 	protected Button connectBtn;
-	protected Button cursorBtn;
+	protected Button contentUriBtn;
+	protected Button docListBtn;
+	protected Button docProviderBtn;
+	protected Button contentProviderBtn;
 
 	protected Spinner spinner;
-
-	protected ImageView imgTest;
 
 	protected List<String> opList;
 
@@ -37,48 +37,36 @@ public class AutomationSampleActivity extends Activity implements View.OnClickLi
         connectBtn = (Button) findViewById(R.id.connect);
         connectBtn.setOnClickListener(this);
 
+        contentUriBtn = (Button) findViewById(R.id.contentUriBtn);
+        contentUriBtn.setOnClickListener(this);
+
+        docListBtn = (Button) findViewById(R.id.docListBtn);
+        docListBtn.setOnClickListener(this);
+
+        docProviderBtn = (Button) findViewById(R.id.docProviderBtn);
+        docProviderBtn.setOnClickListener(this);
+
+        contentProviderBtn = (Button) findViewById(R.id.contentProviderBtn);
+        contentProviderBtn.setOnClickListener(this);
+
         spinner = (Spinner) findViewById(R.id.opList);
         spinner.setVisibility(4);
 
-        cursorBtn = (Button) findViewById(R.id.cursorBtn);
-        cursorBtn.setOnClickListener(this);
-
-        imgTest = (ImageView) findViewById(R.id.imageView1);
-        imgTest.setImageURI(Uri.parse("content://nuxeo/blobs/5d72ce2a-2cbd-47b9-a0a5-93cb5fd56793"));
+        //imgTest.setImageURI(Uri.parse("content://nuxeo/blobs/5d72ce2a-2cbd-47b9-a0a5-93cb5fd56793"));
     }
 
 
 	@Override
 	public void onClick(View view) {
 		if (view == connectBtn) {
-
-			final Activity activity = this;
-
-			if (opList==null) {
-				// run connection in a separated thread to avoid freezing the UI in case of network lag
-				Runnable initTask = new Runnable() {
-					@Override
-					public void run() {
-
-						opList = new ArrayList<String>();
-						opList.addAll(NuxeoContext.get(activity.getApplication()).getSession().getOperations().keySet());
-
-						// wait for UI thread to do the display
-						runOnUiThread(new Runnable() {
-							@Override
-							public void run() {
-								ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity,android.R.layout.simple_spinner_item,opList);
-								adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-								spinner.setAdapter(adapter);
-						        spinner.setVisibility(0);
-							}
-						});
-					}
-				};
-				new Thread(initTask).start();
-			}
+          startActivity(new Intent(getApplicationContext(),
+                    ConnectSampleActivity.class));
 		}
-		else if (view == cursorBtn) {
+		else if (view == contentUriBtn) {
+            startActivity(new Intent(getApplicationContext(),
+                    SimpleFetchSampleActivty.class));
+		}
+		else if (view == contentProviderBtn) {
             startActivity(new Intent(getApplicationContext(),
                     CursorSampleActivity.class));
 		}

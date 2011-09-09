@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import android.net.Uri;
+
 /**
  * A immutable document. You cannot modify documents. Documents are as they are
  * returned by the server. To modify documents use operations.
@@ -240,5 +242,16 @@ public class Document extends DocRef implements Serializable {
 		return dirtyFields;
 	}
 
+	public Uri getIcon() {
+		return Uri.parse("content://nuxeo/icons" + getString("common:icon"));
+	}
+
+	public Uri getBlob() {
+		return getBlob(0);
+	}
+
+	public Uri getBlob(int idx) {
+		return Uri.parse("content://nuxeo/blobs/" + getId() + "/" + idx);
+	}
 
 }

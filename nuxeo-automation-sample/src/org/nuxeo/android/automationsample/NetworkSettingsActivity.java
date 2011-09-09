@@ -88,4 +88,9 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
 		}
 	}
 
+	@Override
+	protected boolean requireAsyncDataRetrieval() {
+		return false;
+	}
+
 }

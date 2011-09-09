@@ -65,4 +65,9 @@ public class CreateEditActivity extends BaseNuxeoActivity implements View.OnClic
 		this.finish();
 	}
 
+	@Override
+	protected boolean requireAsyncDataRetrieval() {
+		return false;
+	}
+
 }

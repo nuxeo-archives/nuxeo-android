@@ -63,4 +63,9 @@ public class ServerSettingsActivity extends AbstractNuxeoSettingsActivity implem
 		}
 	}
 
+	@Override
+	protected boolean requireAsyncDataRetrieval() {
+		return false;
+	}
+
 }

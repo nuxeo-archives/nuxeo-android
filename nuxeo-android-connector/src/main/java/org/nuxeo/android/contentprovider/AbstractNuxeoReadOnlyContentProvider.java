@@ -133,8 +133,11 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 	}
 
 	@Override
-	public String getType(Uri arg0) {
-		// TODO Auto-generated method stub
+	public String getType(Uri uri) {
+		FileBlob blob = resolveBlob(uri);
+		if (blob!=null) {
+			return blob.getMimeType();
+		}
 		return null;
 	}
 
@@ -144,10 +147,7 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 		return super.openAssetFile(uri, mode);
 	}
 
-	@Override
-	public ParcelFileDescriptor openFile(Uri uri, String mode)
-			throws FileNotFoundException {
-
+	protected FileBlob resolveBlob(Uri uri) {
 		String resourceType = uri.getPathSegments().get(0);
 		FileDownloader downloader = getClient().getFileDownloader();
 
@@ -155,7 +155,7 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 			String subPath = uri.getEncodedPath().toString().replace("/icons", "");
 			FileBlob iconFile = downloader.getIcon(subPath);
 			if (iconFile!=null) {
-				return ParcelFileDescriptor.open(iconFile.getFile(), ParcelFileDescriptor.MODE_READ_ONLY);
+				return iconFile;
 			}
 		}
 		else if (resourceType.equals("blobs")) {
@@ -168,8 +168,19 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 			}
 			FileBlob blob = downloader.getBlob(uid, idx);
 			if (blob!=null) {
-				return ParcelFileDescriptor.open(blob.getFile(), ParcelFileDescriptor.MODE_READ_ONLY);
+				return blob;
 			}
+		}
+		return null;
+	}
+
+	@Override
+	public ParcelFileDescriptor openFile(Uri uri, String mode)
+			throws FileNotFoundException {
+
+		FileBlob blob = resolveBlob(uri);
+		if (blob!=null) {
+			return ParcelFileDescriptor.open(blob.getFile(), ParcelFileDescriptor.MODE_READ_ONLY);
 		}
 		return super.openFile(uri, mode);
 	}

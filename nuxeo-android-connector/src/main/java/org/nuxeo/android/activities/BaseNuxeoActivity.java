@@ -13,7 +13,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-public class BaseNuxeoActivity extends Activity {
+public abstract class BaseNuxeoActivity extends Activity {
 
 	protected NuxeoContext getNuxeoContext() {
 		return NuxeoContext.get(getApplicationContext());
@@ -55,17 +55,44 @@ public class BaseNuxeoActivity extends Activity {
 		}
 	}
 
+	protected abstract boolean requireAsyncDataRetrieval();
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (requireAsyncDataRetrieval()) {
+			runAsyncDataRetrieval();
+		}
+	}
+
 	protected void runAsyncDataRetrieval() {
 		new NuxeoAsyncTask().execute((Void[])null);
 	}
 
+	/**
+	 * Should be overriden to include Async process.
+	 * Returning a null result will cancel the callback
+	 *
+	 * @return
+	 * @throws Exception
+	 */
 	protected Object retrieveNuxeoData() throws Exception {
 		return null;
 	}
 
+	/**
+	 * Called on the UI Thread to notify that async process is started
+	 * This may be used to display a waiting message
+	 */
 	protected void onNuxeoDataRetrievalStarted() {
 	}
 
+	/**
+	 * Called on the UI Thread when the async process is completed.
+	 * The input object will be the output of the retrieveNuxeoData
+	 *
+	 * @param data
+	 */
 	protected void onNuxeoDataRetrieved(Object data) {
 
 	}
