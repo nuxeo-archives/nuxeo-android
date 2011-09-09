@@ -1,6 +1,7 @@
 package org.nuxeo.android.activities;
 
 import org.nuxeo.android.broadcast.NuxeoBroadcastMessages;
+import org.nuxeo.android.cache.blob.BlobStoreManager;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
 import org.nuxeo.ecm.automation.client.cache.DeferredUpdateManager;
 import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
@@ -54,7 +55,7 @@ public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity 
 
 	protected void refreshAll() {
 		updateOfflineDisplay(getNuxeoContext().getNetworkStatus());
-		updateCacheInfoDisplay(getAutomationClient().getResponseCacheManager(), getAutomationClient().getDeferredUpdatetManager());
+		updateCacheInfoDisplay(getAutomationClient().getResponseCacheManager(), getAutomationClient().getDeferredUpdatetManager(), getAutomationClient().getBlobStoreManager());
 	}
 
 	protected void resetNetworkStatusAndRefresh() {
@@ -81,18 +82,22 @@ public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity 
 
 	protected abstract void updateOfflineDisplay(NuxeoNetworkStatus settings);
 
-	protected abstract void updateCacheInfoDisplay(ResponseCacheManager cacheManager, DeferredUpdateManager deferredUpdateManager);
+	protected abstract void updateCacheInfoDisplay(ResponseCacheManager cacheManager, DeferredUpdateManager deferredUpdateManager, BlobStoreManager blobStoreManager);
 
 	protected void flushResponseCache() {
 		getAutomationClient().getResponseCacheManager().clear();
-		updateCacheInfoDisplay(getAutomationClient().getResponseCacheManager(), getAutomationClient().getDeferredUpdatetManager());
+		updateCacheInfoDisplay(getAutomationClient().getResponseCacheManager(), getAutomationClient().getDeferredUpdatetManager(), getAutomationClient().getBlobStoreManager());
 	}
 
 	protected void flushDefferedUpdateManager() {
 		getAutomationClient().getDeferredUpdatetManager().purgePendingUpdates();
-		updateCacheInfoDisplay(getAutomationClient().getResponseCacheManager(), getAutomationClient().getDeferredUpdatetManager());
+		updateCacheInfoDisplay(getAutomationClient().getResponseCacheManager(), getAutomationClient().getDeferredUpdatetManager(), getAutomationClient().getBlobStoreManager());
 	}
 
+	protected void flushBlobStore(String name) {
+		getAutomationClient().getBlobStoreManager().getBlobStore(name).clear();
+		updateCacheInfoDisplay(getAutomationClient().getResponseCacheManager(), getAutomationClient().getDeferredUpdatetManager(), getAutomationClient().getBlobStoreManager());
+	}
 
 	protected void goOffline(boolean offline) {
 		getNuxeoContext().getNetworkStatus().setForceOffline(offline);

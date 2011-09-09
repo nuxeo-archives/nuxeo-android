@@ -1,9 +1,6 @@
 package org.nuxeo.android.automationsample;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.nuxeo.android.context.NuxeoContext;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
@@ -68,7 +64,11 @@ public class HomeSampleActivity extends Activity implements View.OnClickListener
 		}
 		else if (view == contentProviderBtn) {
             startActivity(new Intent(getApplicationContext(),
-                    CursorSampleActivity.class));
+                    ContentProviderSampleActivity.class));
+		}
+		else if (view == docProviderBtn) {
+            startActivity(new Intent(getApplicationContext(),
+                    DocumentProviderSampleActivity.class));
 		}
 		else {
 			// start activity

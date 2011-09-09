@@ -74,10 +74,10 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 			String[] selectionArgs, String sortOrder) {
 
 		List<String> segments = uri.getPathSegments();
-		if (segments.size()<3) {
+		if (segments.size()<1) {
 			return null;
 		}
-		String providerName = segments.get(2);
+		String providerName = segments.get(0);
 		if (ALL_DOCUMENTS.equals(providerName)) {
 			String nxql = buildNXQLQuery(selection, selectionArgs, sortOrder);
 			return buildCursor(nxql, selection, selectionArgs, sortOrder);

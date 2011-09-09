@@ -25,11 +25,13 @@
         <activity android:name="SimpleFetchSampleActivty"
                   android:label="Simple Data retrieval">
         </activity>
-
+        <activity android:name="DocumentProviderSampleActivity"
+                  android:label="Sample for DocumentProviders">
+        </activity>
         <activity android:name="NetworkSettingsActivity"
                   android:label="Nuxeo Offline Settings">
         </activity>
-        <activity android:name=".CursorSampleActivity"
+        <activity android:name="ContentProviderSampleActivity"
                   android:label="Cursor sample">
         </activity>
         <activity android:name=".CreateEditActivity"

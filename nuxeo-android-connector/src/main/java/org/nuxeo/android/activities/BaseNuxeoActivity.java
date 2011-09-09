@@ -118,4 +118,20 @@ public abstract class BaseNuxeoActivity extends Activity {
         }
     }
 
+    protected void startViewerFromBlob(Uri uri) {
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(uri);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        try {
+            startActivity(intent);
+        }
+        catch (android.content.ActivityNotFoundException e) {
+            Toast.makeText(this,
+                "No Application Available to View uri " + uri.toString(),
+                Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }

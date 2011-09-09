@@ -1,6 +1,8 @@
 package org.nuxeo.android.automationsample;
 
 import org.nuxeo.android.activities.AbstractNetworkSettingsActivity;
+import org.nuxeo.android.cache.blob.BlobStore;
+import org.nuxeo.android.cache.blob.BlobStoreManager;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
 import org.nuxeo.ecm.automation.client.cache.DeferredUpdateManager;
 import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
@@ -26,6 +28,10 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
     private TextView pendingCount;
     private Button execPendingButton;
     private Button clearPendingButton;
+    private TextView iconCacheSize;
+    private Button clearIconCache;
+    private TextView blobCacheSize;
+    private Button clearBlobCache;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -50,6 +56,14 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
         clearPendingButton= (Button) findViewById(R.id.clearPendingBtn);
         clearPendingButton.setOnClickListener(this);
 
+        iconCacheSize = (TextView) findViewById(R.id.iconCacheSize);
+        clearIconCache = (Button) findViewById(R.id.clearIconCache);
+        clearIconCache.setOnClickListener(this);
+
+        blobCacheSize = (TextView) findViewById(R.id.blobCacheSize);
+        clearBlobCache = (Button) findViewById(R.id.clearBlobCache);
+        clearBlobCache.setOnClickListener(this);
+
 		super.onCreate(savedInstanceState);
 	}
 
@@ -62,10 +76,16 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
 	}
 
 	@Override
-	protected void updateCacheInfoDisplay(ResponseCacheManager cacheManager, DeferredUpdateManager deferredUpdatetManager) {
+	protected void updateCacheInfoDisplay(ResponseCacheManager cacheManager, DeferredUpdateManager deferredUpdatetManager, BlobStoreManager blobStoreManager) {
 		cacheEntriesCount.setText("Cache contains " + cacheManager.getEntryCount() + " entries");
-		cacheSize.setText("Cache size : " + cacheManager.getSize() + "(bytes)" );
+		cacheSize.setText("Cache size : " + cacheManager.getSize() + "(b)" );
 		pendingCount.setText(deferredUpdatetManager.getPendingRequestCount() + " pending updates");
+
+		BlobStore iconStore = blobStoreManager.getBlobStore("icons");
+		iconCacheSize.setText("Icons cache size : " + iconStore.getSize() + "(b)");
+
+		BlobStore blobStore = blobStoreManager.getBlobStore("blobs");
+		blobCacheSize.setText("Blobs cache size : " + blobStore.getSize() + "(b)");
 	}
 
 	@Override
@@ -85,6 +105,10 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
 			executePendingUpdates();
 		} else if (view == clearPendingButton) {
 			flushDefferedUpdateManager();
+		} else if (view == clearIconCache) {
+			flushBlobStore("icons");
+		} else if (view == clearBlobCache) {
+			flushBlobStore("blobs");
 		}
 	}
 

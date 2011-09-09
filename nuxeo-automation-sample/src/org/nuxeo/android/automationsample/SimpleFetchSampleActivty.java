@@ -96,6 +96,10 @@ public class SimpleFetchSampleActivty extends BaseNuxeoActivity implements View.
 	public void onClick(View srcView) {
 		if (srcView==openBtn) {
 
+			// could use startViewerFromBlob(Uri uri) from base class
+			// but do it by hand for now in order to show usage of Uri
+			// to send Nuxeo data to external applications
+
 			Uri contentUri = selectedDocument.getBlob();
 	        Intent intent = new Intent(Intent.ACTION_VIEW);
 	        intent.setData(contentUri);

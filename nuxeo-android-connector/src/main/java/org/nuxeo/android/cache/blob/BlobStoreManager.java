@@ -46,15 +46,8 @@ public class BlobStoreManager {
 		return targetDir;
 	}
 
-
-
-
-
-
-
-
-
-
-
+	public Map<String, BlobStore> getStores() {
+		return stores;
+	}
 
 }

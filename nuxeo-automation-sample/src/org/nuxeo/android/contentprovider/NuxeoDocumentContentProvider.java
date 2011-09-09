@@ -8,7 +8,7 @@ public class NuxeoDocumentContentProvider extends AbstractNuxeoReadOnlyContentPr
 
 	@Override
 	protected int getPageSize() {
-		return 5;
+		return 10;
 	}
 
 }
