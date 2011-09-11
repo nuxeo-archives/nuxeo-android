@@ -298,6 +298,10 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 		return pages.values();
 	}
 
+	public boolean isFullyLoaded() {
+		return pages.size()==pageCount;
+	}
+
 	public int getCurrentSize() {
 		if (getCurrentPage()==null) {
 			return 0;

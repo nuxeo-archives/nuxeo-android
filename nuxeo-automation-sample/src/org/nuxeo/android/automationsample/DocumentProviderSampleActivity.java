@@ -33,7 +33,7 @@ public class DocumentProviderSampleActivity extends BaseSampleListActivity {
 		mapping.put(R.id.title_entry, "dc:title");
 		mapping.put(R.id.status_entry, "status");
 		mapping.put(R.id.iconView, "iconUri");
-		AbstractDocumentListAdapter adapter = new DocumentsListAdapter(this, documentsList, R.layout.list_item, mapping);
+		AbstractDocumentListAdapter adapter = new DocumentsListAdapter(this, documentsList, R.layout.list_item, mapping, R.layout.list_item_loading);
 		listView.setAdapter(adapter);
 	}
 

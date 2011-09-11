@@ -48,4 +48,6 @@ public interface LazyDocumentsList {
 	public String getPageParameterName();
 
 	public void setName(String name);
+
+	public boolean isFullyLoaded();
 }

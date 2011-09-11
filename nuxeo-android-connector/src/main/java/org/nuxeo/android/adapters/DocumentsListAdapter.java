@@ -15,12 +15,12 @@ public class DocumentsListAdapter extends AbstractDocumentListAdapter implements
 
 	protected final DocumentViewBinder binder;
 
-	public DocumentsListAdapter(Context context, LazyDocumentsList docList, int layoutId, Map<Integer, String> documentAttributesMapping) {
-		this(context, docList, new SimpleDocumentViewBinder(layoutId, documentAttributesMapping));
+	public DocumentsListAdapter(Context context, LazyDocumentsList docList, int layoutId, Map<Integer, String> documentAttributesMapping, Integer loadingLayout) {
+		this(context, docList, new SimpleDocumentViewBinder(layoutId, documentAttributesMapping), loadingLayout);
 	}
 
-	public DocumentsListAdapter(Context context, LazyDocumentsList docList, DocumentViewBinder binder) {
-		super(context, docList);
+	public DocumentsListAdapter(Context context, LazyDocumentsList docList, DocumentViewBinder binder, Integer loadingLayout) {
+		super(context, docList, loadingLayout);
 		this.binder = binder;
 	}
 
