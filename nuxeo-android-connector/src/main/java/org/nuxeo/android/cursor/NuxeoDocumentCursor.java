@@ -44,12 +44,7 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 		} else {
 			docList = new LazyDocumentsListImpl(session, nxql, queryParams, sortOrder, schemas, pageSize);
 		}
-		docList.registerListener(new DocumentsListChangeListener() {
-			@Override
-			public void notifyContentChanged(int page) {
-				onChange(true);
-			}
-		});
+		registerEventListener();
 	}
 
 	public NuxeoDocumentCursor (OperationRequest fetchOperation, String pageParametrerName, boolean updatable) {
@@ -60,13 +55,7 @@ public class NuxeoDocumentCursor extends AbstractCursor {
      	} else {
      		docList = new LazyDocumentsListImpl(fetchOperation, pageParametrerName);
      	}
-
-		docList.registerListener(new DocumentsListChangeListener() {
-			@Override
-			public void notifyContentChanged(int page) {
-				onChange(true);
-			}
-		});
+     	registerEventListener();
 	}
 
 	public NuxeoDocumentCursor (LazyDocumentsList docList) {
@@ -77,14 +66,18 @@ public class NuxeoDocumentCursor extends AbstractCursor {
      	} else {
      		this.updatable=false;
      	}
+     	registerEventListener();
+	}
+
+	protected void registerEventListener() {
 		docList.registerListener(new DocumentsListChangeListener() {
 			@Override
 			public void notifyContentChanged(int page) {
 				onChange(true);
+				requery();
 			}
 		});
 	}
-
 
 
 	@Override
