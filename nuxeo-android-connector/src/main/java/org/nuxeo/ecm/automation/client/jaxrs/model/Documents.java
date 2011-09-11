@@ -19,7 +19,7 @@ package org.nuxeo.ecm.automation.client.jaxrs.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.nuxeo.android.cursor.NuxeoDocumentCursor;
+import org.nuxeo.android.adapters.NuxeoDocumentCursor;
 import org.nuxeo.android.documentprovider.LazyDocumentsList;
 import org.nuxeo.android.documentprovider.LazyDocumentsListImpl;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;

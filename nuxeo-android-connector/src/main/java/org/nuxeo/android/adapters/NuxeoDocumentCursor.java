@@ -1,4 +1,4 @@
-package org.nuxeo.android.cursor;
+package org.nuxeo.android.adapters;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,12 +17,14 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyList;
 
+
+
 import android.database.AbstractCursor;
 import android.os.Bundle;
 
 public class NuxeoDocumentCursor extends AbstractCursor {
 
-	protected static final String[] FIXED_COLUMNS={"_ID","status", "iconUri"};
+	protected static final String[] FIXED_COLUMNS={"_ID",DocumentAttributeResolver.STATUS, DocumentAttributeResolver.ICONURI};
 
 	protected String[] columns;
 
@@ -153,14 +155,9 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 	public String getString(int column) {
 		if (column==0) {
 			return getCurrentIdentifier().toString();
-		} else if (column==1) {
-			return getCurrentDocument().getStatusFlag().toString();
-		} else if (column==2) {
-			String icon = getCurrentDocument().getString("common:icon", "");
-			if (icon==null || "".equals(icon) || "null".equals(icon)) {
-				return "";
-			}
-			return "content://nuxeo" + icon;
+		}
+		if (column < FIXED_COLUMNS.length) {
+			return DocumentAttributeResolver.getString(getCurrentDocument(), FIXED_COLUMNS[column]);
 		}
 		return getCurrentDocument().getString(columns[column]);
 	}

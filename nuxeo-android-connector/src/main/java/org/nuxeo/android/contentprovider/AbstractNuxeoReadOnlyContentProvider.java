@@ -1,13 +1,11 @@
 package org.nuxeo.android.contentprovider;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import org.nuxeo.android.adapters.NuxeoDocumentCursor;
+import org.nuxeo.android.adapters.UUIDMapper;
 import org.nuxeo.android.context.NuxeoContext;
-import org.nuxeo.android.cursor.NuxeoAssetCursor;
-import org.nuxeo.android.cursor.NuxeoDocumentCursor;
-import org.nuxeo.android.cursor.UUIDMapper;
 import org.nuxeo.android.documentprovider.DocumentProvider;
 import org.nuxeo.android.documentprovider.LazyDocumentsList;
 import org.nuxeo.android.download.FileDownloader;
@@ -81,8 +79,6 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 		if (ALL_DOCUMENTS.equals(providerName)) {
 			String nxql = buildNXQLQuery(selection, selectionArgs, sortOrder);
 			return buildCursor(nxql, selection, selectionArgs, sortOrder);
-		} else if (ICONS.equals(providerName)){
-			return new NuxeoAssetCursor(getSession(), getContext());
 		} else {
 			DocumentProvider providerService = ((AndroidAutomationClient)getSession().getClient()).getDocumentProvider();
 			LazyDocumentsList docList = providerService.getReadOnlyProvider(providerName, getSession());

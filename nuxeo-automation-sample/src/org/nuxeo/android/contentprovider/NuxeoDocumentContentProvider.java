@@ -1,6 +1,6 @@
 package org.nuxeo.android.contentprovider;
 
-import org.nuxeo.android.cursor.UUIDMapper;
+import org.nuxeo.android.adapters.UUIDMapper;
 
 public class NuxeoDocumentContentProvider extends AbstractNuxeoReadOnlyContentProvider {
 

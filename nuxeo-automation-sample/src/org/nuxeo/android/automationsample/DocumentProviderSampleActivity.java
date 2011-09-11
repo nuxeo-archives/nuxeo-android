@@ -3,6 +3,7 @@ package org.nuxeo.android.automationsample;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.nuxeo.android.adapters.AbstractDocumentListAdapter;
 import org.nuxeo.android.adapters.DocumentsListAdapter;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
@@ -32,7 +33,7 @@ public class DocumentProviderSampleActivity extends BaseSampleListActivity {
 		mapping.put(R.id.title_entry, "dc:title");
 		mapping.put(R.id.status_entry, "status");
 		mapping.put(R.id.iconView, "iconUri");
-		DocumentsListAdapter adapter = new DocumentsListAdapter(this, documentsList, R.layout.list_item, mapping);
+		AbstractDocumentListAdapter adapter = new DocumentsListAdapter(this, documentsList, R.layout.list_item, mapping);
 		listView.setAdapter(adapter);
 	}
 
