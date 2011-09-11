@@ -92,10 +92,7 @@ public interface AutomationClient {
      * You should register adapters at initialization time. An adapter type can
      * be bound to a single adaptable type.
      *
-     * @param typeToAdapt
-     * @param adapterType
      */
-    // FIXME: this javadoc doesn't correspond to the method signature.
     void registerAdapter(AdapterFactory<?> factory);
 
     /**

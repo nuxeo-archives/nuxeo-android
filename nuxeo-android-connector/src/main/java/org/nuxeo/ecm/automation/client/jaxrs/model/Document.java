@@ -243,6 +243,10 @@ public class Document extends DocRef implements Serializable {
 	}
 
 	public Uri getIcon() {
+		String icon = getString("common:icon");
+		if (icon==null || "null".equals(icon)) {
+			return null;
+		}
 		return Uri.parse("content://nuxeo/icons" + getString("common:icon"));
 	}
 

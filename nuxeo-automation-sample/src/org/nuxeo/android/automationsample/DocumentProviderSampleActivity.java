@@ -1,15 +1,17 @@
 package org.nuxeo.android.automationsample;
 
-import org.nuxeo.android.cursor.NuxeoDocumentCursor;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.nuxeo.android.adapters.DocumentsListAdapter;
+import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
-import android.widget.SimpleCursorAdapter;
-
 public class DocumentProviderSampleActivity extends BaseSampleListActivity {
 
-	protected NuxeoDocumentCursor documentCursor;
+	protected LazyUpdatableDocumentsList documentsList;
 
 	// Executed on the background thread to avoid freezing the UI
 	@Override
@@ -25,16 +27,17 @@ public class DocumentProviderSampleActivity extends BaseSampleListActivity {
 		super.onNuxeoDataRetrieved(data);
 
 		Documents docs = (Documents) data;
-		documentCursor = docs.asCursor();
-		final String[] columns = new String[] { "_ID", "dc:title", "status", "iconUri" };
-		final int[] to = new int[] { R.id.id_entry, R.id.title_entry, R.id.status_entry, R.id.iconView };
-		SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this,
-				R.layout.list_item, documentCursor, columns, to);
-		listView.setAdapter(mAdapter);
+		documentsList = docs.asUpdatableDocumentsList();
+		Map<Integer, String> mapping = new HashMap<Integer,String>();
+		mapping.put(R.id.title_entry, "dc:title");
+		mapping.put(R.id.status_entry, "status");
+		mapping.put(R.id.iconView, "iconUri");
+		DocumentsListAdapter adapter = new DocumentsListAdapter(this, documentsList, R.layout.list_item, mapping);
+		listView.setAdapter(adapter);
 	}
 
 	protected Document getContextMenuDocument(int selectedPosition) {
-		return documentCursor.getDocument(selectedPosition);
+		return documentsList.getDocument(selectedPosition);
 	}
 
 	protected Document createNewDocument() {
@@ -42,16 +45,15 @@ public class DocumentProviderSampleActivity extends BaseSampleListActivity {
 	}
 
 	protected void onDocumentCreate(Document newDocument) {
-		documentCursor.getUpdatableDocumentsList().createDocument(newDocument);
+		documentsList.createDocument(newDocument);
 	}
 
 	protected void onDocumentUpdate(Document editedDocument) {
-		documentCursor.getUpdatableDocumentsList()
-		.updateDocument(editedDocument);
+		documentsList.updateDocument(editedDocument);
 	}
 
 	protected void doRefresh() {
-		documentCursor.getDocumentsList().refreshAll();
+		documentsList.refreshAll();
 	}
 
 }

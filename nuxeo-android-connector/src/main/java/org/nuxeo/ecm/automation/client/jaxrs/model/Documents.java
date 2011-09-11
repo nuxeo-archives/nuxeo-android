@@ -20,6 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.nuxeo.android.cursor.NuxeoDocumentCursor;
+import org.nuxeo.android.documentprovider.LazyDocumentsList;
+import org.nuxeo.android.documentprovider.LazyDocumentsListImpl;
+import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
+import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsListImpl;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 
 
@@ -152,8 +156,12 @@ public class Documents extends ArrayList<Document> implements OperationInput {
 		return cursor;
 	}
 
-	public NuxeoDocumentCursor asUpdatableCursor() {
-		return asCursor("page");
+	public LazyDocumentsList asDocumentsList() {
+		return new LazyDocumentsListImpl(sourceRequest, "page");
+	}
+
+	public LazyUpdatableDocumentsList asUpdatableDocumentsList() {
+  	    return new LazyUpdatableDocumentsListImpl(sourceRequest, "page");
 	}
 
 	public void removeById(String uid) {
