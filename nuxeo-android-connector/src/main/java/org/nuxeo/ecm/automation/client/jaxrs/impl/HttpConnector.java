@@ -30,7 +30,6 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
@@ -47,7 +46,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.spi.Response;
  */
 public class HttpConnector implements Connector {
 
-    protected final AbstractHttpClient http;
+    protected final HttpClient http;
 
     protected final HttpContext ctx;
 
@@ -59,7 +58,7 @@ public class HttpConnector implements Connector {
 
     public HttpConnector(HttpClient http, HttpContext ctx) {
         ctx.setAttribute(ClientContext.COOKIE_STORE, new BasicCookieStore());
-        this.http = (AbstractHttpClient) http;
+        this.http = http;
         this.ctx = ctx;
     }
 

@@ -36,6 +36,8 @@ import org.nuxeo.ecm.automation.client.jaxrs.RequestInterceptor;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.auth.BasicAuthInterceptor;
 
+import android.util.Log;
+
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  * @author tiry
@@ -138,7 +140,7 @@ public abstract class AbstractAutomationClient implements AutomationClient {
     }
 
     public Session getSession(final String username, final String password) {
-        setRequestInterceptor(new BasicAuthInterceptor(username, password));
+        setBasicAuth(username, password);
         Session session=null;
         try {
             session = getSession();
@@ -148,6 +150,7 @@ public abstract class AbstractAutomationClient implements AutomationClient {
             if (registry==null) {
                 registry = connect(connector);
             }
+            Log.e(this.getClass().getSimpleName(), "WARN : using Disconnected Session !!!", t);
             session = new DisconnectedSession(this, connector, fakeLoginInfo);
         }
         return session;

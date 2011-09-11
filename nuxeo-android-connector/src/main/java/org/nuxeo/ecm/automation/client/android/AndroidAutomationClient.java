@@ -1,5 +1,10 @@
 package org.nuxeo.ecm.automation.client.android;
 
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpProtocolParams;
 import org.nuxeo.android.cache.blob.BlobStoreManager;
 import org.nuxeo.android.cache.sql.SQLStateManager;
 import org.nuxeo.android.config.NuxeoServerConfig;
@@ -20,6 +25,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpConnector;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.Connector;
 
 import android.content.Context;
+import android.net.http.AndroidHttpClient;
 
 public class AndroidAutomationClient extends HttpAutomationClient {
 
@@ -47,7 +53,11 @@ public class AndroidAutomationClient extends HttpAutomationClient {
 
     public AndroidAutomationClient(String url, Context androidContext, SQLStateManager sqlStateManager, BlobStoreManager blobStoreManager, NuxeoNetworkStatus offlineSettings, NuxeoServerConfig serverConfig) {
         super(url);
-        // XXX this.http = AndroidHttpClient.newInstance(userAgent, context);
+        //this.http = new DefaultHttpClient(new ThreadSafeClientConnManager(new BasicHttpParams(), new SchemeRegistry()), new BasicHttpParams());
+        this.http = AndroidHttpClient.newInstance("Nuxeo Android Client", null);
+        // avoid problems when sever returns a http code 100 ...
+        HttpProtocolParams.setUseExpectContinue(http.getParams(), false);
+
         this.sqlStateManager=sqlStateManager;
         this.blobStoreManager=blobStoreManager;
         this.responseCacheManager = new AndroidResponseCacheManager(sqlStateManager,blobStoreManager);

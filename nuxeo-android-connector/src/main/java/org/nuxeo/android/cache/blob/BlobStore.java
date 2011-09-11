@@ -30,12 +30,18 @@ public class BlobStore {
 			is.close();
 			out.close();
 			Properties props = new Properties();
-			props.put("filename", fileName);
-			props.put("mimetype", mimeType);
-			props.store(new FileOutputStream(infoFile), "Stores meta-infos for " + key);
+			if (fileName!=null) {
+				props.put("filename", fileName);
+			}
+			if (mimeType!=null) {
+				props.put("mimetype", mimeType);
+			}
+			if (props.size()>0) {
+				props.store(new FileOutputStream(infoFile), "Stores meta-infos for " + key);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
+			return streamFile;
 		}
 		return streamFile;
 	}

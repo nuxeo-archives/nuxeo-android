@@ -13,6 +13,8 @@ import org.nuxeo.ecm.automation.client.cache.ResponseCacheEntry;
 import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 
+import android.util.Log;
+
 public class AndroidResponseCacheManager implements ResponseCacheManager {
 
 	protected final SQLStateManager sqlStateManager;
@@ -36,6 +38,10 @@ public class AndroidResponseCacheManager implements ResponseCacheManager {
 
 		getTableWrapper().storeCacheEntry(key, entry);
 		File cachedStream = storeStream(key, entry.getResponseStream());
+		if (cachedStream == null) {
+			Log.e(AndroidResponseCacheManager.class.getSimpleName(), "Response stream is null !!!!!");
+			return null;
+		}
 		try {
 			return new FileInputStream(cachedStream);
 		} catch (FileNotFoundException e) {

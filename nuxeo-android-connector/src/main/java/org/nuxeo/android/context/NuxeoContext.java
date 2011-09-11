@@ -8,6 +8,7 @@ import org.nuxeo.android.network.NetworkStatusBroadCastReceiver;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
 import org.nuxeo.android.repository.DocumentManager;
 import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
+import org.nuxeo.ecm.automation.client.jaxrs.DisconnectedSession;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 
 import android.content.BroadcastReceiver;
@@ -44,7 +45,7 @@ public class NuxeoContext extends BroadcastReceiver {
 			NuxeoContextProvider nxApp = (NuxeoContextProvider) context;
 			return nxApp.getNuxeoContext();
 		} else {
-			throw new UnsupportedOperationException("Your application Context should implement NuxeoContextProvider");
+			throw new UnsupportedOperationException("Your application Context should implement NuxeoContextProvider !");
 		}
 	}
 
@@ -64,6 +65,7 @@ public class NuxeoContext extends BroadcastReceiver {
 		filter.addAction(NuxeoBroadcastMessages.NUXEO_SETTINGS_CHANGED);
 		filter.addAction(NuxeoBroadcastMessages.NUXEO_SERVER_CONNECTIVITY_CHANGED);
 		androidContext.registerReceiver(this, filter);
+		getNuxeoClient();
 	}
 
 	public NuxeoServerConfig getServerConfig() {
@@ -75,9 +77,11 @@ public class NuxeoContext extends BroadcastReceiver {
 	}
 
 	public synchronized Session getSession() {
+		if (nuxeoSession!=null && nuxeoSession instanceof DisconnectedSession && networkStatus.canUseNetwork()) {
+			nuxeoSession = null;
+		}
 		if (nuxeoSession==null) {
-			nuxeoClient = new AndroidAutomationClient(serverConfig.getAutomationUrl(), androidContext,sqlStateManager,blobStore,networkStatus,serverConfig);
-			nuxeoSession = nuxeoClient.getSession(
+			nuxeoSession = getNuxeoClient().getSession(
 					serverConfig.getLogin(),
 					serverConfig.getPassword());
 		}
@@ -108,6 +112,9 @@ public class NuxeoContext extends BroadcastReceiver {
 	}
 
 	public AndroidAutomationClient getNuxeoClient() {
+		if (nuxeoClient==null) {
+			nuxeoClient = new AndroidAutomationClient(serverConfig.getAutomationUrl(), androidContext,sqlStateManager,blobStore,networkStatus,serverConfig);
+		}
 		return nuxeoClient;
 	}
 }

@@ -64,7 +64,9 @@ public class CachedHttpConnector extends HttpConnector implements Connector {
             }
 
         } catch (RemoteException e) {
-        	offlineSettings.setNetworkReachable(false);
+        	if (e.getStatus()>=500) {
+        		offlineSettings.setNetworkReachable(false);
+        	}
             if (cachedEntry!=null) {
                 try {
                     return getResultFromCacheEntry(request, cachedEntry);

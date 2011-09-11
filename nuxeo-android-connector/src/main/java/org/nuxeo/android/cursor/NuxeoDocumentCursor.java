@@ -164,7 +164,7 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 			return getCurrentDocument().getStatusFlag().toString();
 		} else if (column==2) {
 			String icon = getCurrentDocument().getString("common:icon", "");
-			if (icon==null || "".equals(icon)) {
+			if (icon==null || "".equals(icon) || "null".equals(icon)) {
 				return "";
 			}
 			return "content://nuxeo" + icon;
