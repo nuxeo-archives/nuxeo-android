@@ -15,7 +15,7 @@ public class TextWidgetWrapper implements AndroidWidgetWrapper {
 	public void apply(View nativeWidget, LayoutMode mode, Document doc,
 			String attributeName) {
 		TextView widget = (TextView) nativeWidget;
-		DocumentAttributeResolver.put(doc, attributeName, widget.getText());
+		DocumentAttributeResolver.put(doc, attributeName, widget.getText().toString());
 	}
 
 	@Override

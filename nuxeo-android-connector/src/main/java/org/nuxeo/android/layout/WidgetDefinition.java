@@ -1,6 +1,5 @@
 package org.nuxeo.android.layout;
 
-import org.nuxeo.android.adapters.DocumentAttributeResolver;
 import org.nuxeo.android.layout.widgets.AndroidWidgetMapper;
 import org.nuxeo.android.layout.widgets.AndroidWidgetWrapper;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;

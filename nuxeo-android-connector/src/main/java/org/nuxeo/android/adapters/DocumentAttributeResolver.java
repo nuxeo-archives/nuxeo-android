@@ -32,6 +32,7 @@ public class DocumentAttributeResolver {
 
 	public static void put(Document doc, String attributeName, Object value) {
 		doc.getProperties().map().put(attributeName, value);
+		doc.getDirtyFields().add(attributeName);
 	}
 
 	public static String getString(Document doc, String attributeName) {

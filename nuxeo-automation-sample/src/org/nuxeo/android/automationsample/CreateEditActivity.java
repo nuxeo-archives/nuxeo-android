@@ -47,6 +47,8 @@ public class CreateEditActivity extends BaseNuxeoActivity implements View.OnClic
 
 	protected ScrollView layoutContainer;
 
+	protected LayoutDefinition layoutDef;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -59,20 +61,15 @@ public class CreateEditActivity extends BaseNuxeoActivity implements View.OnClic
 
 		layoutContainer = (ScrollView) findViewById(R.id.layoutContainer);
 
-		LayoutDefinition layoutDef = LayoutDefinition.fromJSON(StaticLayouts.DEFAULT_LAYOUT);
+		layoutDef = LayoutDefinition.fromJSON(StaticLayouts.DEFAULT_LAYOUT);
 		layoutDef.buildLayout(this, getCurrentDocument(), layoutContainer, LayoutMode.EDIT);
 	}
 
 	@Override
 	public void onClick(View arg0) {
 		Document doc = getCurrentDocument();
-		if (isEditMode()) {
-			doc.set("dc:title", doc.getTitle() + "--Edited--");
-			setResult(RESULT_OK, new Intent().putExtra(DOCUMENT, doc));
-		} else {
-			doc.set("dc:title", "YoHooo");
-			setResult(RESULT_OK, new Intent().putExtra(DOCUMENT, doc));
-		}
+		layoutDef.apply(doc);
+		setResult(RESULT_OK, new Intent().putExtra(DOCUMENT, doc));
 		this.finish();
 	}
 
