@@ -6,7 +6,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 public class DocumentAttributeResolver {
 
-	public static final String ID = "id";
+	public static final String ID = "uuid";
 	public static final String NAME = "name";
 	public static final String PATH = "path";
 	public static final String ICONURI = "iconUri";
@@ -40,8 +40,8 @@ public class DocumentAttributeResolver {
 	public static String getString(Document doc, String attributeName) {
 
 		Object val = get(doc, attributeName);
-		if (val==null) {
-			return null;
+		if (val==null || "null".equals(val)) {
+			return "";
 		}
 		return val.toString();
 	}
