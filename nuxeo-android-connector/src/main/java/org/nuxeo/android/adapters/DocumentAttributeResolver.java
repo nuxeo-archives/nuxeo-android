@@ -30,6 +30,10 @@ public class DocumentAttributeResolver {
 		return doc.getProperties().map().get(attributeName);
 	}
 
+	public static void put(Document doc, String attributeName, Object value) {
+		doc.getProperties().map().put(attributeName, value);
+	}
+
 	public static String getString(Document doc, String attributeName) {
 
 		Object val = get(doc, attributeName);
@@ -38,5 +42,6 @@ public class DocumentAttributeResolver {
 		}
 		return val.toString();
 	}
+
 
 }

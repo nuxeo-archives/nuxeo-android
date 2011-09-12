@@ -2,7 +2,7 @@ package org.nuxeo.ecm.automation.client.jaxrs.model;
 
 public enum DocumentStatus {
 
-	UPDATED("updated"), NEW("new"), SYNCHRONIZED("");
+	UPDATED("updated"), NEW("new"), SYNCHRONIZED(""), CONFLICT("conflict");
 
 	private final String value;
 
