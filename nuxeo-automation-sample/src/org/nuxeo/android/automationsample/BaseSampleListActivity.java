@@ -4,6 +4,7 @@ import org.nuxeo.android.activities.BaseNuxeoActivity;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Gravity;
@@ -16,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Simple base class for sharing code between samples and hiding as much as
@@ -33,6 +35,10 @@ public abstract class BaseSampleListActivity extends BaseNuxeoActivity
 
 	protected static final int EDIT_DOCUMENT = 0;
 	protected static final int CREATE_DOCUMENT = 1;
+
+	protected static final int CTXMNU_VIEW_DOCUMENT = 0;
+	protected static final int CTXMNU_EDIT_DOCUMENT = 1;
+	protected static final int CTXMNU_VIEW_ATTACHEMENT = 2;
 
 	public BaseSampleListActivity() {
 		super();
@@ -74,8 +80,9 @@ public abstract class BaseSampleListActivity extends BaseNuxeoActivity
 		if (v.getId() == listView.getId()) {
 			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 			menu.setHeaderTitle("Menu for entry" + info.position);
-			menu.add(Menu.NONE, 0, 0, "View");
-			menu.add(Menu.NONE, 1, 1, "Edit");
+			menu.add(Menu.NONE, CTXMNU_VIEW_DOCUMENT, 0, "View");
+			menu.add(Menu.NONE, CTXMNU_EDIT_DOCUMENT, 1, "Edit");
+			menu.add(Menu.NONE, CTXMNU_VIEW_ATTACHEMENT, 2, "View attachement");
 		}
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
@@ -144,16 +151,25 @@ public abstract class BaseSampleListActivity extends BaseNuxeoActivity
 		int selectedPosition = info.position;
 		Document doc = getContextMenuDocument(selectedPosition);
 
-		if (item.getItemId() == 0) {
+		if (item.getItemId() == CTXMNU_VIEW_DOCUMENT) {
 			// VIEW
-
 			return true;
-		} else if (item.getItemId() == 1) {
-
+		} else if (item.getItemId() == CTXMNU_EDIT_DOCUMENT) {
+			// EDIT
 			startActivityForResult(new Intent(this, CreateEditActivity.class)
 					.putExtra(CreateEditActivity.DOCUMENT, doc).putExtra(
 							CreateEditActivity.MODE, CreateEditActivity.EDIT),
 					EDIT_DOCUMENT);
+			return true;
+		} else if (item.getItemId() == CTXMNU_VIEW_ATTACHEMENT) {
+			Uri blobUri = doc.getBlob();
+			if (blobUri == null) {
+				Toast.makeText(this,
+		                "No Attachement available ",
+		                Toast.LENGTH_SHORT).show();
+			} else {
+				startViewerFromBlob(blobUri);
+			}
 			return true;
 		} else {
 			return super.onContextItemSelected(item);
