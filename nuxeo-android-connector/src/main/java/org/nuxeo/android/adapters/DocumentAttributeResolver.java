@@ -1,5 +1,7 @@
 package org.nuxeo.android.adapters;
 
+import java.util.Date;
+
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 public class DocumentAttributeResolver {
@@ -44,5 +46,7 @@ public class DocumentAttributeResolver {
 		return val.toString();
 	}
 
-
+	public static Date getDate(Document doc, String attributeName) {
+		return doc.getDate(attributeName);
+	}
 }

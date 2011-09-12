@@ -46,19 +46,20 @@ public class WidgetDefinition {
 
 	public void build(Context ctx, Document doc, ViewGroup parent, LayoutMode mode) {
 		this.mode=mode;
-		LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 1f);
+		LayoutParams paramsL = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f);
+		LayoutParams paramsW = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f);
 
 		if (label!=null) {
 			TextView labelW = new TextView(ctx);
 			labelW.setText(label + " :");
-			labelW.setLayoutParams(params);
+			labelW.setLayoutParams(paramsL);
 			parent.addView(labelW);
 		}
 
 		AndroidWidgetWrapper wrapper = AndroidWidgetMapper.getInstance().getWidgetWrapper(type);
 		if (wrapper!=null) {
 			view = wrapper.build(ctx, mode, doc, attributeName);
-			view.setLayoutParams(params);
+			view.setLayoutParams(paramsW);
 		}
 
 		if (view!=null) {

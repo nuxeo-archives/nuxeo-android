@@ -80,7 +80,7 @@ public class PropertiesHelper {
     }
 
     public static Date getDate(Object v, Date defValue) {
-        if (v == null) {
+        if (v == null || "null".equals(v)) {
             return defValue;
         }
         if (v.getClass() == String.class) {

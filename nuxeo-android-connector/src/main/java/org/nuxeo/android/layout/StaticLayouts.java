@@ -5,11 +5,13 @@ public class StaticLayouts {
 
 	public final static String DEFAULT_LAYOUT = "{ " + LayoutJSONParser.WIDGETS_DEF + "= ["
 		+ "{name='title', type='text', attributeName='dc:title', label='Title'},"
-		+ "{name='description', type='text', attributeName='dc:description', label='Description'}"
+		+ "{name='description', type='text', attributeName='dc:description', label='Description'},"
+		+ "{name='valid', type='date', attributeName='dc:valid', label='Validity'}"
 		+ "], "
 		+ " " + LayoutJSONParser.ROWS_DEF + "= ["
 		+ "['title'],"
-		+ "['description']"
+		+ "['description'],"
+		+ "['valid']"
 		+ "]}";
 
 	public final static String DEFAULT_LAYOUT_WITYH_DATE = "{ " + LayoutJSONParser.WIDGETS_DEF + "= ["
