@@ -34,7 +34,7 @@
         <activity android:name="ContentProviderSampleActivity"
                   android:label="Cursor sample">
         </activity>
-        <activity android:name=".CreateEditActivity"
+        <activity android:name="DocumentLayoutActivity"
                   android:label="CreateEditActivity">
         </activity>
         <activity android:name=".ServerSettingsActivity"

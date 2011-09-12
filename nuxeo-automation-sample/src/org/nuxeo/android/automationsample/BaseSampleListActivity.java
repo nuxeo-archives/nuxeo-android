@@ -1,6 +1,7 @@
 package org.nuxeo.android.automationsample;
 
 import org.nuxeo.android.activities.BaseNuxeoActivity;
+import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.content.Intent;
@@ -108,9 +109,9 @@ public abstract class BaseSampleListActivity extends BaseNuxeoActivity
 		case R.id.itemNew:
 			Document newDoc = createNewDocument();
 			startActivityForResult(
-					new Intent(this, CreateEditActivity.class).putExtra(
-							CreateEditActivity.DOCUMENT, newDoc).putExtra(
-							CreateEditActivity.MODE, CreateEditActivity.CREATE),
+					new Intent(this, DocumentLayoutActivity.class).putExtra(
+							DocumentLayoutActivity.DOCUMENT, newDoc).putExtra(
+							DocumentLayoutActivity.MODE, LayoutMode.CREATE),
 					CREATE_DOCUMENT);
 			break;
 		}
@@ -126,15 +127,15 @@ public abstract class BaseSampleListActivity extends BaseNuxeoActivity
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == EDIT_DOCUMENT && resultCode == RESULT_OK) {
-			if (data.hasExtra(CreateEditActivity.DOCUMENT)) {
+			if (data.hasExtra(DocumentLayoutActivity.DOCUMENT)) {
 				Document editedDocument = (Document) data.getExtras().get(
-						CreateEditActivity.DOCUMENT);
+						DocumentLayoutActivity.DOCUMENT);
 				onDocumentUpdate(editedDocument);
 			}
 		} else if (requestCode == CREATE_DOCUMENT && resultCode == RESULT_OK) {
-			if (data.hasExtra(CreateEditActivity.DOCUMENT)) {
+			if (data.hasExtra(DocumentLayoutActivity.DOCUMENT)) {
 				Document newDocument = (Document) data.getExtras().get(
-						CreateEditActivity.DOCUMENT);
+						DocumentLayoutActivity.DOCUMENT);
 				onDocumentCreate(newDocument);
 			}
 		}
@@ -152,13 +153,14 @@ public abstract class BaseSampleListActivity extends BaseNuxeoActivity
 		Document doc = getContextMenuDocument(selectedPosition);
 
 		if (item.getItemId() == CTXMNU_VIEW_DOCUMENT) {
-			// VIEW
+			startActivity(new Intent(this, DocumentLayoutActivity.class)
+			.putExtra(DocumentLayoutActivity.DOCUMENT, doc).putExtra(
+					DocumentLayoutActivity.MODE, LayoutMode.VIEW));
 			return true;
 		} else if (item.getItemId() == CTXMNU_EDIT_DOCUMENT) {
-			// EDIT
-			startActivityForResult(new Intent(this, CreateEditActivity.class)
-					.putExtra(CreateEditActivity.DOCUMENT, doc).putExtra(
-							CreateEditActivity.MODE, CreateEditActivity.EDIT),
+			startActivityForResult(new Intent(this, DocumentLayoutActivity.class)
+					.putExtra(DocumentLayoutActivity.DOCUMENT, doc).putExtra(
+							DocumentLayoutActivity.MODE, LayoutMode.EDIT),
 					EDIT_DOCUMENT);
 			return true;
 		} else if (item.getItemId() == CTXMNU_VIEW_ATTACHEMENT) {

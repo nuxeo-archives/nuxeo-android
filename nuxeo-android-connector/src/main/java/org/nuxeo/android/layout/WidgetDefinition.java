@@ -1,5 +1,6 @@
 package org.nuxeo.android.layout;
 
+import org.nuxeo.android.layout.selectOptions.SelectOptions;
 import org.nuxeo.android.layout.widgets.AndroidWidgetMapper;
 import org.nuxeo.android.layout.widgets.AndroidWidgetWrapper;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
@@ -24,6 +25,8 @@ public class WidgetDefinition {
 	protected View view;
 
 	protected LayoutMode mode;
+
+	protected SelectOptions selectOptions;
 
 	public WidgetDefinition(String name, String type, String label, String attributeName) {
 		this.name=name;
@@ -58,7 +61,7 @@ public class WidgetDefinition {
 
 		AndroidWidgetWrapper wrapper = AndroidWidgetMapper.getInstance().getWidgetWrapper(type);
 		if (wrapper!=null) {
-			view = wrapper.build(ctx, mode, doc, attributeName);
+			view = wrapper.build(ctx, mode, doc, attributeName, this);
 			view.setLayoutParams(paramsW);
 		}
 
@@ -71,8 +74,17 @@ public class WidgetDefinition {
 		if (view!=null) {
 			AndroidWidgetWrapper wrapper = AndroidWidgetMapper.getInstance().getWidgetWrapper(type);
 			if (wrapper!=null) {
-				wrapper.apply(view, mode, doc, attributeName);
+				wrapper.apply(view, mode, doc, attributeName, this);
 			}
 		}
 	}
+
+	public SelectOptions getSelectOptions() {
+		return selectOptions;
+	}
+
+	public void setSelectOptions(SelectOptions selectOptions) {
+		this.selectOptions = selectOptions;
+	}
+
 }

@@ -1,10 +1,12 @@
 package org.nuxeo.android.layout.widgets;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 import org.nuxeo.android.adapters.DocumentAttributeResolver;
 import org.nuxeo.android.layout.LayoutMode;
+import org.nuxeo.android.layout.WidgetDefinition;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.content.Context;
@@ -14,9 +16,11 @@ import android.widget.TextView;
 
 public class DateWidgetWrapper implements AndroidWidgetWrapper {
 
+	protected static SimpleDateFormat fmt = new SimpleDateFormat("yy/MM/dd HH:mm:ss");
+
 	@Override
 	public void apply(View nativeWidget, LayoutMode mode, Document doc,
-			String attributeName) {
+			String attributeName, WidgetDefinition widgetDef) {
 		if (mode!=LayoutMode.VIEW) {
 			DatePicker widget = (DatePicker) nativeWidget;
 			Date date = (Date) widget.getTag();
@@ -28,11 +32,16 @@ public class DateWidgetWrapper implements AndroidWidgetWrapper {
 
 	@Override
 	public View build(Context ctx, LayoutMode mode, Document doc,
-			String attributeName) {
+			String attributeName, WidgetDefinition widgetDef) {
 
 		if (mode==LayoutMode.VIEW) {
 			TextView widget = new TextView(ctx);
-			widget.setText(DocumentAttributeResolver.getString(doc, attributeName));
+			Date date = DocumentAttributeResolver.getDate(doc, attributeName);
+			if (date==null) {
+				widget.setText("");
+			} else {
+				widget.setText(fmt.format(date));
+			}
 			return widget;
 		} else {
 			DatePicker widget = new DatePicker(ctx);

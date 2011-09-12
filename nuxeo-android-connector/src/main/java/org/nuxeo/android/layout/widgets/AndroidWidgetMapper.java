@@ -27,6 +27,7 @@ public class AndroidWidgetMapper {
 	protected void registerDefaultWrappers() {
 		registerWidgetWrapper("text", new TextWidgetWrapper());
 		registerWidgetWrapper("date", new DateWidgetWrapper());
+		registerWidgetWrapper("selectOne", new SpinnerWidgetWrapper());
 	}
 
 	public AndroidWidgetWrapper getWidgetWrapper(String type) {

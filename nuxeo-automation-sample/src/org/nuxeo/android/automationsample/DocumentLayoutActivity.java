@@ -13,25 +13,23 @@ import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class CreateEditActivity extends BaseNuxeoActivity implements View.OnClickListener {
+public class DocumentLayoutActivity extends BaseNuxeoActivity implements View.OnClickListener {
 
 	public static final String DOCUMENT = "document";
 	public static final String MODE = "mode";
-	public static final String CREATE = "create";
-	public static final String EDIT = "edit";
 
 	protected Document currentDocument;
 
-	protected String getMode() {
-		return getIntent().getExtras().getString(MODE);
+	protected LayoutMode getMode() {
+		return (LayoutMode) getIntent().getExtras().get(MODE);
 	}
 
 	protected boolean isCreateMode() {
-		return CREATE.equals(getMode());
+		return getMode()==LayoutMode.CREATE;
 	}
 
 	protected boolean isEditMode() {
-		return EDIT.equals(getMode());
+		return getMode()==LayoutMode.EDIT;
 	}
 
 	protected Document getCurrentDocument() {
@@ -43,7 +41,7 @@ public class CreateEditActivity extends BaseNuxeoActivity implements View.OnClic
 
 	protected TextView title;
 
-	protected Button updateBtn;
+	protected Button saveBtn;
 
 	protected ScrollView layoutContainer;
 
@@ -56,13 +54,24 @@ public class CreateEditActivity extends BaseNuxeoActivity implements View.OnClic
 		setContentView(R.layout.createeditlayout);
 		title = (TextView) findViewById(R.id.currentDocTitle);
 		title.setText(getCurrentDocument().getTitle());
-		updateBtn = (Button) findViewById(R.id.updateDocument);
-		updateBtn.setOnClickListener(this);
+		saveBtn = (Button) findViewById(R.id.updateDocument);
+		saveBtn.setOnClickListener(this);
 
 		layoutContainer = (ScrollView) findViewById(R.id.layoutContainer);
 
 		layoutDef = LayoutDefinition.fromJSON(StaticLayouts.DEFAULT_LAYOUT);
-		layoutDef.buildLayout(this, getCurrentDocument(), layoutContainer, LayoutMode.EDIT);
+		layoutDef.buildLayout(this, getCurrentDocument(), layoutContainer, getMode());
+	}
+
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (getMode()==LayoutMode.VIEW) {
+			saveBtn.setVisibility(View.INVISIBLE);
+		} else {
+			saveBtn.setVisibility(View.VISIBLE);
+		}
 	}
 
 	@Override
