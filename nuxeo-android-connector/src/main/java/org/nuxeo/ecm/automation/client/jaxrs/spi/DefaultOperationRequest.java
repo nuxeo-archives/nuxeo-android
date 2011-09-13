@@ -31,6 +31,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.DateUtils;
 import org.nuxeo.ecm.automation.client.jaxrs.model.OperationDocumentation;
 import org.nuxeo.ecm.automation.client.jaxrs.model.OperationInput;
 import org.nuxeo.ecm.automation.client.jaxrs.model.OperationDocumentation.Param;
+import org.nuxeo.ecm.automation.client.jaxrs.util.ParamsHelper;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
@@ -162,11 +163,18 @@ public class DefaultOperationRequest implements OperationRequest {
         // IllegalArgumentException("Invalid parameter type:
         // "+value.getParamType());
         // }
+        String encodedValue = null;
         if (value.getClass() == Date.class) {
-            params.put(key, DateUtils.formatDate((Date) value));
-        } else {
-            params.put(key, value.toString());
+            encodedValue = ParamsHelper.encodeParam((Date) value);
         }
+        else if (value instanceof String[]) {
+        	encodedValue = ParamsHelper.encodeParam((String[])value);
+        }
+        else {
+        	encodedValue = value.toString();
+        }
+        params.put(key, encodedValue);
+
         return this;
     }
 

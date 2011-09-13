@@ -65,7 +65,11 @@ implements View.OnClickListener, OnItemClickListener {
 		// register an operation
 		String providerName2 = "Get Worklist operation";
 		if (!docProvider.isRegistred(providerName2)) {
+			// create the fetch operation
 			OperationRequest getWorklistOperation = getNuxeoSession().newRequest("Seam.FetchFromWorklist");
+			// define what properties are needed
+			getWorklistOperation.setHeader("X-NXDocumentProperties", "common,dublincore");
+			// register provider from OperationRequest
 			docProvider.registerNamedProvider(providerName2, getWorklistOperation , null, false, false);
 		}
 

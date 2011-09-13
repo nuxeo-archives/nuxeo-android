@@ -199,7 +199,9 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 				return docs;
 			} else {
 				OperationRequest asyncRequest = fetchOperation.clone();
-				asyncRequest.set(pageParameterName, page);
+				if (pageParameterName!=null) {
+					asyncRequest.set(pageParameterName, page);
+				}
 				asyncRequest.execute(cb, cacheFlags);
 				return null;
 			}

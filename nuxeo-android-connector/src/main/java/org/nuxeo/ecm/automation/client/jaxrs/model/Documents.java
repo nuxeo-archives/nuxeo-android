@@ -127,7 +127,11 @@ public class Documents extends ArrayList<Document> implements OperationInput {
 	}
 
 	public int getPageCount() {
-		return pageCount;
+		if (batched) {
+			return pageCount;
+		} else {
+			return 1;
+		}
 	}
 
 	public int getTotalSize() {
