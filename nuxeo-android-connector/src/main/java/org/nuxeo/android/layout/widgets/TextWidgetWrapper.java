@@ -5,7 +5,7 @@ import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.android.layout.WidgetDefinition;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
-import android.content.Context;
+import android.app.Activity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -26,7 +26,7 @@ public class TextWidgetWrapper implements AndroidWidgetWrapper {
 	}
 
 	@Override
-	public View build(Context ctx, LayoutMode mode, Document doc,
+	public View build(Activity ctx, LayoutMode mode, Document doc,
 			String attributeName, WidgetDefinition widgetDef) {
 		if (mode==LayoutMode.VIEW) {
 			TextView widget = new TextView(ctx);

@@ -46,13 +46,15 @@ public class StaticLayouts {
 		+ " { itemValue : 'serviceCertificate' , itemLabel : 'Service certificate'},"
 		+ " { itemValue : 'trainingApplication' , itemLabel : 'Training application'},"
 		+ " { itemValue : 'worksheet' , itemLabel : 'Worksheet'} ]"
-		+ " }"
+		+ " },"
+		+ "{name='file', type='blob', attributeName='file:content', label='File'}"
 		+ "], "
 		+ " " + LayoutJSONParser.ROWS_DEF + "= ["
 		+ "['title'],"
 		+ "['description'],"
 		+ "['valid'],"
-		+ "['nature']"
+		+ "['nature'],"
+		+ "['file']"
 		+ "]}";
 
 

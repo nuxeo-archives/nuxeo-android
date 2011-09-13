@@ -5,6 +5,7 @@ import org.nuxeo.android.layout.widgets.AndroidWidgetMapper;
 import org.nuxeo.android.layout.widgets.AndroidWidgetWrapper;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,7 @@ public class WidgetDefinition {
 		return name;
 	}
 
-	public void build(Context ctx, Document doc, ViewGroup parent, LayoutMode mode) {
+	public void build(Activity ctx, Document doc, ViewGroup parent, LayoutMode mode) {
 		this.mode=mode;
 		LayoutParams paramsL = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f);
 		LayoutParams paramsW = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f);

@@ -8,6 +8,7 @@ import java.util.Map;
 import org.json.JSONException;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -33,7 +34,7 @@ public class LayoutDefinition {
 		this.rows=rows;
 	}
 
-	public ViewGroup buildLayout(Context ctx, Document doc, ViewGroup parent, LayoutMode mode) {
+	public ViewGroup buildLayout(Activity ctx, Document doc, ViewGroup parent, LayoutMode mode) {
 		ViewGroup container = createTopLayoutContainer(ctx, parent);
 		for (LayoutRow row : rows) {
 			row.buildRow(ctx, doc, container, widgetDefs, mode);
