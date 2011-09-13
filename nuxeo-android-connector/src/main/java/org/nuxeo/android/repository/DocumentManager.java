@@ -1,7 +1,9 @@
 package org.nuxeo.android.repository;
 
+import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
+import org.nuxeo.ecm.automation.client.jaxrs.adapters.DocumentService;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 import org.nuxeo.ecm.automation.client.jaxrs.model.DocRef;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
@@ -16,8 +18,10 @@ public class DocumentManager {
 		this.session = session;
 	}
 
-	public Document getDocument(DocRef docRef) {
-		throw new UnsupportedOperationException();
+	public Document getDocument(DocRef docRef) throws Exception {
+		OperationRequest fetchOperation = session.newRequest(DocumentService.FetchDocument).set("value", docRef);
+		fetchOperation.setHeader("X-NXDocumentProperties", "*");
+		return (Document) fetchOperation.execute(CacheBehavior.STORE);
 	}
 
 	public Documents getChildren(Document parent) {

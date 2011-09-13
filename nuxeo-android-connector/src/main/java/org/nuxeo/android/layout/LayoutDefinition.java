@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.LayoutStyle;
-
 import org.json.JSONException;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
@@ -35,16 +33,23 @@ public class LayoutDefinition {
 		this.rows=rows;
 	}
 
-	public void buildLayout(Context ctx, Document doc, ViewGroup parent, LayoutMode mode) {
+	public ViewGroup buildLayout(Context ctx, Document doc, ViewGroup parent, LayoutMode mode) {
 		ViewGroup container = createTopLayoutContainer(ctx, parent);
 		for (LayoutRow row : rows) {
 			row.buildRow(ctx, doc, container, widgetDefs, mode);
 		}
+		return container;
 	}
 
-	public void apply(Document doc) {
+	public void applyChanges(Document doc) {
 		for (LayoutRow row : rows) {
-			row.apply(doc, widgetDefs);
+			row.applyChanges(doc, widgetDefs);
+		}
+	}
+
+	public void refresh(Document doc) {
+		for (LayoutRow row : rows) {
+			row.refresh(doc, widgetDefs);
 		}
 	}
 

@@ -11,7 +11,9 @@ public interface AndroidWidgetWrapper {
 
 	View build(Context ctx, LayoutMode mode, Document doc, String attributeName, WidgetDefinition widgetDef);
 
-	void apply(View nativeWidget, LayoutMode mode, Document doc, String attributeName, WidgetDefinition widgetDef);
+	void applyChanges(View nativeWidget, LayoutMode mode, Document doc, String attributeName, WidgetDefinition widgetDef);
+
+	void refresh(View nativeWidget, LayoutMode mode, Document doc, String attributeName, WidgetDefinition widgetDef);
 
 
 }

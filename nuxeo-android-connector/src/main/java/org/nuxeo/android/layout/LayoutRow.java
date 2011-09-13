@@ -26,11 +26,18 @@ public class LayoutRow {
 		}
 	}
 
-	public void apply(Document doc,Map<String, WidgetDefinition> widgetDefs) {
+	public void applyChanges(Document doc,Map<String, WidgetDefinition> widgetDefs) {
 		for (String name : widgetNames) {
-			widgetDefs.get(name).apply(doc);
+			widgetDefs.get(name).applyChanges(doc);
 		}
 	}
+
+	public void refresh(Document doc,Map<String, WidgetDefinition> widgetDefs) {
+		for (String name : widgetNames) {
+			widgetDefs.get(name).refresh(doc);
+		}
+	}
+
 
 	protected ViewGroup createTopLayoutContainer(Context ctx, ViewGroup parent) {
 		LinearLayout container = new LinearLayout(ctx);

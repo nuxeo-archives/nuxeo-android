@@ -13,10 +13,16 @@ import android.widget.TextView;
 public class TextWidgetWrapper implements AndroidWidgetWrapper {
 
 	@Override
-	public void apply(View nativeWidget, LayoutMode mode, Document doc,
+	public void applyChanges(View nativeWidget, LayoutMode mode, Document doc,
 			String attributeName, WidgetDefinition widgetDef) {
 		TextView widget = (TextView) nativeWidget;
 		DocumentAttributeResolver.put(doc, attributeName, widget.getText().toString());
+	}
+
+	@Override
+	public void refresh(View nativeWidget, LayoutMode mode, Document doc,
+			String attributeName, WidgetDefinition widgetDef) {
+		((TextView)nativeWidget).setText(DocumentAttributeResolver.getString(doc, attributeName));
 	}
 
 	@Override

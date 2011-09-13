@@ -70,14 +70,24 @@ public class WidgetDefinition {
 		}
 	}
 
-	public void apply(Document doc) {
+	public void applyChanges(Document doc) {
 		if (view!=null) {
 			AndroidWidgetWrapper wrapper = AndroidWidgetMapper.getInstance().getWidgetWrapper(type);
 			if (wrapper!=null) {
-				wrapper.apply(view, mode, doc, attributeName, this);
+				wrapper.applyChanges(view, mode, doc, attributeName, this);
 			}
 		}
 	}
+
+	public void refresh(Document doc) {
+		if (view!=null) {
+			AndroidWidgetWrapper wrapper = AndroidWidgetMapper.getInstance().getWidgetWrapper(type);
+			if (wrapper!=null) {
+				wrapper.refresh(view, mode, doc, attributeName, this);
+			}
+		}
+	}
+
 
 	public SelectOptions getSelectOptions() {
 		return selectOptions;

@@ -5,6 +5,7 @@ import org.nuxeo.android.layout.LayoutDefinition;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.android.layout.StaticLayouts;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
+import org.nuxeo.ecm.automation.client.jaxrs.model.IdRef;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class DocumentLayoutActivity extends BaseNuxeoActivity implements View.OnClickListener {
 
@@ -63,6 +65,21 @@ public class DocumentLayoutActivity extends BaseNuxeoActivity implements View.On
 		layoutDef.buildLayout(this, getCurrentDocument(), layoutContainer, getMode());
 	}
 
+	@Override
+	protected void onNuxeoDataRetrieved(Object data) {
+		currentDocument = (Document) data;
+		layoutDef.refresh(currentDocument);
+        Toast.makeText(this,
+                "Refreshed document",
+                Toast.LENGTH_SHORT).show();
+
+	}
+
+	@Override
+	protected Object retrieveNuxeoData() throws Exception {
+		Document refreshedDocument = getNuxeoContext().getDocumentManager().getDocument(new IdRef(getCurrentDocument().getId()));
+		return refreshedDocument;
+	}
 
 	@Override
 	protected void onResume() {
@@ -74,17 +91,18 @@ public class DocumentLayoutActivity extends BaseNuxeoActivity implements View.On
 		}
 	}
 
+
 	@Override
 	public void onClick(View arg0) {
 		Document doc = getCurrentDocument();
-		layoutDef.apply(doc);
+		layoutDef.applyChanges(doc);
 		setResult(RESULT_OK, new Intent().putExtra(DOCUMENT, doc));
 		this.finish();
 	}
 
 	@Override
 	protected boolean requireAsyncDataRetrieval() {
-		return false;
+		return true;
 	}
 
 }

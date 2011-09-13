@@ -17,7 +17,7 @@ import android.widget.TextView;
 public class SpinnerWidgetWrapper implements AndroidWidgetWrapper {
 
 	@Override
-	public void apply(View nativeWidget, LayoutMode mode, Document doc,
+	public void applyChanges(View nativeWidget, LayoutMode mode, Document doc,
 			String attributeName, WidgetDefinition widgetDef) {
 		if (nativeWidget instanceof Spinner) {
 			Spinner spinner = (Spinner) nativeWidget;
@@ -28,21 +28,39 @@ public class SpinnerWidgetWrapper implements AndroidWidgetWrapper {
 	}
 
 	@Override
+	public void refresh(View nativeWidget, LayoutMode mode, Document doc,
+			String attributeName, WidgetDefinition widgetDef) {
+		if (mode==LayoutMode.VIEW) {
+			applyBinding((TextView)nativeWidget, doc, attributeName, widgetDef);
+		} else {
+			applyBinding((Spinner)nativeWidget, doc, attributeName, widgetDef);
+		}
+	}
+
+	protected void applyBinding(TextView widget, Document doc, String attributeName, WidgetDefinition widgetDef) {
+		String value = DocumentAttributeResolver.getString(doc, attributeName);
+		widget.setText(widgetDef.getSelectOptions().getLabel(value));
+	}
+
+	protected void applyBinding(Spinner widget, Document doc, String attributeName, WidgetDefinition widgetDef) {
+		String value = DocumentAttributeResolver.getString(doc, attributeName);
+		int idx = widgetDef.getSelectOptions().getValueIndex(value);
+		if (idx>=0) {
+			widget.setSelection(idx);
+		}
+	}
+
+	@Override
 	public View build(Context ctx, LayoutMode mode, Document doc,
 			String attributeName, WidgetDefinition widgetDef) {
 		if (mode==LayoutMode.VIEW) {
 			TextView widget = new TextView(ctx);
-			String value = DocumentAttributeResolver.getString(doc, attributeName);
-			widget.setText(widgetDef.getSelectOptions().getLabel(value));
+			applyBinding(widget, doc, attributeName, widgetDef);
 			return widget;
 		} else {
 			Spinner spinner = new Spinner(ctx);
 			spinner.setAdapter(getAdapter(ctx, widgetDef.getSelectOptions().getItemLabels()));
-			String value = DocumentAttributeResolver.getString(doc, attributeName);
-			int idx = widgetDef.getSelectOptions().getValueIndex(value);
-			if (idx>=0) {
-				spinner.setSelection(idx);
-			}
+			applyBinding(spinner, doc, attributeName, widgetDef);
 			return spinner;
 		}
 	}
