@@ -1,10 +1,14 @@
 package org.nuxeo.android.documentprovider;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.nuxeo.android.cache.sql.DocumentProviderTableWrapper;
 import org.nuxeo.android.cache.sql.SQLStateManager;
+import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 
 public class AndroidDocumentProvider implements DocumentProvider {
@@ -35,7 +39,7 @@ public class AndroidDocumentProvider implements DocumentProvider {
 	@Override
 	public LazyUpdatableDocumentsList getUpdatebleProvider(String name, Session session) {
 		LazyDocumentsList provider = getReadOnlyProvider(name, session);
-		if (provider!=null && provider.getClass().isAssignableFrom(LazyUpdatableDocumentsList.class)) {
+		if (provider!=null && LazyUpdatableDocumentsList.class.isAssignableFrom(provider.getClass())) {
 			return (LazyUpdatableDocumentsList) provider;
 		}
 		return null;
@@ -47,6 +51,28 @@ public class AndroidDocumentProvider implements DocumentProvider {
 		if (persistent) {
 			storeProvider(docList.getName(), docList);
 		}
+	}
+
+	public void registerNamedProvider(Session session, String name, String nxql, int pageSize, boolean readOnly, boolean persistent) {
+		LazyDocumentsList docList = null;
+		if (readOnly) {
+			docList = new LazyDocumentsListImpl(session, nxql, null, null, null, pageSize);
+		} else {
+			docList = new LazyUpdatableDocumentsListImpl(session, nxql, null, null, null, pageSize);
+		}
+		docList.setName(name);
+		registerNamedProvider(docList, persistent);
+	}
+
+	public void registerNamedProvider(String name, OperationRequest fetchOperation, String pageParametrerName, boolean readOnly, boolean persistent) {
+		LazyDocumentsList docList = null;
+		if (readOnly) {
+			docList = new LazyDocumentsListImpl(fetchOperation, pageParametrerName);
+		} else {
+			docList = new LazyUpdatableDocumentsListImpl(fetchOperation, pageParametrerName);
+		}
+		docList.setName(name);
+		registerNamedProvider(docList, persistent);
 	}
 
 	@Override
@@ -65,5 +91,14 @@ public class AndroidDocumentProvider implements DocumentProvider {
 
 	protected void storeProvider(String name, LazyDocumentsList docList) {
 		getTableWrapper().storeProvider(name, docList);
+	}
+
+	public List<String> listProviderNames() {
+		List<String> names = new ArrayList<String>(documentLists.keySet());
+		return names;
+	}
+
+	public boolean isRegistred(String name) {
+		return documentLists.containsKey(name); // XXX check DB too
 	}
 }

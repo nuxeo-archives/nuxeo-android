@@ -25,9 +25,16 @@
         <activity android:name="SimpleFetchSampleActivty"
                   android:label="Simple Data retrieval">
         </activity>
+        <activity android:name="SimpleDocumentsListSampleActivity"
+                  android:label="Sample for using Document Lists">
+        </activity>
         <activity android:name="DocumentProviderSampleActivity"
                   android:label="Sample for DocumentProviders">
         </activity>
+        <activity android:name="DocumentProviderViewActivity"
+                  android:label="Browse a DocumentProvider">
+        </activity>
+
         <activity android:name="NetworkSettingsActivity"
                   android:label="Nuxeo Offline Settings">
         </activity>

@@ -50,6 +50,7 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 
 	public LazyDocumentsListImpl (Session session, String nxql, String[] queryParams, String sortOrder, String schemas, int pageSize) {
 
+		// XXX sort order !
 		this.pageSize = pageSize;
 		this.currentPage = 0;
 		this.session=session;
@@ -61,6 +62,9 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 			fetchOperation.set("queryParams", queryParams);
 		}
 		// define returned properties
+		if (schemas==null) {
+			schemas = "common,dublincore";
+		}
 		fetchOperation.setHeader("X-NXDocumentProperties", schemas);
 		this.name=nxql;
 		fetchPageSync(currentPage);
@@ -184,7 +188,9 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 		Documents docs;
 		try {
 			if (cb==null) {
-				fetchOperation.set(pageParameterName, page);
+				if (pageParameterName!=null) {
+					fetchOperation.set(pageParameterName, page);
+				}
 				docs = (Documents) fetchOperation.execute(cacheFlags);
 				pageSize = docs.getPageSize();
 				setPageCount(docs.getPageCount());
@@ -339,7 +345,9 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 	public String getName() {
 		if (name==null) {
 			OperationRequest rq = fetchOperation.clone();
-			rq.set(pageParameterName, 0);
+			if (pageParameterName!=null) {
+				rq.set(pageParameterName, 0);
+			}
 			name = CacheKeyHelper.computeRequestKey(rq);
 		}
 		return name;

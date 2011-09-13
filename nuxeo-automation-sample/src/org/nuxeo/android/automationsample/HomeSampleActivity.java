@@ -66,6 +66,10 @@ public class HomeSampleActivity extends Activity implements View.OnClickListener
             startActivity(new Intent(getApplicationContext(),
                     ContentProviderSampleActivity.class));
 		}
+		else if (view == docListBtn) {
+            startActivity(new Intent(getApplicationContext(),
+                    SimpleDocumentsListSampleActivity.class));
+		}
 		else if (view == docProviderBtn) {
             startActivity(new Intent(getApplicationContext(),
                     DocumentProviderSampleActivity.class));

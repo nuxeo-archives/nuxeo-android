@@ -63,7 +63,7 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 	public NuxeoDocumentCursor (LazyDocumentsList docList) {
      	this.mapper = new UUIDMapper();
      	this.docList = docList;
-     	if (docList.getClass().isAssignableFrom(LazyUpdatableDocumentsList.class)) {
+     	if (LazyUpdatableDocumentsList.class.isAssignableFrom(docList.getClass())) {
      		this.updatable=true;
      	} else {
      		this.updatable=false;

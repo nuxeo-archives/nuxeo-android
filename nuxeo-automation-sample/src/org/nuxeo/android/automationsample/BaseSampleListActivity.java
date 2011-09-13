@@ -58,8 +58,6 @@ public abstract class BaseSampleListActivity extends BaseNuxeoActivity
 		listView = (ListView) findViewById(R.id.myList);
 		registerForContextMenu(listView);
 
-		// trigger the data retrieval
-		runAsyncDataRetrieval();
 	}
 
 	protected void onNuxeoDataRetrievalStarted() {
