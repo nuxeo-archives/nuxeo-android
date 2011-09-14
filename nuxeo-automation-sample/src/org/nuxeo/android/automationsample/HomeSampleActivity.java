@@ -87,6 +87,7 @@ public class HomeSampleActivity extends Activity implements View.OnClickListener
 
 		if (resultCode == Activity.RESULT_OK) {
 			Uri uri = data.getData();
+			//getContentResolver().openAssetFileDescriptor(uri, mode)
 			//getContentResolver().openAssetFileDescriptor(uri, "r").createInputStream();
 			//setResult(resultCode, data)
 		}

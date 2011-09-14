@@ -34,24 +34,13 @@ public class LayoutDefinition {
 		this.rows=rows;
 	}
 
-	public ViewGroup buildLayout(Activity ctx, Document doc, ViewGroup parent, LayoutMode mode) {
+	public NuxeoLayout buildLayout(Activity ctx, Document doc, ViewGroup parent, LayoutMode mode) {
 		ViewGroup container = createTopLayoutContainer(ctx, parent);
+		NuxeoLayout layout = new NuxeoLayout(container, doc);
 		for (LayoutRow row : rows) {
-			row.buildRow(ctx, doc, container, widgetDefs, mode);
+			layout.addWidgets(row.buildRow(ctx, doc, container, widgetDefs, mode));
 		}
-		return container;
-	}
-
-	public void applyChanges(Document doc) {
-		for (LayoutRow row : rows) {
-			row.applyChanges(doc, widgetDefs);
-		}
-	}
-
-	public void refresh(Document doc) {
-		for (LayoutRow row : rows) {
-			row.refresh(doc, widgetDefs);
-		}
+		return layout;
 	}
 
 	protected ViewGroup createTopLayoutContainer(Context ctx, ViewGroup parent) {

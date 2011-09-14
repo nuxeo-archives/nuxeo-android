@@ -6,7 +6,6 @@ import org.nuxeo.android.layout.widgets.AndroidWidgetWrapper;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -22,8 +21,6 @@ public class WidgetDefinition {
 	protected String label;
 
 	protected String attributeName;
-
-	protected View view;
 
 	protected LayoutMode mode;
 
@@ -48,8 +45,10 @@ public class WidgetDefinition {
 		return name;
 	}
 
-	public void build(Activity ctx, Document doc, ViewGroup parent, LayoutMode mode) {
+	public NuxeoWidget build(Activity ctx, Document doc, ViewGroup parent, LayoutMode mode) {
 		this.mode=mode;
+
+		View view = null;
 		LayoutParams paramsL = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f);
 		LayoutParams paramsW = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f);
 
@@ -69,26 +68,10 @@ public class WidgetDefinition {
 		if (view!=null) {
 			parent.addView(view);
 		}
-	}
 
-	public void applyChanges(Document doc) {
-		if (view!=null) {
-			AndroidWidgetWrapper wrapper = AndroidWidgetMapper.getInstance().getWidgetWrapper(type);
-			if (wrapper!=null) {
-				wrapper.applyChanges(view, mode, doc, attributeName, this);
-			}
-		}
-	}
+		return new NuxeoWidget(this, view);
 
-	public void refresh(Document doc) {
-		if (view!=null) {
-			AndroidWidgetWrapper wrapper = AndroidWidgetMapper.getInstance().getWidgetWrapper(type);
-			if (wrapper!=null) {
-				wrapper.refresh(view, mode, doc, attributeName, this);
-			}
-		}
 	}
-
 
 	public SelectOptions getSelectOptions() {
 		return selectOptions;
@@ -97,5 +80,14 @@ public class WidgetDefinition {
 	public void setSelectOptions(SelectOptions selectOptions) {
 		this.selectOptions = selectOptions;
 	}
+
+	public String getAttributeName() {
+		return attributeName;
+	}
+
+	public LayoutMode getMode() {
+		return mode;
+	}
+
 
 }

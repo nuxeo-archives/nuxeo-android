@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.nuxeo.android.adapters.DocumentAttributeResolver;
 import org.nuxeo.android.layout.LayoutMode;
+import org.nuxeo.android.layout.NuxeoWidget;
 import org.nuxeo.android.layout.WidgetDefinition;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
@@ -15,26 +16,27 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
-public class SpinnerWidgetWrapper implements AndroidWidgetWrapper {
+public class SpinnerWidgetWrapper extends BaseAndroidWidgetWrapper implements AndroidWidgetWrapper {
+
 
 	@Override
 	public void applyChanges(View nativeWidget, LayoutMode mode, Document doc,
-			String attributeName, WidgetDefinition widgetDef) {
+			String attributeName, NuxeoWidget nuxeoWidget) {
 		if (nativeWidget instanceof Spinner) {
 			Spinner spinner = (Spinner) nativeWidget;
 			int pos = spinner.getSelectedItemPosition();
-			String key = widgetDef.getSelectOptions().getItemValue(pos);
+			String key = nuxeoWidget.getWidgetDef().getSelectOptions().getItemValue(pos);
 			DocumentAttributeResolver.put(doc, attributeName, key);
 		}
 	}
 
 	@Override
 	public void refresh(View nativeWidget, LayoutMode mode, Document doc,
-			String attributeName, WidgetDefinition widgetDef) {
+			String attributeName, NuxeoWidget nuxeoWidget) {
 		if (mode==LayoutMode.VIEW) {
-			applyBinding((TextView)nativeWidget, doc, attributeName, widgetDef);
+			applyBinding((TextView)nativeWidget, doc, attributeName, nuxeoWidget.getWidgetDef());
 		} else {
-			applyBinding((Spinner)nativeWidget, doc, attributeName, widgetDef);
+			applyBinding((Spinner)nativeWidget, doc, attributeName, nuxeoWidget.getWidgetDef());
 		}
 	}
 

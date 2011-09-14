@@ -52,4 +52,7 @@ public class FileBlob extends Blob implements HasFile {
         return "application/octet-stream";
     }
 
+    public int getLength() {
+        return new Long(file.length()).intValue();
+    }
 }

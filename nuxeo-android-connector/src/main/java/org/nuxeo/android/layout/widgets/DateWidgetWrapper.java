@@ -6,6 +6,7 @@ import java.util.Date;
 
 import org.nuxeo.android.adapters.DocumentAttributeResolver;
 import org.nuxeo.android.layout.LayoutMode;
+import org.nuxeo.android.layout.NuxeoWidget;
 import org.nuxeo.android.layout.WidgetDefinition;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
@@ -14,13 +15,13 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
-public class DateWidgetWrapper implements AndroidWidgetWrapper {
+public class DateWidgetWrapper extends BaseAndroidWidgetWrapper implements AndroidWidgetWrapper {
 
 	protected static SimpleDateFormat fmt = new SimpleDateFormat("yy/MM/dd HH:mm:ss");
 
 	@Override
 	public void applyChanges(View nativeWidget, LayoutMode mode, Document doc,
-			String attributeName, WidgetDefinition widgetDef) {
+			String attributeName, NuxeoWidget nuxeoWidget) {
 		if (mode!=LayoutMode.VIEW) {
 			DatePicker widget = (DatePicker) nativeWidget;
 			Date date = (Date) widget.getTag();
@@ -32,7 +33,7 @@ public class DateWidgetWrapper implements AndroidWidgetWrapper {
 
 	@Override
 	public void refresh(View nativeWidget, LayoutMode mode, Document doc,
-			String attributeName, WidgetDefinition widgetDef) {
+			String attributeName, NuxeoWidget nuxeoWidget) {
 		if (mode==LayoutMode.VIEW) {
 			applyBinding((TextView) nativeWidget, doc, attributeName);
 		} else {

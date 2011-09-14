@@ -3,6 +3,7 @@ package org.nuxeo.android.automationsample;
 import org.nuxeo.android.activities.BaseNuxeoActivity;
 import org.nuxeo.android.layout.LayoutDefinition;
 import org.nuxeo.android.layout.LayoutMode;
+import org.nuxeo.android.layout.NuxeoLayout;
 import org.nuxeo.android.layout.StaticLayouts;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.IdRef;
@@ -21,6 +22,8 @@ public class DocumentLayoutActivity extends BaseNuxeoActivity implements View.On
 	public static final String MODE = "mode";
 
 	protected Document currentDocument;
+
+	protected boolean requireAsyncFetch=true;
 
 	protected LayoutMode getMode() {
 		return (LayoutMode) getIntent().getExtras().get(MODE);
@@ -47,7 +50,7 @@ public class DocumentLayoutActivity extends BaseNuxeoActivity implements View.On
 
 	protected ScrollView layoutContainer;
 
-	protected LayoutDefinition layoutDef;
+	protected NuxeoLayout layout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,18 +64,18 @@ public class DocumentLayoutActivity extends BaseNuxeoActivity implements View.On
 
 		layoutContainer = (ScrollView) findViewById(R.id.layoutContainer);
 
-		layoutDef = LayoutDefinition.fromJSON(StaticLayouts.DEFAULT_LAYOUT);
-		layoutDef.buildLayout(this, getCurrentDocument(), layoutContainer, getMode());
+		LayoutDefinition layoutDef = LayoutDefinition.fromJSON(StaticLayouts.DEFAULT_LAYOUT);
+		layout = layoutDef.buildLayout(this, getCurrentDocument(), layoutContainer, getMode());
 	}
 
 	@Override
 	protected void onNuxeoDataRetrieved(Object data) {
 		currentDocument = (Document) data;
-		layoutDef.refresh(currentDocument);
+		layout.refresh(currentDocument);
         Toast.makeText(this,
                 "Refreshed document",
                 Toast.LENGTH_SHORT).show();
-
+        requireAsyncFetch=false;
 	}
 
 	@Override
@@ -91,18 +94,23 @@ public class DocumentLayoutActivity extends BaseNuxeoActivity implements View.On
 		}
 	}
 
-
 	@Override
 	public void onClick(View arg0) {
 		Document doc = getCurrentDocument();
-		layoutDef.applyChanges(doc);
+		layout.applyChanges(doc);
 		setResult(RESULT_OK, new Intent().putExtra(DOCUMENT, doc));
 		this.finish();
 	}
 
 	@Override
 	protected boolean requireAsyncDataRetrieval() {
-		return true;
+		return requireAsyncFetch;
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		layout.onActivityResult(requestCode, resultCode, data);
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 }

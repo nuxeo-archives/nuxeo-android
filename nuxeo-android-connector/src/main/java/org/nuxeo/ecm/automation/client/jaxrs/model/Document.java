@@ -180,23 +180,34 @@ public class Document extends DocRef implements Serializable {
         return properties.getDouble(key, defValue);
     }
 
-    public void set(String key, String defValue) {
-        properties.set(key, defValue);
+    public void set(String key, String value) {
+        properties.set(key, value);
         dirtyFields.add(key);
     }
 
-    public void set(String key, Date defValue) {
-        properties.set(key, defValue);
+    public void set(String key, Date value) {
+        properties.set(key, value);
         dirtyFields.add(key);
     }
 
-    public void set(String key, Long defValue) {
-        properties.set(key, defValue);
+    public void set(String key, Long value) {
+        properties.set(key, value);
         dirtyFields.add(key);
     }
 
-    public void set(String key, Double defValue) {
-        properties.set(key, defValue);
+    public void set(String key, Double value) {
+        properties.set(key, value);
+        dirtyFields.add(key);
+    }
+
+    public void set(String key, PropertyMap value) {
+    	properties.set(key, value);
+        dirtyFields.add(key);
+    }
+
+
+    public void set(String key, PropertyList value) {
+    	properties.set(key, value);
         dirtyFields.add(key);
     }
 

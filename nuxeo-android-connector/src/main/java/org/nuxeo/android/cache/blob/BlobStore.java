@@ -40,8 +40,7 @@ public class BlobStore {
 				props.store(new FileOutputStream(infoFile), "Stores meta-infos for " + key);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			return streamFile;
+			throw new RuntimeException(e);
 		}
 		return streamFile;
 	}
@@ -51,8 +50,7 @@ public class BlobStore {
 		try {
 			file = storeBlob(key, blob.getStream(), blob.getFileName(),blob.getMimeType());
 		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
+			throw new RuntimeException(e);
 		}
 		return new FileBlob(file,blob.getFileName(), blob.getMimeType());
 

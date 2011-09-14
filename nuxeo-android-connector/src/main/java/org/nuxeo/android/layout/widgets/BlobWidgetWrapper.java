@@ -1,8 +1,12 @@
 package org.nuxeo.android.layout.widgets;
 
+import java.util.Random;
+
 import org.nuxeo.android.adapters.DocumentAttributeResolver;
 import org.nuxeo.android.layout.LayoutMode;
+import org.nuxeo.android.layout.NuxeoWidget;
 import org.nuxeo.android.layout.WidgetDefinition;
+import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyMap;
 
@@ -12,21 +16,58 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class BlobWidgetWrapper implements AndroidWidgetWrapper {
+public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper implements AndroidWidgetWrapper {
+
+	protected static final int REQUEST_CODE_BASE = new Random().nextInt(1000);
+	protected static final int PICK_IMG = REQUEST_CODE_BASE + 0;
+	protected static final int PICK_ANY = REQUEST_CODE_BASE + 1;
 
 	@Override
 	public void applyChanges(View nativeWidget, LayoutMode mode, Document doc,
-			String attributeName, WidgetDefinition widgetDef) {
+			String attributeName, NuxeoWidget nuxeoWidget) {
+		PropertyMap blobProp = getTransientProperty(nativeWidget, doc, attributeName);
+		if (blobProp!=null) {
+			doc.set(attributeName, blobProp);
+		}
 	}
 
-	protected void applyBinding(final LinearLayout widget, LayoutMode mode, Document doc, String attributeName, WidgetDefinition widgetDef) {
-
+	protected PropertyMap getPropertyFromDocument(Document doc, String attributeName) {
 		Object blobField = DocumentAttributeResolver.get(doc, attributeName);
 		PropertyMap blob = null;
 		if (blobField!=null) {
 			blob = (PropertyMap) blobField;
 		}
+		return blob;
+	}
+
+	protected PropertyMap getProperty(View view, Document doc, String attributeName) {
+		Object transientState = view.getTag();
+		if (transientState!=null) {
+			return (PropertyMap) transientState;
+		}
+		return getPropertyFromDocument(doc, attributeName);
+	}
+
+	protected PropertyMap getTransientProperty(View view, Document doc, String attributeName) {
+		Object transientState = view.getTag();
+		if (transientState!=null) {
+			return (PropertyMap) transientState;
+		}
+		return null;
+	}
+
+
+
+	protected void saveTransientState(View view, Object property) {
+		view.setTag(property);
+	}
+
+	protected void applyBinding(final LinearLayout widget, LayoutMode mode, final Document doc, String attributeName, WidgetDefinition widgetDef) {
+
+		PropertyMap blob = getProperty(widget, doc, attributeName);
+
 		// flush if needed
 		widget.removeAllViewsInLayout();
 		if (blob==null) {
@@ -54,9 +95,25 @@ public class BlobWidgetWrapper implements AndroidWidgetWrapper {
 			uploadImg.setBackgroundResource(android.R.drawable.ic_menu_gallery);
 			uploadImg.setOnClickListener(new View.OnClickListener() {
 				@Override
-				public void onClick(View arg0) {
+				public void onClick(View view) {
 					Activity homeActivity = (Activity) widget.getContext();
-					homeActivity.startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), 0);
+					registerActivityResultHandler(PICK_IMG, new ActivityResultUriToFileHandler(widget.getContext()) {
+
+						@Override
+						protected void onFileAvailable(String key, Blob blobToUpload) {
+							PropertyMap blobProp = new PropertyMap();
+							blobProp.set("length",new Long(blobToUpload.getLength()));
+							blobProp.set("mime-type",blobToUpload.getMimeType());
+							blobProp.set("name",key);
+							blobProp.set("android-upload-key",key);
+							saveTransientState(widget, blobProp);
+							//doc.set(key, blobProp); // XXX should not update the model now !!!
+							Toast.makeText(widget.getContext(),
+						                "File uploading ...",
+						                Toast.LENGTH_SHORT).show();
+						}
+					});
+					homeActivity.startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), PICK_IMG);
 				}
 			});
 			Button uploadFile = new Button(widget.getContext());
@@ -66,13 +123,25 @@ public class BlobWidgetWrapper implements AndroidWidgetWrapper {
 				@Override
 				public void onClick(View arg0) {
 					Activity homeActivity = (Activity) widget.getContext();
-					homeActivity.startActivityForResult(new Intent(Intent.ACTION_PICK).setType("*/*"), 1);
+					registerActivityResultHandler(PICK_ANY, new ActivityResultUriToFileHandler(widget.getContext()) {
 
-				}
+						@Override
+						protected void onFileAvailable(String key, Blob blobToUpload) {
+							PropertyMap blobProp = new PropertyMap();
+							blobProp.set("length",new Long(blobToUpload.getLength()));
+							blobProp.set("mime-type",blobToUpload.getMimeType());
+							blobProp.set("name",key);
+							blobProp.set("android-upload-key",key);
+							saveTransientState(widget, blobProp);
+							//doc.set(key, blobProp);
+							Toast.makeText(widget.getContext(),
+					                "File uploading ...",
+					                Toast.LENGTH_SHORT).show();
+						}
+					});
+					homeActivity.startActivityForResult(new Intent(Intent.ACTION_PICK).setType("*/*"), PICK_ANY);
+					}
 			});
-
-
-
 
 		}
 	}
@@ -88,8 +157,8 @@ public class BlobWidgetWrapper implements AndroidWidgetWrapper {
 
 	@Override
 	public void refresh(View nativeWidget, LayoutMode mode, Document doc,
-			String attributeName, WidgetDefinition widgetDef) {
-		applyBinding((LinearLayout)nativeWidget, mode, doc, attributeName, widgetDef);
+			String attributeName, NuxeoWidget nuxeoWidget) {
+		applyBinding((LinearLayout)nativeWidget, mode, doc, attributeName, nuxeoWidget.getWidgetDef());
 	}
 
 }

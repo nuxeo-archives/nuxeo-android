@@ -1,13 +1,10 @@
 package org.nuxeo.android.cache.blob;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.nuxeo.ecm.automation.client.android.AndroidResponseCacheManager;
-import org.nuxeo.ecm.automation.client.cache.StreamHelper;
 
 import android.content.Context;
 import android.util.Log;

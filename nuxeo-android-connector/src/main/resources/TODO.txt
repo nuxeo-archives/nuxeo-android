@@ -29,3 +29,5 @@ NXMOB-15 : Maven
 
 - Digg on C2DM
 
+=> Register Nuxeo as a content provider for image gallery
+

@@ -20,25 +20,15 @@ public class LayoutRow {
 		this.widgetNames = widgetNames;
 	}
 
-	public void buildRow(Activity ctx, Document doc, ViewGroup container, Map<String, WidgetDefinition> widgetDefs, LayoutMode mode) {
+	public List<NuxeoWidget> buildRow(Activity ctx, Document doc, ViewGroup container, Map<String, WidgetDefinition> widgetDefs, LayoutMode mode) {
 		ViewGroup rowLayout = createTopLayoutContainer(ctx, container);
+		List<NuxeoWidget> widgets = new ArrayList<NuxeoWidget>();
 		for (String name : widgetNames) {
-			widgetDefs.get(name).build(ctx, doc, rowLayout, mode);
+			NuxeoWidget widget = widgetDefs.get(name).build(ctx, doc, rowLayout, mode);
+			widgets.add(widget);
 		}
+		return widgets;
 	}
-
-	public void applyChanges(Document doc,Map<String, WidgetDefinition> widgetDefs) {
-		for (String name : widgetNames) {
-			widgetDefs.get(name).applyChanges(doc);
-		}
-	}
-
-	public void refresh(Document doc,Map<String, WidgetDefinition> widgetDefs) {
-		for (String name : widgetNames) {
-			widgetDefs.get(name).refresh(doc);
-		}
-	}
-
 
 	protected ViewGroup createTopLayoutContainer(Context ctx, ViewGroup parent) {
 		LinearLayout container = new LinearLayout(ctx);
