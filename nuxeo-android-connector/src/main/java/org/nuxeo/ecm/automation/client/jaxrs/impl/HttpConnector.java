@@ -157,6 +157,7 @@ public class HttpConnector implements Connector {
 
 	@Override
 	public HttpResponse executeSimpleHttp(HttpUriRequest httpRequest) throws Exception {
+
 		return  http.execute(httpRequest, ctx);
 	}
 

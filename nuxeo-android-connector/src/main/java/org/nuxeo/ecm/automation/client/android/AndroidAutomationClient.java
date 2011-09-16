@@ -12,6 +12,7 @@ import org.nuxeo.android.documentprovider.AndroidDocumentProvider;
 import org.nuxeo.android.documentprovider.DocumentProvider;
 import org.nuxeo.android.download.FileDownloader;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
+import org.nuxeo.android.upload.FileUploader;
 import org.nuxeo.ecm.automation.client.broadcast.MessageHelper;
 import org.nuxeo.ecm.automation.client.cache.CachedHttpConnector;
 import org.nuxeo.ecm.automation.client.cache.DeferredUpdateManager;
@@ -51,6 +52,8 @@ public class AndroidAutomationClient extends HttpAutomationClient {
 
     protected final NuxeoServerConfig serverConfig;
 
+    protected final FileUploader fileUploader;
+
     public AndroidAutomationClient(String url, Context androidContext, SQLStateManager sqlStateManager, BlobStoreManager blobStoreManager, NuxeoNetworkStatus offlineSettings, NuxeoServerConfig serverConfig) {
         super(url);
         //this.http = new DefaultHttpClient(new ThreadSafeClientConnManager(new BasicHttpParams(), new SchemeRegistry()), new BasicHttpParams());
@@ -69,6 +72,7 @@ public class AndroidAutomationClient extends HttpAutomationClient {
         this.documentProvider = new AndroidDocumentProvider(sqlStateManager);
         this.fileDownloader = new FileDownloader(this);
         this.serverConfig=serverConfig;
+        this.fileUploader = new FileUploader(this);
     }
 
     @Override
@@ -130,4 +134,13 @@ public class AndroidAutomationClient extends HttpAutomationClient {
 	public NuxeoServerConfig getServerConfig() {
 		return serverConfig;
 	}
+
+	public Context getAndroidContext() {
+		return androidContext;
+	}
+
+	public FileUploader getFileUploader() {
+		return fileUploader;
+	}
+
 }

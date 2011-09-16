@@ -22,14 +22,20 @@ public class BlobStore {
 	}
 
 	public File storeBlob(String key, InputStream is, String fileName, String mimeType) {
+		return storeBlob(key, is, fileName, mimeType, null);
+	}
+
+	public File storeBlob(String key, InputStream is, String fileName, String mimeType, Properties props) {
 		File streamFile = new File(storageDir, key);
 		File infoFile = new File(storageDir, key + NFO_SUFFIX);
+		if  ( props==null) {
+			props = new Properties();
+		}
 		try {
 			FileOutputStream out = new FileOutputStream(streamFile);
 			StreamHelper.copy(is, out);
 			is.close();
 			out.close();
-			Properties props = new Properties();
 			if (fileName!=null) {
 				props.put("filename", fileName);
 			}
@@ -46,33 +52,28 @@ public class BlobStore {
 	}
 
 	public  Blob storeBlob(String key, Blob blob) {
+		return storeBlob(key, blob, null);
+	}
+	public  BlobWithProperties storeBlob(String key, Blob blob, Properties props) {
 		File file;
 		try {
-			file = storeBlob(key, blob.getStream(), blob.getFileName(),blob.getMimeType());
+			file = storeBlob(key, blob.getStream(), blob.getFileName(),blob.getMimeType(), props);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		return new FileBlob(file,blob.getFileName(), blob.getMimeType());
+		return new BlobWithProperties(file,blob.getFileName(), blob.getMimeType(), props);
 
 	}
 	public boolean hasBlob(String key) {
 		return new File(storageDir, key).exists();
 	}
 
-	public File getBlobAsFile(String key) {
-		File file =  new File(storageDir, key);
-		if (file.exists()) {
-			return file;
-		}
-		return null;
-	}
-
-	protected FileBlob buildBlob(File file, String key) {
+	protected BlobWithProperties buildBlob(File file, String key) {
 		File fileInfo =  new File(storageDir, key + NFO_SUFFIX );
 		String name = key;
 		String mimeType="application/octet-stream";
+		Properties props = new Properties();
 		if (fileInfo.exists()) {
-			Properties props = new Properties();
 			try {
 				props.load(new FileInputStream(fileInfo));
 				name = props.getProperty("name", name);
@@ -81,10 +82,10 @@ public class BlobStore {
 				e.printStackTrace();
 			}
 		}
-		return new FileBlob(file, name, mimeType);
+		return new BlobWithProperties(file, name, mimeType, props);
 	}
 
-	public FileBlob getBlob(String key) {
+	public BlobWithProperties getBlob(String key) {
 		File file =  new File(storageDir, key);
 		if (file.exists()) {
 			return buildBlob(file, key);

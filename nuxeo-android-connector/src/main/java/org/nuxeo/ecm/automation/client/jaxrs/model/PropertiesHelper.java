@@ -17,6 +17,7 @@
 package org.nuxeo.ecm.automation.client.jaxrs.model;
 
 import java.util.Date;
+import java.util.Properties;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>

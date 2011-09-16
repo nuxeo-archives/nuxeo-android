@@ -1,6 +1,5 @@
 package org.nuxeo.android.download;
 
-import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.CopyOnWriteArrayList;

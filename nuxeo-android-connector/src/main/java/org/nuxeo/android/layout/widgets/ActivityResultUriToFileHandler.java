@@ -8,6 +8,7 @@ import org.nuxeo.android.cache.blob.BlobStore;
 import org.nuxeo.android.cache.blob.BlobStoreManager;
 import org.nuxeo.android.layout.ActivityResultHandler;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
+import org.nuxeo.ecm.automation.client.jaxrs.model.StreamBlob;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,17 +23,8 @@ public abstract class ActivityResultUriToFileHandler implements ActivityResultHa
 
 	protected Context context;
 
-	protected BlobStore store;
-
 	public ActivityResultUriToFileHandler(Context context) {
 		this.context = context;
-	}
-
-	public BlobStore getBlobStore() {
-		if (store==null) {
-			store = new BlobStoreManager(context).getBlobStore("upload");
-		}
-		return store;
 	}
 
 	@Override
@@ -46,18 +38,14 @@ public abstract class ActivityResultUriToFileHandler implements ActivityResultHa
 				try {
 					afd = context.getContentResolver().openAssetFileDescriptor(dataUri, "r");
 					mimeType = context.getContentResolver().getType(dataUri);
-					Bundle extra = data.getExtras();
 				} catch (FileNotFoundException e) {
 					handleError("can not handle uri" + dataUri.toString(), e);
 					return false;
 				}
 
-				String key = UUID.randomUUID().toString();
-				String fileName = "upload-" + key;
-
 				try {
-					getBlobStore().storeBlob(key, afd.createInputStream(), fileName, mimeType);
-					onFileAvailable(key, getBlobStore().getBlob(key));
+					Blob blob = new StreamBlob(afd.createInputStream(), null, mimeType);
+					onStreamBlobAvailable(blob);
 				} catch (IOException e) {
 					handleError("Can not read the stream" + dataUri.toString(), e);
 					return false;
@@ -73,5 +61,5 @@ public abstract class ActivityResultUriToFileHandler implements ActivityResultHa
 		Toast.makeText(context, message, Toast.LENGTH_LONG).show();
 	}
 
-	protected abstract void onFileAvailable(String key, Blob blobToUpload);
+	protected abstract void onStreamBlobAvailable(Blob blobToUpload);
 }
