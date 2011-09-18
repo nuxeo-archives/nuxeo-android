@@ -1,13 +1,12 @@
 package org.nuxeo.android.upload;
 
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.InputStreamEntity;
 import org.nuxeo.android.cache.blob.BlobStore;
 import org.nuxeo.android.cache.blob.BlobWithProperties;
 import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
@@ -34,8 +33,6 @@ public class FileUploader {
 		return res;
 	}
 
-
-
 	public void startUpload(String key, final AsyncCallback<Serializable> cb) {
 		BlobWithProperties blob = store.getBlob(key);
 		String batchId = blob.getProperty("batchId");
@@ -59,18 +56,18 @@ public class FileUploader {
 				post.setHeader("X-Batch-Id", batchId);
 				post.setHeader("X-File-Idx", fileId);
 
-				InputStream is = null;
-
 				try {
+
+					HttpEntity blobEntity = null;
+
 					if (cb!=null && cb instanceof UIAsyncCallback<?>) {
-						is = new InputStreamWithProgress(blob.getStream(), blob.getLength(), (UIAsyncCallback<Serializable>)cb);
+						blobEntity = new RepeatableBlobEntityWithProgress(blob, (UIAsyncCallback<Serializable>)cb);
 						((UIAsyncCallback<Serializable>)cb).notifyStart();
 					} else {
-						is = blob.getStream();
+						blobEntity = new RepeatableBlobEntityWithProgress(blob, null);
 					}
 
-					InputStreamEntity entity = new InputStreamEntity(is, blob.getLength());
-					post.setEntity(entity);
+					post.setEntity(blobEntity);
 
 					HttpResponse response = client.getConnector().executeSimpleHttp(post);
 					if (response.getStatusLine().getStatusCode()==200) {
@@ -104,7 +101,6 @@ public class FileUploader {
 		props.put("batchId", batchId);
 		props.put("fileId", fileId);
 		props.put("uuid", key);
-
 		return store.storeBlob(key, blob, props);
 	}
 
@@ -113,6 +109,6 @@ public class FileUploader {
 	}
 
 	public void cancelUpload(String batchId) {
-
+		// XXX
 	}
 }

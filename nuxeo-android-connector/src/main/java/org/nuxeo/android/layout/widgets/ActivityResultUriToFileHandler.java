@@ -2,10 +2,7 @@ package org.nuxeo.android.layout.widgets;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.UUID;
 
-import org.nuxeo.android.cache.blob.BlobStore;
-import org.nuxeo.android.cache.blob.BlobStoreManager;
 import org.nuxeo.android.layout.ActivityResultHandler;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 import org.nuxeo.ecm.automation.client.jaxrs.model.StreamBlob;
@@ -15,7 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 

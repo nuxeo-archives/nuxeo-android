@@ -2,7 +2,6 @@ package org.nuxeo.android.layout;
 
 import java.util.Map;
 
-import org.nuxeo.android.layout.widgets.AndroidWidgetMapper;
 import org.nuxeo.android.layout.widgets.AndroidWidgetWrapper;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
@@ -16,10 +15,10 @@ public class NuxeoWidget {
 
 	protected final AndroidWidgetWrapper wrapper;
 
-	public NuxeoWidget(WidgetDefinition widgetDef, View view) {
+	public NuxeoWidget(WidgetDefinition widgetDef, View view, AndroidWidgetWrapper wrapper) {
 		this.widgetDef=widgetDef;
 		this.view=view;
-		wrapper = AndroidWidgetMapper.getInstance().getWidgetWrapper(widgetDef.getType());
+		this.wrapper = wrapper;
 		if (wrapper==null) {
 			throw new RuntimeException("No native Widget wrapper registred for WidgetType " + widgetDef.getType());
 		}
@@ -27,7 +26,7 @@ public class NuxeoWidget {
 
 	public void applyChanges(Document doc) {
 		if (view!=null) {
-			wrapper.applyChanges(view, widgetDef.getMode(), doc, widgetDef.getAttributeName(), this);
+			wrapper.updateModel(doc);
 		} else {
 			throw new RuntimeException("Can not apply changes with a null view");
 		}
@@ -35,11 +34,10 @@ public class NuxeoWidget {
 
 	public void refresh(Document doc) {
 		if (view!=null) {
-			wrapper.refresh(view, widgetDef.getMode(), doc, widgetDef.getAttributeName(), this);
+			wrapper.refreshViewFromDocument(doc);
 		} else {
 			throw new RuntimeException("Can not refresh a null view");
 		}
-
 	}
 
 	public Map<Integer, ActivityResultHandler> getAndFlushPendingActivityResultHandler() {

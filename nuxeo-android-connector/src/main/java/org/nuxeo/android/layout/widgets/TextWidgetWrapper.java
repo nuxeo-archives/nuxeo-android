@@ -2,7 +2,6 @@ package org.nuxeo.android.layout.widgets;
 
 import org.nuxeo.android.adapters.DocumentAttributeResolver;
 import org.nuxeo.android.layout.LayoutMode;
-import org.nuxeo.android.layout.NuxeoWidget;
 import org.nuxeo.android.layout.WidgetDefinition;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
@@ -11,33 +10,56 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class TextWidgetWrapper extends BaseAndroidWidgetWrapper implements AndroidWidgetWrapper {
+public class TextWidgetWrapper extends BaseAndroidWidgetWrapper<String> implements AndroidWidgetWrapper {
+
+	protected TextView txtWidget;
+	protected EditText editWidget;
 
 	@Override
-	public void applyChanges(View nativeWidget, LayoutMode mode, Document doc,
-			String attributeName, NuxeoWidget nuxeoWidget) {
-		TextView widget = (TextView) nativeWidget;
-		DocumentAttributeResolver.put(doc, attributeName, widget.getText().toString());
+	public boolean validateBeforeModelUpdate() {
+		return true;
 	}
 
 	@Override
-	public void refresh(View nativeWidget, LayoutMode mode, Document doc,
-			String attributeName, NuxeoWidget widget) {
-		((TextView)nativeWidget).setText(DocumentAttributeResolver.getString(doc, attributeName));
+	public void updateModel(Document doc) {
+		DocumentAttributeResolver.put(doc, attributeName, getCurrentValue());
 	}
 
 	@Override
-	public View build(Activity ctx, LayoutMode mode, Document doc,
-			String attributeName, WidgetDefinition widgetDef) {
-		if (mode==LayoutMode.VIEW) {
-			TextView widget = new TextView(ctx);
-			widget.setText(DocumentAttributeResolver.getString(doc, attributeName));
-			return widget;
-		} else {
-			EditText widget = new EditText(ctx);
-			widget.setText(DocumentAttributeResolver.getString(doc, attributeName));
-			return widget;
+	public void refreshViewFromDocument(Document doc) {
+		initCurrentValueFromDocument(doc);
+		applyBinding();
+	}
+
+	protected void applyBinding() {
+		if (txtWidget!=null) {
+			txtWidget.setText(getCurrentValue());
 		}
+		if (editWidget!=null) {
+			editWidget.setText(getCurrentValue());
+		}
+	}
+
+	@Override
+	public View buildView(Activity ctx, LayoutMode mode, Document doc,
+			String attributeName, WidgetDefinition widgetDef) {
+
+		super.buildView(ctx, mode, doc, attributeName, widgetDef);
+
+		if (mode==LayoutMode.VIEW) {
+			txtWidget = new TextView(ctx);
+			applyBinding();
+			return txtWidget;
+		} else {
+			editWidget = new EditText(ctx);
+			applyBinding();
+			return editWidget;
+		}
+	}
+
+	@Override
+	protected void initCurrentValueFromDocument(Document doc) {
+		setCurrentValue(DocumentAttributeResolver.getString(doc, attributeName));
 	}
 
 }

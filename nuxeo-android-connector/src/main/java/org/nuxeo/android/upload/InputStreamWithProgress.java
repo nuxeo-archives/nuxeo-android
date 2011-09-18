@@ -26,8 +26,8 @@ public class InputStreamWithProgress extends InputStream {
 	protected int notifyUpdate(int readSize) {
 		if (cb!=null) {
 			sent = sent + readSize;
-			int progress= 100 * (sent/length);
-			cb.notifyProgressChange(progress);
+			Float progress= 100 * ((float)sent/length);
+			cb.notifyProgressChange(progress.intValue());
 		}
 		return readSize;
 	}

@@ -23,6 +23,7 @@ public abstract class UIAsyncCallback<T extends Serializable> extends Handler im
 
 	@Override
 	public void notifyProgressChange(int progress) {
+		Log.i(UIAsyncCallback.class.getSimpleName(), "Update : " + progress + "%");
 		Message msg = new Message();
 		msg.what = PROGRESS;
 		Bundle bundle = new Bundle();

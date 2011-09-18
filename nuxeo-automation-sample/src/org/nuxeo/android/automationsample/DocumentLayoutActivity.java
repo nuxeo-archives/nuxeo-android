@@ -71,7 +71,7 @@ public class DocumentLayoutActivity extends BaseNuxeoActivity implements View.On
 	@Override
 	protected void onNuxeoDataRetrieved(Object data) {
 		currentDocument = (Document) data;
-		layout.refresh(currentDocument);
+		layout.refreshFromDocument(currentDocument);
         Toast.makeText(this,
                 "Refreshed document",
                 Toast.LENGTH_SHORT).show();

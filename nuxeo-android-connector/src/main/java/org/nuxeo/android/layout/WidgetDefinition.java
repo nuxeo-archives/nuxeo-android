@@ -59,9 +59,9 @@ public class WidgetDefinition {
 			parent.addView(labelW);
 		}
 
-		AndroidWidgetWrapper wrapper = AndroidWidgetMapper.getInstance().getWidgetWrapper(type);
+		AndroidWidgetWrapper wrapper = AndroidWidgetMapper.getInstance().getWidgetWrapper(type, ctx);
 		if (wrapper!=null) {
-			view = wrapper.build(ctx, mode, doc, attributeName, this);
+			view = wrapper.buildView(ctx, mode, doc, attributeName, this);
 			view.setLayoutParams(paramsW);
 		}
 
@@ -69,7 +69,7 @@ public class WidgetDefinition {
 			parent.addView(view);
 		}
 
-		return new NuxeoWidget(this, view);
+		return new NuxeoWidget(this, view, wrapper);
 
 	}
 

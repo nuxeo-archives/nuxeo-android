@@ -30,7 +30,6 @@ public class NuxeoLayout implements ActivityResultHandler {
 				ActivityResultHandler handler = handlers.get(requestCode);
 				if (handler!=null) {
 					handler.onActivityResult(requestCode, resultCode, data);
-					refresh();
 					return true;
 				}
 			}
@@ -46,6 +45,8 @@ public class NuxeoLayout implements ActivityResultHandler {
 		widgets.addAll(newwidgets);
 	}
 
+
+
 	public void applyChanges(Document doc) {
 		this.doc = doc;
 		for (NuxeoWidget widget : widgets) {
@@ -53,15 +54,11 @@ public class NuxeoLayout implements ActivityResultHandler {
 		}
 	}
 
-	public void refresh(Document doc) {
+	public void refreshFromDocument(Document doc) {
 		this.doc = doc;
 		for (NuxeoWidget widget : widgets) {
 			widget.refresh(doc);
 		}
-	}
-
-	protected void refresh() {
-		refresh(doc);
 	}
 
 }

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.nuxeo.android.adapters.DocumentAttributeResolver;
 import org.nuxeo.android.layout.LayoutMode;
-import org.nuxeo.android.layout.NuxeoWidget;
 import org.nuxeo.android.layout.WidgetDefinition;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
@@ -16,54 +15,63 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
-public class SpinnerWidgetWrapper extends BaseAndroidWidgetWrapper implements AndroidWidgetWrapper {
+public class SpinnerWidgetWrapper extends BaseAndroidWidgetWrapper<String> implements AndroidWidgetWrapper {
 
+	protected TextView textWidget;
+	protected Spinner spinner;
 
 	@Override
-	public void applyChanges(View nativeWidget, LayoutMode mode, Document doc,
-			String attributeName, NuxeoWidget nuxeoWidget) {
-		if (nativeWidget instanceof Spinner) {
-			Spinner spinner = (Spinner) nativeWidget;
+	public boolean validateBeforeModelUpdate() {
+		return true;
+	}
+
+	@Override
+	public void updateModel(Document doc) {
+		if (spinner!=null) {
 			int pos = spinner.getSelectedItemPosition();
-			String key = nuxeoWidget.getWidgetDef().getSelectOptions().getItemValue(pos);
+			String key = widgetDef.getSelectOptions().getItemValue(pos);
 			DocumentAttributeResolver.put(doc, attributeName, key);
 		}
 	}
 
 	@Override
-	public void refresh(View nativeWidget, LayoutMode mode, Document doc,
-			String attributeName, NuxeoWidget nuxeoWidget) {
+	public void refreshViewFromDocument(Document doc) {
 		if (mode==LayoutMode.VIEW) {
-			applyBinding((TextView)nativeWidget, doc, attributeName, nuxeoWidget.getWidgetDef());
+			applyBinding();
 		} else {
-			applyBinding((Spinner)nativeWidget, doc, attributeName, nuxeoWidget.getWidgetDef());
+			applyBinding();
 		}
 	}
 
-	protected void applyBinding(TextView widget, Document doc, String attributeName, WidgetDefinition widgetDef) {
-		String value = DocumentAttributeResolver.getString(doc, attributeName);
-		widget.setText(widgetDef.getSelectOptions().getLabel(value));
-	}
-
-	protected void applyBinding(Spinner widget, Document doc, String attributeName, WidgetDefinition widgetDef) {
-		String value = DocumentAttributeResolver.getString(doc, attributeName);
-		int idx = widgetDef.getSelectOptions().getValueIndex(value);
-		if (idx>=0) {
-			widget.setSelection(idx);
+	protected void applyBinding() {
+		if (textWidget!=null) {
+			textWidget.setText(widgetDef.getSelectOptions().getLabel(getCurrentValue()));
+		} else {
+			int idx = widgetDef.getSelectOptions().getValueIndex(getCurrentValue());
+			if (idx>=0) {
+				spinner.setSelection(idx);
+			}
 		}
 	}
 
 	@Override
-	public View build(Activity ctx, LayoutMode mode, Document doc,
+	protected void initCurrentValueFromDocument(Document doc) {
+		String value = DocumentAttributeResolver.getString(doc, getAttributeName());
+		setCurrentValue(value);
+	}
+
+	@Override
+	public View buildView(Activity ctx, LayoutMode mode, Document doc,
 			String attributeName, WidgetDefinition widgetDef) {
+		super.buildView(ctx, mode, doc, attributeName, widgetDef);
 		if (mode==LayoutMode.VIEW) {
-			TextView widget = new TextView(ctx);
-			applyBinding(widget, doc, attributeName, widgetDef);
-			return widget;
+			textWidget = new TextView(ctx);
+			applyBinding();
+			return textWidget;
 		} else {
-			Spinner spinner = new Spinner(ctx);
+			spinner = new Spinner(ctx);
 			spinner.setAdapter(getAdapter(ctx, widgetDef.getSelectOptions().getItemLabels()));
-			applyBinding(spinner, doc, attributeName, widgetDef);
+			applyBinding();
 			return spinner;
 		}
 	}

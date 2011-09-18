@@ -6,88 +6,105 @@ import java.util.Date;
 
 import org.nuxeo.android.adapters.DocumentAttributeResolver;
 import org.nuxeo.android.layout.LayoutMode;
-import org.nuxeo.android.layout.NuxeoWidget;
 import org.nuxeo.android.layout.WidgetDefinition;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class DateWidgetWrapper extends BaseAndroidWidgetWrapper implements AndroidWidgetWrapper {
+public class DateWidgetWrapper extends BaseAndroidWidgetWrapper<Calendar> implements AndroidWidgetWrapper, View.OnClickListener, OnDateSetListener {
 
-	protected static SimpleDateFormat fmt = new SimpleDateFormat("yy/MM/dd HH:mm:ss");
+	protected static SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd");
+	protected LinearLayout layout;
+	protected TextView txt;
+	protected Button btn;
+	protected DatePickerDialog datePickerDialog;
 
 	@Override
-	public void applyChanges(View nativeWidget, LayoutMode mode, Document doc,
-			String attributeName, NuxeoWidget nuxeoWidget) {
+	public boolean validateBeforeModelUpdate() {
+		return true;
+	}
+
+	@Override
+	public void updateModel(Document doc) {
 		if (mode!=LayoutMode.VIEW) {
-			DatePicker widget = (DatePicker) nativeWidget;
-			Date date = (Date) widget.getTag();
-			if (date!=null) {
-				doc.set(attributeName, date);
+			if (getCurrentValue()!=null) {
+				doc.set(attributeName, getCurrentValue().getTime());
 			}
 		}
 	}
 
 	@Override
-	public void refresh(View nativeWidget, LayoutMode mode, Document doc,
-			String attributeName, NuxeoWidget nuxeoWidget) {
-		if (mode==LayoutMode.VIEW) {
-			applyBinding((TextView) nativeWidget, doc, attributeName);
-		} else {
-			applyBinding((DatePicker)nativeWidget, doc, attributeName);
-		}
-
+	public void refreshViewFromDocument(Document doc) {
+		initCurrentValueFromDocument(doc);
+		applyBinding();
 	}
 
-	protected void applyBinding(TextView widget, Document doc, String attributeName) {
+	protected void initCurrentValueFromDocument(Document doc) {
 		Date date = DocumentAttributeResolver.getDate(doc, attributeName);
-		if (date==null) {
-			widget.setText("");
-		} else {
-			widget.setText(fmt.format(date));
-		}
-	}
-
-	protected void applyBinding(DatePicker widget, Document doc, String attributeName) {
-		Date date = DocumentAttributeResolver.getDate(doc, attributeName);
-		Calendar cal = Calendar.getInstance();
 		if (date!=null) {
-			cal.setTime(date);
+			currentValue = Calendar.getInstance();
+			currentValue.setTime(date);
 		}
-		widget.init(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
-			@Override
-			public void onDateChanged(DatePicker view, int year, int month,
-					int dayOfMonth) {
-				Calendar cal = Calendar.getInstance();
-				cal.set(Calendar.YEAR, year);
-				cal.set(Calendar.MONTH, month);
-				cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-				Date date = cal.getTime();
-				view.setTag(date);
-			}
+	}
 
-		});
+	protected void applyBinding() {
+		Calendar value = getCurrentValue();
+		if (value!=null) {
+			txt.setText(fmt.format(value.getTime()));
+		} else {
+			txt.setText("-- not set --");
+		}
+		txt.invalidate();
 	}
 
 	@Override
-	public View build(Activity ctx, LayoutMode mode, Document doc,
+	public View buildView(Activity ctx, LayoutMode mode, Document doc,
 			String attributeName, WidgetDefinition widgetDef) {
 
-		if (mode==LayoutMode.VIEW) {
-			TextView widget = new TextView(ctx);
-			applyBinding(widget, doc, attributeName);
-			return widget;
-		} else {
-			DatePicker widget = new DatePicker(ctx);
-			applyBinding(widget, doc, attributeName);
-			return widget;
+		super.buildView(ctx, mode, doc, attributeName, widgetDef);
+
+		layout = new LinearLayout(ctx);
+		layout.setOrientation(LinearLayout.HORIZONTAL);
+
+		txt = new TextView(ctx);
+		layout.addView(txt);
+		if (mode!=LayoutMode.VIEW) {
+			btn = new Button(ctx);
+			btn.setBackgroundResource(android.R.drawable.ic_menu_agenda);
+			//btn.setImageResource(android.R.drawable.edit_text);
+			btn.setOnClickListener(this);
+			layout.addView(btn);
 		}
+		applyBinding();
+		return layout;
+
 	}
 
+	@Override
+	public void onClick(View view) {
+		Calendar value = getCurrentValue();
+		if (value==null) {
+			value=Calendar.getInstance();
+		}
+		datePickerDialog = new DatePickerDialog(getRootContext(), 0, this, value.get(Calendar.YEAR), value.get(Calendar.MONTH), value.get(Calendar.DAY_OF_MONTH));
+		datePickerDialog.show();
+	}
 
-
+	@Override
+	public void onDateSet(DatePicker dialog, int year, int monthOfYear, int dayOfMonth) {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.YEAR, year);
+		cal.set(Calendar.MONTH, monthOfYear);
+		cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+		currentValue = cal;
+		applyBinding();
+	}
 
 }

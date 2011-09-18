@@ -3,11 +3,13 @@ package org.nuxeo.android.layout.widgets;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.content.Context;
+
 public class AndroidWidgetMapper {
 
 	protected static AndroidWidgetMapper instance = null;
 
-	protected static final Map<String, AndroidWidgetWrapper> wrappers = new HashMap<String, AndroidWidgetWrapper>();
+	protected final static Map<String, Class <? extends AndroidWidgetWrapper>> wrappers = new HashMap<String, Class <? extends AndroidWidgetWrapper>>();
 
 	protected AndroidWidgetMapper() {
 		registerDefaultWrappers();
@@ -20,19 +22,24 @@ public class AndroidWidgetMapper {
 		return instance;
 	}
 
-	public static void registerWidgetWrapper(String type, AndroidWidgetWrapper wrapper) {
-		wrappers.put(type, wrapper);
+	public static void registerWidgetWrapper(String type,  Class <? extends AndroidWidgetWrapper> wrapperClass) {
+		wrappers.put(type, wrapperClass);
 	}
 
 	protected void registerDefaultWrappers() {
-		registerWidgetWrapper("text", new TextWidgetWrapper());
-		registerWidgetWrapper("date", new DateWidgetWrapper());
-		registerWidgetWrapper("selectOne", new SpinnerWidgetWrapper());
-		registerWidgetWrapper("blob", new BlobWidgetWrapper());
+		registerWidgetWrapper("text", TextWidgetWrapper.class);
+		registerWidgetWrapper("date", DateWidgetWrapper.class);
+		registerWidgetWrapper("selectOne", SpinnerWidgetWrapper.class);
+		registerWidgetWrapper("blob", BlobWidgetWrapper.class);
 	}
 
-	public AndroidWidgetWrapper getWidgetWrapper(String type) {
-		return wrappers.get(type);
+	public AndroidWidgetWrapper getWidgetWrapper(String type, Context ctx) {
+		try {
+			AndroidWidgetWrapper wrapper =  wrappers.get(type).newInstance();
+			return wrapper;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }
