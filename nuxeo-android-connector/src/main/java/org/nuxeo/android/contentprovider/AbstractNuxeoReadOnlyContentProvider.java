@@ -15,10 +15,12 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.FileBlob;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.util.Log;
 
 
 /**
@@ -45,10 +47,36 @@ import android.os.ParcelFileDescriptor;
 
 public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvider {
 
-	public static final String ALL_DOCUMENTS = "documents";
-	public static final String ICONS = "icons";
 
 	protected UUIDMapper mapper;
+
+	protected static final String NUXEO_AUTHORITY = "nuxeo";
+
+	protected static UriMatcher uriMatcher;
+
+	protected static final int ALL_DOCUMENTS_PROVIDER = 0;
+	public static final String ALL_DOCUMENTS = "documents";
+	protected static final int ANY_DOCUMENT_PROVIDER = 1;
+	public static final String ICONS = "icons";
+	protected static final int ICONS_PROVIDER = 2;
+	public static final String BLOBS = "blobs";
+	protected static final int BLOBS_PROVIDER = 3;
+	protected static final int DOCUMENTS_PROVIDER = 4;
+	protected static final int DOCUMENT_PROVIDER = 5;
+
+	static {
+		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+		uriMatcher.addURI(NUXEO_AUTHORITY, ALL_DOCUMENTS, ALL_DOCUMENTS_PROVIDER);
+		uriMatcher.addURI(NUXEO_AUTHORITY, ALL_DOCUMENTS + "/*", ANY_DOCUMENT_PROVIDER);
+		uriMatcher.addURI(NUXEO_AUTHORITY, ICONS + "/*", ICONS_PROVIDER);
+		uriMatcher.addURI(NUXEO_AUTHORITY, ICONS + "/*/*", ICONS_PROVIDER);
+		uriMatcher.addURI(NUXEO_AUTHORITY, ICONS + "/*/*/*", ICONS_PROVIDER);
+		uriMatcher.addURI(NUXEO_AUTHORITY, ICONS + "/*/*/*/*", ICONS_PROVIDER);
+		uriMatcher.addURI(NUXEO_AUTHORITY, BLOBS + "/*", BLOBS_PROVIDER);
+		uriMatcher.addURI(NUXEO_AUTHORITY, BLOBS + "/*/#", BLOBS_PROVIDER);
+		uriMatcher.addURI(NUXEO_AUTHORITY, "*", DOCUMENTS_PROVIDER);
+		uriMatcher.addURI(NUXEO_AUTHORITY, "*/*", DOCUMENT_PROVIDER);
+	}
 
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
@@ -67,24 +95,36 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 		return true;
 	}
 
-	@Override
-	public Cursor query(Uri uri, String[] columns, String selection,
-			String[] selectionArgs, String sortOrder) {
+	protected LazyDocumentsList resolveDocumentProvider(Uri uri) {
 
+		DocumentProvider providerService = ((AndroidAutomationClient)getSession().getClient()).getDocumentProvider();
 		List<String> segments = uri.getPathSegments();
 		if (segments.size()<1) {
 			return null;
 		}
 		String providerName = segments.get(0);
-		if (ALL_DOCUMENTS.equals(providerName)) {
-			String nxql = buildNXQLQuery(selection, selectionArgs, sortOrder);
-			return buildCursor(nxql, selection, selectionArgs, sortOrder);
-		} else {
-			DocumentProvider providerService = ((AndroidAutomationClient)getSession().getClient()).getDocumentProvider();
-			LazyDocumentsList docList = providerService.getReadOnlyProvider(providerName, getSession());
-			if (docList!=null) {
-				return new NuxeoDocumentCursor(docList);
-			}
+		LazyDocumentsList docList = providerService.getReadOnlyProvider(providerName, getSession());
+		return docList;
+	}
+
+	@Override
+	public Cursor query(Uri uri, String[] columns, String selection,
+			String[] selectionArgs, String sortOrder) {
+
+		Log.i("NuxeoContentProvider", "called on query with uri : " + uri.toString());
+		Log.i("NuxeoContentProvider", "Match=> " + uriMatcher.match(uri));
+
+		int match = uriMatcher.match(uri);
+		switch (match)
+		{
+			case ALL_DOCUMENTS_PROVIDER:
+				String nxql = buildNXQLQuery(selection, selectionArgs, sortOrder);
+				return buildCursor(nxql, selection, selectionArgs, sortOrder);
+			case DOCUMENTS_PROVIDER :
+				LazyDocumentsList docList = resolveDocumentProvider(uri);
+				if (docList!=null) {
+					return new NuxeoDocumentCursor(docList);
+				}
 		}
 		return null;
 	}
@@ -98,10 +138,10 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 	}
 
 	protected NuxeoDocumentCursor buildCursor(String nxql, String selection,String[] selectionArgs, String sortOrder) {
-		return new NuxeoDocumentCursor(getSession(),nxql, selectionArgs, sortOrder,getSchemas(), getPageSize(), mapper, false);
+		return new NuxeoDocumentCursor(getSession(),nxql, selectionArgs, sortOrder,getSchemas(), getDefaultPageSize(), mapper, false);
 	}
 
-	protected abstract int getPageSize();
+	protected abstract int getDefaultPageSize();
 
 	protected String getSchemas() {
 		return "common,dublincore";
@@ -130,16 +170,52 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 
 	@Override
 	public String getType(Uri uri) {
-		FileBlob blob = resolveBlob(uri);
-		if (blob!=null) {
-			return blob.getMimeType();
+
+		Log.i("NuxeoContentProvider", "called on getType with uri : " + uri.toString());
+		Log.i("NuxeoContentProvider", "Match=> " + uriMatcher.match(uri));
+
+		String mimeType = null;
+
+		int match = uriMatcher.match(uri);
+
+		switch (match) {
+			case BLOBS_PROVIDER :
+			case ICONS_PROVIDER :
+				FileBlob blob = resolveBlob(uri);
+				if (blob!=null) {
+					mimeType = blob.getMimeType();
+				}
+				break;
+			case DOCUMENTS_PROVIDER :
+				LazyDocumentsList docList = resolveDocumentProvider(uri);
+				if (docList!=null) {
+					String mt = docList.getExposedMimeType();
+					if (mt==null) {
+						mt="org.nuxeo.document";
+					}
+					//return "vnd.android.cursor.item/" + mt;
+					mimeType =  "vnd.android.cursor.dir/" + mt;
+				}
+				break;
+			case DOCUMENT_PROVIDER :
+				LazyDocumentsList docList2 = resolveDocumentProvider(uri);
+				if (docList2!=null) {
+					String mt = docList2.getExposedMimeType();
+					if (mt==null) {
+						mt="org.nuxeo.document";
+					}
+					mimeType =  "vnd.android.cursor.item/" + mt;
+				}
+				break;
 		}
-		return null;
+		Log.i("NuxeoContentProvider", "==> " + mimeType);
+		return mimeType;
 	}
 
 	@Override
 	public AssetFileDescriptor openAssetFile(Uri uri, String mode)
 			throws FileNotFoundException {
+		Log.i("NuxeoContentProvider", "called on openAssetFile with uri : " + uri.toString());
 		return super.openAssetFile(uri, mode);
 	}
 
@@ -173,6 +249,9 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 	@Override
 	public ParcelFileDescriptor openFile(Uri uri, String mode)
 			throws FileNotFoundException {
+
+		Log.i("NuxeoContentProvider", "called on openFile with uri : " + uri.toString());
+		Log.i("NuxeoContentProvider", "Match=> " + uriMatcher.match(uri));
 
 		FileBlob blob = resolveBlob(uri);
 		if (blob!=null) {

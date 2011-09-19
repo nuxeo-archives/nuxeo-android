@@ -1,5 +1,6 @@
 package org.nuxeo.android.automationsample;
 
+import org.nuxeo.android.documentprovider.LazyDocumentsList;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.database.Cursor;
@@ -46,4 +47,10 @@ public class ContentProviderSampleActivity extends BaseSampleListActivity {
 	protected void doRefresh() {
 		//documentCursor.getDocumentsList().refreshAll();
 	}
+
+	@Override
+	protected LazyDocumentsList getDocumentsList() {
+		return null;
+	}
+
 }

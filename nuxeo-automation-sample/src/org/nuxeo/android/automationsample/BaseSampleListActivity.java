@@ -1,6 +1,7 @@
 package org.nuxeo.android.automationsample;
 
 import org.nuxeo.android.activities.BaseNuxeoActivity;
+import org.nuxeo.android.documentprovider.LazyDocumentsList;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
@@ -100,11 +101,13 @@ public abstract class BaseSampleListActivity extends BaseNuxeoActivity
 
 	protected abstract void doRefresh();
 
+	protected abstract LazyDocumentsList getDocumentsList();
+
 	// Activity menu handling
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.itemNew:
+		case R.id.itemNew :
 			Document newDoc = createNewDocument();
 			startActivityForResult(
 					new Intent(this, DocumentLayoutActivity.class).putExtra(
@@ -112,7 +115,33 @@ public abstract class BaseSampleListActivity extends BaseNuxeoActivity
 							DocumentLayoutActivity.MODE, LayoutMode.CREATE),
 					CREATE_DOCUMENT);
 			break;
+		case R.id.itemView :
+			if (getDocumentsList()!=null) {
+				Uri contentUri = getDocumentsList().getContentUri();
+				if (contentUri!=null) {
+			        Intent intent = new Intent(Intent.ACTION_VIEW);
+			        intent.setData(contentUri);
+			        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			        intent.putExtra("windowTitle", "Nuxeo Media Browser");
+			        try {
+			            startActivity(intent);
+			        }
+			        catch (android.content.ActivityNotFoundException e) {
+			            Toast.makeText(this,
+			                "No Application Available to View this uri " + contentUri.toString(),
+			                Toast.LENGTH_SHORT).show();
+			        }
+				} else {
+				    Toast.makeText(this,
+			                "No Uri defined for this list",
+			                Toast.LENGTH_SHORT).show();
+				}
+			}
+			break;
 		}
+
+
+
 		return super.onOptionsItemSelected(item);
 	}
 

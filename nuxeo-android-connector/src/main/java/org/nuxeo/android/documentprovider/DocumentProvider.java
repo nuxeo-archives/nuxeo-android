@@ -7,9 +7,9 @@ import org.nuxeo.ecm.automation.client.jaxrs.Session;
 
 public interface DocumentProvider {
 
-	void registerNamedProvider(String name, OperationRequest fetchOperation, String pageParametrerName, boolean readOnly, boolean persistent);
+	void registerNamedProvider(String name, OperationRequest fetchOperation, String pageParametrerName, boolean readOnly, boolean persistent, String exposedMimeType);
 
-	void registerNamedProvider(Session session, String name, String nxql, int pageSize, boolean readOnly, boolean persistent);
+	void registerNamedProvider(Session session, String name, String nxql, int pageSize, boolean readOnly, boolean persistent, String exposedMimeType);
 
 	void registerNamedProvider(LazyDocumentsList docList, boolean persistent);
 

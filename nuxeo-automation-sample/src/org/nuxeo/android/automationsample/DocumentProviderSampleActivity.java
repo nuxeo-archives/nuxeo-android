@@ -59,7 +59,7 @@ implements View.OnClickListener, OnItemClickListener {
 		String providerName1 = "Simple select";
 		if (!docProvider.isRegistred(providerName1)) {
 			String query = "select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:isCheckedInVersion = 0 AND ecm:currentLifeCycleState != \"deleted\" order by dc:modified DESC";
-			docProvider.registerNamedProvider(getNuxeoSession(),providerName1, query , 10, false, false);
+			docProvider.registerNamedProvider(getNuxeoSession(),providerName1, query , 10, false, false, null);
 		}
 
 		// register an operation
@@ -70,7 +70,7 @@ implements View.OnClickListener, OnItemClickListener {
 			// define what properties are needed
 			getWorklistOperation.setHeader("X-NXDocumentProperties", "common,dublincore");
 			// register provider from OperationRequest
-			docProvider.registerNamedProvider(providerName2, getWorklistOperation , null, false, false);
+			docProvider.registerNamedProvider(providerName2, getWorklistOperation , null, false, false, null);
 		}
 
 		// register a documentList
@@ -82,6 +82,19 @@ implements View.OnClickListener, OnItemClickListener {
 			docProvider.registerNamedProvider(docList, false);
 		}
 
+		// register a query
+		String providerName4 = "mypictures";
+		if (!docProvider.isRegistred(providerName4)) {
+			String query = "select * from Picture";
+			docProvider.registerNamedProvider(getNuxeoSession(),providerName4, query , 10, false, false, "image");
+		}
+
+		// register a query
+		String providerName5 = "mynotes";
+		if (!docProvider.isRegistred(providerName5)) {
+			String query = "select * from Note";
+			docProvider.registerNamedProvider(getNuxeoSession(),providerName5, query , 10, false, false, "text");
+		}
 
 	}
 

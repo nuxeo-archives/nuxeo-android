@@ -7,6 +7,8 @@ import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
+import android.net.Uri;
+
 public interface LazyDocumentsList {
 
 	public abstract Documents getCurrentPage();
@@ -50,4 +52,11 @@ public interface LazyDocumentsList {
 	public void setName(String name);
 
 	public boolean isFullyLoaded();
+
+	public void setExposedMimeType(String exposedMimeType);
+
+	public String getExposedMimeType();
+
+	public Uri getContentUri();
+
 }

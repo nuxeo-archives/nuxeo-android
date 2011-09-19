@@ -1,7 +1,6 @@
 package org.nuxeo.android.documentprovider;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +52,7 @@ public class AndroidDocumentProvider implements DocumentProvider {
 		}
 	}
 
-	public void registerNamedProvider(Session session, String name, String nxql, int pageSize, boolean readOnly, boolean persistent) {
+	public void registerNamedProvider(Session session, String name, String nxql, int pageSize, boolean readOnly, boolean persistent, String exposedMimeType) {
 		LazyDocumentsList docList = null;
 		if (readOnly) {
 			docList = new LazyDocumentsListImpl(session, nxql, null, null, null, pageSize);
@@ -61,10 +60,13 @@ public class AndroidDocumentProvider implements DocumentProvider {
 			docList = new LazyUpdatableDocumentsListImpl(session, nxql, null, null, null, pageSize);
 		}
 		docList.setName(name);
+		if (exposedMimeType!=null) {
+			docList.setExposedMimeType(exposedMimeType);
+		}
 		registerNamedProvider(docList, persistent);
 	}
 
-	public void registerNamedProvider(String name, OperationRequest fetchOperation, String pageParametrerName, boolean readOnly, boolean persistent) {
+	public void registerNamedProvider(String name, OperationRequest fetchOperation, String pageParametrerName, boolean readOnly, boolean persistent, String exposedMimeType) {
 		LazyDocumentsList docList = null;
 		if (readOnly) {
 			docList = new LazyDocumentsListImpl(fetchOperation, pageParametrerName);
@@ -72,6 +74,9 @@ public class AndroidDocumentProvider implements DocumentProvider {
 			docList = new LazyUpdatableDocumentsListImpl(fetchOperation, pageParametrerName);
 		}
 		docList.setName(name);
+		if (exposedMimeType!=null) {
+			docList.setExposedMimeType(exposedMimeType);
+		}
 		registerNamedProvider(docList, persistent);
 	}
 

@@ -18,6 +18,9 @@ import org.nuxeo.ecm.automation.client.jaxrs.impl.CacheKeyHelper;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
+import sun.nio.ch.EPollSelectorProvider;
+
+import android.net.Uri;
 import android.util.Log;
 
 public class LazyDocumentsListImpl implements LazyDocumentsList {
@@ -45,6 +48,8 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 	protected OperationRequest fetchOperation;
 
 	protected final String pageParameterName;
+
+	protected String exposedMimeType;
 
 	protected List<DocumentsListChangeListener> listeners = new ArrayList<DocumentsListChangeListener>();
 
@@ -369,6 +374,22 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 
 	public String getPageParameterName() {
 		return pageParameterName;
+	}
+
+	@Override
+	public String getExposedMimeType() {
+		return exposedMimeType;
+	}
+
+	@Override
+	public void setExposedMimeType(String exposedMimeType) {
+		this.exposedMimeType = exposedMimeType;
+
+	}
+
+	@Override
+	public Uri getContentUri() {
+		return Uri.parse("content://nuxeo/"+ getName());
 	}
 
 
