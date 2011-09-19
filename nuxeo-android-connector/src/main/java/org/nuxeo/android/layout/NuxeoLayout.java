@@ -13,12 +13,12 @@ public class NuxeoLayout implements ActivityResultHandler {
 
 	protected List<NuxeoWidget> widgets = new ArrayList<NuxeoWidget>();
 
-	protected final ViewGroup view;
-
 	protected Document doc;
 
-	public NuxeoLayout(ViewGroup view, Document doc) {
-		this.view = view;
+	protected final LayoutContext context;
+
+	public NuxeoLayout(LayoutContext context, Document doc) {
+		this.context = context;
 		this.doc = doc;
 	}
 
@@ -38,14 +38,12 @@ public class NuxeoLayout implements ActivityResultHandler {
 	}
 
 	public ViewGroup getContainer() {
-		return view;
+		return context.getRootView();
 	}
 
 	void addWidgets(List<NuxeoWidget> newwidgets) {
 		widgets.addAll(newwidgets);
 	}
-
-
 
 	public void applyChanges(Document doc) {
 		this.doc = doc;

@@ -36,9 +36,10 @@ public class LayoutDefinition {
 
 	public NuxeoLayout buildLayout(Activity ctx, Document doc, ViewGroup parent, LayoutMode mode) {
 		ViewGroup container = createTopLayoutContainer(ctx, parent);
-		NuxeoLayout layout = new NuxeoLayout(container, doc);
+		LayoutContext context = new LayoutContext(ctx, container);
+		NuxeoLayout layout = new NuxeoLayout(context, doc);
 		for (LayoutRow row : rows) {
-			layout.addWidgets(row.buildRow(ctx, doc, container, widgetDefs, mode));
+			layout.addWidgets(row.buildRow(context, doc, container, widgetDefs, mode));
 		}
 		return layout;
 	}

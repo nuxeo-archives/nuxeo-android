@@ -3,11 +3,11 @@ package org.nuxeo.android.layout.widgets;
 import java.util.List;
 
 import org.nuxeo.android.adapters.DocumentAttributeResolver;
+import org.nuxeo.android.layout.LayoutContext;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.android.layout.WidgetDefinition;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -61,9 +61,11 @@ public class SpinnerWidgetWrapper extends BaseAndroidWidgetWrapper<String> imple
 	}
 
 	@Override
-	public View buildView(Activity ctx, LayoutMode mode, Document doc,
+	public View buildView(LayoutContext context, LayoutMode mode, Document doc,
 			String attributeName, WidgetDefinition widgetDef) {
-		super.buildView(ctx, mode, doc, attributeName, widgetDef);
+		super.buildView(context, mode, doc, attributeName, widgetDef);
+
+		Context ctx = context.getActivity();
 		if (mode==LayoutMode.VIEW) {
 			textWidget = new TextView(ctx);
 			applyBinding();

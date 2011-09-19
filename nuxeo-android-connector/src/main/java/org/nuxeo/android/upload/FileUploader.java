@@ -18,6 +18,10 @@ import android.util.Log;
 
 public class FileUploader {
 
+	public static final String UPLOAD_UUID = "uuid";
+	public static final String FILE_ID = "fileId";
+	public static final String BATCH_ID = "batchId";
+
 	protected final BlobStore store;
 
 	protected final AndroidAutomationClient client;
@@ -35,8 +39,8 @@ public class FileUploader {
 
 	public void startUpload(String key, final AsyncCallback<Serializable> cb) {
 		BlobWithProperties blob = store.getBlob(key);
-		String batchId = blob.getProperty("batchId");
-		String fileId = blob.getProperty("fileId");
+		String batchId = blob.getProperty(BATCH_ID);
+		String fileId = blob.getProperty(FILE_ID);
 		startUpload(batchId, fileId, blob, cb);
 	}
 
@@ -73,8 +77,8 @@ public class FileUploader {
 					if (response.getStatusLine().getStatusCode()==200) {
 						if (cb!=null) {
 							cb.onSuccess(batchId, response.getStatusLine().getReasonPhrase());
-							removeBlob(blob);
 						}
+						removeBlob(blob);
 					} else {
 						if (cb!=null) {
 							cb.onError(batchId, new Exception("Server returned status code " + response.getStatusLine().getStatusCode()));
@@ -98,14 +102,14 @@ public class FileUploader {
 
 		String key=UUID.randomUUID().toString();
 		Properties props = new Properties();
-		props.put("batchId", batchId);
-		props.put("fileId", fileId);
-		props.put("uuid", key);
+		props.put(BATCH_ID, batchId);
+		props.put(FILE_ID, fileId);
+		props.put(UPLOAD_UUID, key);
 		return store.storeBlob(key, blob, props);
 	}
 
 	protected void removeBlob(BlobWithProperties blob) {
-		store.deleteBlob(blob.getProperty("uuid"));
+		store.deleteBlob(blob.getProperty(UPLOAD_UUID));
 	}
 
 	public void cancelUpload(String batchId) {

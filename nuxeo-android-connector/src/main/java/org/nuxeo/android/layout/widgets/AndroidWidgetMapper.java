@@ -3,8 +3,6 @@ package org.nuxeo.android.layout.widgets;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.content.Context;
-
 public class AndroidWidgetMapper {
 
 	protected static AndroidWidgetMapper instance = null;
@@ -33,7 +31,7 @@ public class AndroidWidgetMapper {
 		registerWidgetWrapper("blob", BlobWidgetWrapper.class);
 	}
 
-	public AndroidWidgetWrapper getWidgetWrapper(String type, Context ctx) {
+	public AndroidWidgetWrapper getWidgetWrapper(String type) {
 		try {
 			AndroidWidgetWrapper wrapper =  wrappers.get(type).newInstance();
 			return wrapper;

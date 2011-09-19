@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Random;
 
 import org.nuxeo.android.adapters.DocumentAttributeResolver;
+import org.nuxeo.android.cache.blob.BlobWithProperties;
+import org.nuxeo.android.layout.LayoutContext;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.android.layout.WidgetDefinition;
 import org.nuxeo.android.upload.FileUploader;
@@ -13,7 +15,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyMap;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
@@ -30,7 +32,6 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 	protected static final int PICK_ANY = REQUEST_CODE_BASE + 1;
 
 	protected int uploadInProgress = 0;
-	protected String uuid;
 
 	protected LinearLayout layoutWidget;
 	protected TextView filename;
@@ -86,11 +87,12 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 	}
 
 	@Override
-	public View buildView(Activity ctx, LayoutMode mode, Document doc,
+	public View buildView(LayoutContext context, LayoutMode mode, Document doc,
 			String attributeName, WidgetDefinition widgetDef) {
-		super.buildView(ctx, mode, doc, attributeName, widgetDef);
+		super.buildView(context, mode, doc, attributeName, widgetDef);
 
-		layoutWidget = new LinearLayout(ctx);
+		Context ctx = context.getActivity();
+		layoutWidget = new LinearLayout(context.getActivity());
 		layoutWidget.setOrientation(LinearLayout.VERTICAL);
 
 		// Common part
@@ -119,7 +121,7 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 				public void onClick(View view) {
 					progressBar.setVisibility(View.VISIBLE);
 					progressBar.invalidate();
-					registerActivityResultHandler(PICK_IMG, getHandler(uuid));
+					registerActivityResultHandler(PICK_IMG, getHandler(getLayoutContext().getLayoutId()));
 					getHomeActivity().startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), PICK_IMG);
 				}
 			});
@@ -132,7 +134,7 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 				public void onClick(View arg0) {
 					progressBar.setVisibility(View.VISIBLE);
 					progressBar.invalidate();
-					registerActivityResultHandler(PICK_ANY, getHandler(uuid));
+					registerActivityResultHandler(PICK_ANY, getHandler(getLayoutContext().getLayoutId()));
 					getHomeActivity().startActivityForResult(new Intent(Intent.ACTION_PICK).setType("*/*"), PICK_ANY);
 					}
 			});
@@ -191,7 +193,6 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 	@Override
 	protected void initCurrentValueFromDocument(Document doc) {
 		Object blobField = DocumentAttributeResolver.get(doc, attributeName);
-		uuid = doc.getId();
 		currentValue = null;
 		if (blobField!=null && blobField instanceof PropertyMap) {
 			currentValue = (PropertyMap) blobField;
@@ -203,21 +204,26 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 	}
 
 
-	protected ActivityResultUriToFileHandler getHandler(final String key) {
+	protected ActivityResultUriToFileHandler getHandler(final String batchId) {
 
 		return new ActivityResultUriToFileHandler(getRootContext()) {
 
 			@Override
 			protected void onStreamBlobAvailable(Blob blobToUpload) {
 
-				blobToUpload = startUpload(blobToUpload, key);
+				BlobWithProperties blobUploading = startUpload(blobToUpload, batchId);
 
 				PropertyMap blobProp = new PropertyMap();
-				blobProp.set("length",new Long(blobToUpload.getLength()));
-				blobProp.set("mime-type",blobToUpload.getMimeType());
+				blobProp.set("type", "blob");
+				blobProp.set("length",new Long(blobUploading.getLength()));
+				blobProp.set("mime-type",blobUploading.getMimeType());
 				blobProp.set("name",blobToUpload.getFileName());
-				blobProp.set("android-upload-batch",key);
-				blobProp.set("android-upload-name",blobToUpload.getFileName());
+				// set information for server side Blob mapping
+				blobProp.set("upload-batch",batchId);
+				blobProp.set("upload-fileId",blobUploading.getFileName());
+				// set information for the update query to know it's dependencies
+				blobProp.set("android-require-type", "upload");
+				blobProp.set("android-require-uuid", blobUploading.getProperty(FileUploader.UPLOAD_UUID));
 
 				setCurrentValue(blobProp);
 				applyBinding();
@@ -225,9 +231,9 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 		};
 	}
 
-	protected Blob startUpload(Blob blobToUpload, String batchId) {
+	protected BlobWithProperties startUpload(Blob blobToUpload, String batchId) {
 
-		Blob result = null;
+		BlobWithProperties result = null;
 		final String fileId = getAttributeName();
 
 		blobToUpload.setFileName(fileId);

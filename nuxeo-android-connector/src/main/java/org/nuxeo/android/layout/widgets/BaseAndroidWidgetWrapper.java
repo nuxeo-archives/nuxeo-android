@@ -6,6 +6,7 @@ import java.util.Map;
 import org.nuxeo.android.context.NuxeoContext;
 import org.nuxeo.android.layout.ActivityResultHandler;
 import org.nuxeo.android.layout.ActivityResultHandlerRegistry;
+import org.nuxeo.android.layout.LayoutContext;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.android.layout.WidgetDefinition;
 import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
@@ -19,8 +20,6 @@ public abstract class BaseAndroidWidgetWrapper<T> implements ActivityResultHandl
 
 	protected final Map<Integer, ActivityResultHandler> pendingActivityResultHandlers = new HashMap<Integer, ActivityResultHandler>();
 
-	protected Activity activity;
-
 	protected String attributeName;
 
 	protected T currentValue;
@@ -28,6 +27,8 @@ public abstract class BaseAndroidWidgetWrapper<T> implements ActivityResultHandl
 	protected WidgetDefinition widgetDef;
 
 	protected LayoutMode mode;
+
+	protected LayoutContext layoutContext;
 
 	@Override
 	public void registerActivityResultHandler(int requestCode,
@@ -43,7 +44,7 @@ public abstract class BaseAndroidWidgetWrapper<T> implements ActivityResultHandl
 	}
 
 	protected AndroidAutomationClient getClient() {
-		return NuxeoContext.get(activity.getApplicationContext()).getNuxeoClient();
+		return NuxeoContext.get(layoutContext.getActivity().getApplicationContext()).getNuxeoClient();
 	}
 
 	protected String getAttributeName() {
@@ -64,21 +65,25 @@ public abstract class BaseAndroidWidgetWrapper<T> implements ActivityResultHandl
 		currentValue = value;
 	}
 
-	public View buildView(Activity ctx, LayoutMode mode, Document doc,
+	public View buildView(LayoutContext context, LayoutMode mode, Document doc,
 			String attributeName, WidgetDefinition widgetDef) {
 		setAttributeName(attributeName);
 		initCurrentValueFromDocument(doc);
 		this.widgetDef=widgetDef;
 		this.mode=mode;
-		this.activity=ctx;
+		this.layoutContext=context;
 		return null;
 	}
 
 	protected Context getRootContext() {
-		return activity;
+		return layoutContext.getActivity();
 	}
 
 	protected Activity getHomeActivity() {
-		return activity;
+		return layoutContext.getActivity();
+	}
+
+	protected LayoutContext getLayoutContext() {
+		return layoutContext;
 	}
 }

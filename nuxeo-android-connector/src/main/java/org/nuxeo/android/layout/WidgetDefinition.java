@@ -5,7 +5,6 @@ import org.nuxeo.android.layout.widgets.AndroidWidgetMapper;
 import org.nuxeo.android.layout.widgets.AndroidWidgetWrapper;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
-import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -45,7 +44,7 @@ public class WidgetDefinition {
 		return name;
 	}
 
-	public NuxeoWidget build(Activity ctx, Document doc, ViewGroup parent, LayoutMode mode) {
+	public NuxeoWidget build(LayoutContext context, Document doc, ViewGroup parent, LayoutMode mode) {
 		this.mode=mode;
 
 		View view = null;
@@ -53,15 +52,15 @@ public class WidgetDefinition {
 		LayoutParams paramsW = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f);
 
 		if (label!=null) {
-			TextView labelW = new TextView(ctx);
+			TextView labelW = new TextView(context.getActivity());
 			labelW.setText(label + " :");
 			labelW.setLayoutParams(paramsL);
 			parent.addView(labelW);
 		}
 
-		AndroidWidgetWrapper wrapper = AndroidWidgetMapper.getInstance().getWidgetWrapper(type, ctx);
+		AndroidWidgetWrapper wrapper = AndroidWidgetMapper.getInstance().getWidgetWrapper(type);
 		if (wrapper!=null) {
-			view = wrapper.buildView(ctx, mode, doc, attributeName, this);
+			view = wrapper.buildView(context, mode, doc, attributeName, this);
 			view.setLayoutParams(paramsW);
 		}
 

@@ -5,13 +5,14 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.nuxeo.android.adapters.DocumentAttributeResolver;
+import org.nuxeo.android.layout.LayoutContext;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.android.layout.WidgetDefinition;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
+import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -65,10 +66,12 @@ public class DateWidgetWrapper extends BaseAndroidWidgetWrapper<Calendar> implem
 	}
 
 	@Override
-	public View buildView(Activity ctx, LayoutMode mode, Document doc,
+	public View buildView(LayoutContext context, LayoutMode mode, Document doc,
 			String attributeName, WidgetDefinition widgetDef) {
 
-		super.buildView(ctx, mode, doc, attributeName, widgetDef);
+		super.buildView(context, mode, doc, attributeName, widgetDef);
+
+		Context ctx = context.getActivity();
 
 		layout = new LinearLayout(ctx);
 		layout.setOrientation(LinearLayout.HORIZONTAL);

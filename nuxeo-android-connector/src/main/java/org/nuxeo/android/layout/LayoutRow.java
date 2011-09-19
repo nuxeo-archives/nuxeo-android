@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -20,11 +19,11 @@ public class LayoutRow {
 		this.widgetNames = widgetNames;
 	}
 
-	public List<NuxeoWidget> buildRow(Activity ctx, Document doc, ViewGroup container, Map<String, WidgetDefinition> widgetDefs, LayoutMode mode) {
-		ViewGroup rowLayout = createTopLayoutContainer(ctx, container);
+	public List<NuxeoWidget> buildRow(LayoutContext context, Document doc, ViewGroup container, Map<String, WidgetDefinition> widgetDefs, LayoutMode mode) {
+		ViewGroup rowLayout = createTopLayoutContainer(context.getActivity(), container);
 		List<NuxeoWidget> widgets = new ArrayList<NuxeoWidget>();
 		for (String name : widgetNames) {
-			NuxeoWidget widget = widgetDefs.get(name).build(ctx, doc, rowLayout, mode);
+			NuxeoWidget widget = widgetDefs.get(name).build(context, doc, rowLayout, mode);
 			widgets.add(widget);
 		}
 		return widgets;
