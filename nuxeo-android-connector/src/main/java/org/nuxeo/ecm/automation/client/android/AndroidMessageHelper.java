@@ -70,7 +70,7 @@ public class AndroidMessageHelper implements MessageHelper {
 			intent.putExtra(NuxeoBroadcastMessages.EXTRA_DOCUMENT_PAYLOAD_KEY, doc);
 		}
 		if (extra!=null) {
-			intent.getExtras().putAll(extra);
+			intent.putExtras(extra);
 		}
 		ctx.sendBroadcast(intent);
 	}

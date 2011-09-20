@@ -18,7 +18,6 @@ package org.nuxeo.ecm.automation.client.jaxrs;
 
 import java.util.Map;
 
-import org.nuxeo.ecm.automation.client.cache.OperationType;
 import org.nuxeo.ecm.automation.client.jaxrs.model.OperationDocumentation;
 import org.nuxeo.ecm.automation.client.jaxrs.model.OperationInput;
 import org.nuxeo.ecm.automation.client.jaxrs.model.OperationDocumentation.Param;
@@ -60,7 +59,7 @@ public interface OperationRequest {
 
     boolean isCachable();
 
-    boolean forceRefresh();
+    boolean isForceRefresh();
 
     void forceCache();
 
@@ -72,4 +71,7 @@ public interface OperationRequest {
 
     OperationDocumentation getDocumentation();
 
+    ExecutionDependencies getDependencies();
+
+    boolean hasDependencies();
 }

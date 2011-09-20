@@ -3,15 +3,16 @@ package org.nuxeo.android.cache.blob;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.Properties;
 
 import org.nuxeo.ecm.automation.client.cache.StreamHelper;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
-import org.nuxeo.ecm.automation.client.jaxrs.model.FileBlob;
 
-public class BlobStore {
+public class BlobStore implements Iterable<Properties>{
 
 	protected static final String NFO_SUFFIX=".info";
 
@@ -68,6 +69,8 @@ public class BlobStore {
 		return new File(storageDir, key).exists();
 	}
 
+
+
 	protected BlobWithProperties buildBlob(File file, String key) {
 		File fileInfo =  new File(storageDir, key + NFO_SUFFIX );
 		String name = key;
@@ -113,6 +116,45 @@ public class BlobStore {
 			size+=file.length();
 		}
 		return size;
+	}
+
+	@Override
+	public Iterator<Properties> iterator() {
+
+		return new Iterator<Properties>() {
+
+			private int idx=-1;
+			private File[] files = storageDir.listFiles(new FilenameFilter() {
+				@Override
+				public boolean accept(File dir, String name) {
+					return name.endsWith(NFO_SUFFIX);
+				}
+			});
+
+			@Override
+			public boolean hasNext() {
+				return idx < files.length-1;
+			}
+
+			@Override
+			public Properties next() {
+				idx++;
+				Properties props = new Properties();
+				try {
+					props.load(new FileInputStream(files[idx]));
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+
+				return props;
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException();
+			}
+
+		};
 	}
 
 }

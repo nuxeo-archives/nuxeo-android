@@ -42,6 +42,7 @@ public abstract class AbstractDocumentListAdapter extends BaseAdapter {
 		handler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
+				currentCount=-1;
 				notifyDataSetChanged();
 			}
 		};
@@ -49,7 +50,6 @@ public abstract class AbstractDocumentListAdapter extends BaseAdapter {
 		docList.registerListener(new DocumentsListChangeListener() {
 			@Override
 			public void notifyContentChanged(int page) {
-				currentCount=-1;
 				handler.sendEmptyMessage(page);
 			}
 		});

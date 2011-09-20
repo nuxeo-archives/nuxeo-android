@@ -269,4 +269,21 @@ public class Document extends DocRef implements Serializable {
 		return Uri.parse("content://nuxeo/blobs/" + getId() + "/" + idx);
 	}
 
+	public List<String> getPendingUploads() {
+
+		List<String> tokens = new ArrayList<String>();
+		for (String key: dirtyFields) {
+			Object prop = properties.get(key);
+			if (prop!=null && prop instanceof PropertyMap) {
+				PropertyMap map = (PropertyMap) prop;
+				if (map!=null && map.getString("type", "").equals("blob")) {
+					String token = map.getString("android-require-uuid", null);
+					if (token!=null) {
+						tokens.add(token);
+					}
+				}
+			}
+		}
+		return tokens;
+	}
 }

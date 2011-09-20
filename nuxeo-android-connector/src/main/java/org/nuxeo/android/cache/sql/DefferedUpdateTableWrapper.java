@@ -1,22 +1,13 @@
 package org.nuxeo.android.cache.sql;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuxeo.ecm.automation.client.cache.CachedOperationRequest;
 import org.nuxeo.ecm.automation.client.cache.OperationType;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
-import org.nuxeo.ecm.automation.client.jaxrs.model.FileBlob;
-import org.nuxeo.ecm.automation.client.jaxrs.model.OperationDocumentation;
-import org.nuxeo.ecm.automation.client.jaxrs.model.OperationInput;
-import org.nuxeo.ecm.automation.client.jaxrs.spi.DefaultOperationRequest;
-import org.nuxeo.ecm.automation.client.jaxrs.spi.DefaultSession;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -30,6 +21,7 @@ public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
 	protected static final String OPTYPE_COLUMN = "OPTYPE";
 	protected static final String PARAMS_COLUMN = "PARAMS";
 	protected static final String HEADERS_COLUMN = "HEADERS";
+	protected static final String DEPS_COLUMN = "DEPS";
 	protected static final String CTX_COLUMN = "CTX";
 	protected static final String INPUT_TYPE_COLUMN = "INPUT_TYPE";
 	protected static final String INPUT_REF_COLUMN = "INPUT_REF";
@@ -42,7 +34,8 @@ public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
 			+ OPTYPE_COLUMN + " TEXT,"
 			+ INPUT_TYPE_COLUMN + " TEXT, "
 			+ INPUT_REF_COLUMN + " TEXT, "
-			+ INPUT_BINARY_COLUMN + " TEXT);";
+			+ INPUT_BINARY_COLUMN + " TEXT, "
+			+ DEPS_COLUMN + ");";
 
 	@Override
 	public String getCreateStatement() {
@@ -68,12 +61,14 @@ public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
 		+ OPTYPE_COLUMN + ","
 		+ PARAMS_COLUMN + ","
 		+ HEADERS_COLUMN + ","
-		+ CTX_COLUMN ;
+		+ CTX_COLUMN + ","
+		+ DEPS_COLUMN;
 
 		String operationId = request.getDocumentation().getId();
 		String jsonParams = new JSONObject(request.getParameters()).toString();
         String jsonHeaders = new JSONObject(request.getHeaders()).toString();
         String jsonCtx = new JSONObject(request.getContextParameters()).toString();
+        String deps = request.getDependencies().asJSON();
 
 		String sqlValues =  " VALUES ("
 		+ "'" + key + "',"
@@ -81,7 +76,8 @@ public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
 		+ "'" + opType.toString() + "',"
 		+ "'" + jsonParams + "',"
 		+ "'" + jsonHeaders + "',"
-		+ "'" + jsonCtx + "'";
+		+ "'" + jsonCtx + "',"
+		+ "'" + deps + "'";
 
         if (request.getInput()!=null) {
         	String inputType = request.getInput().getInputType();

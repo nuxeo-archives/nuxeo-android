@@ -18,8 +18,6 @@ import org.nuxeo.ecm.automation.client.jaxrs.impl.CacheKeyHelper;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
-import sun.nio.ch.EPollSelectorProvider;
-
 import android.net.Uri;
 import android.util.Log;
 

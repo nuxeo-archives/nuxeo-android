@@ -2,6 +2,7 @@ package org.nuxeo.android.documentprovider;
 
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
+import org.nuxeo.ecm.automation.client.jaxrs.Dependency.DependencyType;
 import org.nuxeo.ecm.automation.client.jaxrs.adapters.DocumentService;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.PathRef;
@@ -22,6 +23,8 @@ public class LazyUpdatableDocumentsListImpl extends AbstractLazyUpdatebleDocumen
 		OperationRequest updateOperation = session.newRequest(DocumentService.UpdateDocument).setInput(updatedDocument);
 		updateOperation.set("properties", updatedDocument.getDirtyPropertiesAsPropertiesString());
 		updateOperation.set("save", true);
+		// add dependency if needed
+		markDependencies(updateOperation, updatedDocument);
 		return updateOperation;
 	}
 
@@ -33,8 +36,15 @@ public class LazyUpdatableDocumentsListImpl extends AbstractLazyUpdatebleDocumen
 		if (newDocument.getName()!=null) {
 			createOperation.set("name", newDocument.getName());
 		}
+		// add dependency if needed
+		markDependencies(createOperation, newDocument);
 		return createOperation;
 	}
 
+	protected void markDependencies(OperationRequest operation, Document doc) {
+		for (String token : doc.getPendingUploads()) {
+			operation.getDependencies().add(DependencyType.FILE_UPLOAD, token);
+		}
+	}
 
 }

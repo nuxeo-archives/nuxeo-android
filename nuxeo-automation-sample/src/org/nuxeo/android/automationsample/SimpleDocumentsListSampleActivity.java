@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.nuxeo.android.adapters.AbstractDocumentListAdapter;
 import org.nuxeo.android.adapters.DocumentsListAdapter;
-import org.nuxeo.android.documentprovider.DocumentProvider;
 import org.nuxeo.android.documentprovider.LazyDocumentsList;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;

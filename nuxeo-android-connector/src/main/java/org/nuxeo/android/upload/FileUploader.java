@@ -1,6 +1,7 @@
 package org.nuxeo.android.upload;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -25,6 +26,8 @@ public class FileUploader {
 	protected final BlobStore store;
 
 	protected final AndroidAutomationClient client;
+
+	protected LinkedList<String> uploadDone = new LinkedList<String>();
 
 	public FileUploader(AndroidAutomationClient client) {
 		store = client.getBlobStoreManager().getBlobStore("upload");
@@ -114,5 +117,24 @@ public class FileUploader {
 
 	public void cancelUpload(String batchId) {
 		// XXX
+	}
+
+	public boolean isUploadDone(String key) {
+		if (uploadDone.contains(key)) {
+			return true;
+		}
+
+		for (Properties props : store) {
+			String uuid = props.getProperty(UPLOAD_UUID);
+			if (uuid!=null && uuid.equals(key)) {
+				return false;
+			}
+		}
+
+		uploadDone.addLast(key);
+		if (uploadDone.size()>20) {
+			uploadDone.removeFirst();
+		}
+		return true;
 	}
 }

@@ -102,7 +102,7 @@ public class DefaultSession implements Session {
         req.put("Content-Type", ctype);
 
         //check offline settings
-        boolean refresh = request.forceRefresh() && !client.isOffline();
+        boolean refresh = request.isForceRefresh() && !client.isOffline();
         Object result = connector.execute(req, refresh, request.isCachable());
 
         if (result !=null && result instanceof Documents) {
