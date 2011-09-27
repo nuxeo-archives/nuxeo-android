@@ -10,15 +10,33 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuxeo.android.layout.selectOptions.SelectOptions;
 
+import android.util.Log;
+
 public class LayoutJSONParser {
 
-	public final static String WIDGETS_DEF = "widgetDefinitions";
+	public final static String WIDGETS_DEF = "widgets";
 	public final static String ROWS_DEF = "rows";
 	public final static String OPTIONS_DEF = "selectOptions";
 
 	public static LayoutDefinition readDefinition(String jsonString) throws JSONException {
-		JSONObject jsonObject = new JSONObject(jsonString);
-		return readDefinition(jsonObject);
+		jsonString = jsonString.trim();
+		if (jsonString.startsWith("[")) {
+			LayoutDefinition globalDefinition = null;
+			JSONArray array = new JSONArray(jsonString);
+			for (int i = 0 ; i < array.length(); i++) {
+				JSONObject jsonObject = array.getJSONObject(i);
+				LayoutDefinition def = readDefinition(jsonObject);
+				if (globalDefinition==null) {
+					globalDefinition = def;
+				} else {
+					globalDefinition.merge(def);
+				}
+			}
+			return globalDefinition;
+		} else {
+			JSONObject jsonObject = new JSONObject(jsonString);
+			return readDefinition(jsonObject);
+		}
 	}
 
 	public static LayoutDefinition readDefinition(JSONObject jsonObject) throws JSONException {
@@ -31,25 +49,33 @@ public class LayoutJSONParser {
 		List<LayoutRow> rowDefs = new ArrayList<LayoutRow>();
 
 		for (int i = 0 ; i< widgets.length(); i++) {
-			JSONObject w = widgets.getJSONObject(i);
-			WidgetDefinition wDef = new WidgetDefinition(w.getString("name"), w.getString("type"), w.getString("label"), w.getString("attributeName"));
-			widgetDefs.put(w.getString("name"), wDef);
+			try {
+				JSONObject w = widgets.getJSONObject(i);
+				JSONArray fields = w.getJSONArray("fields");
+				JSONObject labels = w.getJSONObject("labels");
+				String fieldName = fields.getJSONObject(0).getString("fieldName");
+				WidgetDefinition wDef = new WidgetDefinition(w.getString("name"), w.getString("type"), labels.getString("any"),fieldName );
+				widgetDefs.put(w.getString("name"), wDef);
 
-			JSONArray options = w.optJSONArray(OPTIONS_DEF);
-			if (options!=null) {
-				wDef.setSelectOptions(new SelectOptions(options));
+				JSONArray options = w.optJSONArray(OPTIONS_DEF);
+				if (options!=null) {
+					wDef.setSelectOptions(new SelectOptions(options));
+				}
+			} catch (JSONException e) {
+				Log.e(LayoutJSONParser.class.getSimpleName(), "Error while parling widget " + i, e);
+				throw e;
 			}
 
 		}
 		for (int i = 0 ; i< rows.length(); i++) {
-			JSONArray r = rows.getJSONArray(i);
+			JSONObject rowObject = rows.getJSONObject(i);
+			JSONArray w = rowObject.getJSONArray("widgets");
 			List<String> widgetNames = new ArrayList<String>();
-			for (int j = 0; j < r.length(); j++) {
-				widgetNames.add(r.getString(j));
+			for (int j = 0; j < w.length(); j++) {
+				widgetNames.add(w.getString(j));
 			}
 			rowDefs.add(new LayoutRow(widgetNames));
 		}
 		return new LayoutDefinition(widgetDefs, rowDefs);
 	}
-
 }

@@ -63,10 +63,11 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends LazyDocumentsLi
 			if (updateOperation==null) {
 				updateOperation = buildUpdateOperation(session, updatedDocument);
 			}
-			session.execDeferredUpdate(updateOperation, new AsyncCallback<Object>() {
+			String requestId = session.execDeferredUpdate(updateOperation, new AsyncCallback<Object>() {
 
 				@Override
 				public void onSuccess(String executionId, Object data) {
+					Log.i(AbstractLazyUpdatebleDocumentsList.class.getSimpleName(), "Defered updated successful");
 					notifyContentChanged(page);
 					// start refreshing
 					refreshAll();
@@ -74,6 +75,7 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends LazyDocumentsLi
 
 				@Override
 				public void onError(String executionId, Throwable e) {
+					Log.i(AbstractLazyUpdatebleDocumentsList.class.getSimpleName(), "Defered updated failed");
 					// revert to previous
 					pages.get(page).set(docIdx, originalDocument);
 					notifyContentChanged(page);
@@ -119,6 +121,7 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends LazyDocumentsLi
 
 			@Override
 			public void onSuccess(String executionId, Object data) {
+				Log.i(AbstractLazyUpdatebleDocumentsList.class.getSimpleName(), "Defered creation executed successfully");
 				removePendingCreatedDocument(key);
 				// start refreshing
 				refreshAll();

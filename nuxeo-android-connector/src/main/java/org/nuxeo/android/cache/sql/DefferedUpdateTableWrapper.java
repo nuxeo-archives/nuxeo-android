@@ -6,6 +6,7 @@ import java.util.List;
 import org.json.JSONObject;
 import org.nuxeo.ecm.automation.client.cache.CachedOperationRequest;
 import org.nuxeo.ecm.automation.client.cache.OperationType;
+import org.nuxeo.ecm.automation.client.jaxrs.ExecutionDependencies;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 
@@ -116,6 +117,7 @@ public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
 		            String jsonCtx = cursor.getString(cursor.getColumnIndex(CTX_COLUMN));
 		            String inputType = cursor.getString(cursor.getColumnIndex(INPUT_TYPE_COLUMN));
 		            String inputRef = cursor.getString(cursor.getColumnIndex(INPUT_REF_COLUMN));
+		            String deps = cursor.getString(cursor.getColumnIndex(DEPS_COLUMN));
 		            Boolean inputBin = false;
 		            if (inputType!=null) {
 		            	inputBin = new Boolean(cursor.getString(cursor.getColumnIndex(INPUT_BINARY_COLUMN)));
@@ -157,6 +159,9 @@ public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
 
 					OperationRequest deferredRequest = new DefaultOperationRequest((DefaultSession) session,op, params, headers, ctx,input);*/
 					OperationRequest deferredRequest = OperationPersisterHelper.rebuildOperation(session, operationId, jsonParams, jsonHeaders, jsonCtx, inputType, inputRef, inputBin);
+					if (deps!=null) {
+						deferredRequest.getDependencies().merge(ExecutionDependencies.fromJSON(deps));
+					}
 					result.add(new CachedOperationRequest(deferredRequest, operationKey, opType));
 
 				} while (cursor.moveToNext());

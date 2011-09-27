@@ -97,11 +97,18 @@ public class BlobStore implements Iterable<Properties>{
 	}
 
 	public boolean deleteBlob(String key) {
+		boolean result = true;
 		File fileToDelete = new File(storageDir, key);
 		if (fileToDelete.exists()) {
-			return fileToDelete.delete();
+			result = fileToDelete.delete();
+			if (result) {
+				fileToDelete = new File(storageDir, key + NFO_SUFFIX);
+				if (fileToDelete.exists()) {
+					result = fileToDelete.delete();
+				}
+			}
 		}
-		return true;
+		return result;
 	}
 
 	public void clear() {

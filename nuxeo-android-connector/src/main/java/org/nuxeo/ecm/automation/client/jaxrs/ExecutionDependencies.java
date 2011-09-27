@@ -1,10 +1,9 @@
 package org.nuxeo.ecm.automation.client.jaxrs;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.management.RuntimeErrorException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,7 +12,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.Dependency.DependencyType;
 
 public class ExecutionDependencies implements Iterable<Dependency> {
 
-	protected final List<Dependency> dependencies = new CopyOnWriteArrayList<Dependency>();
+	protected final List<Dependency> dependencies = new ArrayList<Dependency>();
 
 	public void add(DependencyType type, String token) {
 		dependencies.add(new Dependency(type, token));
@@ -65,5 +64,17 @@ public class ExecutionDependencies implements Iterable<Dependency> {
 			throw new RuntimeException(e);
 		}
 		return deps;
+	}
+
+	public int size() {
+		return dependencies.size();
+	}
+
+	public void merge(ExecutionDependencies deps) {
+		if (deps!=null) {
+			for (Dependency dep : deps) {
+				dependencies.add(dep);
+			}
+		}
 	}
 }

@@ -111,8 +111,8 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 	public Cursor query(Uri uri, String[] columns, String selection,
 			String[] selectionArgs, String sortOrder) {
 
-		Log.i("NuxeoContentProvider", "called on query with uri : " + uri.toString());
-		Log.i("NuxeoContentProvider", "Match=> " + uriMatcher.match(uri));
+		//Log.i("NuxeoContentProvider", "called on query with uri : " + uri.toString());
+		//Log.i("NuxeoContentProvider", "Match=> " + uriMatcher.match(uri));
 
 		int match = uriMatcher.match(uri);
 		switch (match)
@@ -171,8 +171,8 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 	@Override
 	public String getType(Uri uri) {
 
-		Log.i("NuxeoContentProvider", "called on getType with uri : " + uri.toString());
-		Log.i("NuxeoContentProvider", "Match=> " + uriMatcher.match(uri));
+		//Log.i("NuxeoContentProvider", "called on getType with uri : " + uri.toString());
+		//Log.i("NuxeoContentProvider", "Match=> " + uriMatcher.match(uri));
 
 		String mimeType = null;
 
@@ -215,7 +215,7 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 	@Override
 	public AssetFileDescriptor openAssetFile(Uri uri, String mode)
 			throws FileNotFoundException {
-		Log.i("NuxeoContentProvider", "called on openAssetFile with uri : " + uri.toString());
+		//Log.i("NuxeoContentProvider", "called on openAssetFile with uri : " + uri.toString());
 		return super.openAssetFile(uri, mode);
 	}
 
@@ -250,8 +250,8 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 	public ParcelFileDescriptor openFile(Uri uri, String mode)
 			throws FileNotFoundException {
 
-		Log.i("NuxeoContentProvider", "called on openFile with uri : " + uri.toString());
-		Log.i("NuxeoContentProvider", "Match=> " + uriMatcher.match(uri));
+		//Log.i("NuxeoContentProvider", "called on openFile with uri : " + uri.toString());
+		//Log.i("NuxeoContentProvider", "Match=> " + uriMatcher.match(uri));
 
 		FileBlob blob = resolveBlob(uri);
 		if (blob!=null) {

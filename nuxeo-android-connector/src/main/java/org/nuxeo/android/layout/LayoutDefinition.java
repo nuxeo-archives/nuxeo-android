@@ -53,4 +53,8 @@ public class LayoutDefinition {
 		return container;
 	}
 
+	public void merge(LayoutDefinition def) {
+		widgetDefs.putAll(def.widgetDefs);
+		rows.addAll(def.rows);
+	}
 }

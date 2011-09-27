@@ -97,6 +97,7 @@ public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity 
 
 	protected void flushDefferedUpdateManager() {
 		getAutomationClient().getDeferredUpdatetManager().purgePendingUpdates();
+		getAutomationClient().getTransientStateManager().flushTransientState();
 		fireUpdateCacheInfoDisplay();
 	}
 

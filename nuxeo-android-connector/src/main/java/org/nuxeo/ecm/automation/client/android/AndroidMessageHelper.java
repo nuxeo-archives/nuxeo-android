@@ -9,6 +9,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 public class AndroidMessageHelper implements MessageHelper {
 
@@ -68,6 +69,9 @@ public class AndroidMessageHelper implements MessageHelper {
 
 		if (doc!=null) {
 			intent.putExtra(NuxeoBroadcastMessages.EXTRA_DOCUMENT_PAYLOAD_KEY, doc);
+			Log.i(this.getClass().getSimpleName(), "Sending message " + event + " on document " + doc.getId());
+		} else {
+			Log.i(this.getClass().getSimpleName(), "Sending message " + event);
 		}
 		if (extra!=null) {
 			intent.putExtras(extra);

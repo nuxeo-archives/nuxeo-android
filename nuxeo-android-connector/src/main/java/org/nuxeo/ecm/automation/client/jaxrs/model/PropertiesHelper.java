@@ -19,6 +19,10 @@ package org.nuxeo.ecm.automation.client.jaxrs.model;
 import java.util.Date;
 import java.util.Properties;
 
+import org.json.JSONObject;
+
+import android.util.Log;
+
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  */
@@ -130,7 +134,11 @@ public class PropertiesHelper {
     			sb.append(";");
     		}
     		return sb.toString();
-    	} else {
+    	} else if (prop instanceof PropertyMap) {
+    		PropertyMap map = (PropertyMap) prop;
+    		return new JSONObject(map.map()).toString();
+    	}
+    	else {
     		return prop.toString();
     	}
     }

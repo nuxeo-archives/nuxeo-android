@@ -211,7 +211,11 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 			@Override
 			protected void onStreamBlobAvailable(Blob blobToUpload) {
 
+				Log.i(BlobWidgetWrapper.class.getSimpleName(), "Started blob upload with batchId " + batchId);
 				BlobWithProperties blobUploading = startUpload(blobToUpload, batchId);
+
+				String uploadUUID = blobUploading.getProperty(FileUploader.UPLOAD_UUID);
+				Log.i(BlobWidgetWrapper.class.getSimpleName(), "Started blob upload UUID " + uploadUUID);
 
 				PropertyMap blobProp = new PropertyMap();
 				blobProp.set("type", "blob");
@@ -223,7 +227,7 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 				blobProp.set("upload-fileId",blobUploading.getFileName());
 				// set information for the update query to know it's dependencies
 				blobProp.set("android-require-type", "upload");
-				blobProp.set("android-require-uuid", blobUploading.getProperty(FileUploader.UPLOAD_UUID));
+				blobProp.set("android-require-uuid", uploadUUID);
 
 				setCurrentValue(blobProp);
 				applyBinding();

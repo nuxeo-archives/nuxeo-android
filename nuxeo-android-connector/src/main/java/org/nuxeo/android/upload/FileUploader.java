@@ -54,6 +54,7 @@ public class FileUploader {
 			@Override
 			public void run() {
 
+				Log.i(FileUploader.class.getSimpleName(), "Starting upload for Blob with UUID" + blob.getProperty(UPLOAD_UUID));
 				String url = client.getServerConfig().getServerBaseUrl() + "site/automation/batch/upload";
 				HttpPost post = new HttpPost(url);
 				post.setHeader("Cache-Control", "no-cache");
@@ -78,6 +79,7 @@ public class FileUploader {
 
 					HttpResponse response = client.getConnector().executeSimpleHttp(post);
 					if (response.getStatusLine().getStatusCode()==200) {
+						Log.i(FileUploader.class.getSimpleName(), "Upload completed successfuly for Blob with UUID" + blob.getProperty(UPLOAD_UUID));
 						if (cb!=null) {
 							cb.onSuccess(batchId, response.getStatusLine().getReasonPhrase());
 						}

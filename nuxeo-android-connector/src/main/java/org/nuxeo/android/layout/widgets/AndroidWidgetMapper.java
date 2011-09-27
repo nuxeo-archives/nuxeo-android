@@ -33,7 +33,11 @@ public class AndroidWidgetMapper {
 
 	public AndroidWidgetWrapper getWidgetWrapper(String type) {
 		try {
-			AndroidWidgetWrapper wrapper =  wrappers.get(type).newInstance();
+			Class <? extends AndroidWidgetWrapper> wrapperClass =wrappers.get(type);
+			if (wrapperClass==null) {
+				wrapperClass = TextWidgetWrapper.class;
+			}
+			AndroidWidgetWrapper wrapper = wrapperClass.newInstance();
 			return wrapper;
 		} catch (Exception e) {
 			throw new RuntimeException(e);

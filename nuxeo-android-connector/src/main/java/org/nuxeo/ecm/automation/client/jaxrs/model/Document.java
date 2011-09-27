@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 
 import android.net.Uri;
+import android.util.Log;
 
 /**
  * A immutable document. You cannot modify documents. Documents are as they are
@@ -228,7 +229,9 @@ public class Document extends DocRef implements Serializable {
     }
 
     public String getDirtyPropertiesAsPropertiesString() {
-    	return PropertiesHelper.toStringProperties(getDirtyProperties());
+    	String dirtyString =  PropertiesHelper.toStringProperties(getDirtyProperties());
+    	Log.i(this.getClass().getSimpleName(), "Dirty props => " + dirtyString);
+    	return dirtyString;
     }
 
     public DocumentStatus getStatusFlag() {

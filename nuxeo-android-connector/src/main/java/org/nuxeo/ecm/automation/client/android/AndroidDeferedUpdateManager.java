@@ -59,8 +59,14 @@ public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
 				.getMessageHelper();
 
 		boolean depOk = !request.hasDependencies();
+		Log.i(this.getClass().getSimpleName(), "Request has depedencies ... checking resolution ");
 		if (!depOk) {
 			depOk = checkDependencies(request);
+		}
+		if (depOk) {
+			Log.i(this.getClass().getSimpleName(), "Depedencies resolved");
+		} else {
+			Log.i(this.getClass().getSimpleName(), "There are still pending depedencies, update will have to wait. ");
 		}
 
 		if (exeuteNow && depOk) {
@@ -68,6 +74,7 @@ public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
 
 				@Override
 				public void onError(String executionId, Throwable e) {
+					Log.e(AndroidDeferedUpdateManager.class.getSimpleName(), "Failed to execute defered op", e);
 					AsyncCallback<Object> clientCB = pendingCallbacks
 							.remove(requestKey);
 					if (clientCB != null) {
@@ -84,12 +91,10 @@ public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
 
 				@Override
 				public void onSuccess(String executionId, Object data) {
+					Log.i(AndroidDeferedUpdateManager.class.getSimpleName(), "Execute defered op " + executionId );
 					deleteDeferredUpdate(requestKey);
 					AsyncCallback<Object> clientCB = pendingCallbacks
 							.remove(requestKey);
-					if (clientCB != null) {
-						clientCB.onSuccess(requestKey, data);
-					}
 					// Send Create/Update/Delete after event
 					Document doc = null;
 					if (data != null && data instanceof Document) {
@@ -101,6 +106,12 @@ public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
 							executionId);
 					messageHelper.notifyDocumentOperation(doc, opType,
 							EventLifeCycle.SERVER, extra);
+
+					// execute Callback if present
+					if (clientCB != null) {
+						Log.i(AndroidDeferedUpdateManager.class.getSimpleName(), "Call onSuccess client CB");
+						clientCB.onSuccess(requestKey, data);
+					}
 				}
 
 			}, CacheBehavior.FORCE_REFRESH);
@@ -116,10 +127,15 @@ public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
 
 		AndroidAutomationClient client = getClient(request.getSession());
 		ExecutionDependencies dependencies = request.getDependencies();
+		Log.i(this.getClass().getSimpleName(), "Checking : " + dependencies.size() + " dependencies");
 		for (Dependency dep : dependencies) {
 			if (dep.getType() == DependencyType.FILE_UPLOAD) {
+				Log.i(this.getClass().getSimpleName(), "Found dependency : " + dep.getToken());
 				if (client.getFileUploader().isUploadDone(dep.getToken())) {
+					Log.i(this.getClass().getSimpleName(), "Depedency resolved : " + dep.getToken());
 					dependencies.markAsResolved(dep.getToken());
+				} else {
+					Log.i(this.getClass().getSimpleName(), "Depedency NOT resolved : " + dep.getToken());
 				}
 			}
 		}
