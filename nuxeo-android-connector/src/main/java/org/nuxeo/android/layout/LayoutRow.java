@@ -24,14 +24,16 @@ public class LayoutRow {
 		List<NuxeoWidget> widgets = new ArrayList<NuxeoWidget>();
 		for (String name : widgetNames) {
 			NuxeoWidget widget = widgetDefs.get(name).build(context, doc, rowLayout, mode);
-			widgets.add(widget);
+			if (widget!=null) {
+				widgets.add(widget);
+			}
 		}
 		return widgets;
 	}
 
 	protected ViewGroup createTopLayoutContainer(Context ctx, ViewGroup parent) {
 		LinearLayout container = new LinearLayout(ctx);
-		container.setOrientation(LinearLayout.HORIZONTAL);
+		container.setOrientation(LinearLayout.VERTICAL);
 		LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
 		container.setLayoutParams(params);
 		parent.addView(container);

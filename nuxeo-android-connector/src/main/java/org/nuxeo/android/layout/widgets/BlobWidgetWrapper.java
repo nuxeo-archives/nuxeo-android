@@ -82,7 +82,9 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 		filename.invalidate();
 		size.invalidate();
 		mimetype.invalidate();
-		progressBar.invalidate();
+		if (progressBar!=null) {
+			progressBar.invalidate();
+		}
 		layoutWidget.invalidate();
 	}
 
