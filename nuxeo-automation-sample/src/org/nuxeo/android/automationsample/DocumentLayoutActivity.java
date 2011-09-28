@@ -64,8 +64,10 @@ public class DocumentLayoutActivity extends BaseNuxeoActivity implements View.On
 
 		layoutContainer = (ScrollView) findViewById(R.id.layoutContainer);
 
-		LayoutDefinition layoutDef = LayoutDefinition.fromJSON(StaticLayouts.TEST_LAYOUT);
-		layout = layoutDef.buildLayout(this, getCurrentDocument(), layoutContainer, getMode());
+		layout = getAutomationClient().getLayoutService().getLayout(this, getCurrentDocument(), layoutContainer, getMode());
+
+		//LayoutDefinition layoutDef = LayoutDefinition.fromJSON(StaticLayouts.TEST_LAYOUT);
+		//layout = layoutDef.buildLayout(this, getCurrentDocument(), layoutContainer, getMode());
 	}
 
 	@Override

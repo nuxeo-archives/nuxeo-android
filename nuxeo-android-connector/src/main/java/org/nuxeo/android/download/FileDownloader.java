@@ -1,5 +1,6 @@
 package org.nuxeo.android.download;
 
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -12,6 +13,7 @@ import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 import org.nuxeo.ecm.automation.client.jaxrs.model.FileBlob;
+import org.nuxeo.ecm.automation.client.jaxrs.util.IOUtils;
 
 import android.util.Log;
 
@@ -19,6 +21,7 @@ public class FileDownloader {
 
 	protected static final String BLOB_KEY = "blobs";
 	protected static final String ICONS_KEY = "icons";
+	protected static final String LAYOUT_KEY = "layouts";
 
 	protected final AndroidAutomationClient client;
 	protected final BlobStoreManager blobStoreManager;
@@ -58,6 +61,25 @@ public class FileDownloader {
 				cb.onSuccess(execId, blob);
 			}
 		}
+	}
+
+	public String getLayoutDefinition(String name, boolean viaDocType) {
+		String url = client.getServerConfig().getServerBaseUrl() + "site/layout-manager/layouts";
+		if (viaDocType) {
+			url = url + "/docType/" + name + "?mode=edit";
+		} else {
+			url = url + "?layoutName=" + name + "&mode=edit";
+		}
+		String execId = "layout:" + name;
+		FileBlob blob =  getBlob(LAYOUT_KEY, url,null, execId);
+		if (blob!=null) {
+			try {
+				return IOUtils.read(blob.getStream());
+			} catch (IOException e) {
+				throw new RuntimeException("Unable to read layout", e);
+			}
+		}
+		return null;
 	}
 
 	protected String buildUrl(String urlPattern, String suffix ) {
