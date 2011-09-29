@@ -4,6 +4,7 @@ import org.nuxeo.android.activities.AbstractNetworkSettingsActivity;
 import org.nuxeo.android.cache.blob.BlobStore;
 import org.nuxeo.android.cache.blob.BlobStoreManager;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
+import org.nuxeo.android.upload.FileUploader;
 import org.nuxeo.ecm.automation.client.cache.DeferredUpdateManager;
 import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
 
@@ -28,10 +29,14 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
     private TextView pendingCount;
     private Button execPendingButton;
     private Button clearPendingButton;
+    private TextView pendingUploadCount;
+    private Button clearPendingUploadButton;
     private TextView iconCacheSize;
     private Button clearIconCache;
     private TextView blobCacheSize;
     private Button clearBlobCache;
+    private TextView layoutCacheSize;
+    private Button clearLayoutCache;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +61,10 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
         clearPendingButton= (Button) findViewById(R.id.clearPendingBtn);
         clearPendingButton.setOnClickListener(this);
 
+        pendingUploadCount = (TextView) findViewById(R.id.pendingUploadCount);
+        clearPendingUploadButton= (Button) findViewById(R.id.clearPendingUploadBtn);
+        clearPendingUploadButton.setOnClickListener(this);
+
         iconCacheSize = (TextView) findViewById(R.id.iconCacheSize);
         clearIconCache = (Button) findViewById(R.id.clearIconCache);
         clearIconCache.setOnClickListener(this);
@@ -63,6 +72,10 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
         blobCacheSize = (TextView) findViewById(R.id.blobCacheSize);
         clearBlobCache = (Button) findViewById(R.id.clearBlobCache);
         clearBlobCache.setOnClickListener(this);
+
+        layoutCacheSize = (TextView) findViewById(R.id.layoutCacheSize);
+        clearLayoutCache = (Button) findViewById(R.id.clearLayoutCache);
+        clearLayoutCache.setOnClickListener(this);
 
 		super.onCreate(savedInstanceState);
 	}
@@ -76,16 +89,22 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
 	}
 
 	@Override
-	protected void updateCacheInfoDisplay(ResponseCacheManager cacheManager, DeferredUpdateManager deferredUpdatetManager, BlobStoreManager blobStoreManager) {
+	protected void updateCacheInfoDisplay(ResponseCacheManager cacheManager, DeferredUpdateManager deferredUpdatetManager, BlobStoreManager blobStoreManager, FileUploader fileUploader) {
 		cacheEntriesCount.setText("Cache contains " + cacheManager.getEntryCount() + " entries");
 		cacheSize.setText("Cache size : " + cacheManager.getSize() + "(b)" );
 		pendingCount.setText(deferredUpdatetManager.getPendingRequestCount() + " pending updates");
+
+		pendingUploadCount.setText(fileUploader.getPendingUploadCount() + " pending upload");
 
 		BlobStore iconStore = blobStoreManager.getBlobStore("icons");
 		iconCacheSize.setText("Icons cache size : " + iconStore.getSize() + "(b)");
 
 		BlobStore blobStore = blobStoreManager.getBlobStore("blobs");
 		blobCacheSize.setText("Blobs cache size : " + blobStore.getSize() + "(b)");
+
+		BlobStore layoutStore = blobStoreManager.getBlobStore("layouts");
+		layoutCacheSize.setText("Layouts cache size : " + layoutStore.getSize() + "(b)");
+
 	}
 
 	@Override
@@ -105,10 +124,14 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
 			executePendingUpdates();
 		} else if (view == clearPendingButton) {
 			flushDefferedUpdateManager();
+		} else if (view == clearPendingUploadButton) {
+			flushPendingUploads();
 		} else if (view == clearIconCache) {
 			flushBlobStore("icons");
 		} else if (view == clearBlobCache) {
 			flushBlobStore("blobs");
+		} else if (view == clearLayoutCache) {
+			flushBlobStore("layouts");
 		}
 	}
 

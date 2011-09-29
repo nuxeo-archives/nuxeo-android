@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -29,6 +30,8 @@ public class FileUploader {
 
 	protected LinkedList<String> uploadDone = new LinkedList<String>();
 
+	protected final CopyOnWriteArrayList<String> uploadInProgress = new CopyOnWriteArrayList<String>();
+
 	public FileUploader(AndroidAutomationClient client) {
 		store = client.getBlobStoreManager().getBlobStore("upload");
 		this.client = client;
@@ -41,10 +44,12 @@ public class FileUploader {
 	}
 
 	public void startUpload(String key, final AsyncCallback<Serializable> cb) {
-		BlobWithProperties blob = store.getBlob(key);
-		String batchId = blob.getProperty(BATCH_ID);
-		String fileId = blob.getProperty(FILE_ID);
-		startUpload(batchId, fileId, blob, cb);
+		if (uploadInProgress.addIfAbsent(key)) {
+			BlobWithProperties blob = store.getBlob(key);
+			String batchId = blob.getProperty(BATCH_ID);
+			String fileId = blob.getProperty(FILE_ID);
+			startUpload(batchId, fileId, blob, cb);
+		}
 	}
 
     protected void startUpload(final String batchId, final String fileId, final BlobWithProperties blob, final AsyncCallback<Serializable> cb) {
@@ -80,10 +85,11 @@ public class FileUploader {
 					HttpResponse response = client.getConnector().executeSimpleHttp(post);
 					if (response.getStatusLine().getStatusCode()==200) {
 						Log.i(FileUploader.class.getSimpleName(), "Upload completed successfuly for Blob with UUID" + blob.getProperty(UPLOAD_UUID));
+						Log.i(FileUploader.class.getSimpleName(), "removing Blob with UUID" + blob.getProperty(UPLOAD_UUID));
+						removeBlob(blob);
 						if (cb!=null) {
 							cb.onSuccess(batchId, response.getStatusLine().getReasonPhrase());
 						}
-						removeBlob(blob);
 					} else {
 						if (cb!=null) {
 							cb.onError(batchId, new Exception("Server returned status code " + response.getStatusLine().getStatusCode()));
@@ -97,11 +103,12 @@ public class FileUploader {
 					}
 					Log.e(FileUploader.class.getSimpleName(), "Exception during upload", e);
 				}
+				finally {
+					uploadInProgress.remove(blob.getProperty(UPLOAD_UUID));
+				}
 			}
 		});
-
 	}
-
 
 	public BlobWithProperties storeFileForUpload(String batchId, String fileId, Blob blob) {
 
@@ -138,5 +145,13 @@ public class FileUploader {
 			uploadDone.removeFirst();
 		}
 		return true;
+	}
+
+	public long getPendingUploadCount() {
+		return store.getCount();
+	}
+
+	public void purgePendingUploads() {
+		store.clear();
 	}
 }

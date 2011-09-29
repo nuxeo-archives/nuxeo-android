@@ -27,7 +27,7 @@ public class SpinnerWidgetWrapper extends BaseAndroidWidgetWrapper<String> imple
 
 	@Override
 	public void updateModel(Document doc) {
-		if (spinner!=null) {
+		if ( (mode !=LayoutMode.VIEW)  && spinner!=null) {
 			int pos = spinner.getSelectedItemPosition();
 			String key = widgetDef.getSelectOptions().getItemValue(pos);
 			DocumentAttributeResolver.put(doc, attributeName, key);

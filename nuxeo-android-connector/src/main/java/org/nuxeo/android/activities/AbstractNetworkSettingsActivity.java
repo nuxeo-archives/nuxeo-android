@@ -3,6 +3,7 @@ package org.nuxeo.android.activities;
 import org.nuxeo.android.broadcast.NuxeoBroadcastMessages;
 import org.nuxeo.android.cache.blob.BlobStoreManager;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
+import org.nuxeo.android.upload.FileUploader;
 import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
 import org.nuxeo.ecm.automation.client.cache.DeferredUpdateManager;
 import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
@@ -61,7 +62,7 @@ public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity 
 
 	protected void fireUpdateCacheInfoDisplay() {
 		AndroidAutomationClient client = getAutomationClient();
-		updateCacheInfoDisplay(client.getResponseCacheManager(), client.getDeferredUpdatetManager(), client.getBlobStoreManager());
+		updateCacheInfoDisplay(client.getResponseCacheManager(), client.getDeferredUpdatetManager(), client.getBlobStoreManager(), client.getFileUploader());
 	}
 
 	protected void resetNetworkStatusAndRefresh() {
@@ -88,7 +89,7 @@ public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity 
 
 	protected abstract void updateOfflineDisplay(NuxeoNetworkStatus settings);
 
-	protected abstract void updateCacheInfoDisplay(ResponseCacheManager cacheManager, DeferredUpdateManager deferredUpdateManager, BlobStoreManager blobStoreManager);
+	protected abstract void updateCacheInfoDisplay(ResponseCacheManager cacheManager, DeferredUpdateManager deferredUpdateManager, BlobStoreManager blobStoreManager, FileUploader fileUploader);
 
 	protected void flushResponseCache() {
 		getAutomationClient().getResponseCacheManager().clear();
@@ -98,6 +99,11 @@ public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity 
 	protected void flushDefferedUpdateManager() {
 		getAutomationClient().getDeferredUpdatetManager().purgePendingUpdates();
 		getAutomationClient().getTransientStateManager().flushTransientState();
+		fireUpdateCacheInfoDisplay();
+	}
+
+	protected void flushPendingUploads() {
+		getAutomationClient().getFileUploader().purgePendingUploads();
 		fireUpdateCacheInfoDisplay();
 	}
 

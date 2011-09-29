@@ -57,7 +57,7 @@ public class ExecutionDependencies implements Iterable<Dependency> {
 			JSONArray array = new JSONArray(json);
 			for (int i = 0; i < array.length(); i++) {
 				JSONObject ob = array.getJSONObject(i);
-				DependencyType type = DependencyType.valueOf((String)ob.keys().next());
+				DependencyType type = DependencyType.fromString((String)ob.keys().next());
 				deps.add(type, ob.getString(type.toString()));
 			}
 		} catch (JSONException e) {

@@ -13,13 +13,16 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
 public class SimpleDocumentsListSampleActivity extends BaseSampleListActivity {
 
+	protected Document userHome;
+
 	protected LazyUpdatableDocumentsList documentsList;
 
 	// Executed on the background thread to avoid freezing the UI
 	@Override
 	protected Object retrieveNuxeoData() throws Exception {
+		userHome = getNuxeoContext().getDocumentManager().getUserHome();
 		return getNuxeoContext().getDocumentManager().query(
-				"select * from Document", null, null, null, 0, 10,
+				"select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:isCheckedInVersion = 0 order by dc:modified desc", null, null, null, 0, 10,
 				CacheBehavior.STORE);
 	}
 
@@ -51,7 +54,7 @@ public class SimpleDocumentsListSampleActivity extends BaseSampleListActivity {
 	}
 
 	protected Document createNewDocument() {
-		return new Document("/default-domain/workspaces/WS1","newAndroidDoc","File");
+		return new Document(userHome.getPath(),"newAndroidDoc","File");
 	}
 
 	protected void onDocumentCreate(Document newDocument) {

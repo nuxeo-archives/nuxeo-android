@@ -58,7 +58,7 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 
 	@Override
 	public void updateModel(Document doc) {
-		if (mode==LayoutMode.EDIT && currentValue!=null && changedValue) {
+		if (mode!=LayoutMode.VIEW && currentValue!=null && changedValue) {
 			doc.set(attributeName, currentValue);
 		}
 	}
