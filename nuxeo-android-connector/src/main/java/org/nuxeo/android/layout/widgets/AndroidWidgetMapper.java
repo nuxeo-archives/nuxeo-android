@@ -34,6 +34,7 @@ public class AndroidWidgetMapper {
 		registerWidgetWrapper("date", DateWidgetWrapper.class);
 		registerWidgetWrapper("datetime", DateWidgetWrapper.class);
 		registerWidgetWrapper("selectOneDirectory", SpinnerWidgetWrapper.class);
+		registerWidgetWrapper("selectManyDirectory", SpinnerMultiWidgetWrapper.class);
 		registerWidgetWrapper("blob", BlobWidgetWrapper.class);
 		registerWidgetWrapper("textarea", TextAreaWidgetWrapper.class);
 	}
@@ -55,6 +56,12 @@ public class AndroidWidgetMapper {
 				}
 				else if (templateName.contains("single_user_widget_template")) {
 					return "readonlytext";
+				}
+				else if (templateName.contains("subjects_widget")) {
+					return "selectManyDirectory";
+				}
+				else if (templateName.contains("coverage_widget")) {
+					return "selectOneDirectory";
 				}
 			}
 		}
