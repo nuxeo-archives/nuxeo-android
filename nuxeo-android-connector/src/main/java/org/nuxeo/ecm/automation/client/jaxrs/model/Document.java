@@ -64,11 +64,15 @@ public class Document extends DocRef implements Serializable {
 
     protected String name;
 
+    protected String changeToken;
+
+    protected PropertyList facets;
+
     /**
      * Reserved to framework. Should be only called by client framework when
      * unmarshalling documents.
      */
-    public Document(String repoName, String id, String type, String path, String state,
+    public Document(String repoName, String id, String type, PropertyList facets, String changeToken, String path, String state,
             String lock, PropertyMap properties) {
         super(id);
         this.type = type;
@@ -83,6 +87,8 @@ public class Document extends DocRef implements Serializable {
         int idx = path.lastIndexOf("/");
         this.parentPath = path.substring(0, idx);
         this.name = path.substring(idx+1);
+        this.changeToken = changeToken;
+        this.facets = facets;
     }
 
     public Document(String parentPath, String name, String type) {
@@ -292,4 +298,13 @@ public class Document extends DocRef implements Serializable {
 		}
 		return tokens;
 	}
+
+	public String getChangeToken() {
+		return changeToken;
+	}
+
+	public PropertyList getFacets() {
+		return facets;
+	}
+
 }

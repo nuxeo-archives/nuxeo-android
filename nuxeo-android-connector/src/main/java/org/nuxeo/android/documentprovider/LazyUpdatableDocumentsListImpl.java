@@ -23,6 +23,7 @@ public class LazyUpdatableDocumentsListImpl extends AbstractLazyUpdatebleDocumen
 		OperationRequest updateOperation = session.newRequest(DocumentService.UpdateDocument).setInput(updatedDocument);
 		updateOperation.set("properties", updatedDocument.getDirtyPropertiesAsPropertiesString());
 		updateOperation.set("save", true);
+		updateOperation.set("changeToken", updatedDocument.getChangeToken()); // prevent dirty updates !
 		// add dependency if needed
 		markDependencies(updateOperation, updatedDocument);
 		return updateOperation;

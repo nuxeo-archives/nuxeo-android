@@ -140,6 +140,12 @@ public class JsonMarshalling {
         String lock = json.optString("lock", null);
         String title = json.optString("title", null);
         String lastModified = json.optString("lastModified", null);
+        String changeToken = json.optString("changeToken", null);
+        JSONArray jsonFacets = json.optJSONArray("facets");
+        PropertyList facets=null;
+        if (jsonFacets!=null) {
+        	facets = (PropertyList) readValue(jsonFacets);
+        }
         JSONObject jsonProps = json.optJSONObject("properties");
         PropertyMap props;
         if (jsonProps != null) {
@@ -149,7 +155,7 @@ public class JsonMarshalling {
         }
         props.set("dc:title", title);
         props.set("dc:modified", lastModified);
-        return new Document(repoName, uid, type, path, state, lock, props);
+        return new Document(repoName, uid, type, facets, changeToken,path, state, lock, props);
     }
 
     @SuppressWarnings("unchecked")
