@@ -1,6 +1,4 @@
-<project
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.nuxeo.android</groupId>
@@ -16,29 +14,87 @@
     <url>https://github.com/nuxeo/nuxeo-android</url>
   </scm>
 
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
   <modules>
     <module>nuxeo-android-connector</module>
-<!--    <module>nuxeo-android</module>-->
+    <module>nuxeo-automation-thin-client</module>
+    <module>nuxeo-automation-sample</module>
+    <!-- <module>nuxeo-automation-sample-test</module> -->
+    <module>nuxeo-android</module>
   </modules>
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>com.google.android</groupId>
-        <artifactId>android</artifactId>
-        <version>8</version>
-        <scope>system</scope>
-        <systemPath>${env.ANDROID_HOME}/platforms/android-8/android.jar</systemPath>
-      </dependency>
+      <!-- Android local install -->
+      <!-- <dependency> -->
+      <!-- <groupId>com.google.android</groupId> -->
+      <!-- <artifactId>android</artifactId> -->
+      <!-- <version>8</version> -->
+      <!-- <scope>system</scope> -->
+      <!-- <systemPath>${env.ANDROID_HOME}/platforms/android-8/android.jar</systemPath> -->
+      <!-- </dependency> -->
+
+      <!-- Nuxeo for Android artifacts -->
       <dependency>
         <groupId>org.nuxeo.android</groupId>
         <artifactId>nuxeo-android-connector</artifactId>
         <version>2.0-SNAPSHOT</version>
       </dependency>
       <dependency>
+        <groupId>org.nuxeo.android</groupId>
+        <artifactId>nuxeo-automation-sample</artifactId>
+        <version>2.0-SNAPSHOT</version>
+        <type>apksources</type>
+      </dependency>
+      <dependency>
+        <groupId>org.nuxeo.ecm.automation</groupId>
+        <artifactId>nuxeo-automation-thin-client</artifactId>
+        <version>2.0-SNAPSHOT</version>
+      </dependency>
+
+      <!-- Third-parties -->
+      <dependency>
         <groupId>com.smartnsoft</groupId>
         <artifactId>droid4me</artifactId>
         <version>1.0</version>
+      </dependency>
+
+      <!-- Android artifacts from https://github.com/mosabua/maven-android-sdk-deployer -->
+      <dependency>
+        <groupId>android</groupId>
+        <artifactId>android</artifactId>
+        <!-- <version>1.5_r4</version> -->
+        <!-- <version>1.6_r3</version> -->
+        <!-- <version>2.1_r2</version> -->
+        <version>2.2_r2</version>
+        <!-- <version>2.3.3_r1</version> -->
+        <!-- <version>3.0_r1</version> -->
+        <!-- <version>3.1_r2</version> -->
+        <!-- <version>3.2_r1</version> -->
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.android.maps</groupId>
+        <artifactId>maps</artifactId>
+        <!-- <version>3_r3</version> -->
+        <!-- <version>4_r2</version> -->
+        <!-- <version>7_r1</version> -->
+        <version>8_r2</version>
+        <!-- <version>10_r1</version> -->
+        <!-- <version>11_r1</version> -->
+        <!-- <version>12_r1</version> -->
+        <!-- <version>13_r1</version> -->
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>android.support</groupId>
+        <artifactId>compatibility-v13</artifactId>
+        <version>r3</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -46,11 +102,41 @@
   <build>
     <pluginManagement>
       <plugins>
+        <!-- https://github.com/akquinet/android-rindirect is used to generate R
+          resources -->
+        <plugin>
+          <groupId>de.akquinet.android.rindirect</groupId>
+          <artifactId>maven-rindirect-plugin</artifactId>
+          <version>0.4.1</version>
+        </plugin>
         <plugin>
           <groupId>com.jayway.maven.plugins.android.generation2</groupId>
           <artifactId>maven-android-plugin</artifactId>
-          <version>2.8.4</version>
+          <!-- <version>2.8.4</version> -->
+          <version>2.9.0-beta-4</version>
+          <inherited>true</inherited>
           <extensions>true</extensions>
+          <configuration>
+            <sdk>
+              <platform>8</platform>
+            </sdk>
+            <deleteConflictingFiles>true</deleteConflictingFiles>
+            <undeployBeforeDeploy>true</undeployBeforeDeploy>
+            <attachSources>true</attachSources>
+            <sign>
+              <debug>false</debug>
+            </sign>
+            <emulator>
+              <avd>em22</avd>
+            </emulator>
+            <zipalign>
+              <verbose>true</verbose>
+              <inputApk>
+                ${project.build.directory}/${artifactId}-${version}.apk</inputApk>
+              <outputApk>
+                ${project.build.directory}/${artifactId}-${version}-signed-aligned.apk</outputApk>
+            </zipalign>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

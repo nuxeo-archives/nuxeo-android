@@ -9,19 +9,22 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>nuxeo-android-simpleclient</artifactId>
-  <name>Nuxeo Android simple client</name>
-  <description>Nuxeo Android simple client for browsing a Nuxeo server.</description>
+  <artifactId>nuxeo-automation-sample-test</artifactId>
+  <name>HomeSampleActivityTest</name>
+  <description></description>
   <packaging>apk</packaging>
+
   <dependencies>
     <dependency>
-      <groupId>org.nuxeo.ecm.automation</groupId>
-      <artifactId>nuxeo-automation-thin-client</artifactId>
+      <groupId>org.nuxeo.android</groupId>
+      <artifactId>nuxeo-automation-sample</artifactId>
+      <type>apksources</type>
     </dependency>
-    <dependency>
-      <groupId>com.smartnsoft</groupId>
-      <artifactId>droid4me</artifactId>
-    </dependency>
+    <!-- <dependency> -->
+    <!-- <groupId>org.nuxeo.android</groupId> -->
+    <!-- <artifactId>nuxeo-automation-sample</artifactId> -->
+    <!-- <type>jar</type> -->
+    <!-- </dependency> -->
     <dependency>
       <groupId>android</groupId>
       <artifactId>android</artifactId>
@@ -54,6 +57,24 @@
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
+      <plugin>
+        <groupId>de.akquinet.android.rindirect</groupId>
+        <artifactId>maven-rindirect-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <phase>generate-sources</phase>
+          </execution>
+        </executions>
+        <configuration>
+          <packages>
+            <package>org.nuxeo.android.automationsample</package>
+            <!-- <package>org.nuxeo.android.contentprovider</package> -->
+          </packages>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>com.jayway.maven.plugins.android.generation2</groupId>
         <artifactId>maven-android-plugin</artifactId>
