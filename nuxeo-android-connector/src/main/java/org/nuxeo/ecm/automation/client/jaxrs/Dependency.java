@@ -20,6 +20,15 @@ public class Dependency {
 		public String toString() {
 			return getValue();
 		}
+
+		public static DependencyType fromString(String value) {
+		        for (DependencyType nit : DependencyType.values()) {
+		            if (nit.getValue().equals(value)) {
+		                return nit;
+		            }
+		        }
+		        return null;
+		}
 	}
 
 	protected DependencyType type;

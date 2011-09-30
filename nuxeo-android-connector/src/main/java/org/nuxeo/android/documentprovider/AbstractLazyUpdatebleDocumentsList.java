@@ -35,6 +35,7 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends LazyDocumentsLi
 	public void updateDocument(Document updatedDocument, OperationRequest updateOperation) {
 		boolean updated = false;
 		int updatedPage = 0;
+		final String updatedUUID = updatedDocument.getId();
 		Document beforeUpdateDocument = null;
 		int updatedIdx = 0;
 		for (Integer pageIdx : pages.keySet()) {
@@ -68,7 +69,10 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends LazyDocumentsLi
 				@Override
 				public void onSuccess(String executionId, Object data) {
 					Log.i(AbstractLazyUpdatebleDocumentsList.class.getSimpleName(), "Defered updated successful");
-					notifyContentChanged(page);
+					// be sure to remove the transient state before we redisplay !
+					getClient().getTransientStateManager().flushTransientState(updatedUUID);
+					fetchPageAsync(page, true);
+					Log.i(AbstractLazyUpdatebleDocumentsList.class.getSimpleName(), "Refreshing updated page " + page);
 					// start refreshing
 					refreshAll();
 				}

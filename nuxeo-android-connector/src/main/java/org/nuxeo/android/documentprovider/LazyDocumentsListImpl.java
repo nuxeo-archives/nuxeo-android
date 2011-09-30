@@ -151,6 +151,7 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 					}
 					@Override
 					public void onSuccess(String executionId, Object data) {
+						Log.i(LazyDocumentsListImpl.class.getSimpleName(), "Page fetch successful");
 						Documents docs = (Documents) data;
 						docs = afterPageFetch(targetPage, docs);
 						loadingInProgress.remove(""+targetPage);

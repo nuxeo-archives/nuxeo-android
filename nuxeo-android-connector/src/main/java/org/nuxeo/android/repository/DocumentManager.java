@@ -18,10 +18,10 @@ public class DocumentManager {
 		this.session = session;
 	}
 
-	public Document getDocument(DocRef docRef) throws Exception {
+	public Document getDocument(DocRef docRef, boolean refresh) throws Exception {
 		OperationRequest fetchOperation = session.newRequest(DocumentService.FetchDocument).set("value", docRef);
 		fetchOperation.setHeader("X-NXDocumentProperties", "*");
-		return (Document) fetchOperation.execute(CacheBehavior.STORE);
+		return (Document) fetchOperation.execute((byte) (CacheBehavior.STORE | CacheBehavior.FORCE_REFRESH));
 	}
 
 	public Documents getChildren(Document parent) {
@@ -37,10 +37,6 @@ public class DocumentManager {
 	}
 
 	public Document saveDocument(Document doc) {
-		throw new UnsupportedOperationException();
-	}
-
-	public Document attacheFile(Document doc, Blob blob) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -65,6 +61,8 @@ public class DocumentManager {
 
 	}
 
-
+	public Document getUserHome() throws Exception {
+		return (Document) session.newRequest("Userworkspace.Get").execute();
+	}
 
 }

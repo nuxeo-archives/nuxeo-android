@@ -1,10 +1,8 @@
 package org.nuxeo.android.automationsample;
 
 import org.nuxeo.android.activities.BaseNuxeoActivity;
-import org.nuxeo.android.layout.LayoutDefinition;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.android.layout.NuxeoLayout;
-import org.nuxeo.android.layout.StaticLayouts;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.IdRef;
 
@@ -56,6 +54,9 @@ public class DocumentLayoutActivity extends BaseNuxeoActivity implements View.On
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		if (isCreateMode()) {
+			requireAsyncFetch = false;
+		}
 		setContentView(R.layout.createeditlayout);
 		title = (TextView) findViewById(R.id.currentDocTitle);
 		title.setText(getCurrentDocument().getTitle());
@@ -65,9 +66,6 @@ public class DocumentLayoutActivity extends BaseNuxeoActivity implements View.On
 		layoutContainer = (ScrollView) findViewById(R.id.layoutContainer);
 
 		layout = getAutomationClient().getLayoutService().getLayout(this, getCurrentDocument(), layoutContainer, getMode());
-
-		//LayoutDefinition layoutDef = LayoutDefinition.fromJSON(StaticLayouts.TEST_LAYOUT);
-		//layout = layoutDef.buildLayout(this, getCurrentDocument(), layoutContainer, getMode());
 	}
 
 	@Override
@@ -82,7 +80,7 @@ public class DocumentLayoutActivity extends BaseNuxeoActivity implements View.On
 
 	@Override
 	protected Object retrieveNuxeoData() throws Exception {
-		Document refreshedDocument = getNuxeoContext().getDocumentManager().getDocument(new IdRef(getCurrentDocument().getId()));
+		Document refreshedDocument = getNuxeoContext().getDocumentManager().getDocument(new IdRef(getCurrentDocument().getId()), true);
 		return refreshedDocument;
 	}
 

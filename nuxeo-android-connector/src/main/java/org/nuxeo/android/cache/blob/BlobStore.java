@@ -131,6 +131,7 @@ public class BlobStore implements Iterable<Properties>{
 		return new Iterator<Properties>() {
 
 			private int idx=-1;
+
 			private File[] files = storageDir.listFiles(new FilenameFilter() {
 				@Override
 				public boolean accept(File dir, String name) {
@@ -164,4 +165,12 @@ public class BlobStore implements Iterable<Properties>{
 		};
 	}
 
+	public int getCount() {
+		return storageDir.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.endsWith(NFO_SUFFIX);
+			}
+		}).length;
+	}
 }

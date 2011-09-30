@@ -23,7 +23,9 @@ public class TextWidgetWrapper extends BaseAndroidWidgetWrapper<String> implemen
 
 	@Override
 	public void updateModel(Document doc) {
-		DocumentAttributeResolver.put(doc, attributeName, getCurrentValue());
+		if (editWidget!=null && ! editWidget.getText().toString().equals(getCurrentValue())) {
+			DocumentAttributeResolver.put(doc, attributeName, editWidget.getText().toString());
+		}
 	}
 
 	@Override

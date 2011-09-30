@@ -122,6 +122,9 @@ public class Document extends DocRef implements Serializable {
     }
 
     public String getPath() {
+    	if (!parentPath.endsWith("/")) {
+    		return parentPath + "/" + name;
+    	}
         return parentPath + name;
     }
 

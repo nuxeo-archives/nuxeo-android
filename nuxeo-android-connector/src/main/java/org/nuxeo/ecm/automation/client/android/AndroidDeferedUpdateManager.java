@@ -1,5 +1,7 @@
 package org.nuxeo.ecm.automation.client.android;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,6 +22,8 @@ import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.Dependency.DependencyType;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.CacheKeyHelper;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
+
+import sun.swing.CachedPainter;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -123,10 +127,26 @@ public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
 		return (AndroidAutomationClient) session.getClient();
 	}
 
-	protected boolean checkDependencies(OperationRequest request) {
+	protected boolean checkDependencies(final CachedOperationRequest request) {
 
-		AndroidAutomationClient client = getClient(request.getSession());
-		ExecutionDependencies dependencies = request.getDependencies();
+		 AsyncCallback<Serializable> cb = new AsyncCallback<Serializable>() {
+			@Override
+			public void onError(String executionId, Throwable e) {
+			}
+			@Override
+			public void onSuccess(String executionId, Serializable data) {
+				executePendingRequests(request, null);
+			}
+		};
+		return checkDependencies(getClient(request.getRequest().getSession()), request.getRequest().getDependencies(), cb);
+	}
+
+	protected boolean checkDependencies(OperationRequest request) {
+		return checkDependencies(getClient(request.getSession()), request.getDependencies(), null);
+	}
+
+	protected boolean checkDependencies(AndroidAutomationClient client, ExecutionDependencies dependencies, AsyncCallback<Serializable> cb) {
+
 		Log.i(this.getClass().getSimpleName(), "Checking : " + dependencies.size() + " dependencies");
 		for (Dependency dep : dependencies) {
 			if (dep.getType() == DependencyType.FILE_UPLOAD) {
@@ -136,6 +156,9 @@ public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
 					dependencies.markAsResolved(dep.getToken());
 				} else {
 					Log.i(this.getClass().getSimpleName(), "Depedency NOT resolved : " + dep.getToken());
+					if (!client.isOffline() && cb!=null) {
+						client.getFileUploader().startUpload(dep.getToken(), cb);
+					}
 				}
 			}
 		}
@@ -156,12 +179,22 @@ public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
 	}
 
 	public void executePendingRequests(Session session, final Handler uiNotifier) {
+		List<CachedOperationRequest> cachedRequests = getPendingRequest(session);
+		executePendingRequests(session, cachedRequests, uiNotifier);
+	}
 
+	public void executePendingRequests(CachedOperationRequest cachedRequest, final Handler uiNotifier) {
+		List<CachedOperationRequest> cachedRequests = new ArrayList<CachedOperationRequest>();
+		cachedRequests.add(cachedRequest);
+		executePendingRequests(cachedRequest.getRequest().getSession(), cachedRequests, uiNotifier);
+	}
+
+	public void executePendingRequests(Session session, List<CachedOperationRequest> cachedRequests, final Handler uiNotifier) {
 		final MessageHelper messageHelper = session.getMessageHelper();
 
 		for (CachedOperationRequest op : getPendingRequest(session)) {
 			OperationRequest request = op.getRequest();
-			if (!checkDependencies(request)) {
+			if (!checkDependencies(op)) {
 				Log
 						.i(this.getClass().getSimpleName(),
 								"Skipping operation because dependencies are not resolved");

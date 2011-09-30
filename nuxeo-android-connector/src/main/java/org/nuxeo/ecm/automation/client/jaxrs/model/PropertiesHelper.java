@@ -117,10 +117,15 @@ public class PropertiesHelper {
     public static String toStringProperties(PropertyMap props) {
     	StringBuffer sb = new StringBuffer();
     	for (String propName : props.getKeys()) {
-    		sb.append(propName);
-    		sb.append("=");
-    		sb.append(encodePropertyAsString(props.map().get(propName)));
-    		sb.append("\n");
+    		Object value = props.map().get(propName);
+    		if (value!=null) {
+	    		sb.append(propName);
+	    		sb.append("=");
+	    		sb.append(encodePropertyAsString(value));
+	    		sb.append("\n");
+    		} else {
+    			Log.w(PropertiesHelper.class.getSimpleName(), "No value for " + propName);
+    		}
     	}
     	return sb.toString();
     }

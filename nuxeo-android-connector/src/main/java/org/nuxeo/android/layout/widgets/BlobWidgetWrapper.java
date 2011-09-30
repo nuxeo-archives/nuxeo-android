@@ -32,6 +32,7 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 	protected static final int PICK_ANY = REQUEST_CODE_BASE + 1;
 
 	protected int uploadInProgress = 0;
+	protected boolean changedValue=false;
 
 	protected LinearLayout layoutWidget;
 	protected TextView filename;
@@ -57,7 +58,7 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 
 	@Override
 	public void updateModel(Document doc) {
-		if (mode==LayoutMode.EDIT && currentValue!=null) {
+		if (mode!=LayoutMode.VIEW && currentValue!=null && changedValue) {
 			doc.set(attributeName, currentValue);
 		}
 	}
@@ -232,6 +233,7 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 				blobProp.set("android-require-uuid", uploadUUID);
 
 				setCurrentValue(blobProp);
+				changedValue=true;
 				applyBinding();
 			}
 		};
