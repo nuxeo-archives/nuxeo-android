@@ -4,6 +4,7 @@ import org.nuxeo.android.activities.BaseNuxeoActivity;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.android.layout.NuxeoLayout;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
+import org.nuxeo.ecm.automation.client.jaxrs.model.DocumentStatus;
 import org.nuxeo.ecm.automation.client.jaxrs.model.IdRef;
 
 import android.content.Intent;
@@ -55,8 +56,15 @@ public class DocumentLayoutActivity extends BaseNuxeoActivity implements View.On
 		super.onCreate(savedInstanceState);
 
 		if (isCreateMode()) {
+			// can not refresh from the server a not yet existing document
 			requireAsyncFetch = false;
+		} else {
+			if (getCurrentDocument().getStatusFlag()!=DocumentStatus.SYNCHRONIZED) {
+				// do not refresh if local update
+				requireAsyncFetch = false;
+			}
 		}
+
 		setContentView(R.layout.createeditlayout);
 		title = (TextView) findViewById(R.id.currentDocTitle);
 		title.setText(getCurrentDocument().getTitle());
