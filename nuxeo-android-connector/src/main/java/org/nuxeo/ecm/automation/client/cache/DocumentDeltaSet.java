@@ -19,6 +19,8 @@ public class DocumentDeltaSet {
 
 	protected final String listName;
 
+	protected boolean conflict;
+
 	public DocumentDeltaSet(OperationType opType,String id, String path, String docType, PropertyMap dirtyProps, String requestId, String listName) {
 		this.dirtyProps = dirtyProps;
 		this.docType=docType;
@@ -78,4 +80,13 @@ public class DocumentDeltaSet {
 	public String getListName() {
 		return listName;
 	}
+
+	public boolean isConflict() {
+		return conflict;
+	}
+
+	public void setConflict(boolean conflict) {
+		this.conflict = conflict;
+	}
+
 }

@@ -17,4 +17,8 @@ public interface TransientStateManager {
 
 	void flushTransientState();
 
+    void markAsConflict(String uid);
+
+    void markAsResolved(String uid);
+
 }

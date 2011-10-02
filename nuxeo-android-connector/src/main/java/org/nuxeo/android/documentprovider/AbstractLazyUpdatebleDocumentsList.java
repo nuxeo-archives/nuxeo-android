@@ -6,6 +6,7 @@ import org.nuxeo.ecm.automation.client.broadcast.EventLifeCycle;
 import org.nuxeo.ecm.automation.client.cache.OperationType;
 import org.nuxeo.ecm.automation.client.cache.TransientStateManager;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
+import org.nuxeo.ecm.automation.client.jaxrs.ConflictException;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
@@ -68,7 +69,7 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends LazyDocumentsLi
 
 				@Override
 				public void onSuccess(String executionId, Object data) {
-					Log.i(AbstractLazyUpdatebleDocumentsList.class.getSimpleName(), "Defered updated successful");
+					Log.i(AbstractLazyUpdatebleDocumentsList.class.getSimpleName(), "Defered update successful");
 					// be sure to remove the transient state before we redisplay !
 					getClient().getTransientStateManager().flushTransientState(updatedUUID);
 					fetchPageAsync(page, true);
@@ -79,9 +80,15 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends LazyDocumentsLi
 
 				@Override
 				public void onError(String executionId, Throwable e) {
-					Log.i(AbstractLazyUpdatebleDocumentsList.class.getSimpleName(), "Defered updated failed");
-					// revert to previous
-					pages.get(page).set(docIdx, originalDocument);
+					Log.i(AbstractLazyUpdatebleDocumentsList.class.getSimpleName(), "Defered update failed " + e.getClass().getSimpleName());
+
+					if (e instanceof ConflictException) {
+						Log.i(AbstractLazyUpdatebleDocumentsList.class.getSimpleName(), "Marking document as conflicted : " + updatedUUID);
+						getClient().getTransientStateManager().markAsConflict(updatedUUID);
+					} else {
+						// revert to previous
+						pages.get(page).set(docIdx, originalDocument);
+					}
 					notifyContentChanged(page);
 				}
 			}, OperationType.UPDATE);

@@ -4,6 +4,7 @@ import java.io.InputStream;
 
 import org.apache.http.client.HttpClient;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
+import org.nuxeo.ecm.automation.client.jaxrs.ConflictException;
 import org.nuxeo.ecm.automation.client.jaxrs.RemoteException;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.CacheKeyHelper;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpConnector;
@@ -63,10 +64,11 @@ public class CachedHttpConnector extends HttpConnector implements Connector {
             	throw new RuntimeException("Cannot execute " + request);
             }
 
-        } catch (RemoteException e) {
-        	if (e.getStatus()>=500) {
-        		offlineSettings.setNetworkReachable(false);
-        	}
+        }
+        catch (ConflictException e) {
+        	throw e;
+        }
+        catch (RemoteException e) {
             if (cachedEntry!=null) {
                 try {
                     return getResultFromCacheEntry(request, cachedEntry);

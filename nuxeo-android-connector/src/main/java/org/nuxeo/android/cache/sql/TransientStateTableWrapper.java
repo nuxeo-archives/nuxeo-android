@@ -15,6 +15,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.util.JSONExporter;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class TransientStateTableWrapper extends AbstractSQLTableWrapper {
 
@@ -27,12 +28,14 @@ public class TransientStateTableWrapper extends AbstractSQLTableWrapper {
 	protected static final String PROPS_COLUMN = "PROPS";
 	protected static final String LISTNAME_COLUMN = "LISTNAME";
 	protected static final String REQUESTID_COLUMN = "REQUESTID";
+	protected static final String CONFLICT_COLUMN = "CONFLICT";
 
 
 	protected static final String CREATE_STATEMENT = "CREATE TABLE " + TBLNAME
 			+ " (" + KEY_COLUMN + " TEXT, " + PATH_COLUMN + " TEXT, "
 			+ OPTYPE_COLUMN + " TEXT, " + DOCTYPE_COLUMN + " TEXT, "
 			+ LISTNAME_COLUMN + " TEXT, " + REQUESTID_COLUMN + " TEXT, "
+			+ CONFLICT_COLUMN + " TEXT, "
 			+ PROPS_COLUMN + " TEXT); ";
 
 	@Override
@@ -70,8 +73,9 @@ public class TransientStateTableWrapper extends AbstractSQLTableWrapper {
 		// XXX manage Blobs
 
 		execTransactionalSQL(db, sql);
-
 	}
+
+
 
 	public List<DocumentDeltaSet> getDeltaSets(List<String> ids) {
 
@@ -101,8 +105,12 @@ public class TransientStateTableWrapper extends AbstractSQLTableWrapper {
 					}
 					String listName = cursor.getString(cursor.getColumnIndex(LISTNAME_COLUMN));
 					String requestId = cursor.getString(cursor.getColumnIndex(REQUESTID_COLUMN));
+					String conflict = cursor.getString(cursor.getColumnIndex(CONFLICT_COLUMN));
 
 					DocumentDeltaSet delta = new DocumentDeltaSet(opType,uuid, path, docType, props, listName, requestId);
+					if (conflict!=null) {
+						delta.setConflict(Boolean.parseBoolean(conflict));
+					}
 					result.add(delta);
 				} while (cursor.moveToNext());
 			}
@@ -130,12 +138,19 @@ public class TransientStateTableWrapper extends AbstractSQLTableWrapper {
 		return result;
 	}
 
-
 	public void deleteEntryByRequestId(String key) {
 		SQLiteDatabase db = getWritableDatabase();
 		String sql = "delete  from " + getTableName() + " where " + REQUESTID_COLUMN + "='" + key + "'";
 		execTransactionalSQL(db, sql);
 	}
 
+	public void updateConflictMarker(String uid, boolean conflict) {
+		//dump();
+		SQLiteDatabase db = getWritableDatabase();
+		String strConflict = new Boolean(conflict).toString();
+		String sql = "update  " + getTableName() + " set " + CONFLICT_COLUMN + "= '" + strConflict +  "'  where " + KEY_COLUMN + "='" + uid + "'";
+        Log.i(this.getClass().getSimpleName(), sql);
+		execTransactionalSQL(db, sql);
+	}
 
 }

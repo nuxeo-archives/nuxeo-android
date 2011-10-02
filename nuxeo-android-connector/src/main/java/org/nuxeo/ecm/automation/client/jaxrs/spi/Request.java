@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.nuxeo.ecm.automation.client.jaxrs.ConflictException;
 import org.nuxeo.ecm.automation.client.jaxrs.RemoteException;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 import org.nuxeo.ecm.automation.client.jaxrs.model.FileBlob;
@@ -173,6 +174,9 @@ public class Request extends HashMap<String, String> {
 
     protected void handleException(int status, String ctype, InputStream stream)
             throws Exception {
+    	if (status==409) {
+        	throw new ConflictException();
+        }
         if (CTYPE_ENTITY.equals(ctype)) {
             String content = IOUtils.read(stream);
             RemoteException e = null;

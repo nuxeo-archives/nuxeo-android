@@ -11,6 +11,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyList;
 
 import android.content.Context;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -76,8 +77,17 @@ public class SpinnerMultiWidgetWrapper extends BaseAndroidWidgetWrapper<Property
 
 	@Override
 	protected void initCurrentValueFromDocument(Document doc) {
-		PropertyList value = (PropertyList) DocumentAttributeResolver.get(doc, getAttributeName());
-		setCurrentValue(value);
+		Object val = DocumentAttributeResolver.get(doc, getAttributeName());
+		if (val instanceof PropertyList) {
+			PropertyList value = (PropertyList) val;
+			setCurrentValue(value);
+		} else {
+			if (val==null) {
+				Log.w(this.getClass().getSimpleName(), "Init value from doc = null");
+			} else {
+				Log.w(this.getClass().getSimpleName(), "Init value from doc = " + val.toString());
+			}
+		}
 	}
 
 	@Override

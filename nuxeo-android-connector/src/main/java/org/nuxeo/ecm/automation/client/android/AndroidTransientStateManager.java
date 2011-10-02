@@ -30,7 +30,7 @@ public class AndroidTransientStateManager extends BroadcastReceiver implements T
 		filter.addAction(NuxeoBroadcastMessages.DOCUMENT_DELETED_SERVER);
 		androidContext.registerReceiver(this, filter);
 		stateManager.registerWrapper(new TransientStateTableWrapper());
-		this.stateManager = stateManager;
+		this.stateManager = stateManager;	
 	}
 
 	protected TransientStateTableWrapper getTableWrapper() {
@@ -64,11 +64,11 @@ public class AndroidTransientStateManager extends BroadcastReceiver implements T
 			} else if (delta.getOperationType()== OperationType.UPDATE) {
 				Document doc2Update = docs.getById(delta.getId());
 				delta.apply(doc2Update);
+				doc2Update.setInConflict(delta.isConflict());
 			} else if (delta.getOperationType()== OperationType.DELETE) {
 				docs.removeById(delta.getId());
 			}
 		}
-
 		return docs;
 	}
 
@@ -108,6 +108,17 @@ public class AndroidTransientStateManager extends BroadcastReceiver implements T
 			// XXX Trigger list refresh ?
 		}
 
+	}
+
+	@Override
+	public void markAsConflict(String uid) {
+		getTableWrapper().updateConflictMarker(uid, true);
+
+	}
+
+	@Override
+	public void markAsResolved(String uid) {
+		getTableWrapper().updateConflictMarker(uid, false);
 	}
 
 }

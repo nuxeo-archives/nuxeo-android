@@ -68,6 +68,8 @@ public class Document extends DocRef implements Serializable {
 
     protected PropertyList facets;
 
+    protected boolean inConflict = false;
+
     /**
      * Reserved to framework. Should be only called by client framework when
      * unmarshalling documents.
@@ -244,6 +246,9 @@ public class Document extends DocRef implements Serializable {
     }
 
     public DocumentStatus getStatusFlag() {
+    	if (inConflict) {
+    		return DocumentStatus.CONFLICT;
+    	}
     	if (ref==null || ref.startsWith(NEW_UUID_PREFIX)) {
     		return DocumentStatus.NEW;
     	}
@@ -306,5 +311,11 @@ public class Document extends DocRef implements Serializable {
 	public PropertyList getFacets() {
 		return facets;
 	}
+
+	public void setInConflict(boolean inConflict) {
+		this.inConflict = inConflict;
+	}
+
+
 
 }
