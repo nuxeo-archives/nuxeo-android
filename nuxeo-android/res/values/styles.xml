@@ -46,11 +46,7 @@
   </style>
 
   <!-- From here, we overload the Android default theme -->
-
-  <!-- <style -->
-  <!-- name="Kapps.WindowTitleBackground" -->
-  <!-- parent="android:WindowTitleBackground" -->
-  <!-- > -->
+  <!-- <style name="Kapps.WindowTitleBackground" parent="android:WindowTitleBackground"> -->
   <!-- <item name="android:background">@android:color/transparent</item> -->
   <!-- </style> -->
 

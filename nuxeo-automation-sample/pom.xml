@@ -13,6 +13,7 @@
   <name>HomeSampleActivity</name>
   <description></description>
   <packaging>apk</packaging>
+
   <dependencies>
     <dependency>
       <groupId>org.nuxeo.android</groupId>
