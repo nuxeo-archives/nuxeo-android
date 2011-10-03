@@ -18,16 +18,24 @@
     <dependency>
       <groupId>org.nuxeo.android</groupId>
       <artifactId>nuxeo-automation-sample</artifactId>
-      <type>apksources</type>
+      <type>apk</type>
     </dependency>
-    <!-- <dependency> -->
-    <!-- <groupId>org.nuxeo.android</groupId> -->
-    <!-- <artifactId>nuxeo-automation-sample</artifactId> -->
-    <!-- <type>jar</type> -->
-    <!-- </dependency> -->
     <dependency>
-      <groupId>android</groupId>
+      <groupId>org.nuxeo.android</groupId>
+      <artifactId>nuxeo-automation-sample</artifactId>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>com.google.android</groupId>
       <artifactId>android</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.android</groupId>
+      <artifactId>android-test</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
     </dependency>
   </dependencies>
 
@@ -57,28 +65,6 @@
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
-      <plugin>
-        <groupId>de.akquinet.android.rindirect</groupId>
-        <artifactId>maven-rindirect-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-            <phase>generate-sources</phase>
-          </execution>
-        </executions>
-        <configuration>
-          <packages>
-            <package>org.nuxeo.android.automationsample</package>
-            <!-- <package>org.nuxeo.android.contentprovider</package> -->
-          </packages>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-        <artifactId>maven-android-plugin</artifactId>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -111,6 +97,13 @@
         <groupId>com.jayway.maven.plugins.android.generation2</groupId>
         <artifactId>maven-android-plugin</artifactId>
         <executions>
+          <!-- <execution> -->
+          <!-- <id>startemulator</id> -->
+          <!-- <phase>initialize</phase> -->
+          <!-- <goals> -->
+          <!-- <goal>emulator-start</goal> -->
+          <!-- </goals> -->
+          <!-- </execution> -->
           <execution>
             <id>alignApk</id>
             <phase>package</phase>

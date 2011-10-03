@@ -15,7 +15,7 @@
   <description>Connector to use Nuxeo Platform services from Android</description>
   <dependencies>
     <dependency>
-      <groupId>android</groupId>
+      <groupId>com.google.android</groupId>
       <artifactId>android</artifactId>
     </dependency>
   </dependencies>
