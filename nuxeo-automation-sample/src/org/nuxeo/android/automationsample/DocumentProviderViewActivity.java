@@ -13,7 +13,7 @@ public class DocumentProviderViewActivity extends
 		DocumentProvider docProvider = getAutomationClient().getDocumentProvider();
 		String providerName = getIntent().getExtras().getString(PROVIDER_NAME_PARAM);
 
-		return docProvider.getUpdatebleProvider(providerName, getNuxeoSession());
+		return docProvider.getDocumentsList(providerName, getNuxeoSession());
 	}
 
 	protected LazyUpdatableDocumentsList getDocumentList(Object data) {

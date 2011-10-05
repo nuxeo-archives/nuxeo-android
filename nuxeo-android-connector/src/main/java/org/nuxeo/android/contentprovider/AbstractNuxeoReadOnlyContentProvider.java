@@ -103,7 +103,7 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 			return null;
 		}
 		String providerName = segments.get(0);
-		LazyDocumentsList docList = providerService.getReadOnlyProvider(providerName, getSession());
+		LazyDocumentsList docList = providerService.getReadOnlyDocumentsList(providerName, getSession());
 		return docList;
 	}
 

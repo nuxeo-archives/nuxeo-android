@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.nuxeo.ecm.automation.client.broadcast.MessageHelper;
+import org.nuxeo.ecm.automation.client.broadcast.DocumentMessageService;
 import org.nuxeo.ecm.automation.client.cache.OperationType;
 import org.nuxeo.ecm.automation.client.jaxrs.AdapterFactory;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
@@ -209,7 +209,7 @@ public abstract class AbstractAutomationClient implements AutomationClient {
     	throw new UnsupportedOperationException("No defered update managger");
     }
 
-    public MessageHelper getMessageHelper() {
+    public DocumentMessageService getMessageHelper() {
     	throw new UnsupportedOperationException("No MessageHelper");
     }
 }

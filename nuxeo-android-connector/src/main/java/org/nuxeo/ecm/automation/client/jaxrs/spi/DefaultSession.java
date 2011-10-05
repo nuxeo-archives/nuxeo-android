@@ -22,7 +22,7 @@ import static org.nuxeo.ecm.automation.client.jaxrs.Constants.REQUEST_ACCEPT_HEA
 import java.util.HashMap;
 import java.util.Map;
 
-import org.nuxeo.ecm.automation.client.broadcast.MessageHelper;
+import org.nuxeo.ecm.automation.client.broadcast.DocumentMessageService;
 import org.nuxeo.ecm.automation.client.cache.OperationType;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.AutomationClient;
@@ -189,7 +189,7 @@ public class DefaultSession implements Session {
     }
 
     @Override
-    public MessageHelper getMessageHelper() {
+    public DocumentMessageService getMessageHelper() {
     	return client.getMessageHelper();
     }
 

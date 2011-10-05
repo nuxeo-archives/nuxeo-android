@@ -26,7 +26,7 @@ public class AndroidDocumentProvider implements DocumentProvider {
 	}
 
 	@Override
-	public LazyDocumentsList getReadOnlyProvider(String name, Session session) {
+	public LazyDocumentsList getReadOnlyDocumentsList(String name, Session session) {
 
 		LazyDocumentsList provider = documentLists.get(name);
 		if (provider==null) {
@@ -36,8 +36,8 @@ public class AndroidDocumentProvider implements DocumentProvider {
 	}
 
 	@Override
-	public LazyUpdatableDocumentsList getUpdatebleProvider(String name, Session session) {
-		LazyDocumentsList provider = getReadOnlyProvider(name, session);
+	public LazyUpdatableDocumentsList getDocumentsList(String name, Session session) {
+		LazyDocumentsList provider = getReadOnlyDocumentsList(name, session);
 		if (provider!=null && LazyUpdatableDocumentsList.class.isAssignableFrom(provider.getClass())) {
 			return (LazyUpdatableDocumentsList) provider;
 		}

@@ -11,7 +11,7 @@ import org.nuxeo.android.layout.AndroidLayoutService;
 import org.nuxeo.android.layout.NuxeoLayoutService;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
 import org.nuxeo.android.upload.FileUploader;
-import org.nuxeo.ecm.automation.client.broadcast.MessageHelper;
+import org.nuxeo.ecm.automation.client.broadcast.DocumentMessageService;
 import org.nuxeo.ecm.automation.client.cache.CachedHttpConnector;
 import org.nuxeo.ecm.automation.client.cache.DeferredUpdateManager;
 import org.nuxeo.ecm.automation.client.cache.OperationType;
@@ -36,7 +36,7 @@ public class AndroidAutomationClient extends HttpAutomationClient {
 
     protected final NuxeoNetworkStatus networkStatus;
 
-    protected final MessageHelper messageHelper;
+    protected final DocumentMessageService messageHelper;
 
     protected final SQLStateManager sqlStateManager;
 
@@ -108,7 +108,7 @@ public class AndroidAutomationClient extends HttpAutomationClient {
 		return networkStatus;
 	}
 
-	public MessageHelper getMessageHelper() {
+	public DocumentMessageService getMessageHelper() {
 		return messageHelper;
 	}
 
@@ -146,5 +146,30 @@ public class AndroidAutomationClient extends HttpAutomationClient {
 
 	public NuxeoLayoutService getLayoutService() {
 		return layoutService;
+	}
+
+	public <T> T getAdapter(Object objToAdapt, Class<T> adapterType) {
+
+		if (adapterType.getName().equals(NuxeoLayoutService.class.getName())) {
+			return adapterType.cast(layoutService);
+		} else if (adapterType.getName().equals(FileDownloader.class.getName())) {
+			return adapterType.cast(fileDownloader);
+		} else if (adapterType.getName().equals(FileUploader.class.getName())) {
+			return adapterType.cast(fileUploader);
+		} else if (adapterType.getName().equals(TransientStateManager.class.getName())) {
+			return adapterType.cast(transientStateManager);
+		} else if (adapterType.getName().equals(DeferredUpdateManager.class.getName())) {
+			return adapterType.cast(deferredUpdatetManager);
+		} else if (adapterType.getName().equals(BlobStoreManager.class.getName())) {
+			return adapterType.cast(blobStoreManager);
+		} else if (adapterType.getName().equals(ResponseCacheManager.class.getName())) {
+			return adapterType.cast(responseCacheManager);
+		} else if (adapterType.getName().equals(DocumentMessageService.class.getName())) {
+			return adapterType.cast(messageHelper);
+		} else if (adapterType.getName().equals(DocumentProvider.class.getName())) {
+			return adapterType.cast(documentProvider);
+		}
+
+		return super.getAdapter(objToAdapt, adapterType);
 	}
 }

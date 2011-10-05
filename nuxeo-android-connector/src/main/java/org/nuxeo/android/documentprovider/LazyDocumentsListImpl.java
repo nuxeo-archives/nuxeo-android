@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
-import org.nuxeo.ecm.automation.client.broadcast.MessageHelper;
+import org.nuxeo.ecm.automation.client.broadcast.DocumentMessageService;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
@@ -85,7 +85,7 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 		return (AndroidAutomationClient) session.getClient();
 	}
 
-	protected MessageHelper getMessageHelper() {
+	protected DocumentMessageService getMessageHelper() {
 		return getClient().getMessageHelper();
 	}
 

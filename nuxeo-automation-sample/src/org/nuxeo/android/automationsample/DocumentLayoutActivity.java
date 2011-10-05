@@ -3,6 +3,7 @@ package org.nuxeo.android.automationsample;
 import org.nuxeo.android.activities.BaseNuxeoActivity;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.android.layout.NuxeoLayout;
+import org.nuxeo.android.layout.NuxeoLayoutService;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.DocumentStatus;
 import org.nuxeo.ecm.automation.client.jaxrs.model.IdRef;
@@ -72,7 +73,6 @@ public class DocumentLayoutActivity extends BaseNuxeoActivity implements View.On
 		saveBtn.setOnClickListener(this);
 
 		layoutContainer = (ScrollView) findViewById(R.id.layoutContainer);
-
 		layout = getAutomationClient().getLayoutService().getLayout(this, getCurrentDocument(), layoutContainer, getMode());
 	}
 

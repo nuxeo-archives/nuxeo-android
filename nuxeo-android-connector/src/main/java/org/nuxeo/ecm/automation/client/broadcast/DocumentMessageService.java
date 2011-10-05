@@ -5,7 +5,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.os.Bundle;
 
-public interface MessageHelper {
+public interface DocumentMessageService {
 
 	void notifyDocumentCreated(Document doc, EventLifeCycle state, Bundle extra);
 

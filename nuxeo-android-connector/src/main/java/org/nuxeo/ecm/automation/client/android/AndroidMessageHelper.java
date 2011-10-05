@@ -2,7 +2,7 @@ package org.nuxeo.ecm.automation.client.android;
 
 import org.nuxeo.android.broadcast.NuxeoBroadcastMessages;
 import org.nuxeo.ecm.automation.client.broadcast.EventLifeCycle;
-import org.nuxeo.ecm.automation.client.broadcast.MessageHelper;
+import org.nuxeo.ecm.automation.client.broadcast.DocumentMessageService;
 import org.nuxeo.ecm.automation.client.cache.OperationType;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
@@ -11,7 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-public class AndroidMessageHelper implements MessageHelper {
+public class AndroidMessageHelper implements DocumentMessageService {
 
 	protected final Context ctx;
 

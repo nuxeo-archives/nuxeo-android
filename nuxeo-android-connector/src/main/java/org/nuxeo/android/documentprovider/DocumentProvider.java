@@ -15,9 +15,9 @@ public interface DocumentProvider {
 
 	void unregisterNamedProvider(String name);
 
-	LazyDocumentsList getReadOnlyProvider(String name, Session session);
+	LazyDocumentsList getReadOnlyDocumentsList(String name, Session session);
 
-	LazyUpdatableDocumentsList getUpdatebleProvider(String name,  Session session);
+	LazyUpdatableDocumentsList getDocumentsList(String name,  Session session);
 
 	List<String> listProviderNames();
 

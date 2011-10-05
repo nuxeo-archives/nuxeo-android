@@ -9,7 +9,7 @@ import org.nuxeo.android.broadcast.NuxeoBroadcastMessages;
 import org.nuxeo.android.cache.sql.DefferedUpdateTableWrapper;
 import org.nuxeo.android.cache.sql.SQLStateManager;
 import org.nuxeo.ecm.automation.client.broadcast.EventLifeCycle;
-import org.nuxeo.ecm.automation.client.broadcast.MessageHelper;
+import org.nuxeo.ecm.automation.client.broadcast.DocumentMessageService;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.cache.CachedOperationRequest;
 import org.nuxeo.ecm.automation.client.cache.DeferredUpdateManager;
@@ -59,7 +59,7 @@ public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
 		pendingCallbacks.put(requestKey, cb);
 
 		request = storePendingRequest(requestKey, request, opType);
-		final MessageHelper messageHelper = request.getSession()
+		final DocumentMessageService messageHelper = request.getSession()
 				.getMessageHelper();
 
 		boolean depOk = !request.hasDependencies();
@@ -190,7 +190,7 @@ public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
 	}
 
 	public void executePendingRequests(Session session, List<CachedOperationRequest> cachedRequests, final Handler uiNotifier) {
-		final MessageHelper messageHelper = session.getMessageHelper();
+		final DocumentMessageService messageHelper = session.getMessageHelper();
 
 		for (CachedOperationRequest op : getPendingRequest(session)) {
 			OperationRequest request = op.getRequest();

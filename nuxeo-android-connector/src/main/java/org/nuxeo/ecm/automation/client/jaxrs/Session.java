@@ -18,7 +18,7 @@ package org.nuxeo.ecm.automation.client.jaxrs;
 
 import java.util.Map;
 
-import org.nuxeo.ecm.automation.client.broadcast.MessageHelper;
+import org.nuxeo.ecm.automation.client.broadcast.DocumentMessageService;
 import org.nuxeo.ecm.automation.client.cache.OperationType;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blobs;
@@ -110,6 +110,6 @@ public interface Session {
     String execDeferredUpdate(OperationRequest request,
 			AsyncCallback<Object> cb, OperationType opType);
 
-    MessageHelper getMessageHelper();
+    DocumentMessageService getMessageHelper();
 
 }
