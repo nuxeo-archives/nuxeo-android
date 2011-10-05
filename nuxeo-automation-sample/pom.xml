@@ -13,13 +13,14 @@
   <name>HomeSampleActivity</name>
   <description></description>
   <packaging>apk</packaging>
+
   <dependencies>
     <dependency>
       <groupId>org.nuxeo.android</groupId>
       <artifactId>nuxeo-android-connector</artifactId>
     </dependency>
     <dependency>
-      <groupId>android</groupId>
+      <groupId>com.google.android</groupId>
       <artifactId>android</artifactId>
     </dependency>
   </dependencies>
@@ -50,10 +51,6 @@
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
-      <plugin>
-        <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-        <artifactId>maven-android-plugin</artifactId>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

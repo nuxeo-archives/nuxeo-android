@@ -22,21 +22,12 @@
     <module>nuxeo-android-connector</module>
     <module>nuxeo-automation-thin-client</module>
     <module>nuxeo-automation-sample</module>
-    <!-- <module>nuxeo-automation-sample-test</module> -->
+    <module>nuxeo-automation-sample-test</module>
     <module>nuxeo-android</module>
   </modules>
 
   <dependencyManagement>
     <dependencies>
-      <!-- Android local install -->
-      <!-- <dependency> -->
-      <!-- <groupId>com.google.android</groupId> -->
-      <!-- <artifactId>android</artifactId> -->
-      <!-- <version>8</version> -->
-      <!-- <scope>system</scope> -->
-      <!-- <systemPath>${env.ANDROID_HOME}/platforms/android-8/android.jar</systemPath> -->
-      <!-- </dependency> -->
-
       <!-- Nuxeo for Android artifacts -->
       <dependency>
         <groupId>org.nuxeo.android</groupId>
@@ -47,7 +38,14 @@
         <groupId>org.nuxeo.android</groupId>
         <artifactId>nuxeo-automation-sample</artifactId>
         <version>2.0-SNAPSHOT</version>
-        <type>apksources</type>
+        <type>apk</type>
+      </dependency>
+      <dependency>
+        <groupId>org.nuxeo.android</groupId>
+        <artifactId>nuxeo-automation-sample</artifactId>
+        <version>2.0-SNAPSHOT</version>
+        <type>jar</type>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.nuxeo.ecm.automation</groupId>
@@ -62,39 +60,28 @@
         <version>1.0</version>
       </dependency>
 
-      <!-- Android artifacts from https://github.com/mosabua/maven-android-sdk-deployer -->
       <dependency>
-        <groupId>android</groupId>
+        <groupId>com.google.android</groupId>
         <artifactId>android</artifactId>
         <!-- <version>1.5_r4</version> -->
-        <!-- <version>1.6_r3</version> -->
-        <!-- <version>2.1_r2</version> -->
-        <version>2.2_r2</version>
-        <!-- <version>2.3.3_r1</version> -->
-        <!-- <version>3.0_r1</version> -->
-        <!-- <version>3.1_r2</version> -->
-        <!-- <version>3.2_r1</version> -->
+        <!-- <version>1.6_r2</version> -->
+        <!-- <version>2.1.2</version> -->
+        <version>2.2.1</version>
+        <!-- <version>2.3.1</version> -->
+        <!-- <version>2.3.3</version> -->
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.google.android</groupId>
+        <artifactId>android-test</artifactId>
+        <version>2.2.1</version>
         <scope>provided</scope>
       </dependency>
 
       <dependency>
-        <groupId>com.google.android.maps</groupId>
-        <artifactId>maps</artifactId>
-        <!-- <version>3_r3</version> -->
-        <!-- <version>4_r2</version> -->
-        <!-- <version>7_r1</version> -->
-        <version>8_r2</version>
-        <!-- <version>10_r1</version> -->
-        <!-- <version>11_r1</version> -->
-        <!-- <version>12_r1</version> -->
-        <!-- <version>13_r1</version> -->
-        <scope>provided</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>android.support</groupId>
-        <artifactId>compatibility-v13</artifactId>
-        <version>r3</version>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.4</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -102,18 +89,11 @@
   <build>
     <pluginManagement>
       <plugins>
-        <!-- https://github.com/akquinet/android-rindirect is used to generate R
-          resources -->
-        <plugin>
-          <groupId>de.akquinet.android.rindirect</groupId>
-          <artifactId>maven-rindirect-plugin</artifactId>
-          <version>0.4.1</version>
-        </plugin>
         <plugin>
           <groupId>com.jayway.maven.plugins.android.generation2</groupId>
           <artifactId>maven-android-plugin</artifactId>
           <!-- <version>2.8.4</version> -->
-          <version>2.9.0-beta-4</version>
+          <version>2.9.0-beta-5</version>
           <inherited>true</inherited>
           <extensions>true</extensions>
           <configuration>
@@ -131,10 +111,8 @@
             </emulator>
             <zipalign>
               <verbose>true</verbose>
-              <inputApk>
-                ${project.build.directory}/${artifactId}-${version}.apk</inputApk>
-              <outputApk>
-                ${project.build.directory}/${artifactId}-${version}-signed-aligned.apk</outputApk>
+              <inputApk>${project.build.directory}/${artifactId}-${version}.apk</inputApk>
+              <outputApk>${project.build.directory}/${artifactId}-${version}-signed-aligned.apk</outputApk>
             </zipalign>
           </configuration>
         </plugin>
