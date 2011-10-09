@@ -10,6 +10,7 @@ import org.nuxeo.android.download.FileDownloader;
 import org.nuxeo.android.layout.AndroidLayoutService;
 import org.nuxeo.android.layout.NuxeoLayoutService;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
+import org.nuxeo.android.repository.DocumentManager;
 import org.nuxeo.android.upload.FileUploader;
 import org.nuxeo.ecm.automation.client.broadcast.DocumentMessageService;
 import org.nuxeo.ecm.automation.client.cache.CachedHttpConnector;
@@ -19,6 +20,7 @@ import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
 import org.nuxeo.ecm.automation.client.cache.TransientStateManager;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
+import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpAutomationClient;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpConnector;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.Connector;
@@ -168,6 +170,8 @@ public class AndroidAutomationClient extends HttpAutomationClient {
 			return adapterType.cast(messageHelper);
 		} else if (adapterType.getName().equals(DocumentProvider.class.getName())) {
 			return adapterType.cast(documentProvider);
+		} else if (adapterType.getName().equals(DocumentManager.class.getName())) {
+			return adapterType.cast(new DocumentManager((Session) objToAdapt));
 		}
 
 		return super.getAdapter(objToAdapt, adapterType);

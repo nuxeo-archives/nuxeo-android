@@ -89,7 +89,7 @@ public class NuxeoContext extends BroadcastReceiver {
 	}
 
 	public DocumentManager getDocumentManager() {
-		return new DocumentManager(getSession());
+		return getSession().getAdapter(DocumentManager.class);
 	}
 
 	protected void onConfigChanged() {
@@ -98,7 +98,7 @@ public class NuxeoContext extends BroadcastReceiver {
 	}
 
 	protected void onConnectivityChanged() {
-		// NOP (Session automatically detects
+		// NOP (Session automatically detects)
 	}
 
 	@Override

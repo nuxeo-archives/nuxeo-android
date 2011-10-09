@@ -138,7 +138,7 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 					progressBar.setVisibility(View.VISIBLE);
 					progressBar.invalidate();
 					registerActivityResultHandler(PICK_ANY, getHandler(getLayoutContext().getLayoutId()));
-					getHomeActivity().startActivityForResult(new Intent(Intent.ACTION_PICK).setType("*/*"), PICK_ANY);
+					getHomeActivity().startActivityForResult(new Intent("org.openintents.action.PICK_FILE").setType("*/*"), PICK_ANY);
 					}
 			});
 		}

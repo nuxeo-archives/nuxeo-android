@@ -4,40 +4,20 @@ import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.adapters.DocumentService;
-import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 import org.nuxeo.ecm.automation.client.jaxrs.model.DocRef;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
-import org.nuxeo.ecm.automation.client.jaxrs.model.IdRef;
 
-public class DocumentManager {
-
-	protected final Session session;
+public class DocumentManager extends DocumentService {
 
 	public DocumentManager(Session session) {
-		this.session = session;
+		super(session);
 	}
 
 	public Document getDocument(DocRef docRef, boolean refresh) throws Exception {
 		OperationRequest fetchOperation = session.newRequest(DocumentService.FetchDocument).set("value", docRef);
 		fetchOperation.setHeader("X-NXDocumentProperties", "*");
 		return (Document) fetchOperation.execute((byte) (CacheBehavior.STORE | CacheBehavior.FORCE_REFRESH));
-	}
-
-	public Documents getChildren(Document parent) {
-		return getChildren(new IdRef(parent.getId()));
-	}
-
-	public Documents getChildren(DocRef parent) {
-		throw new UnsupportedOperationException();
-	}
-
-	public Document createDocument(Document newDoc) {
-		throw new UnsupportedOperationException();
-	}
-
-	public Document saveDocument(Document doc) {
-		throw new UnsupportedOperationException();
 	}
 
 	public Documents query(String nxql, String[] queryParams, String[] sortInfo, String schemaList, int page, int pageSize, byte cacheFlags) throws Exception {

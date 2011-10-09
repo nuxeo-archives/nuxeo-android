@@ -111,8 +111,8 @@ public abstract class BaseSampleListActivity extends BaseNuxeoActivity
 			Document newDoc = createNewDocument();
 			startActivityForResult(
 					new Intent(this, DocumentLayoutActivity.class).putExtra(
-							DocumentLayoutActivity.DOCUMENT, newDoc).putExtra(
-							DocumentLayoutActivity.MODE, LayoutMode.CREATE),
+							BaseDocumentLayoutActivity.DOCUMENT, newDoc).putExtra(
+							BaseDocumentLayoutActivity.MODE, LayoutMode.CREATE),
 					CREATE_DOCUMENT);
 			break;
 		case R.id.itemView :
@@ -154,15 +154,15 @@ public abstract class BaseSampleListActivity extends BaseNuxeoActivity
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == EDIT_DOCUMENT && resultCode == RESULT_OK) {
-			if (data.hasExtra(DocumentLayoutActivity.DOCUMENT)) {
+			if (data.hasExtra(BaseDocumentLayoutActivity.DOCUMENT)) {
 				Document editedDocument = (Document) data.getExtras().get(
-						DocumentLayoutActivity.DOCUMENT);
+						BaseDocumentLayoutActivity.DOCUMENT);
 				onDocumentUpdate(editedDocument);
 			}
 		} else if (requestCode == CREATE_DOCUMENT && resultCode == RESULT_OK) {
-			if (data.hasExtra(DocumentLayoutActivity.DOCUMENT)) {
+			if (data.hasExtra(BaseDocumentLayoutActivity.DOCUMENT)) {
 				Document newDocument = (Document) data.getExtras().get(
-						DocumentLayoutActivity.DOCUMENT);
+						BaseDocumentLayoutActivity.DOCUMENT);
 				onDocumentCreate(newDocument);
 			}
 		}
@@ -181,13 +181,13 @@ public abstract class BaseSampleListActivity extends BaseNuxeoActivity
 
 		if (item.getItemId() == CTXMNU_VIEW_DOCUMENT) {
 			startActivity(new Intent(this, DocumentLayoutActivity.class)
-			.putExtra(DocumentLayoutActivity.DOCUMENT, doc).putExtra(
-					DocumentLayoutActivity.MODE, LayoutMode.VIEW));
+			.putExtra(BaseDocumentLayoutActivity.DOCUMENT, doc).putExtra(
+					BaseDocumentLayoutActivity.MODE, LayoutMode.VIEW));
 			return true;
 		} else if (item.getItemId() == CTXMNU_EDIT_DOCUMENT) {
 			startActivityForResult(new Intent(this, DocumentLayoutActivity.class)
-					.putExtra(DocumentLayoutActivity.DOCUMENT, doc).putExtra(
-							DocumentLayoutActivity.MODE, LayoutMode.EDIT),
+					.putExtra(BaseDocumentLayoutActivity.DOCUMENT, doc).putExtra(
+							BaseDocumentLayoutActivity.MODE, LayoutMode.EDIT),
 					EDIT_DOCUMENT);
 			return true;
 		} else if (item.getItemId() == CTXMNU_VIEW_ATTACHEMENT) {
