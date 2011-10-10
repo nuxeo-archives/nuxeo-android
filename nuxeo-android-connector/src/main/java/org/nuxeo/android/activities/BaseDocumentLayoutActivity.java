@@ -113,7 +113,7 @@ public abstract class BaseDocumentLayoutActivity extends BaseNuxeoActivity {
 
 	protected void cancelUpdate() {
 		Document doc = getCurrentDocument();
-		setResult(RESULT_OK, new Intent().putExtra(DOCUMENT, doc));
+		setResult(RESULT_CANCELED, new Intent().putExtra(DOCUMENT, doc));
 		this.finish();
 	}
 
