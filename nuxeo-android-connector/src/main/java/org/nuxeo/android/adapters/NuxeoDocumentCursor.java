@@ -49,13 +49,13 @@ public class NuxeoDocumentCursor extends AbstractCursor {
 		registerEventListener();
 	}
 
-	public NuxeoDocumentCursor (OperationRequest fetchOperation, String pageParametrerName, boolean updatable) {
+	public NuxeoDocumentCursor (OperationRequest fetchOperation, String pageParameterName, boolean updatable) {
      	this.mapper = new UUIDMapper();
      	this.updatable=updatable;
      	if (updatable) {
-     		docList = new LazyUpdatableDocumentsListImpl(fetchOperation, pageParametrerName);
+     		docList = new LazyUpdatableDocumentsListImpl(fetchOperation, pageParameterName);
      	} else {
-     		docList = new LazyDocumentsListImpl(fetchOperation, pageParametrerName);
+     		docList = new LazyDocumentsListImpl(fetchOperation, pageParameterName);
      	}
      	registerEventListener();
 	}

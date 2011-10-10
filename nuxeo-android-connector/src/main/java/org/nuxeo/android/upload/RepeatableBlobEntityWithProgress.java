@@ -11,7 +11,8 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 
 public class RepeatableBlobEntityWithProgress extends AbstractHttpEntity {
 
-	protected final static int BUFFER_SIZE = 2048;
+	protected static final int BUFFER_SIZE = 2048;
+
 	protected Blob blob;
 	protected UIAsyncCallback<Serializable> cb;
 

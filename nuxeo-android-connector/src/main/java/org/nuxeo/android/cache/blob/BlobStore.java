@@ -69,8 +69,6 @@ public class BlobStore implements Iterable<Properties>{
 		return new File(storageDir, key).exists();
 	}
 
-
-
 	protected BlobWithProperties buildBlob(File file, String key) {
 		File fileInfo =  new File(storageDir, key + NFO_SUFFIX );
 		String name = key;

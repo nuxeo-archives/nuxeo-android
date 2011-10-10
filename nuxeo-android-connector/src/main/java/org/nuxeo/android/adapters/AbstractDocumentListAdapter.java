@@ -65,7 +65,7 @@ public abstract class AbstractDocumentListAdapter extends BaseAdapter {
 		if (currentCount<0) {
 			currentCount = docList.getCurrentSize();
 			if (useLoadingView()) {
-				currentCount=currentCount+1;
+                currentCount += 1;
 			}
 		}
 		return currentCount;

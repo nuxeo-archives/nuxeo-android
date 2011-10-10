@@ -23,19 +23,17 @@ import org.nuxeo.ecm.automation.client.jaxrs.Dependency.DependencyType;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.CacheKeyHelper;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
-import sun.swing.CachedPainter;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
-public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
+public class AndroidDeferredUpdateManager implements DeferredUpdateManager {
 
 	protected ConcurrentHashMap<String, AsyncCallback<Object>> pendingCallbacks = new ConcurrentHashMap<String, AsyncCallback<Object>>();
 
 	protected final SQLStateManager sqlStateManager;
 
-	public AndroidDeferedUpdateManager(SQLStateManager sqlStateManager) {
+	public AndroidDeferredUpdateManager(SQLStateManager sqlStateManager) {
 		this.sqlStateManager = sqlStateManager;
 		sqlStateManager.registerWrapper(new DefferedUpdateTableWrapper());
 	}
@@ -78,7 +76,7 @@ public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
 
 				@Override
 				public void onError(String executionId, Throwable e) {
-					Log.e(AndroidDeferedUpdateManager.class.getSimpleName(), "Failed to execute defered op", e);
+					Log.e(AndroidDeferredUpdateManager.class.getSimpleName(), "Failed to execute defered op", e);
 					AsyncCallback<Object> clientCB = pendingCallbacks
 							.remove(requestKey);
 					if (clientCB != null) {
@@ -95,7 +93,7 @@ public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
 
 				@Override
 				public void onSuccess(String executionId, Object data) {
-					Log.i(AndroidDeferedUpdateManager.class.getSimpleName(), "Execute defered op " + executionId );
+					Log.i(AndroidDeferredUpdateManager.class.getSimpleName(), "Execute defered op " + executionId );
 					deleteDeferredUpdate(requestKey);
 					AsyncCallback<Object> clientCB = pendingCallbacks
 							.remove(requestKey);
@@ -113,7 +111,7 @@ public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
 
 					// execute Callback if present
 					if (clientCB != null) {
-						Log.i(AndroidDeferedUpdateManager.class.getSimpleName(), "Call onSuccess client CB");
+						Log.i(AndroidDeferredUpdateManager.class.getSimpleName(), "Call onSuccess client CB");
 						clientCB.onSuccess(requestKey, data);
 					}
 				}

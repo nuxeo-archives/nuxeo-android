@@ -71,14 +71,14 @@ public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
         String jsonCtx = new JSONObject(request.getContextParameters()).toString();
         String deps = request.getDependencies().asJSON();
 
-		String sqlValues =  " VALUES ("
-		+ "'" + key + "',"
-		+ "'" + operationId + "',"
-		+ "'" + opType.toString() + "',"
-		+ "'" + jsonParams + "',"
-		+ "'" + jsonHeaders + "',"
-		+ "'" + jsonCtx + "',"
-		+ "'" + deps + "'";
+        String sqlValues = " VALUES ("
+                + "'" + key + "',"
+                + "'" + operationId + "',"
+                + "'" + opType.toString() + "',"
+                + "'" + jsonParams + "',"
+                + "'" + jsonHeaders + "',"
+                + "'" + jsonCtx + "',"
+                + "'" + deps + "'";
 
         if (request.getInput()!=null) {
         	String inputType = request.getInput().getInputType();

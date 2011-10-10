@@ -110,17 +110,16 @@ public class FileUploader {
 		});
 	}
 
-	public BlobWithProperties storeFileForUpload(String batchId, String fileId, Blob blob) {
+    public BlobWithProperties storeFileForUpload(String batchId, String fileId, Blob blob) {
+        String key = UUID.randomUUID().toString();
+        Properties props = new Properties();
+        props.put(BATCH_ID, batchId);
+        props.put(FILE_ID, fileId);
+        props.put(UPLOAD_UUID, key);
+        return store.storeBlob(key, blob, props);
+    }
 
-		String key=UUID.randomUUID().toString();
-		Properties props = new Properties();
-		props.put(BATCH_ID, batchId);
-		props.put(FILE_ID, fileId);
-		props.put(UPLOAD_UUID, key);
-		return store.storeBlob(key, blob, props);
-	}
-
-	protected void removeBlob(BlobWithProperties blob) {
+    protected void removeBlob(BlobWithProperties blob) {
 		store.deleteBlob(blob.getProperty(UPLOAD_UUID));
 	}
 

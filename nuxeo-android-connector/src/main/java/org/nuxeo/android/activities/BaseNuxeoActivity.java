@@ -70,11 +70,8 @@ public abstract class BaseNuxeoActivity extends Activity {
 	}
 
 	/**
-	 * Should be overriden to include Async process.
+	 * Should be overridden to include Async process.
 	 * Returning a null result will cancel the callback
-	 *
-	 * @return
-	 * @throws Exception
 	 */
 	protected Object retrieveNuxeoData() throws Exception {
 		return null;
@@ -90,8 +87,6 @@ public abstract class BaseNuxeoActivity extends Activity {
 	/**
 	 * Called on the UI Thread when the async process is completed.
 	 * The input object will be the output of the retrieveNuxeoData
-	 *
-	 * @param data
 	 */
 	protected void onNuxeoDataRetrieved(Object data) {
 
@@ -103,7 +98,6 @@ public abstract class BaseNuxeoActivity extends Activity {
     }
 
     protected void startViewerFromBlob(Uri uri, String mimeTye) {
-
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(uri, mimeTye);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
