@@ -140,7 +140,7 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
 		} else if (view == execPendingButton) {
 			executePendingUpdates();
 		} else if (view == clearPendingButton) {
-			flushDefferedUpdateManager();
+			flushDeferredUpdateManager();
 		} else if (view == clearPendingUploadButton) {
 			flushPendingUploads();
 		} else if (view == clearIconCache) {

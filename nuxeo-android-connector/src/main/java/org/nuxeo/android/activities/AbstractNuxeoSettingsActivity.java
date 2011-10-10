@@ -64,24 +64,23 @@ public abstract class AbstractNuxeoSettingsActivity extends BaseNuxeoActivity {
 				}
 			}
 		}
-		boolean commited = prefEditor.commit();
+		boolean committed = prefEditor.commit();
 
-		return commited;
+		return committed;
 	}
 
 	protected Map<String, Object> getNuxeoPreferences() {
 
 		Map<String, Object> nxPrefs = new HashMap<String, Object>();
 
-		nxPrefs.put(NuxeoServerConfig.PREF_SERVER_URL, getNuxeoContext().getServerConfig().getServerBaseUrl());
-		nxPrefs.put(NuxeoServerConfig.PREF_SERVER_LOGIN, getNuxeoContext().getServerConfig().getLogin());
-		nxPrefs.put(NuxeoServerConfig.PREF_SERVER_PASSWORD, getNuxeoContext().getServerConfig().getPassword());
-
+        NuxeoServerConfig serverConfig = getNuxeoContext().getServerConfig();
+        nxPrefs.put(NuxeoServerConfig.PREF_SERVER_URL, serverConfig.getServerBaseUrl());
+		nxPrefs.put(NuxeoServerConfig.PREF_SERVER_LOGIN, serverConfig.getLogin());
+		nxPrefs.put(NuxeoServerConfig.PREF_SERVER_PASSWORD, serverConfig.getPassword());
 
 		// XXX cache settings here
 
 		return nxPrefs;
-
 	}
 
 }

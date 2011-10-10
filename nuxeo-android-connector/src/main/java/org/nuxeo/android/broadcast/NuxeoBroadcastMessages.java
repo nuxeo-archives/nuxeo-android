@@ -48,4 +48,7 @@ public class NuxeoBroadcastMessages {
 
 	public static final String EXTRA_SOURCEDOCUMENTSLIST_PAYLOAD_KEY = "SourceDocumentsList";
 
+    private NuxeoBroadcastMessages() {
+    }
+
 }

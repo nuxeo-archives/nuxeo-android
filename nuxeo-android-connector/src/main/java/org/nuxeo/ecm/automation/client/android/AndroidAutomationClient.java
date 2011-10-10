@@ -83,7 +83,7 @@ public class AndroidAutomationClient extends HttpAutomationClient {
         this.sqlStateManager=sqlStateManager;
         this.blobStoreManager=blobStoreManager;
         this.responseCacheManager = new AndroidResponseCacheManager(sqlStateManager,blobStoreManager);
-        this.deferredUpdatetManager = new AndroidDeferedUpdateManager(sqlStateManager);
+        this.deferredUpdatetManager = new AndroidDeferredUpdateManager(sqlStateManager);
         this.networkStatus = offlineSettings;
         this.androidContext = androidContext;
         this.messageHelper = new AndroidMessageHelper(androidContext);
@@ -111,7 +111,7 @@ public class AndroidAutomationClient extends HttpAutomationClient {
     		boolean executeNow = networkStatus.canUseNetwork();
     		return deferredUpdatetManager.execDeferredUpdate(request, cb, opType, executeNow);
     	} else {
-    		throw new UnsupportedOperationException("No DeferredUpdatetManager defined");
+    		throw new UnsupportedOperationException("No DeferredUpdateManager defined");
     	}
     }
 

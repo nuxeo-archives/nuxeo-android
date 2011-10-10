@@ -40,6 +40,10 @@ public abstract class BaseDocumentLayoutActivity extends BaseNuxeoActivity {
 
 	protected NuxeoLayout layout;
 
+    public BaseDocumentLayoutActivity() {
+        super();
+    }
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -85,10 +89,6 @@ public abstract class BaseDocumentLayoutActivity extends BaseNuxeoActivity {
 			currentDocument = (Document) getIntent().getExtras().get(DOCUMENT);
 		}
 		return currentDocument;
-	}
-
-	public BaseDocumentLayoutActivity() {
-		super();
 	}
 
 	@Override

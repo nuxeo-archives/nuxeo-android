@@ -56,6 +56,7 @@ public class SimpleDocumentViewBinder implements DocumentViewBinder {
 			((TextView)widget).setText(DocumentAttributeResolver.getString(doc, attribute));
 		}
 		else if (widget instanceof ImageView) {
+            // FIXME: uri is not used. Is it a bug?
 			Uri uri = (Uri) DocumentAttributeResolver.get(doc, attribute);
 			((ImageView)widget).setImageURI((Uri) DocumentAttributeResolver.get(doc, attribute));
 		}

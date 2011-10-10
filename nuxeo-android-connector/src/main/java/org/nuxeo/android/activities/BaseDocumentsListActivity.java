@@ -196,10 +196,10 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 		Document doc = getContextMenuDocument(selectedPosition);
 
 		if (item.getItemId() == CTXMNU_VIEW_DOCUMENT) {
-			startActivity(new Intent(this, getEditActivityClass())
-			.putExtra(BaseDocumentLayoutActivity.DOCUMENT, doc).putExtra(
-					BaseDocumentLayoutActivity.MODE, LayoutMode.VIEW));
-			return true;
+            startActivity(new Intent(this, getEditActivityClass())
+                    .putExtra(BaseDocumentLayoutActivity.DOCUMENT, doc).putExtra(
+                            BaseDocumentLayoutActivity.MODE, LayoutMode.VIEW));
+            return true;
 		} else if (item.getItemId() == CTXMNU_EDIT_DOCUMENT) {
 			startActivityForResult(new Intent(this, getEditActivityClass())
 					.putExtra(BaseDocumentLayoutActivity.DOCUMENT, doc).putExtra(
@@ -230,7 +230,7 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 			menu.setHeaderTitle("Menu for entry" + info.position);
 			menu.add(Menu.NONE, CTXMNU_VIEW_DOCUMENT, 0, "View");
 			menu.add(Menu.NONE, CTXMNU_EDIT_DOCUMENT, 1, "Edit");
-			menu.add(Menu.NONE, CTXMNU_VIEW_ATTACHEMENT, 2, "View attachement");
+			menu.add(Menu.NONE, CTXMNU_VIEW_ATTACHEMENT, 2, "View attachment");
 		}
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}

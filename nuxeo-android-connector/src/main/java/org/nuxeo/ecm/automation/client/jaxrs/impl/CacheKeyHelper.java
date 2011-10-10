@@ -28,7 +28,10 @@ import android.util.Log;
 
 public class CacheKeyHelper {
 
-	  public static String computeRequestKey(Request request) {
+    private CacheKeyHelper() {
+    }
+
+    public static String computeRequestKey(Request request) {
 
 	        String url = request.getUrl();
 	        if (url.endsWith("/login")) {
@@ -54,8 +57,9 @@ public class CacheKeyHelper {
 	        digest.update(sb.toString().getBytes());
 	        byte messageDigest[] = digest.digest();
 	        StringBuffer hexString = new StringBuffer();
-	        for (int i=0; i<messageDigest.length; i++)
-	            hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+	        for (int i=0; i<messageDigest.length; i++) {
+                hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+            }
 
 	        Log.i(CacheKeyHelper.class.getSimpleName(), "Generated key for query " + url + " : " + hexString.toString());
 	        Log.i(CacheKeyHelper.class.getSimpleName(), sb.toString());
@@ -94,8 +98,9 @@ public class CacheKeyHelper {
 	        digest.update(sb.toString().getBytes());
 	        byte messageDigest[] = digest.digest();
 	        StringBuffer hexString = new StringBuffer();
-	        for (int i=0; i<messageDigest.length; i++)
-	            hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+	        for (int i=0; i<messageDigest.length; i++) {
+                hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+            }
 	        return hexString.toString();
 	    }
 
