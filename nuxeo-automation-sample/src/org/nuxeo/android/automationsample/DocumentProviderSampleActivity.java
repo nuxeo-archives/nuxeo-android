@@ -177,7 +177,6 @@ implements View.OnClickListener, OnItemClickListener {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
 				.getMenuInfo();
 		int selectedPosition = info.position;
-
 		if (item.getItemId() == 0) {
 			startActivity(new Intent(this, DocumentLayoutActivity.class));
 			return true;

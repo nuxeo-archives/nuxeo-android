@@ -4,7 +4,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -80,22 +79,6 @@ public class HomeSampleActivity extends Activity implements View.OnClickListener
 			startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), 0);
 		}
 	}
-
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-		if (resultCode == Activity.RESULT_OK) {
-			Uri uri = data.getData();
-			//getContentResolver().openAssetFileDescriptor(uri, mode)
-			//getContentResolver().openAssetFileDescriptor(uri, "r").createInputStream();
-			//setResult(resultCode, data)
-		}
-
-		// TODO Auto-generated method stub
-		super.onActivityResult(requestCode, resultCode, data);
-	}
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

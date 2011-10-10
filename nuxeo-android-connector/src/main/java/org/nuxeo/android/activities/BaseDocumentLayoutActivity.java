@@ -1,6 +1,5 @@
-package org.nuxeo.android.automationsample;
+package org.nuxeo.android.activities;
 
-import org.nuxeo.android.activities.BaseNuxeoActivity;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.android.layout.NuxeoLayout;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;

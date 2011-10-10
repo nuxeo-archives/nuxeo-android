@@ -1,121 +1,105 @@
-package org.nuxeo.android.automationsample;
+package org.nuxeo.android.activities;
 
-import org.nuxeo.android.activities.BaseNuxeoActivity;
 import org.nuxeo.android.documentprovider.LazyDocumentsList;
+import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.view.ContextMenu;
-import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-/**
- * Simple base class for sharing code between samples and hiding as much as
- * possible all the UI code that is not related to Nuxeo SDK
- *
- * @author tiry
- *
- */
-public abstract class BaseSampleListActivity extends BaseNuxeoActivity
-		implements View.OnClickListener {
+public abstract class BaseDocumentsListActivity extends BaseListActivity {
 
-	protected ListView listView;
-	protected TextView waitingMessage;
-	protected Button refreshBtn;
+	protected static final int ACTION_EDIT_DOCUMENT = 0;
+	protected static final int ACTION_CREATE_DOCUMENT = 1;
 
-	protected static final int EDIT_DOCUMENT = 0;
-	protected static final int CREATE_DOCUMENT = 1;
+	protected static final int MNU_NEW_LISTITEM = 0;
+	protected static final int MNU_VIEW_LIST_EXTERNAL = 1;
+	protected static final int MNU_REFRESH = 2;
 
 	protected static final int CTXMNU_VIEW_DOCUMENT = 0;
 	protected static final int CTXMNU_EDIT_DOCUMENT = 1;
 	protected static final int CTXMNU_VIEW_ATTACHEMENT = 2;
 
-	public BaseSampleListActivity() {
+	protected LazyUpdatableDocumentsList documentsList;
+
+	public BaseDocumentsListActivity() {
 		super();
 	}
 
+	// Executed on the background thread to avoid freezing the UI
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.nxcp);
-
-		waitingMessage = (TextView) findViewById(R.id.waitingMessage);
-
-		refreshBtn = (Button) findViewById(R.id.refreshBtn);
-		refreshBtn.setOnClickListener(this);
-
-		listView = (ListView) findViewById(R.id.myList);
-		registerForContextMenu(listView);
-
+	protected Object retrieveNuxeoData() throws Exception {
+		return fetchDocumentsList();
 	}
 
-	protected void onNuxeoDataRetrievalStarted() {
-		waitingMessage.setText("Loading data ...");
-		waitingMessage.setVisibility(View.VISIBLE);
-		refreshBtn.setGravity(Gravity.RIGHT);
-		refreshBtn.setEnabled(false);
-	}
-
+	// Called on the UIThread when Nuxeo data has been retrieved
 	@Override
 	protected void onNuxeoDataRetrieved(Object data) {
-		waitingMessage.setVisibility(View.INVISIBLE);
-		refreshBtn.setEnabled(true);
+		super.onNuxeoDataRetrieved(data);
+		// get the DocumentList from the async call result
+		documentsList = (LazyUpdatableDocumentsList) data;
+		displayDocumentList(listView, documentsList);
 	}
 
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		if (v.getId() == listView.getId()) {
-			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-			menu.setHeaderTitle("Menu for entry" + info.position);
-			menu.add(Menu.NONE, CTXMNU_VIEW_DOCUMENT, 0, "View");
-			menu.add(Menu.NONE, CTXMNU_EDIT_DOCUMENT, 1, "Edit");
-			menu.add(Menu.NONE, CTXMNU_VIEW_ATTACHEMENT, 2, "View attachement");
-		}
-		super.onCreateContextMenu(menu, v, menuInfo);
+	protected abstract LazyUpdatableDocumentsList fetchDocumentsList() throws Exception;
+
+	protected abstract void displayDocumentList(ListView listView, LazyDocumentsList documentsList);
+
+	protected abstract Document initNewDocument();
+
+	protected abstract Class<? extends BaseDocumentLayoutActivity> getEditActivityClass();
+
+	protected void onDocumentCreate(Document newDocument) {
+		documentsList.createDocument(newDocument);
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.listmenu, menu);
-		return super.onCreateOptionsMenu(menu);
+	protected void onDocumentUpdate(Document editedDocument) {
+		documentsList.updateDocument(editedDocument);
 	}
 
-	@Override
-	public void onClick(View arg0) {
-		doRefresh();
+	protected void doRefresh() {
+		documentsList.refreshAll();
 	}
 
-	protected abstract void doRefresh();
+	protected LazyDocumentsList getDocumentsList() {
+		return documentsList;
+	}
 
-	protected abstract LazyDocumentsList getDocumentsList();
+	protected Document getContextMenuDocument(int selectedPosition) {
+		return documentsList.getDocument(selectedPosition);
+	}
+
+	protected void populateMenu(Menu menu) {
+		menu.add(Menu.NONE, MNU_NEW_LISTITEM, 0, "New item");
+		menu.add(Menu.NONE, MNU_VIEW_LIST_EXTERNAL, 1, "External View");
+		menu.add(Menu.NONE, MNU_REFRESH, 2, "Refresh");
+	}
 
 	// Activity menu handling
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.itemNew :
-			Document newDoc = createNewDocument();
+		case MNU_REFRESH :
+			doRefresh();
+			break;
+		case MNU_NEW_LISTITEM :
+			Document newDoc = initNewDocument();
 			startActivityForResult(
-					new Intent(this, DocumentLayoutActivity.class).putExtra(
+					new Intent(this, getEditActivityClass()).putExtra(
 							BaseDocumentLayoutActivity.DOCUMENT, newDoc).putExtra(
 							BaseDocumentLayoutActivity.MODE, LayoutMode.CREATE),
-					CREATE_DOCUMENT);
+					ACTION_CREATE_DOCUMENT);
 			break;
-		case R.id.itemView :
+		case MNU_VIEW_LIST_EXTERNAL:
 			if (getDocumentsList()!=null) {
 				Uri contentUri = getDocumentsList().getContentUri();
 				if (contentUri!=null) {
@@ -145,21 +129,15 @@ public abstract class BaseSampleListActivity extends BaseNuxeoActivity
 		return super.onOptionsItemSelected(item);
 	}
 
-	protected abstract Document createNewDocument();
-
-	protected abstract void onDocumentCreate(Document newDocument);
-
-	protected abstract void onDocumentUpdate(Document editedDocument);
-
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == EDIT_DOCUMENT && resultCode == RESULT_OK) {
+		if (requestCode == ACTION_EDIT_DOCUMENT && resultCode == RESULT_OK) {
 			if (data.hasExtra(BaseDocumentLayoutActivity.DOCUMENT)) {
 				Document editedDocument = (Document) data.getExtras().get(
 						BaseDocumentLayoutActivity.DOCUMENT);
 				onDocumentUpdate(editedDocument);
 			}
-		} else if (requestCode == CREATE_DOCUMENT && resultCode == RESULT_OK) {
+		} else if (requestCode == ACTION_CREATE_DOCUMENT && resultCode == RESULT_OK) {
 			if (data.hasExtra(BaseDocumentLayoutActivity.DOCUMENT)) {
 				Document newDocument = (Document) data.getExtras().get(
 						BaseDocumentLayoutActivity.DOCUMENT);
@@ -167,8 +145,6 @@ public abstract class BaseSampleListActivity extends BaseNuxeoActivity
 			}
 		}
 	}
-
-	protected abstract Document getContextMenuDocument(int selectedPosition);
 
 	// Content menu handling
 	@Override
@@ -180,15 +156,15 @@ public abstract class BaseSampleListActivity extends BaseNuxeoActivity
 		Document doc = getContextMenuDocument(selectedPosition);
 
 		if (item.getItemId() == CTXMNU_VIEW_DOCUMENT) {
-			startActivity(new Intent(this, DocumentLayoutActivity.class)
+			startActivity(new Intent(this, getEditActivityClass())
 			.putExtra(BaseDocumentLayoutActivity.DOCUMENT, doc).putExtra(
 					BaseDocumentLayoutActivity.MODE, LayoutMode.VIEW));
 			return true;
 		} else if (item.getItemId() == CTXMNU_EDIT_DOCUMENT) {
-			startActivityForResult(new Intent(this, DocumentLayoutActivity.class)
+			startActivityForResult(new Intent(this, getEditActivityClass())
 					.putExtra(BaseDocumentLayoutActivity.DOCUMENT, doc).putExtra(
 							BaseDocumentLayoutActivity.MODE, LayoutMode.EDIT),
-					EDIT_DOCUMENT);
+					ACTION_EDIT_DOCUMENT);
 			return true;
 		} else if (item.getItemId() == CTXMNU_VIEW_ATTACHEMENT) {
 			Uri blobUri = doc.getBlob();
@@ -205,9 +181,18 @@ public abstract class BaseSampleListActivity extends BaseNuxeoActivity
 		}
 	}
 
+
 	@Override
-	protected boolean requireAsyncDataRetrieval() {
-		return true;
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		if (v.getId() == listView.getId()) {
+			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+			menu.setHeaderTitle("Menu for entry" + info.position);
+			menu.add(Menu.NONE, CTXMNU_VIEW_DOCUMENT, 0, "View");
+			menu.add(Menu.NONE, CTXMNU_EDIT_DOCUMENT, 1, "Edit");
+			menu.add(Menu.NONE, CTXMNU_VIEW_ATTACHEMENT, 2, "View attachement");
+		}
+		super.onCreateContextMenu(menu, v, menuInfo);
 	}
 
 }

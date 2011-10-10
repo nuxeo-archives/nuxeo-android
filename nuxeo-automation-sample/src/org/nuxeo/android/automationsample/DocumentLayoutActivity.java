@@ -1,5 +1,6 @@
 package org.nuxeo.android.automationsample;
 
+import org.nuxeo.android.activities.BaseDocumentLayoutActivity;
 import org.nuxeo.android.layout.LayoutMode;
 
 import android.os.Bundle;

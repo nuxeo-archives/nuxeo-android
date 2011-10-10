@@ -1,15 +1,26 @@
 package org.nuxeo.android.automationsample;
 
-import org.nuxeo.android.documentprovider.LazyDocumentsList;
+import org.nuxeo.android.activities.BaseListActivity;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.database.Cursor;
 import android.net.Uri;
+import android.view.Menu;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
-public class ContentProviderSampleActivity extends BaseSampleListActivity {
+public class ContentProviderSampleActivity extends BaseListActivity {
 
 	protected Cursor cursor;
+
+	protected void setupViews() {
+		setContentView(R.layout.nxcp);
+		waitingMessage = (TextView) findViewById(R.id.waitingMessage);
+		refreshBtn = (Button) findViewById(R.id.refreshBtn);
+		listView = (ListView) findViewById(R.id.myList);
+	}
 
 	// Executed on the background thread to avoid freezing the UI
 	@Override
@@ -34,23 +45,12 @@ public class ContentProviderSampleActivity extends BaseSampleListActivity {
 		return null;
 	}
 
-	protected Document createNewDocument() {
-		return null;
-	}
-
-	protected void onDocumentCreate(Document newDocument) {
-	}
-
-	protected void onDocumentUpdate(Document editedDocument) {
-	}
-
 	protected void doRefresh() {
 		//documentCursor.getDocumentsList().refreshAll();
 	}
 
 	@Override
-	protected LazyDocumentsList getDocumentsList() {
-		return null;
+	protected void populateMenu(Menu menu) {
 	}
 
 }
