@@ -40,9 +40,12 @@ public class LayoutRow {
 		ViewGroup rowLayout = createTopLayoutContainer(context.getActivity(), container);
 		List<NuxeoWidget> widgets = new ArrayList<NuxeoWidget>();
 		for (String name : widgetNames) {
-			NuxeoWidget widget = widgetDefs.get(name).build(context, doc, rowLayout, mode);
-			if (widget!=null) {
-				widgets.add(widget);
+			WidgetDefinition def = widgetDefs.get(name);
+			if (def!=null) {
+				NuxeoWidget widget = def.build(context, doc, rowLayout, mode);
+				if (widget!=null) {
+					widgets.add(widget);
+				}
 			}
 		}
 		return widgets;
