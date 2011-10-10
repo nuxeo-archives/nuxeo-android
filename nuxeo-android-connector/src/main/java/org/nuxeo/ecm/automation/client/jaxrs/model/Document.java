@@ -87,7 +87,11 @@ public class Document extends DocRef implements Serializable {
         	path = path.substring(0, path.length()-1);
         }
         int idx = path.lastIndexOf("/");
-        this.parentPath = path.substring(0, idx);
+        if (idx >0 ) {
+        	this.parentPath = path.substring(0, idx);
+        } else {
+        	this.parentPath=null;
+        }
         this.name = path.substring(idx+1);
         this.changeToken = changeToken;
         this.facets = facets;
@@ -316,6 +320,9 @@ public class Document extends DocRef implements Serializable {
 		this.inConflict = inConflict;
 	}
 
+	public boolean isFolder() {
+		return facets.list.contains("Folderish");
+	}
 
 
 }

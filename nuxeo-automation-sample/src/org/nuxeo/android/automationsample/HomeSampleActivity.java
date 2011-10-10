@@ -19,6 +19,7 @@ public class HomeSampleActivity extends Activity implements View.OnClickListener
 	protected Button docListBtn;
 	protected Button docProviderBtn;
 	protected Button contentProviderBtn;
+	protected Button browseBtn;
 
 	protected Spinner spinner;
 
@@ -37,6 +38,9 @@ public class HomeSampleActivity extends Activity implements View.OnClickListener
 
         docListBtn = (Button) findViewById(R.id.docListBtn);
         docListBtn.setOnClickListener(this);
+
+        browseBtn = (Button) findViewById(R.id.browsetBtn);
+        browseBtn.setOnClickListener(this);
 
         docProviderBtn = (Button) findViewById(R.id.docProviderBtn);
         docProviderBtn.setOnClickListener(this);
@@ -68,6 +72,10 @@ public class HomeSampleActivity extends Activity implements View.OnClickListener
 		else if (view == docListBtn) {
             startActivity(new Intent(getApplicationContext(),
                     SimpleDocumentsListSampleActivity.class));
+		}
+		else if (view == browseBtn) {
+            startActivity(new Intent(getApplicationContext(),
+                    GetChildrenSampleActivity.class));
 		}
 		else if (view == docProviderBtn) {
             startActivity(new Intent(getApplicationContext(),

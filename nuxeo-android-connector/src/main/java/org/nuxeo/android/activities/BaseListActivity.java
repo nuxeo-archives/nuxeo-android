@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * Simple base class for sharing UI code between list view activities.
@@ -17,7 +19,7 @@ import android.widget.TextView;
  *
  */
 public abstract class BaseListActivity extends BaseNuxeoActivity implements
-		View.OnClickListener {
+		View.OnClickListener, OnItemClickListener {
 
 	protected ListView listView;
 	protected TextView waitingMessage;
@@ -33,6 +35,7 @@ public abstract class BaseListActivity extends BaseNuxeoActivity implements
 		setupViews();
 		if (listView != null) {
 			registerForContextMenu(listView);
+			listView.setOnItemClickListener(this);
 		}
 		if (refreshBtn != null) {
 			refreshBtn.setOnClickListener(this);
@@ -80,9 +83,18 @@ public abstract class BaseListActivity extends BaseNuxeoActivity implements
 	protected abstract void populateMenu(Menu menu);
 
 	@Override
-	public void onClick(View arg0) {
-		doRefresh();
+	public void onClick(View view) {
+		if (view == refreshBtn) {
+			doRefresh();
+		}
 	}
+
+	@Override
+	public void onItemClick(AdapterView<?> list, View container, int position, long id) {
+		onListItemClicked(position);
+	}
+
+	protected abstract void onListItemClicked(int listItemPosition);
 
 	protected abstract void doRefresh();
 

@@ -19,5 +19,11 @@ public class SimpleDocumentsListSampleActivity extends BaseSampleDocumentsListAc
 		throw new RuntimeException("fetch Operation did return null");
 	}
 
+	@Override
+	protected void onListItemClicked(int listItemPosition)
+	{
+
+	}
+
 
 }

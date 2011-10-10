@@ -28,6 +28,9 @@
         <activity android:name="SimpleDocumentsListSampleActivity"
                   android:label="Sample for using Document Lists">
         </activity>
+        <activity android:name="GetChildrenSampleActivity"
+                  android:label="Browse the repository">
+        </activity>
         <activity android:name="DocumentProviderSampleActivity"
                   android:label="Sample for DocumentProviders">
         </activity>

@@ -50,6 +50,12 @@ public class ContentProviderSampleActivity extends BaseListActivity {
 	}
 
 	@Override
+	protected void onListItemClicked(int listItemPosition)
+	{
+
+	}
+
+	@Override
 	protected void populateMenu(Menu menu) {
 	}
 
