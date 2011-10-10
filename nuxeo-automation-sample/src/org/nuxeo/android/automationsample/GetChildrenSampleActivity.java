@@ -74,4 +74,9 @@ public class GetChildrenSampleActivity extends BaseSampleDocumentsListActivity {
 		}
 	}
 
+	@Override
+	protected Document initNewDocument(String type) {
+		return new Document(getRoot().getPath(),"newAndroidDoc",type);
+	}
+
 }

@@ -1,5 +1,9 @@
 package org.nuxeo.android.activities;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.nuxeo.android.documentprovider.LazyDocumentsList;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.android.layout.LayoutMode;
@@ -10,6 +14,7 @@ import android.net.Uri;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
@@ -21,7 +26,7 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 	protected static final int ACTION_EDIT_DOCUMENT = 0;
 	protected static final int ACTION_CREATE_DOCUMENT = 1;
 
-	protected static final int MNU_NEW_LISTITEM = 0;
+	protected static final int MNU_NEW_LISTITEM = 10;
 	protected static final int MNU_VIEW_LIST_EXTERNAL = 1;
 	protected static final int MNU_REFRESH = 2;
 
@@ -54,7 +59,7 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 
 	protected abstract void displayDocumentList(ListView listView, LazyDocumentsList documentsList);
 
-	protected abstract Document initNewDocument();
+	protected abstract Document initNewDocument(String type);
 
 	protected abstract Class<? extends BaseDocumentLayoutActivity> getEditActivityClass();
 
@@ -78,8 +83,22 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 		return documentsList.getDocument(selectedPosition);
 	}
 
+	protected LinkedHashMap<String, String> getDocTypesForCreation() {
+		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+		map.put("File", "File Document");
+		map.put("Note", "Note Document");
+		map.put("Folder", "Folder Document");
+		return map;
+	}
+
 	protected void populateMenu(Menu menu) {
-		menu.add(Menu.NONE, MNU_NEW_LISTITEM, 0, "New item");
+		SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_NEW_LISTITEM, 0, "New item");
+		LinkedHashMap<String, String> types = getDocTypesForCreation();
+		int idx = 1;
+		for (String key : types.keySet()) {
+			subMenu.add(Menu.NONE,MNU_NEW_LISTITEM+ idx, idx, types.get(key));
+			idx++;
+		}
 		menu.add(Menu.NONE, MNU_VIEW_LIST_EXTERNAL, 1, "External View");
 		menu.add(Menu.NONE, MNU_REFRESH, 2, "Refresh");
 	}
@@ -90,14 +109,6 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 		switch (item.getItemId()) {
 		case MNU_REFRESH :
 			doRefresh();
-			break;
-		case MNU_NEW_LISTITEM :
-			Document newDoc = initNewDocument();
-			startActivityForResult(
-					new Intent(this, getEditActivityClass()).putExtra(
-							BaseDocumentLayoutActivity.DOCUMENT, newDoc).putExtra(
-							BaseDocumentLayoutActivity.MODE, LayoutMode.CREATE),
-					ACTION_CREATE_DOCUMENT);
 			break;
 		case MNU_VIEW_LIST_EXTERNAL:
 			if (getDocumentsList()!=null) {
@@ -122,6 +133,19 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 				}
 			}
 			break;
+			default:
+				if (item.getItemId()> MNU_NEW_LISTITEM) {
+					int idx = item.getItemId()-MNU_NEW_LISTITEM -1;
+					String type = new ArrayList<String>(getDocTypesForCreation().keySet()).get(idx);
+					Document newDoc = initNewDocument(type);
+					startActivityForResult(
+							new Intent(this, getEditActivityClass()).putExtra(
+									BaseDocumentLayoutActivity.DOCUMENT, newDoc).putExtra(
+									BaseDocumentLayoutActivity.MODE, LayoutMode.CREATE),
+							ACTION_CREATE_DOCUMENT);
+
+				}
+				break;
 		}
 
 

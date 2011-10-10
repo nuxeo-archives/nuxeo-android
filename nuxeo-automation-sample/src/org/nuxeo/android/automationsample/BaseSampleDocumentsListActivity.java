@@ -61,8 +61,8 @@ public abstract class BaseSampleDocumentsListActivity extends
 	}
 
 	@Override
-	protected Document initNewDocument() {
-		return new Document(userHome.getPath(),"newAndroidDoc","File");
+	protected Document initNewDocument(String type) {
+		return new Document(userHome.getPath(),"newAndroidDoc",type);
 	}
 
 }

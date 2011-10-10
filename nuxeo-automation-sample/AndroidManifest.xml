@@ -13,42 +13,42 @@
 
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:name="org.nuxeo.android.automationsample.NuxeoSampleApplication">
         <activity android:name="HomeSampleActivity"
-                  android:label="@string/app_name">
+                  android:label="@string/app_name" android:theme="@style/Theme.NuxeoAndroid">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name="ConnectSampleActivity"
-                  android:label="Connect to Nuxeo Server">
+                  android:label="Connect to Nuxeo Server" android:theme="@style/Theme.NuxeoAndroid">
         </activity>
         <activity android:name="SimpleFetchSampleActivty"
-                  android:label="Simple Data retrieval">
+                  android:label="Simple Data retrieval" android:theme="@style/Theme.NuxeoAndroid">
         </activity>
         <activity android:name="SimpleDocumentsListSampleActivity"
-                  android:label="Sample for using Document Lists">
+                  android:label="Sample for using Document Lists"  android:theme="@style/Theme.NuxeoAndroid">
         </activity>
         <activity android:name="GetChildrenSampleActivity"
-                  android:label="Browse the repository">
+                  android:label="Browse the repository" android:theme="@style/Theme.NuxeoAndroid">
         </activity>
         <activity android:name="DocumentProviderSampleActivity"
-                  android:label="Sample for DocumentProviders">
+                  android:label="Sample for DocumentProviders" android:theme="@style/Theme.NuxeoAndroid">
         </activity>
         <activity android:name="DocumentProviderViewActivity"
-                  android:label="Browse a DocumentProvider">
+                  android:label="Browse a DocumentProvider" android:theme="@style/Theme.NuxeoAndroid">
         </activity>
 
         <activity android:name="NetworkSettingsActivity"
-                  android:label="Nuxeo Offline Settings">
+                  android:label="Nuxeo Offline Settings" android:theme="@style/Theme.NuxeoAndroid">
         </activity>
         <activity android:name="ContentProviderSampleActivity"
-                  android:label="Cursor sample">
+                  android:label="Cursor sample" android:theme="@style/Theme.NuxeoAndroid">
         </activity>
         <activity android:name="DocumentLayoutActivity"
-                  android:label="CreateEditActivity">
+                  android:label="CreateEditActivity" android:theme="@style/Theme.NuxeoAndroid">
         </activity>
         <activity android:name=".ServerSettingsActivity"
-                  android:label="Settings">
+                  android:label="Settings" android:theme="@style/Theme.NuxeoAndroid">
         </activity>
 		<provider android:name="org.nuxeo.android.contentprovider.NuxeoDocumentContentProvider"
 		          android:authorities="nuxeo">

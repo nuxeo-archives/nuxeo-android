@@ -11,20 +11,17 @@
     android:layout_height="wrap_content"
     />
 
+  <LinearLayout  android:layout_width="fill_parent"
+   android:layout_height="30dip"
+   android:orientation="horizontal">
+    <Button android:text="Save" android:id="@+id/updateDocument" android:layout_width="100dip" android:layout_height="30dip"></Button>
+    <Button android:text="Cancel" android:id="@+id/cancelDocument" android:layout_width="100dip" android:layout_height="30dip"></Button>
+  </LinearLayout>
 
   <ScrollView android:id="@+id/layoutContainer"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
   </ScrollView>
-
-  <LinearLayout  android:layout_width="fill_parent"
-   android:layout_height="wrap_content"
-   android:orientation="horizontal">
-
-    <Button android:text="Save" android:id="@+id/updateDocument" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-    <Button android:text="Cancel" android:id="@+id/cancelDocument" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-
-   </LinearLayout>
 
 
 </LinearLayout>

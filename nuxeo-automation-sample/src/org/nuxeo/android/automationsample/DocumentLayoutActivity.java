@@ -28,7 +28,14 @@ public class DocumentLayoutActivity extends BaseDocumentLayoutActivity implement
 
 		setContentView(R.layout.createeditlayout);
 		title = (TextView) findViewById(R.id.currentDocTitle);
-		title.setText(getCurrentDocument().getTitle());
+
+		if (isEditMode()) {
+			title.setText("Edit " + getCurrentDocument().getTitle() + " (" + getCurrentDocument().getType() + ")");
+		} else if (isCreateMode()) {
+			title.setText("Create new " + getCurrentDocument().getType());
+		} else {
+			title.setText("View " + getCurrentDocument().getTitle() + " (" + getCurrentDocument().getType() + ")");
+		}
 
 		saveBtn = (Button) findViewById(R.id.updateDocument);
 		saveBtn.setOnClickListener(this);
