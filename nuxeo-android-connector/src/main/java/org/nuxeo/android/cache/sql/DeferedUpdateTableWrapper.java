@@ -30,7 +30,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class DefferedUpdateTableWrapper extends AbstractSQLTableWrapper {
+public class DeferedUpdateTableWrapper extends AbstractSQLTableWrapper {
 
 	public static final String TBLNAME = "NuxeoPendingUpdates";
 

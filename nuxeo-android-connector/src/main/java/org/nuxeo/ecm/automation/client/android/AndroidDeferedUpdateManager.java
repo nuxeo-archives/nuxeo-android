@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.nuxeo.android.broadcast.NuxeoBroadcastMessages;
-import org.nuxeo.android.cache.sql.DefferedUpdateTableWrapper;
+import org.nuxeo.android.cache.sql.DeferedUpdateTableWrapper;
 import org.nuxeo.android.cache.sql.SQLStateManager;
 import org.nuxeo.ecm.automation.client.broadcast.DocumentMessageService;
 import org.nuxeo.ecm.automation.client.broadcast.EventLifeCycle;
@@ -52,12 +52,12 @@ public class AndroidDeferedUpdateManager implements DeferredUpdateManager {
 
 	public AndroidDeferedUpdateManager(SQLStateManager sqlStateManager) {
 		this.sqlStateManager = sqlStateManager;
-		sqlStateManager.registerWrapper(new DefferedUpdateTableWrapper());
+		sqlStateManager.registerWrapper(new DeferedUpdateTableWrapper());
 	}
 
-	protected DefferedUpdateTableWrapper getTableWrapper() {
-		return (DefferedUpdateTableWrapper) sqlStateManager
-				.getTableWrapper(DefferedUpdateTableWrapper.TBLNAME);
+	protected DeferedUpdateTableWrapper getTableWrapper() {
+		return (DeferedUpdateTableWrapper) sqlStateManager
+				.getTableWrapper(DeferedUpdateTableWrapper.TBLNAME);
 	}
 
 	@Override
