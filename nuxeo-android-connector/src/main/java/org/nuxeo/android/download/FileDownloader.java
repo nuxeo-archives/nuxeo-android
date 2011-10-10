@@ -99,20 +99,20 @@ public class FileDownloader {
 		return null;
 	}
 
-	protected String buildUrl(String urlPattern, String suffix ) {
+	protected String buildUrl(String suffix ) {
 		if (suffix.startsWith("http://") || suffix.startsWith("https://")) {
 			return suffix;
 		}
 		String url = client.getServerConfig().getServerBaseUrl();
 
-		if (!suffix.startsWith("/")) {
-			suffix = "/" + suffix;
+		if (suffix.startsWith("/")) {
+			suffix = suffix.substring(1);
 		}
-		return url + urlPattern + suffix;
+		return url + suffix;
 	}
 
 	public FileBlob getIcon(String url) {
-		url = buildUrl("icons", url);
+		url = buildUrl(url);
 		return getBlob(ICONS_KEY, url, null, null);
 	}
 

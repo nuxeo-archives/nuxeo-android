@@ -241,7 +241,9 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 		FileDownloader downloader = getClient().getFileDownloader();
 
 		if (resourceType.equals("icons")) {
-			String subPath = uri.getEncodedPath().toString().replace("/icons", "");
+
+			String subPath = uri.getEncodedPath().toString();
+			subPath = subPath.replaceFirst("/icons", "");
 			FileBlob iconFile = downloader.getIcon(subPath);
 			if (iconFile!=null) {
 				return iconFile;

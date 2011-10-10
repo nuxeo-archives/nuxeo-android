@@ -83,7 +83,7 @@ public class AndroidAutomationClient extends HttpAutomationClient {
         this.sqlStateManager=sqlStateManager;
         this.blobStoreManager=blobStoreManager;
         this.responseCacheManager = new AndroidResponseCacheManager(sqlStateManager,blobStoreManager);
-        this.deferredUpdatetManager = new AndroidDeferredUpdateManager(sqlStateManager);
+        this.deferredUpdatetManager = new AndroidDeferedUpdateManager(sqlStateManager);
         this.networkStatus = offlineSettings;
         this.androidContext = androidContext;
         this.messageHelper = new AndroidMessageHelper(androidContext);
