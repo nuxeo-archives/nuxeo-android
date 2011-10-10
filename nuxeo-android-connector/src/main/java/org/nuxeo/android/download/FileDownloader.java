@@ -67,6 +67,12 @@ public class FileDownloader {
 		return getBlob(BLOB_KEY, url, null, null);
 	}
 
+	public FileBlob getBlob(String uid, String subPath) {
+		String pattern = "nxbigfile/default/" + uid + "/" + subPath;
+		String url = client.getServerConfig().getServerBaseUrl() + pattern;
+		return getBlob(BLOB_KEY, url, null, null);
+	}
+
 	public String getBlob(String url, AsyncCallback<Blob> cb) {
 		String execId = getExecutionId(url);
 		Blob blob = null;

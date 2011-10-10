@@ -34,6 +34,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyMap;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -52,6 +53,7 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 	protected boolean changedValue=false;
 
 	protected LinearLayout layoutWidget;
+	protected LinearLayout fileAttributes;
 	protected TextView filename;
 	protected TextView size;
 	protected TextView mimetype;
@@ -59,6 +61,7 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 	protected LinearLayout buttonLayout;
 	protected Button uploadImg;
 	protected Button uploadFile;
+	protected Button openBtn;
 
 	protected AsyncCallbackWithProgress<Serializable> uploadCB;
 
@@ -87,7 +90,6 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 			size.setVisibility(View.INVISIBLE);
 			mimetype.setVisibility(View.INVISIBLE);
 		} else {
-			Log.i("YOOOOO!!", currentValue.getString("name"));
 			filename.setText(currentValue.getString("name"));
 			size.setVisibility(View.VISIBLE);
 			mimetype.setVisibility(View.VISIBLE);
@@ -115,13 +117,47 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 		layoutWidget = new LinearLayout(context.getActivity());
 		layoutWidget.setOrientation(LinearLayout.VERTICAL);
 
+		fileAttributes = new LinearLayout(context.getActivity());
+		fileAttributes.setOrientation(LinearLayout.HORIZONTAL);
+
 		// Common part
 		filename = new TextView(ctx);
 		layoutWidget.addView(filename);
+
+
 		size = new TextView(ctx);
-		layoutWidget.addView(size);
 		mimetype = new TextView(ctx);
-		layoutWidget.addView(mimetype);
+		fileAttributes.addView(size);
+		fileAttributes.addView(mimetype);
+
+		if (mode==LayoutMode.VIEW) {
+			openBtn = new Button(layoutWidget.getContext());
+			fileAttributes.addView(openBtn);
+			openBtn.setBackgroundResource(android.R.drawable.ic_input_get);
+			String uriString = "content://nuxeo/blobs/" + doc.getId() + "/" + attributeName;
+			final Uri contentUri = Uri.parse(uriString);
+			openBtn.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+
+					Intent intent = new Intent(Intent.ACTION_VIEW);
+			        intent.setData(contentUri);
+			        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+			        try {
+			        	getHomeActivity().startActivity(intent);
+			        }
+			        catch (android.content.ActivityNotFoundException e) {
+			        	Log.e(BlobWidgetWrapper.class.getSimpleName(), "Unable to start blob viewer",e);
+			            Toast.makeText(getRootContext(),
+			                "No Application Available to View blob",
+			                Toast.LENGTH_SHORT).show();
+			        }
+				}
+			});
+		}
+
+		layoutWidget.addView(fileAttributes);
 
 		if (mode!=LayoutMode.VIEW) {
 			progressBar = new ProgressBar(ctx, null, android.R.attr.progressBarStyleHorizontal);

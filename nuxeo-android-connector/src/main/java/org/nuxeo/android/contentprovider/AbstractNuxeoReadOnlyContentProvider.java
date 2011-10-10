@@ -91,6 +91,9 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 		uriMatcher.addURI(NUXEO_AUTHORITY, ICONS + "/*/*/*/*", ICONS_PROVIDER);
 		uriMatcher.addURI(NUXEO_AUTHORITY, BLOBS + "/*", BLOBS_PROVIDER);
 		uriMatcher.addURI(NUXEO_AUTHORITY, BLOBS + "/*/#", BLOBS_PROVIDER);
+		uriMatcher.addURI(NUXEO_AUTHORITY, BLOBS + "/*/*", BLOBS_PROVIDER);
+		uriMatcher.addURI(NUXEO_AUTHORITY, BLOBS + "/*/*/*", BLOBS_PROVIDER);
+		uriMatcher.addURI(NUXEO_AUTHORITY, BLOBS + "/*/*/*/*", BLOBS_PROVIDER);
 		uriMatcher.addURI(NUXEO_AUTHORITY, "*", DOCUMENTS_PROVIDER);
 		uriMatcher.addURI(NUXEO_AUTHORITY, "*/*", DOCUMENT_PROVIDER);
 	}
@@ -251,13 +254,20 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 		}
 		else if (resourceType.equals("blobs")) {
 			String uid = uri.getPathSegments().get(1);
+			FileBlob blob = null;
 			String suffix = null;
 			Integer idx = null;
 			if (uri.getPathSegments().size()>2) {
 				suffix = uri.getPathSegments().get(2);
-				idx = Integer.parseInt(suffix);
+				try {
+					idx = Integer.parseInt(suffix);
+					blob = downloader.getBlob(uid, idx);
+				} catch (NumberFormatException e) {
+					idx = uri.toString().indexOf(uid);
+					String subPath = uri.toString().substring(idx + uid.length()+1);
+					blob = downloader.getBlob(uid, subPath);
+				}
 			}
-			FileBlob blob = downloader.getBlob(uid, idx);
 			if (blob!=null) {
 				return blob;
 			}
