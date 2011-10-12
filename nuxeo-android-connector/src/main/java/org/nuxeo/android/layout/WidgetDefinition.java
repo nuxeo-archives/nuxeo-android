@@ -17,6 +17,8 @@
 
 package org.nuxeo.android.layout;
 
+import java.util.List;
+
 import org.json.JSONObject;
 import org.nuxeo.android.layout.selectOptions.SelectOptions;
 import org.nuxeo.android.layout.widgets.AndroidWidgetMapper;
@@ -37,7 +39,7 @@ public class WidgetDefinition {
 
 	protected String label;
 
-	protected String attributeName;
+	protected List<String> attributeNames;
 
 	protected LayoutMode mode;
 
@@ -46,11 +48,11 @@ public class WidgetDefinition {
 	protected JSONObject properties;
 
 	public WidgetDefinition(String name, String type, String label,
-			String attributeName, JSONObject properties) {
+			List<String> fieldNames, JSONObject properties) {
 		this.name = name;
 		this.type = type;
 		this.label = label;
-		this.attributeName = attributeName;
+		this.attributeNames = fieldNames;
 		this.properties = properties;
 	}
 
@@ -80,7 +82,7 @@ public class WidgetDefinition {
 		AndroidWidgetWrapper wrapper = AndroidWidgetMapper.getInstance()
 				.getWidgetWrapper(this);
 		if (wrapper != null) {
-			view = wrapper.buildView(context, mode, doc, attributeName, this);
+			view = wrapper.buildView(context, mode, doc, attributeNames, this);
 			view.setLayoutParams(paramsW);
 		}
 
@@ -107,7 +109,11 @@ public class WidgetDefinition {
 	}
 
 	public String getAttributeName() {
-		return attributeName;
+		return attributeNames.get(0);
+	}
+
+	public List<String> getAttributeNames() {
+		return attributeNames;
 	}
 
 	public LayoutMode getMode() {

@@ -47,7 +47,7 @@ public class SpinnerWidgetWrapper extends BaseAndroidWidgetWrapper<String> imple
 		if ( (mode !=LayoutMode.VIEW)  && spinner!=null) {
 			int pos = spinner.getSelectedItemPosition();
 			String key = widgetDef.getSelectOptions().getItemValue(pos);
-			DocumentAttributeResolver.put(doc, attributeName, key);
+			DocumentAttributeResolver.put(doc, getAttributeName(), key);
 		}
 	}
 
@@ -79,8 +79,8 @@ public class SpinnerWidgetWrapper extends BaseAndroidWidgetWrapper<String> imple
 
 	@Override
 	public View buildView(LayoutContext context, LayoutMode mode, Document doc,
-			String attributeName, WidgetDefinition widgetDef) {
-		super.buildView(context, mode, doc, attributeName, widgetDef);
+			List<String> attributeNames, WidgetDefinition widgetDef) {
+		super.buildView(context, mode, doc, attributeNames, widgetDef);
 
 		Context ctx = context.getActivity();
 		if (mode==LayoutMode.VIEW) {

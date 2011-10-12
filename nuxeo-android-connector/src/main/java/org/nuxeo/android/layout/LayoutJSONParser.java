@@ -70,12 +70,15 @@ public class LayoutJSONParser {
 				JSONObject w = widgets.getJSONObject(i);
 				JSONArray fields = w.getJSONArray("fields");
 				JSONObject labels = w.getJSONObject("labels");
-				String fieldName = fields.getJSONObject(0).getString("fieldName");
+				List<String> fieldNames = new ArrayList<String>();
+				for (int j =0; j < fields.length(); j++) {
+					fieldNames.add(fields.getJSONObject(j).getString("fieldName"));
+				}
 				JSONObject properties = w.optJSONObject("properties");
 				if (properties!=null && properties.has("any")) {
 					properties = properties.getJSONObject("any");
 				}
-				WidgetDefinition wDef = new WidgetDefinition(w.getString("name"), w.getString("type"), labels.getString("any"),fieldName, properties );
+				WidgetDefinition wDef = new WidgetDefinition(w.getString("name"), w.getString("type"), labels.getString("any"),fieldNames, properties );
 				widgetDefs.put(w.getString("name"), wDef);
 
 				JSONArray options = w.optJSONArray(OPTIONS_DEF);

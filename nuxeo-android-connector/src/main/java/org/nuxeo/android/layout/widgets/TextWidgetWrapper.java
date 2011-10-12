@@ -17,6 +17,8 @@
 
 package org.nuxeo.android.layout.widgets;
 
+import java.util.List;
+
 import org.nuxeo.android.adapters.DocumentAttributeResolver;
 import org.nuxeo.android.layout.LayoutContext;
 import org.nuxeo.android.layout.LayoutMode;
@@ -41,7 +43,7 @@ public class TextWidgetWrapper extends BaseAndroidWidgetWrapper<String> implemen
 	@Override
 	public void updateModel(Document doc) {
 		if (editWidget!=null && ! editWidget.getText().toString().equals(getCurrentValue())) {
-			DocumentAttributeResolver.put(doc, attributeName, editWidget.getText().toString());
+			DocumentAttributeResolver.put(doc, getAttributeName(), editWidget.getText().toString());
 		}
 	}
 
@@ -62,9 +64,9 @@ public class TextWidgetWrapper extends BaseAndroidWidgetWrapper<String> implemen
 
 	@Override
 	public View buildView(LayoutContext context, LayoutMode mode, Document doc,
-			String attributeName, WidgetDefinition widgetDef) {
+			List<String> attributeNames, WidgetDefinition widgetDef) {
 
-		super.buildView(context, mode, doc, attributeName, widgetDef);
+		super.buildView(context, mode, doc, attributeNames, widgetDef);
 
 		Context ctx = context.getActivity();
 
@@ -81,7 +83,7 @@ public class TextWidgetWrapper extends BaseAndroidWidgetWrapper<String> implemen
 
 	@Override
 	protected void initCurrentValueFromDocument(Document doc) {
-		setCurrentValue(DocumentAttributeResolver.getString(doc, attributeName));
+		setCurrentValue(DocumentAttributeResolver.getString(doc, getAttributeName()));
 	}
 
 }

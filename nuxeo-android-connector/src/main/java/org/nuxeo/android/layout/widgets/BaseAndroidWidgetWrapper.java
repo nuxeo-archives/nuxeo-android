@@ -18,6 +18,7 @@
 package org.nuxeo.android.layout.widgets;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.nuxeo.android.context.NuxeoContext;
@@ -37,7 +38,7 @@ public abstract class BaseAndroidWidgetWrapper<T> implements ActivityResultHandl
 
 	protected final Map<Integer, ActivityResultHandler> pendingActivityResultHandlers = new HashMap<Integer, ActivityResultHandler>();
 
-	protected String attributeName;
+	protected List<String> attributeNames;
 
 	protected T currentValue;
 
@@ -65,13 +66,23 @@ public abstract class BaseAndroidWidgetWrapper<T> implements ActivityResultHandl
 	}
 
 	protected String getAttributeName() {
-		return attributeName;
+		if (attributeNames==null || attributeNames.size()==0)  {
+			return null;
+		}
+		return attributeNames.get(0);
+	}
+
+	protected List<String> getAttributeNames() {
+		return attributeNames;
 	}
 
 	protected void setAttributeName(String attributeName) {
-		this.attributeName = attributeName;
+		this.attributeNames.set(0,attributeName);
 	}
 
+	protected void setAttributeNames(List<String> attributeNames) {
+		this.attributeNames=attributeNames;
+	}
 	protected abstract void initCurrentValueFromDocument(Document doc);
 
 	protected T getCurrentValue() {
@@ -83,8 +94,8 @@ public abstract class BaseAndroidWidgetWrapper<T> implements ActivityResultHandl
 	}
 
 	public View buildView(LayoutContext context, LayoutMode mode, Document doc,
-			String attributeName, WidgetDefinition widgetDef) {
-		setAttributeName(attributeName);
+			List<String> attributeNames, WidgetDefinition widgetDef) {
+		setAttributeNames(attributeNames);
 		initCurrentValueFromDocument(doc);
 		this.widgetDef=widgetDef;
 		this.mode=mode;

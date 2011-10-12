@@ -18,6 +18,7 @@
 package org.nuxeo.android.layout.widgets;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Random;
 
 import org.nuxeo.android.adapters.DocumentAttributeResolver;
@@ -79,7 +80,7 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 	@Override
 	public void updateModel(Document doc) {
 		if (mode!=LayoutMode.VIEW && currentValue!=null && changedValue) {
-			doc.set(attributeName, currentValue);
+			doc.set(getAttributeName(), currentValue);
 		}
 	}
 
@@ -110,8 +111,8 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 
 	@Override
 	public View buildView(LayoutContext context, LayoutMode mode, Document doc,
-			String attributeName, WidgetDefinition widgetDef) {
-		super.buildView(context, mode, doc, attributeName, widgetDef);
+			List<String> attributeNames, WidgetDefinition widgetDef) {
+		super.buildView(context, mode, doc, attributeNames, widgetDef);
 
 		Context ctx = context.getActivity();
 		layoutWidget = new LinearLayout(context.getActivity());
@@ -134,7 +135,7 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 			openBtn = new Button(layoutWidget.getContext());
 			fileAttributes.addView(openBtn);
 			openBtn.setBackgroundResource(android.R.drawable.ic_input_get);
-			String uriString = "content://nuxeo/blobs/" + doc.getId() + "/" + attributeName;
+			String uriString = "content://nuxeo/blobs/" + doc.getId() + "/" + getAttributeName();
 			final Uri contentUri = Uri.parse(uriString);
 			openBtn.setOnClickListener(new View.OnClickListener() {
 				@Override
@@ -248,7 +249,7 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 
 	@Override
 	protected void initCurrentValueFromDocument(Document doc) {
-		Object blobField = DocumentAttributeResolver.get(doc, attributeName);
+		Object blobField = DocumentAttributeResolver.get(doc, getAttributeName());
 		currentValue = null;
 		if (blobField!=null && blobField instanceof PropertyMap) {
 			currentValue = (PropertyMap) blobField;

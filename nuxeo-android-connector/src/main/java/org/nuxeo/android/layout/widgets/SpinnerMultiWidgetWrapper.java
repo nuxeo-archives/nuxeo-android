@@ -56,7 +56,7 @@ public class SpinnerMultiWidgetWrapper extends BaseAndroidWidgetWrapper<Property
 	@Override
 	public void updateModel(Document doc) {
 		if (mode !=LayoutMode.VIEW) {
-			DocumentAttributeResolver.put(doc, attributeName, getCurrentValue());
+			DocumentAttributeResolver.put(doc, getAttributeName(), getCurrentValue());
 		}
 	}
 
@@ -109,8 +109,8 @@ public class SpinnerMultiWidgetWrapper extends BaseAndroidWidgetWrapper<Property
 
 	@Override
 	public View buildView(LayoutContext context, LayoutMode mode, Document doc,
-			String attributeName, WidgetDefinition widgetDef) {
-		super.buildView(context, mode, doc, attributeName, widgetDef);
+			List<String> attributeNames, WidgetDefinition widgetDef) {
+		super.buildView(context, mode, doc, attributeNames, widgetDef);
 		Context ctx = context.getActivity();
 
 

@@ -17,34 +17,83 @@
 
 package org.nuxeo.android.layout.widgets;
 
+import java.util.List;
+
+import org.nuxeo.android.adapters.DocumentAttributeResolver;
 import org.nuxeo.android.layout.LayoutContext;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.android.layout.WidgetDefinition;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
+import android.content.Context;
 import android.text.InputType;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
-public class TextAreaWidgetWrapper extends TextWidgetWrapper {
+public class TextAreaWidgetWrapper extends BaseAndroidWidgetWrapper<String> implements AndroidWidgetWrapper {
+
+	protected TextView txtWidget;
+	protected EditText editWidget;
+
+	@Override
+	public boolean validateBeforeModelUpdate() {
+		return true;
+	}
+
+	@Override
+	public void updateModel(Document doc) {
+		if (editWidget!=null && ! editWidget.getText().toString().equals(getCurrentValue())) {
+			DocumentAttributeResolver.put(doc, getAttributeName(), editWidget.getText().toString());
+		}
+	}
+
+	@Override
+	public void refreshViewFromDocument(Document doc) {
+		initCurrentValueFromDocument(doc);
+		applyBinding();
+	}
+
+	protected void applyBinding() {
+		if (txtWidget!=null) {
+			txtWidget.setText(getCurrentValue());
+		}
+		if (editWidget!=null) {
+			editWidget.setText(getCurrentValue());
+		}
+	}
 
 	@Override
 	public View buildView(LayoutContext context, LayoutMode mode, Document doc,
-			String attributeName, WidgetDefinition widgetDef) {
+			List<String> attributeNames, WidgetDefinition widgetDef) {
 
-		View view =  super.buildView(context, mode, doc, attributeName, widgetDef);
+		super.buildView(context, mode, doc, attributeNames, widgetDef);
 
-		if (txtWidget!=null) {
+		Context ctx = context.getActivity();
+
+		View view = null;
+		if (mode==LayoutMode.VIEW) {
+			txtWidget = new TextView(ctx);
 			txtWidget.setSingleLine(false);
 			txtWidget.setMaxLines(3);
+			view = txtWidget;
 		}
-		if (editWidget!=null) {
+		else  {
+			editWidget = new EditText(ctx);
 			editWidget.setSingleLine(false);
-			editWidget.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+			editWidget.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 			editWidget.setMaxLines(3);
+			view = editWidget;
 		}
 		applyBinding();
 
 		return view;
+	}
+
+
+	@Override
+	protected void initCurrentValueFromDocument(Document doc) {
+		setCurrentValue(DocumentAttributeResolver.getString(doc, getAttributeName()));
 	}
 
 }

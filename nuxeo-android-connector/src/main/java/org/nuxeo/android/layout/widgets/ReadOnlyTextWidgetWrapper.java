@@ -17,6 +17,8 @@
 
 package org.nuxeo.android.layout.widgets;
 
+import java.util.List;
+
 import org.nuxeo.android.layout.LayoutContext;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.android.layout.WidgetDefinition;
@@ -33,8 +35,8 @@ public class ReadOnlyTextWidgetWrapper extends TextWidgetWrapper {
 
 	@Override
 	public View buildView(LayoutContext context, LayoutMode mode, Document doc,
-			String attributeName, WidgetDefinition widgetDef) {
-		return super.buildView(context, LayoutMode.VIEW, doc, attributeName, widgetDef);
+			List<String> attributeNames, WidgetDefinition widgetDef) {
+		return super.buildView(context, LayoutMode.VIEW, doc, attributeNames, widgetDef);
 	}
 
 }

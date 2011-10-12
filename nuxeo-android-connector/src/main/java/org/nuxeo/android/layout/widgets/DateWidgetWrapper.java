@@ -20,6 +20,7 @@ package org.nuxeo.android.layout.widgets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.nuxeo.android.adapters.DocumentAttributeResolver;
 import org.nuxeo.android.layout.LayoutContext;
@@ -53,7 +54,7 @@ public class DateWidgetWrapper extends BaseAndroidWidgetWrapper<Calendar> implem
 	public void updateModel(Document doc) {
 		if (mode!=LayoutMode.VIEW) {
 			if (getCurrentValue()!=null) {
-				doc.set(attributeName, getCurrentValue().getTime());
+				doc.set(getAttributeName(), getCurrentValue().getTime());
 			}
 		}
 	}
@@ -65,7 +66,7 @@ public class DateWidgetWrapper extends BaseAndroidWidgetWrapper<Calendar> implem
 	}
 
 	protected void initCurrentValueFromDocument(Document doc) {
-		Date date = DocumentAttributeResolver.getDate(doc, attributeName);
+		Date date = DocumentAttributeResolver.getDate(doc, getAttributeName());
 		if (date!=null) {
 			currentValue = Calendar.getInstance();
 			currentValue.setTime(date);
@@ -84,9 +85,9 @@ public class DateWidgetWrapper extends BaseAndroidWidgetWrapper<Calendar> implem
 
 	@Override
 	public View buildView(LayoutContext context, LayoutMode mode, Document doc,
-			String attributeName, WidgetDefinition widgetDef) {
+			List<String> attributeNames, WidgetDefinition widgetDef) {
 
-		super.buildView(context, mode, doc, attributeName, widgetDef);
+		super.buildView(context, mode, doc, attributeNames, widgetDef);
 
 		Context ctx = context.getActivity();
 

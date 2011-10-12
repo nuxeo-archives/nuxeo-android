@@ -17,6 +17,7 @@
 
 package org.nuxeo.android.layout.widgets;
 
+import java.util.List;
 import java.util.Map;
 
 import org.nuxeo.android.layout.ActivityResultHandler;
@@ -29,7 +30,7 @@ import android.view.View;
 
 public interface AndroidWidgetWrapper {
 
-	View buildView(LayoutContext context, LayoutMode mode, Document doc, String attributeName, WidgetDefinition widgetDef);
+	View buildView(LayoutContext context, LayoutMode mode, Document doc, List<String> attributeNames, WidgetDefinition widgetDef);
 
 	boolean validateBeforeModelUpdate();
 

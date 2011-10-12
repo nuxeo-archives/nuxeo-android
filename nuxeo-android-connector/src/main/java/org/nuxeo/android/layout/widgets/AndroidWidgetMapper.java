@@ -54,6 +54,7 @@ public class AndroidWidgetMapper {
 		registerWidgetWrapper("selectManyDirectory", SpinnerMultiWidgetWrapper.class);
 		registerWidgetWrapper("blob", BlobWidgetWrapper.class);
 		registerWidgetWrapper("textarea", TextAreaWidgetWrapper.class);
+		registerWidgetWrapper("richtext_with_mimetype", RichTextWidgetWrapper.class);
 	}
 
 	protected String getAndroidWidgetType(WidgetDefinition wDef) {
