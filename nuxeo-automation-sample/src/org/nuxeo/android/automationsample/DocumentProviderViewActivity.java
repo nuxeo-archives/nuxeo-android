@@ -31,10 +31,5 @@ public class DocumentProviderViewActivity extends BaseSampleDocumentsListActivit
 		return docProvider.getDocumentsList(providerName, getNuxeoSession());
 	}
 
-	@Override
-	protected void onListItemClicked(int listItemPosition)
-	{
-
-	}
 
 }
