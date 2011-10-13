@@ -9,7 +9,7 @@
 	<!-- We need this permission, in order to access to Internet -->
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:name="org.nuxeo.android.automationsample.NuxeoSampleApplication">
         <activity android:name="HomeSampleActivity"
@@ -50,6 +50,11 @@
         <activity android:name=".ServerSettingsActivity"
                   android:label="Settings" android:theme="@style/Theme.NuxeoAndroid">
         </activity>
+        <activity android:name="HistorySampleActivity"
+                android:label="Document History"
+                android:theme="@style/Theme.NuxeoAndroid">
+        </activity>
+
 		<provider android:name="org.nuxeo.android.contentprovider.NuxeoDocumentContentProvider"
 		          android:authorities="nuxeo">
 		</provider>

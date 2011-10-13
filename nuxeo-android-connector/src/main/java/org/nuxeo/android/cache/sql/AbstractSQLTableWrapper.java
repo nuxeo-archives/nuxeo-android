@@ -49,8 +49,15 @@ public abstract class AbstractSQLTableWrapper implements SQLTableWrapper {
 	}
 
 	protected void execTransactionalSQL(SQLiteDatabase db, String sql) {
+		execTransactionalSQL(db, sql, null);
+	}
+	protected void execTransactionalSQL(SQLiteDatabase db, String sql, Object[] args) {
 		db.beginTransaction();
-		db.execSQL(sql);
+		if (args==null) {
+			db.execSQL(sql);
+		} else {
+			db.execSQL(sql, args);
+		}
 		db.setTransactionSuccessful();
 		db.endTransaction();
 	}

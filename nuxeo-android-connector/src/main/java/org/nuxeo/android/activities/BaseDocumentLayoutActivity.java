@@ -25,6 +25,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.IdRef;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
@@ -134,5 +135,13 @@ public abstract class BaseDocumentLayoutActivity extends BaseNuxeoActivity {
 		setResult(RESULT_CANCELED, new Intent().putExtra(DOCUMENT, doc));
 		this.finish();
 	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		populateMenu(menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	protected abstract void populateMenu(Menu menu);
 
 }

@@ -20,7 +20,10 @@ package org.nuxeo.android.automationsample;
 import org.nuxeo.android.activities.BaseDocumentLayoutActivity;
 import org.nuxeo.android.layout.LayoutMode;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -80,6 +83,21 @@ public class DocumentLayoutActivity extends BaseDocumentLayoutActivity implement
 		} else if (view == cancelBtn) {
 			cancelUpdate();
 		}
+	}
+
+	@Override
+	protected void populateMenu(Menu menu) {
+		menu.add(Menu.NONE, 0, 0, "View History");
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case 0:
+			startActivity(new Intent(getApplicationContext(), HistorySampleActivity.class).putExtra(HistorySampleActivity.DOCUMENT, getCurrentDocument()));
+			break;
+		}
+		return false;
 	}
 
 }

@@ -56,21 +56,20 @@ public class ResponseCacheTableWrapper extends AbstractSQLTableWrapper {
 		return KEY_COLUMN;
 	}
 
+	protected String escape(String content) {
+		return content.replaceAll("'", "\'");
+	}
+
 	protected void addEntry(SQLiteDatabase db, String key, ResponseCacheEntry entry ) {
 		String sql = "INSERT INTO " + TBLNAME + " (" + KEY_COLUMN + ","
 		+ CTYPE_COLUMN + ","
 		+ CDISP_COLUMN + ","
 		+ RTYPE_COLUMN + ","
 		+ RENTITY_COLUMN + ")"
-		+  " VALUES ("
-		+ "'" + key + "',"
-		+ "'" + entry.getReponseContentType() + "',"
-		+ "'" + entry.getResponseContentDisposition() + "',"
-		+ "'" + entry.getRequestMethod() + "',"
-		+ "'" + entry.getRequestEntity() + "'"
-		+ ");";
+		+  " VALUES ( ?, ?, ?, ?, ?)";
 
-		execTransactionalSQL(db, sql);
+		String[] args = { key, entry.getReponseContentType(), entry.getResponseContentDisposition(), entry.getRequestMethod()+"", entry.getRequestEntity() };
+		execTransactionalSQL(db, sql, args);
 	}
 
 	protected void updateEntry(SQLiteDatabase db, String key, ResponseCacheEntry entry ) {

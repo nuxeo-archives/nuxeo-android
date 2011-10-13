@@ -30,6 +30,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.ConflictException;
 import org.nuxeo.ecm.automation.client.jaxrs.RemoteException;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 import org.nuxeo.ecm.automation.client.jaxrs.model.FileBlob;
+import org.nuxeo.ecm.automation.client.jaxrs.model.StringBlob;
 import org.nuxeo.ecm.automation.client.jaxrs.util.IOUtils;
 
 /**
@@ -123,45 +124,21 @@ public class Request extends HashMap<String, String> {
         }
     }
 
-/*    protected static Blobs readBlobs(String ctype, InputStream in)
-            throws Exception {
-        Blobs files = new Blobs();
-        // save the stream to a temporary file
-        File file = IOUtils.copyToTempFile(in);
-        EntityDeserializer ed = new EntityDeserializer(new LaxContentLengthStrategy());
-        ed.
-        FileInputStream fin = new FileInputStream(file);
-        try {
-            FileEntity
-            MimeMultipart mp = new MimeMultipart(new InputStreamDataSource(fin,
-                    ctype));
-            int size = mp.getCount();
-            for (int i = 0; i < size; i++) {
-                BodyPart part = mp.getBodyPart(i);
-                String fname = part.getFileName();
-                files.add(readBlob(part.getContentType(), fname,
-                        part.getInputStream()));
-            }
-        } finally {
-            try {
-                fin.close();
-            } catch (Exception e) {
-            }
-            file.delete();
-        }
-        return files;
-    }
-*/
     protected static Blob readBlob(String ctype, String fileName, InputStream in)
             throws Exception {
-        File file = IOUtils.copyToTempFile(in);
-        file.deleteOnExit();
-        FileBlob blob = new FileBlob(file);
-        blob.setMimeType(ctype);
-        if (fileName != null) {
-            blob.setFileName(fileName);
-        }
-        return blob;
+    	if ("application/json".equals(ctype)) {
+    		StringBlob blob = new StringBlob(IOUtils.read(in));
+    		return blob;
+    	} else {
+	        File file = IOUtils.copyToTempFile(in);
+	        file.deleteOnExit();
+	        FileBlob blob = new FileBlob(file);
+	        blob.setMimeType(ctype);
+	        if (fileName != null) {
+	            blob.setFileName(fileName);
+	        }
+	        return blob;
+    	}
     }
 
     protected static String getFileName(String ctype) {
