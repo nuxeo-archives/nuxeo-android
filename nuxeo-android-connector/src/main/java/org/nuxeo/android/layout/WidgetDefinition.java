@@ -84,6 +84,7 @@ public class WidgetDefinition {
 		if (wrapper != null) {
 			view = wrapper.buildView(context, mode, doc, attributeNames, this);
 			view.setLayoutParams(paramsW);
+			view.setPadding(2, 2, 2, 2);
 		}
 
 		if (view != null) {

@@ -221,18 +221,30 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 		}
 	}
 
+	@Override
+	protected void onListItemClicked(int listItemPosition) {
+		Document doc = documentsList.getDocument(listItemPosition);
+        startActivity(new Intent(this, getEditActivityClass())
+        .putExtra(BaseDocumentLayoutActivity.DOCUMENT, doc).putExtra(
+                BaseDocumentLayoutActivity.MODE, LayoutMode.VIEW));
+	}
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		if (v.getId() == listView.getId()) {
 			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-			menu.setHeaderTitle("Menu for entry" + info.position);
-			menu.add(Menu.NONE, CTXMNU_VIEW_DOCUMENT, 0, "View");
-			menu.add(Menu.NONE, CTXMNU_EDIT_DOCUMENT, 1, "Edit");
-			menu.add(Menu.NONE, CTXMNU_VIEW_ATTACHEMENT, 2, "View attachment");
+			Document doc = documentsList.getDocument(info.position);
+			menu.setHeaderTitle(doc.getTitle());
+			populateContextMenu(doc, menu);
 		}
 		super.onCreateContextMenu(menu, v, menuInfo);
+	}
+
+	protected void populateContextMenu(Document doc, ContextMenu menu) {
+		menu.add(Menu.NONE, CTXMNU_VIEW_DOCUMENT, 0, "View");
+		menu.add(Menu.NONE, CTXMNU_EDIT_DOCUMENT, 1, "Edit");
+		menu.add(Menu.NONE, CTXMNU_VIEW_ATTACHEMENT, 2, "View attachment");
 	}
 
 }

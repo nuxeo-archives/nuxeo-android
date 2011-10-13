@@ -31,6 +31,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -113,6 +114,9 @@ public class SpinnerMultiWidgetWrapper extends BaseAndroidWidgetWrapper<Property
 		super.buildView(context, mode, doc, attributeNames, widgetDef);
 		Context ctx = context.getActivity();
 
+		LayoutParams paramsW = new LinearLayout.LayoutParams(
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f);
+
 
 		if (mode==LayoutMode.VIEW) {
 			textWidget = new TextView(ctx);
@@ -134,9 +138,11 @@ public class SpinnerMultiWidgetWrapper extends BaseAndroidWidgetWrapper<Property
 			spinnerContainer.setOrientation(LinearLayout.HORIZONTAL);
 			spinner = new Spinner(ctx);
 			spinner.setAdapter(getAdapter(ctx, widgetDef.getSelectOptions().getItemLabels()));
+			spinner.setLayoutParams(paramsW);
 			spinnerButton = new Button(ctx);
 			spinnerButton.setText("Add");
 			spinnerButton.setOnClickListener(this);
+			spinnerButton.setLayoutParams(paramsW);
 			spinnerContainer.addView(spinner);
 			spinnerContainer.addView(spinnerButton);
 

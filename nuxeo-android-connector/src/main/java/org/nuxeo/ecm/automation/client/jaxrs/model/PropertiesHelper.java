@@ -17,7 +17,6 @@
 package org.nuxeo.ecm.automation.client.jaxrs.model;
 
 import java.util.Date;
-import java.util.Properties;
 
 import org.json.JSONObject;
 
@@ -144,7 +143,8 @@ public class PropertiesHelper {
     		return new JSONObject(map.map()).toString();
     	}
     	else {
-    		return prop.toString();
+    		String value = prop.toString();
+    		return value.replace("\n", " \\\n");
     	}
     }
 }
