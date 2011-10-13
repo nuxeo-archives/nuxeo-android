@@ -32,6 +32,8 @@ public class DocumentsListAdapter extends AbstractDocumentListAdapter implements
 
 	protected final DocumentViewBinder binder;
 
+	public static final String DATE_PREIX = "(date)";
+
 	public DocumentsListAdapter(Context context, LazyDocumentsList docList, int layoutId, Map<Integer, String> documentAttributesMapping, Integer loadingLayout) {
 		this(context, docList, new SimpleDocumentViewBinder(layoutId, documentAttributesMapping), loadingLayout);
 	}

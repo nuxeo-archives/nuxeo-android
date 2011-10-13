@@ -71,15 +71,18 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 
 	protected static UriMatcher uriMatcher;
 
-	protected static final int ALL_DOCUMENTS_PROVIDER = 0;
 	public static final String ALL_DOCUMENTS = "documents";
-	protected static final int ANY_DOCUMENT_PROVIDER = 1;
 	public static final String ICONS = "icons";
-	protected static final int ICONS_PROVIDER = 2;
 	public static final String BLOBS = "blobs";
+	public static final String PICTURES = "pictures";
+
+	protected static final int ALL_DOCUMENTS_PROVIDER = 0;
+	protected static final int ANY_DOCUMENT_PROVIDER = 1;
+	protected static final int ICONS_PROVIDER = 2;
 	protected static final int BLOBS_PROVIDER = 3;
 	protected static final int DOCUMENTS_PROVIDER = 4;
 	protected static final int DOCUMENT_PROVIDER = 5;
+	protected static final int PICTURES_PROVIDER = 6;
 
 	static {
 		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -94,6 +97,8 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 		uriMatcher.addURI(NUXEO_AUTHORITY, BLOBS + "/*/*", BLOBS_PROVIDER);
 		uriMatcher.addURI(NUXEO_AUTHORITY, BLOBS + "/*/*/*", BLOBS_PROVIDER);
 		uriMatcher.addURI(NUXEO_AUTHORITY, BLOBS + "/*/*/*/*", BLOBS_PROVIDER);
+		uriMatcher.addURI(NUXEO_AUTHORITY, PICTURES+ "/*/*", PICTURES_PROVIDER);
+		uriMatcher.addURI(NUXEO_AUTHORITY, PICTURES+ "/*", PICTURES_PROVIDER);
 		uriMatcher.addURI(NUXEO_AUTHORITY, "*", DOCUMENTS_PROVIDER);
 		uriMatcher.addURI(NUXEO_AUTHORITY, "*/*", DOCUMENT_PROVIDER);
 	}
@@ -201,6 +206,7 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 		switch (match) {
 			case BLOBS_PROVIDER :
 			case ICONS_PROVIDER :
+			case PICTURES_PROVIDER :
 				FileBlob blob = resolveBlob(uri);
 				if (blob!=null) {
 					mimeType = blob.getMimeType();
@@ -268,6 +274,19 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 					blob = downloader.getBlob(uid, subPath);
 				}
 			}
+			if (blob!=null) {
+				return blob;
+			}
+		}
+		else if (resourceType.equals("pictures")) {
+			String uid = uri.getPathSegments().get(1);
+			FileBlob blob = null;
+			String format = "Medium";
+			Integer idx = null;
+			if (uri.getPathSegments().size()>2) {
+				format = uri.getPathSegments().get(2);
+			}
+			blob = downloader.getPicture(uid, format);
 			if (blob!=null) {
 				return blob;
 			}

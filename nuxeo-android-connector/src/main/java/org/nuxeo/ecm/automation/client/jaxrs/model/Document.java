@@ -290,6 +290,14 @@ public class Document extends DocRef implements Serializable {
 		return Uri.parse("content://nuxeo/blobs/" + getId() + "/" + idx);
 	}
 
+	public Uri getPicture(String format) {
+		if (format==null) {
+			return Uri.parse("content://nuxeo/pictures/" + getId() + "/");
+		} else {
+			return Uri.parse("content://nuxeo/pictures/" + getId() + "/" + format);
+		}
+	}
+
 	public List<String> getPendingUploads() {
 
 		List<String> tokens = new ArrayList<String>();

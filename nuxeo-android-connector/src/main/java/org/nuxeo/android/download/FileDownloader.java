@@ -37,6 +37,7 @@ import android.util.Log;
 public class FileDownloader {
 
 	protected static final String BLOB_KEY = "blobs";
+	protected static final String PICTURE_KEY = "pictures";
 	protected static final String ICONS_KEY = "icons";
 	protected static final String LAYOUT_KEY = "layouts";
 
@@ -71,6 +72,12 @@ public class FileDownloader {
 		String pattern = "nxbigfile/default/" + uid + "/" + subPath;
 		String url = client.getServerConfig().getServerBaseUrl() + pattern;
 		return getBlob(BLOB_KEY, url, null, null);
+	}
+
+	public FileBlob getPicture(String uid, String format) {
+		String pattern = "nxpicsfile/default/" + uid + "/" + format + ":content/Android";
+		String url = client.getServerConfig().getServerBaseUrl() + pattern;
+		return getBlob(PICTURE_KEY, url, null, null);
 	}
 
 	public String getBlob(String url, AsyncCallback<Blob> cb) {

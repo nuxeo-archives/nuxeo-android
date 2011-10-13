@@ -152,13 +152,15 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 			default:
 				if (item.getItemId()> MNU_NEW_LISTITEM) {
 					int idx = item.getItemId()-MNU_NEW_LISTITEM -1;
-					String type = new ArrayList<String>(getDocTypesForCreation().keySet()).get(idx);
-					Document newDoc = initNewDocument(type);
-					startActivityForResult(
-							new Intent(this, getEditActivityClass()).putExtra(
-									BaseDocumentLayoutActivity.DOCUMENT, newDoc).putExtra(
-									BaseDocumentLayoutActivity.MODE, LayoutMode.CREATE),
-							ACTION_CREATE_DOCUMENT);
+					if (idx < getDocTypesForCreation().size()) {
+						String type = new ArrayList<String>(getDocTypesForCreation().keySet()).get(idx);
+						Document newDoc = initNewDocument(type);
+						startActivityForResult(
+								new Intent(this, getEditActivityClass()).putExtra(
+										BaseDocumentLayoutActivity.DOCUMENT, newDoc).putExtra(
+										BaseDocumentLayoutActivity.MODE, LayoutMode.CREATE),
+								ACTION_CREATE_DOCUMENT);
+					}
 
 				}
 				break;
@@ -223,10 +225,12 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 
 	@Override
 	protected void onListItemClicked(int listItemPosition) {
-		Document doc = documentsList.getDocument(listItemPosition);
-        startActivity(new Intent(this, getEditActivityClass())
-        .putExtra(BaseDocumentLayoutActivity.DOCUMENT, doc).putExtra(
-                BaseDocumentLayoutActivity.MODE, LayoutMode.VIEW));
+		if (getEditActivityClass()!=null) {
+			Document doc = documentsList.getDocument(listItemPosition);
+	        startActivity(new Intent(this, getEditActivityClass())
+	        .putExtra(BaseDocumentLayoutActivity.DOCUMENT, doc).putExtra(
+	                BaseDocumentLayoutActivity.MODE, LayoutMode.VIEW));
+		}
 	}
 
 	@Override

@@ -21,15 +21,22 @@ import java.util.Date;
 
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
+import android.net.Uri;
+
 public class DocumentAttributeResolver {
 
 	public static final String ID = "uuid";
 	public static final String NAME = "name";
 	public static final String PATH = "path";
 	public static final String ICONURI = "iconUri";
+	public static final String BLOBURI = "blobUri";
+	public static final String PICTUREURI = "pictureUri";
 	public static final String STATUS = "status";
 
 	public static Object get(Document doc, String attributeName) {
+		if (attributeName==null) {
+			return null;
+		}
 		if (ID.equalsIgnoreCase(attributeName)) {
 			return doc.getId();
 		}
@@ -44,6 +51,20 @@ public class DocumentAttributeResolver {
 		}
 		else if (STATUS.equalsIgnoreCase(attributeName)) {
 			return doc.getStatusFlag().toString();
+		} else if (attributeName.startsWith(BLOBURI)) {
+			String parts[] = attributeName.split(":");
+			if (parts.length==1) {
+				return doc.getBlob();
+			} else {
+				return doc.getBlob(Integer.parseInt(parts[1]));
+			}
+		} else if (attributeName.startsWith(PICTUREURI)) {
+			String parts[] = attributeName.split(":");
+			if (parts.length==1) {
+				return doc.getPicture(null);
+			} else {
+				return doc.getPicture(parts[1]);
+			}
 		}
 		// XXX ...
 		return doc.getProperties().map().get(attributeName);
@@ -55,6 +76,7 @@ public class DocumentAttributeResolver {
 	}
 
 	public static String getString(Document doc, String attributeName) {
+
 
 		Object val = get(doc, attributeName);
 		if (val==null || "null".equals(val)) {

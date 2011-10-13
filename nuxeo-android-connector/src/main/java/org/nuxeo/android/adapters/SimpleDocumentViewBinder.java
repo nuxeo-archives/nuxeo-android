@@ -17,6 +17,8 @@
 
 package org.nuxeo.android.adapters;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
@@ -32,6 +34,8 @@ public class SimpleDocumentViewBinder implements DocumentViewBinder {
 
 	protected final int layoutId;
 	protected final Map<Integer, String> documentAttributesMapping;
+
+	protected static SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd");
 
 	public SimpleDocumentViewBinder(int layoutId, Map<Integer, String> documentAttributesMapping) {
 		this.layoutId = layoutId;
@@ -53,11 +57,15 @@ public class SimpleDocumentViewBinder implements DocumentViewBinder {
 
 	protected void bindWidgetToDocumentAttribute(View widget, Document doc, String attribute) {
 		if (widget instanceof TextView) {
-			((TextView)widget).setText(DocumentAttributeResolver.getString(doc, attribute));
+			if (attribute.startsWith(DocumentsListAdapter.DATE_PREIX)) {
+				Date date = DocumentAttributeResolver.getDate(doc, attribute.substring(DocumentsListAdapter.DATE_PREIX.length()));
+				((TextView)widget).setText(fmt.format(date));
+			} else {
+				((TextView)widget).setText(DocumentAttributeResolver.getString(doc, attribute));
+			}
+
 		}
 		else if (widget instanceof ImageView) {
-            // FIXME: uri is not used. Is it a bug?
-			Uri uri = (Uri) DocumentAttributeResolver.get(doc, attribute);
 			((ImageView)widget).setImageURI((Uri) DocumentAttributeResolver.get(doc, attribute));
 		}
 	}
