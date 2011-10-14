@@ -35,7 +35,7 @@
                   android:label="Settings" android:theme="@style/Theme.NuxeoAndroid">
         </activity>
 		<provider android:name="org.nuxeo.android.appraisal.contentprovider.NuxeoDocumentContentProvider"
-		          android:authorities="nuxeo">
+		          android:authorities="nxapraisal">
 		</provider>
     </application>
 </manifest>

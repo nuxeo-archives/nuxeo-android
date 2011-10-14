@@ -32,8 +32,11 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.FileBlob;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
+import android.content.pm.ProviderInfo;
 import android.content.res.AssetFileDescriptor;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
@@ -64,12 +67,9 @@ import android.util.Log;
 
 public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvider {
 
-
 	protected UUIDMapper mapper;
 
-	protected static final String NUXEO_AUTHORITY = "nuxeo";
-
-	protected static UriMatcher uriMatcher;
+	protected UriMatcher uriMatcher;
 
 	public static final String ALL_DOCUMENTS = "documents";
 	public static final String ICONS = "icons";
@@ -84,25 +84,6 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 	protected static final int DOCUMENT_PROVIDER = 5;
 	protected static final int PICTURES_PROVIDER = 6;
 
-	static {
-		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-		uriMatcher.addURI(NUXEO_AUTHORITY, ALL_DOCUMENTS, ALL_DOCUMENTS_PROVIDER);
-		uriMatcher.addURI(NUXEO_AUTHORITY, ALL_DOCUMENTS + "/*", ANY_DOCUMENT_PROVIDER);
-		uriMatcher.addURI(NUXEO_AUTHORITY, ICONS + "/*", ICONS_PROVIDER);
-		uriMatcher.addURI(NUXEO_AUTHORITY, ICONS + "/*/*", ICONS_PROVIDER);
-		uriMatcher.addURI(NUXEO_AUTHORITY, ICONS + "/*/*/*", ICONS_PROVIDER);
-		uriMatcher.addURI(NUXEO_AUTHORITY, ICONS + "/*/*/*/*", ICONS_PROVIDER);
-		uriMatcher.addURI(NUXEO_AUTHORITY, BLOBS + "/*", BLOBS_PROVIDER);
-		uriMatcher.addURI(NUXEO_AUTHORITY, BLOBS + "/*/#", BLOBS_PROVIDER);
-		uriMatcher.addURI(NUXEO_AUTHORITY, BLOBS + "/*/*", BLOBS_PROVIDER);
-		uriMatcher.addURI(NUXEO_AUTHORITY, BLOBS + "/*/*/*", BLOBS_PROVIDER);
-		uriMatcher.addURI(NUXEO_AUTHORITY, BLOBS + "/*/*/*/*", BLOBS_PROVIDER);
-		uriMatcher.addURI(NUXEO_AUTHORITY, PICTURES+ "/*/*", PICTURES_PROVIDER);
-		uriMatcher.addURI(NUXEO_AUTHORITY, PICTURES+ "/*", PICTURES_PROVIDER);
-		uriMatcher.addURI(NUXEO_AUTHORITY, "*", DOCUMENTS_PROVIDER);
-		uriMatcher.addURI(NUXEO_AUTHORITY, "*/*", DOCUMENT_PROVIDER);
-	}
-
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
 		throw new UnsupportedOperationException("Not implemented");
@@ -113,11 +94,49 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 		throw new UnsupportedOperationException("Not implemented");
 	}
 
+
+
+	@Override
+	public void attachInfo(Context context, ProviderInfo info) {
+		NuxeoContentProviderConfig.init(info);
+		initMapper();
+		super.attachInfo(context, info);
+
+	}
+
 	@Override
 	public boolean onCreate() {
 		// don't init the NuxeoSession now !!!
 		mapper = new UUIDMapper();
 		return true;
+	}
+
+	protected void initMapper() {
+		String authority = NuxeoContentProviderConfig.getAuthority();
+		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+		uriMatcher.addURI(authority, ALL_DOCUMENTS, ALL_DOCUMENTS_PROVIDER);
+		uriMatcher.addURI(authority, ALL_DOCUMENTS + "/*", ANY_DOCUMENT_PROVIDER);
+		uriMatcher.addURI(authority, ICONS + "/*", ICONS_PROVIDER);
+		uriMatcher.addURI(authority, ICONS + "/*/*", ICONS_PROVIDER);
+		uriMatcher.addURI(authority, ICONS + "/*/*/*", ICONS_PROVIDER);
+		uriMatcher.addURI(authority, ICONS + "/*/*/*/*", ICONS_PROVIDER);
+		uriMatcher.addURI(authority, BLOBS + "/*", BLOBS_PROVIDER);
+		uriMatcher.addURI(authority, BLOBS + "/*/#", BLOBS_PROVIDER);
+		uriMatcher.addURI(authority, BLOBS + "/*/*", BLOBS_PROVIDER);
+		uriMatcher.addURI(authority, BLOBS + "/*/*/*", BLOBS_PROVIDER);
+		uriMatcher.addURI(authority, BLOBS + "/*/*/*/*", BLOBS_PROVIDER);
+		uriMatcher.addURI(authority, PICTURES+ "/*/*", PICTURES_PROVIDER);
+		uriMatcher.addURI(authority, PICTURES+ "/*", PICTURES_PROVIDER);
+		uriMatcher.addURI(authority, "*", DOCUMENTS_PROVIDER);
+		uriMatcher.addURI(authority, "*/*", DOCUMENT_PROVIDER);
+	}
+
+	protected UriMatcher getMatcher() {
+		if (uriMatcher==null) {
+			// lazy init because we need to have the provider registred before we know the target authority ...
+			initMapper();
+		}
+		return uriMatcher;
 	}
 
 	protected LazyDocumentsList resolveDocumentProvider(Uri uri) {
@@ -139,7 +158,7 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 		//Log.i("NuxeoContentProvider", "called on query with uri : " + uri.toString());
 		//Log.i("NuxeoContentProvider", "Match=> " + uriMatcher.match(uri));
 
-		int match = uriMatcher.match(uri);
+		int match = getMatcher().match(uri);
 		switch (match)
 		{
 			case ALL_DOCUMENTS_PROVIDER:
@@ -201,7 +220,7 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 
 		String mimeType = null;
 
-		int match = uriMatcher.match(uri);
+		int match = getMatcher().match(uri);
 
 		switch (match) {
 			case BLOBS_PROVIDER :
@@ -273,6 +292,8 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 					String subPath = uri.toString().substring(idx + uid.length()+1);
 					blob = downloader.getBlob(uid, subPath);
 				}
+			} else {
+				blob = downloader.getBlob(uid);
 			}
 			if (blob!=null) {
 				return blob;

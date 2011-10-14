@@ -67,8 +67,6 @@ public class HomeSampleActivity extends Activity implements View.OnClickListener
 
         spinner = (Spinner) findViewById(R.id.opList);
         spinner.setVisibility(4);
-
-        //imgTest.setImageURI(Uri.parse("content://nuxeo/blobs/5d72ce2a-2cbd-47b9-a0a5-93cb5fd56793"));
     }
 
 

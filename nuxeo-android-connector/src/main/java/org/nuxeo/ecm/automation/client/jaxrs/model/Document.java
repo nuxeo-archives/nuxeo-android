@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.nuxeo.android.contentprovider.NuxeoContentProviderConfig;
+
 import android.net.Uri;
 import android.util.Log;
 
@@ -279,7 +281,7 @@ public class Document extends DocRef implements Serializable {
 		if (icon==null || "null".equals(icon) || icon.equals("")) {
 			return null;
 		}
-		return Uri.parse("content://nuxeo/icons" + getString("common:icon"));
+		return Uri.parse("content://" + NuxeoContentProviderConfig.getAuthority() + "/icons" + getString("common:icon"));
 	}
 
 	public Uri getBlob() {
@@ -287,14 +289,14 @@ public class Document extends DocRef implements Serializable {
 	}
 
 	public Uri getBlob(int idx) {
-		return Uri.parse("content://nuxeo/blobs/" + getId() + "/" + idx);
+		return Uri.parse("content://" + NuxeoContentProviderConfig.getAuthority() + "/blobs/" + getId() + "/" + idx);
 	}
 
 	public Uri getPicture(String format) {
 		if (format==null) {
-			return Uri.parse("content://nuxeo/pictures/" + getId() + "/");
+			return Uri.parse("content://" + NuxeoContentProviderConfig.getAuthority() + "/pictures/" + getId() + "/");
 		} else {
-			return Uri.parse("content://nuxeo/pictures/" + getId() + "/" + format);
+			return Uri.parse("content://" + NuxeoContentProviderConfig.getAuthority() + "/pictures/" + getId() + "/" + format);
 		}
 	}
 

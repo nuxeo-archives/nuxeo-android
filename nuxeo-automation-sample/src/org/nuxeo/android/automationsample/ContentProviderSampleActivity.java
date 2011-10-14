@@ -18,6 +18,7 @@
 package org.nuxeo.android.automationsample;
 
 import org.nuxeo.android.activities.BaseListActivity;
+import org.nuxeo.android.contentprovider.NuxeoContentProviderConfig;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.database.Cursor;
@@ -42,7 +43,7 @@ public class ContentProviderSampleActivity extends BaseListActivity {
 	// Executed on the background thread to avoid freezing the UI
 	@Override
 	protected Object retrieveNuxeoData() throws Exception {
-		cursor = managedQuery(Uri.parse("content://nuxeo/documents"), null, null, null, null);
+		cursor = managedQuery(Uri.parse("content://" + NuxeoContentProviderConfig.getAuthority() + "/documents"), null, null, null, null);
 		return true;
 	}
 

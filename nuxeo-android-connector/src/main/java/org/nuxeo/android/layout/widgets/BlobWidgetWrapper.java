@@ -23,6 +23,7 @@ import java.util.Random;
 
 import org.nuxeo.android.adapters.DocumentAttributeResolver;
 import org.nuxeo.android.cache.blob.BlobWithProperties;
+import org.nuxeo.android.contentprovider.NuxeoContentProviderConfig;
 import org.nuxeo.android.layout.LayoutContext;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.android.layout.WidgetDefinition;
@@ -135,7 +136,8 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 			openBtn = new Button(layoutWidget.getContext());
 			fileAttributes.addView(openBtn);
 			openBtn.setBackgroundResource(android.R.drawable.ic_input_get);
-			String uriString = "content://nuxeo/blobs/" + doc.getId() + "/" + getAttributeName();
+			// XXX
+			String uriString = "content://" + NuxeoContentProviderConfig.getAuthority() + "/blobs/" + doc.getId() + "/" + getAttributeName();
 			final Uri contentUri = Uri.parse(uriString);
 			openBtn.setOnClickListener(new View.OnClickListener() {
 				@Override

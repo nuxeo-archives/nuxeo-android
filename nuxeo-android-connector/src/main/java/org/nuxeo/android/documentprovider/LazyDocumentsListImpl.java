@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.nuxeo.android.contentprovider.NuxeoContentProviderConfig;
 import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
 import org.nuxeo.ecm.automation.client.broadcast.DocumentMessageService;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
@@ -405,7 +406,7 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 
 	@Override
 	public Uri getContentUri() {
-		return Uri.parse("content://nuxeo/"+ getName());
+		return Uri.parse("content://" + NuxeoContentProviderConfig.getAuthority() + "/"+ getName());
 	}
 
 

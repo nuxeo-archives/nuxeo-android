@@ -56,7 +56,7 @@
         </activity>
 
 		<provider android:name="org.nuxeo.android.contentprovider.NuxeoDocumentContentProvider"
-		          android:authorities="nuxeo">
+		          android:authorities="nxsample">
 		</provider>
     </application>
 </manifest>

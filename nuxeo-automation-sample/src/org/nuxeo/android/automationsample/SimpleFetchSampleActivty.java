@@ -18,6 +18,7 @@
 package org.nuxeo.android.automationsample;
 
 import org.nuxeo.android.activities.BaseNuxeoActivity;
+import org.nuxeo.android.contentprovider.NuxeoContentProviderConfig;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
@@ -91,9 +92,9 @@ public class SimpleFetchSampleActivty extends BaseNuxeoActivity implements View.
 			// icon : content://nuxeo/icons/<type>  (can use Document.getIcon())
 			// blob : content://nuxeo/blobs/<UUID>/<idx> (can use Document.getBlob(idx))
 
-			iconView.setImageURI(Uri.parse("content://nuxeo/icons" + selectedDocument.getString("common:icon")));
+			iconView.setImageURI(Uri.parse("content://" + NuxeoContentProviderConfig.getAuthority() + "/icons" + selectedDocument.getString("common:icon")));
 
-			String contentUri = "content://nuxeo/blobs/" + selectedDocument.getId();
+			String contentUri = "content://" + NuxeoContentProviderConfig.getAuthority() + "/blobs/" + selectedDocument.getId();
 			pictureView.setImageURI(Uri.parse(contentUri));
 
 			openBtn.setVisibility(View.VISIBLE);
