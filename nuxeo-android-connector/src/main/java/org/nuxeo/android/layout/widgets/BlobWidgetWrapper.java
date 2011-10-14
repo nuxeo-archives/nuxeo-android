@@ -192,7 +192,9 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 					progressBar.setVisibility(View.VISIBLE);
 					progressBar.invalidate();
 					registerActivityResultHandler(PICK_ANY, getHandler(getLayoutContext().getLayoutId()));
-					getHomeActivity().startActivityForResult(new Intent("org.openintents.action.PICK_FILE").setType("*/*"), PICK_ANY);
+					Intent intent = new Intent("org.openintents.action.PICK_FILE");
+					intent.putExtra("org.openintents.extra.TITLE", "Select a file to attach");
+					getHomeActivity().startActivityForResult(intent, PICK_ANY);
 					}
 			});
 		}
@@ -298,7 +300,9 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 		BlobWithProperties result = null;
 		final String fileId = getAttributeName();
 
-		blobToUpload.setFileName(fileId);
+		if (blobToUpload.getFileName()==null) {
+			blobToUpload.setFileName(fileId);
+		}
 
 		FileUploader uploader = getClient().getFileUploader();
 

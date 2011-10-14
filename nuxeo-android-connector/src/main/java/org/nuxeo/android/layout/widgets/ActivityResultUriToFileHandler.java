@@ -48,16 +48,20 @@ public abstract class ActivityResultUriToFileHandler implements ActivityResultHa
 			if (dataUri!=null) {
 				AssetFileDescriptor afd = null;
 				String mimeType = null;
+				String fileName = null;
 				try {
 					afd = context.getContentResolver().openAssetFileDescriptor(dataUri, "r");
 					mimeType = context.getContentResolver().getType(dataUri);
+					if (dataUri.toString().startsWith("file://")) {
+						fileName = dataUri.getLastPathSegment();
+					}
 				} catch (FileNotFoundException e) {
 					handleError("can not handle uri" + dataUri.toString(), e);
 					return false;
 				}
 
 				try {
-					Blob blob = new StreamBlob(afd.createInputStream(), null, mimeType);
+					Blob blob = new StreamBlob(afd.createInputStream(), fileName, mimeType);
 					onStreamBlobAvailable(blob);
 				} catch (IOException e) {
 					handleError("Can not read the stream" + dataUri.toString(), e);
