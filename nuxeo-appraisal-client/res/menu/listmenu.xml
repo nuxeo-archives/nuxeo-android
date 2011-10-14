@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:enabled="true" android:titleCondensed="New" android:title="Add new" android:id="@+id/itemNew"></item>
+    <item android:enabled="true" android:titleCondensed="External View" android:title="External viwer" android:id="@+id/itemView"></item>
+</menu>

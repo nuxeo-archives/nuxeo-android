@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:enabled="true" android:titleCondensed="Settings" android:title="Server settings" android:id="@+id/itemServerSettings"></item>
+    <item android:enabled="true" android:titleCondensed="Network" android:title="Network and Cache" android:id="@+id/itemNetworkConfig"></item>
+</menu>

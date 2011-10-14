@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent"
+      android:layout_height="fill_parent" >
+
+   <TextView
+	android:id="@+id/title_entry"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:textSize="16dip"
+	android:textStyle="bold"
+	android:padding="3dip" />
+
+   <TextView
+	android:id="@+id/client"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:layout_toRightOf="@id/title_entry"
+	android:textStyle="italic"
+	android:textSize="14dip"/>
+
+   <TextView
+    android:id="@+id/declaration_label"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:textSize="12dip"
+	android:textStyle="italic"
+	android:layout_below="@id/title_entry"
+	android:text="declaration"/>
+
+   <TextView
+    android:id="@+id/declaration_date"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:textSize="12dip"
+	android:textStyle="italic"
+	android:layout_below="@id/title_entry"
+	android:layout_toRightOf="@id/declaration_label"/>
+
+   <TextView
+    android:id="@+id/visite_label"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:textSize="12dip"
+	android:textStyle="italic"
+	android:layout_below="@id/declaration_label"
+	android:text="visite"/>
+
+   <TextView
+    android:id="@+id/visite_date"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:textSize="12dip"
+	android:textStyle="italic"
+	android:layout_below="@id/declaration_label"
+	android:layout_toRightOf="@id/visite_label"/>
+
+   <TextView
+	android:id="@+id/status_entry"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:layout_toRightOf="@id/client"
+	android:textSize="8dip"
+	android:textColor="#FF0000"
+	android:padding="4dip" />
+
+ </RelativeLayout>
+

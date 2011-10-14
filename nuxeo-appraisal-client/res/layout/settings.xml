@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical">
+
+<LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content">
+ <TextView android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Server Url : "/>
+ <EditText
+    android:id="@+id/editServerUrl"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:singleLine="true"
+    android:hint="Server Url" />
+</LinearLayout>
+
+<LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content">
+ <TextView android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Login : "/>
+ <EditText
+    android:id="@+id/editLogin"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:singleLine="true"
+    android:hint="Login" />
+</LinearLayout>
+
+<LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content">
+ <TextView android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Password : "/>
+ <EditText
+    android:id="@+id/editPassword"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:singleLine="true"
+    android:inputType="textPassword"
+    android:hint="Password" />
+</LinearLayout>
+
+  <Button
+    android:id="@+id/saveSettingsButton"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="Save" />
+
+</LinearLayout>
