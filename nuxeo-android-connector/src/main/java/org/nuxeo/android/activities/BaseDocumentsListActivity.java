@@ -108,12 +108,18 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 	}
 
 	protected void populateMenu(Menu menu) {
-		SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_NEW_LISTITEM, 0, "New item");
 		LinkedHashMap<String, String> types = getDocTypesForCreation();
-		int idx = 1;
-		for (String key : types.keySet()) {
-			subMenu.add(Menu.NONE,MNU_NEW_LISTITEM+ idx, idx, types.get(key));
-			idx++;
+		if (types.size()>0) {
+			if (types.size()==1) {
+				menu.add(Menu.NONE, MNU_NEW_LISTITEM, 0, "New Item");
+			} else {
+				SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_NEW_LISTITEM, 0, "New item");
+				int idx = 1;
+				for (String key : types.keySet()) {
+					subMenu.add(Menu.NONE,MNU_NEW_LISTITEM+ idx, idx, types.get(key));
+					idx++;
+				}
+			}
 		}
 		menu.add(Menu.NONE, MNU_VIEW_LIST_EXTERNAL, 1, "External View");
 		menu.add(Menu.NONE, MNU_REFRESH, 2, "Refresh");
@@ -150,6 +156,9 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 			}
 			break;
 			default:
+				if (getEditActivityClass()==null) {
+					return true;
+				}
 				if (item.getItemId()> MNU_NEW_LISTITEM) {
 					int idx = item.getItemId()-MNU_NEW_LISTITEM -1;
 					if (idx < getDocTypesForCreation().size()) {
@@ -162,6 +171,15 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 								ACTION_CREATE_DOCUMENT);
 					}
 
+				} else if (item.getItemId() == MNU_NEW_LISTITEM) {
+					if (getDocTypesForCreation().size()==1) {
+						Document newDoc = initNewDocument(getDocTypesForCreation().keySet().iterator().next());
+						startActivityForResult(
+								new Intent(this, getEditActivityClass()).putExtra(
+										BaseDocumentLayoutActivity.DOCUMENT, newDoc).putExtra(
+										BaseDocumentLayoutActivity.MODE, LayoutMode.CREATE),
+								ACTION_CREATE_DOCUMENT);
+					}
 				}
 				break;
 		}
@@ -198,11 +216,23 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 		Document doc = getContextMenuDocument(selectedPosition);
 
 		if (item.getItemId() == CTXMNU_VIEW_DOCUMENT) {
+			if (getEditActivityClass()==null) {
+				Toast.makeText(this,
+		                "No View activity defined ",
+		                Toast.LENGTH_SHORT).show();
+				return true;
+			}
             startActivity(new Intent(this, getEditActivityClass())
                     .putExtra(BaseDocumentLayoutActivity.DOCUMENT, doc).putExtra(
                             BaseDocumentLayoutActivity.MODE, LayoutMode.VIEW));
             return true;
 		} else if (item.getItemId() == CTXMNU_EDIT_DOCUMENT) {
+			if (getEditActivityClass()==null) {
+				Toast.makeText(this,
+		                "No Edit activity defined ",
+		                Toast.LENGTH_SHORT).show();
+				return true;
+			}
 			startActivityForResult(new Intent(this, getEditActivityClass())
 					.putExtra(BaseDocumentLayoutActivity.DOCUMENT, doc).putExtra(
 							BaseDocumentLayoutActivity.MODE, LayoutMode.EDIT),

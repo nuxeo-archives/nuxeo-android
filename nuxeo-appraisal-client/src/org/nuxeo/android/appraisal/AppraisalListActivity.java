@@ -119,7 +119,7 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
 
 		if (item.getItemId() == CTXMNU_VIEW_PICTURES) {
             startActivity(new Intent(this, AppraisalContentListActivity.class)
-                    .putExtra(AppraisalContentListActivity.ROOT_UUID_PARAM, doc.getId()));
+                    .putExtra(AppraisalContentListActivity.ROOT_DOC_PARAM, doc));
             return true;
 		} else {
 			return super.onContextItemSelected(item);
@@ -130,6 +130,6 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
 	protected void onListItemClicked(int listItemPosition) {
 		Document doc = documentsList.getDocument(listItemPosition);
         startActivity(new Intent(this, AppraisalContentListActivity.class)
-        .putExtra(AppraisalContentListActivity.ROOT_UUID_PARAM, doc.getId()));
+        .putExtra(AppraisalContentListActivity.ROOT_DOC_PARAM, doc));
 	}
 }
