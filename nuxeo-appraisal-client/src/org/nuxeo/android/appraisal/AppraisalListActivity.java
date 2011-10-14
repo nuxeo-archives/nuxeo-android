@@ -9,7 +9,6 @@ import org.nuxeo.android.adapters.AbstractDocumentListAdapter;
 import org.nuxeo.android.adapters.DocumentsListAdapter;
 import org.nuxeo.android.documentprovider.LazyDocumentsList;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
-import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
@@ -30,6 +29,7 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
 	protected static final int MNU_NETWORK_CONFIG = 21;
 	protected static final int MNU_SERVER_CONFIG = 22;
 	protected static final int CTXMNU_VIEW_PICTURES = 10;
+	protected static final int CTXMNU_VALIDATE = 20;
 
 	@Override
 	protected void displayDocumentList(ListView listView,
@@ -94,6 +94,7 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
 		menu.add(Menu.NONE, CTXMNU_VIEW_DOCUMENT, 0, "View Appraisal");
 		menu.add(Menu.NONE, CTXMNU_EDIT_DOCUMENT, 1, "Edit Appraisal");
 		menu.add(Menu.NONE, CTXMNU_VIEW_PICTURES, 2, "View pictures");
+		menu.add(Menu.NONE, CTXMNU_VALIDATE, 3, "Validate");
 	}
 
 	@Override
@@ -117,12 +118,16 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
 		int selectedPosition = info.position;
 		Document doc = getContextMenuDocument(selectedPosition);
 
-		if (item.getItemId() == CTXMNU_VIEW_PICTURES) {
-            startActivity(new Intent(this, AppraisalContentListActivity.class)
-                    .putExtra(AppraisalContentListActivity.ROOT_DOC_PARAM, doc));
-            return true;
-		} else {
-			return super.onContextItemSelected(item);
+		switch (item.getItemId()) {
+			case CTXMNU_VIEW_PICTURES:
+	            startActivity(new Intent(this, AppraisalContentListActivity.class)
+                .putExtra(AppraisalContentListActivity.ROOT_DOC_PARAM, doc));
+	            return true;
+			case CTXMNU_VALIDATE:
+				
+				return true;
+			default:
+				return super.onContextItemSelected(item);
 		}
 	}
 

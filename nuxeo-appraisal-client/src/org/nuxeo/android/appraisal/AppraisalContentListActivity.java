@@ -12,8 +12,13 @@ import org.nuxeo.android.adapters.DocumentsListAdapter;
 import org.nuxeo.android.documentprovider.LazyDocumentsList;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
+import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
+import org.nuxeo.ecm.automation.client.jaxrs.adapters.DocumentService;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
+import org.nuxeo.ecm.automation.client.jaxrs.model.PathRef;
+import org.nuxeo.ecm.automation.client.jaxrs.model.PropertiesHelper;
+import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyMap;
 
 import android.widget.Button;
 import android.widget.ListView;
@@ -23,7 +28,7 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
 
 	public static final String ROOT_DOC_PARAM = "rootDoc";
 
-	//protected Document root;
+	protected boolean refresh = false;
 
 	protected Document getRoot() {
 		if (getIntent().getExtras()!=null) {
@@ -50,9 +55,14 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
 
 	@Override
 	protected LazyUpdatableDocumentsList fetchDocumentsList() throws Exception {
+		byte cacheParam = CacheBehavior.STORE;
+		if (refresh) {
+			cacheParam = (byte) (cacheParam | CacheBehavior.FORCE_REFRESH);
+			refresh=false;
+		}
 		Documents docs = (Documents) getNuxeoContext().getDocumentManager().query(
 				"select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:isCheckedInVersion = 0 AND ecm:parentId=? order by dc:modified desc", new String[]{getRoot().getId()}, null, null, 0, 10,
-				CacheBehavior.STORE);
+				cacheParam);
 		if (docs!=null) {
 			return docs.asUpdatableDocumentsList();
 		}
@@ -66,13 +76,31 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
 
 	@Override
 	protected Document initNewDocument(String type) {
-		return new Document(getRoot().getPath(),"appraisalPicture-" + documentsList.getCurrentSize(),type);
+		refresh=true;
+		return new Document(getRoot().getPath(),"appraisalPicture-" + documentsList.getCurrentSize(),"File");
 	}
 
 	@Override
 	protected void onDocumentCreate(Document newDocument) {
-		super.onDocumentCreate(newDocument);
-		doRefresh();
+		OperationRequest createOperation = getNuxeoSession().newRequest("Picture.Create");
+
+		PropertyMap dirty = newDocument.getDirtyProperties();
+		if (dirty.get("file:content")!=null) {
+			dirty.map().put("originalPicture", dirty.get("file:content"));
+			dirty.map().remove("file:content");
+		}
+		String dirtyString =  PropertiesHelper.toStringProperties(dirty);
+
+		PathRef parent = new PathRef(newDocument.getParentPath());
+		createOperation.setInput(parent);
+		createOperation.set("properties", dirtyString);
+		if (newDocument.getName()!=null) {
+			createOperation.set("name", newDocument.getName());
+		}
+
+		documentsList.createDocument(newDocument, createOperation);
+		// add dependency if needed
+		//markDependencies(createOperation, newDocument);
 	}
 
 	@Override

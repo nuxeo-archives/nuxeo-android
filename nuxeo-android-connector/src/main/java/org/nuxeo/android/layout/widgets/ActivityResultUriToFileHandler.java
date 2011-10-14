@@ -19,6 +19,8 @@ package org.nuxeo.android.layout.widgets;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.FileNameMap;
+import java.net.URLConnection;
 
 import org.nuxeo.android.layout.ActivityResultHandler;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
@@ -36,6 +38,8 @@ public abstract class ActivityResultUriToFileHandler implements ActivityResultHa
 
 	protected Context context;
 
+	protected FileNameMap fileNameMap = URLConnection.getFileNameMap();
+
 	public ActivityResultUriToFileHandler(Context context) {
 		this.context = context;
 	}
@@ -49,11 +53,15 @@ public abstract class ActivityResultUriToFileHandler implements ActivityResultHa
 				AssetFileDescriptor afd = null;
 				String mimeType = null;
 				String fileName = null;
+
 				try {
 					afd = context.getContentResolver().openAssetFileDescriptor(dataUri, "r");
 					mimeType = context.getContentResolver().getType(dataUri);
 					if (dataUri.toString().startsWith("file://")) {
 						fileName = dataUri.getLastPathSegment();
+					}
+					if (mimeType==null && fileName!=null) {
+						mimeType = fileNameMap.getContentTypeFor(fileName);
 					}
 				} catch (FileNotFoundException e) {
 					handleError("can not handle uri" + dataUri.toString(), e);

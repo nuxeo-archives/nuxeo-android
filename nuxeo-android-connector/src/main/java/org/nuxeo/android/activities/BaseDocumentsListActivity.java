@@ -121,7 +121,7 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 				}
 			}
 		}
-		menu.add(Menu.NONE, MNU_VIEW_LIST_EXTERNAL, 1, "External View");
+		//menu.add(Menu.NONE, MNU_VIEW_LIST_EXTERNAL, 1, "External View");
 		menu.add(Menu.NONE, MNU_REFRESH, 2, "Refresh");
 	}
 
