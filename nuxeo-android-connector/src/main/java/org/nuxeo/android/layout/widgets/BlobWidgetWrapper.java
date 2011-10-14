@@ -300,11 +300,12 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 	protected BlobWithProperties startUpload(Blob blobToUpload, String batchId) {
 
 		BlobWithProperties result = null;
-		final String fileId = getAttributeName();
 
 		if (blobToUpload.getFileName()==null) {
-			blobToUpload.setFileName(fileId);
+			blobToUpload.setFileName(getAttributeName());
 		}
+
+		final String fileId = blobToUpload.getFileName();
 
 		FileUploader uploader = getClient().getFileUploader();
 
