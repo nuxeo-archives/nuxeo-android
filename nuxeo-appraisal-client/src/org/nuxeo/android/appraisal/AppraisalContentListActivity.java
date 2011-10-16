@@ -13,7 +13,6 @@ import org.nuxeo.android.documentprovider.LazyDocumentsList;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
-import org.nuxeo.ecm.automation.client.jaxrs.adapters.DocumentService;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 import org.nuxeo.ecm.automation.client.jaxrs.model.PathRef;
@@ -105,7 +104,7 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
 
 	@Override
 	protected void setupViews() {
-		setContentView(R.layout.nxcp);
+		setContentView(R.layout.listview_layout);
 		waitingMessage = (TextView) findViewById(R.id.waitingMessage);
 		refreshBtn = (Button) findViewById(R.id.refreshBtn);
 		listView = (ListView) findViewById(R.id.myList);
@@ -117,5 +116,11 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
 		return map;
 	}
 
+	@Override
+    protected void onDestroy() {
+		super.onDestroy();
+		unbindDrawables(findViewById(R.id.listViewContainer));
+		System.gc();
+    }
 
 }

@@ -77,7 +77,7 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
 
 	@Override
 	protected void setupViews() {
-		setContentView(R.layout.nxcp);
+		setContentView(R.layout.listview_layout);
 		waitingMessage = (TextView) findViewById(R.id.waitingMessage);
 		refreshBtn = (Button) findViewById(R.id.refreshBtn);
 		listView = (ListView) findViewById(R.id.myList);
@@ -124,7 +124,7 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
                 .putExtra(AppraisalContentListActivity.ROOT_DOC_PARAM, doc));
 	            return true;
 			case CTXMNU_VALIDATE:
-				
+
 				return true;
 			default:
 				return super.onContextItemSelected(item);

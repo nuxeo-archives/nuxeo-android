@@ -32,6 +32,7 @@ import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 public abstract class ActivityResultUriToFileHandler implements ActivityResultHandler {
@@ -62,6 +63,13 @@ public abstract class ActivityResultUriToFileHandler implements ActivityResultHa
 					}
 					if (mimeType==null && fileName!=null) {
 						mimeType = fileNameMap.getContentTypeFor(fileName);
+					}
+					if (fileName==null) {
+						fileName = dataUri.getEncodedPath().replace("/", "_");
+						if (mimeType!=null) {
+							String ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
+							fileName = fileName + "." + ext;
+						}
 					}
 				} catch (FileNotFoundException e) {
 					handleError("can not handle uri" + dataUri.toString(), e);
