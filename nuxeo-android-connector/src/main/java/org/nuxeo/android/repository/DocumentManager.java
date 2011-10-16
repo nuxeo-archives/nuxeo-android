@@ -72,7 +72,7 @@ public class DocumentManager extends DocumentService {
 	}
 
 	public Document getUserHome() throws Exception {
-		return (Document) session.newRequest("Userworkspace.Get").execute();
+		return (Document) session.newRequest("UserWorkspace.Get").execute();
 	}
 
     public List<JSONObject> getAuditEntriesForDocument(String docId, boolean refresh) throws Exception {
