@@ -22,6 +22,7 @@ import java.io.File;
 import org.nuxeo.android.context.NuxeoContext;
 import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
+import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -162,4 +163,15 @@ public abstract class BaseNuxeoActivity extends Activity {
 			}
         }
      }
+
+
+    protected <T> T getInitParam(String name, Class<T> type) {
+		if (getIntent().getExtras()!=null) {
+			Object value = getIntent().getExtras().get(name);
+			if (value!=null) {
+				return type.cast(value);
+			}
+		}
+		return null;
+	}
 }

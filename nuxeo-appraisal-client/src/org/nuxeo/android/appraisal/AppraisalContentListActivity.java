@@ -1,7 +1,6 @@
 package org.nuxeo.android.appraisal;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.nuxeo.android.activities.BaseDocumentLayoutActivity;
@@ -29,13 +28,6 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
 
 	protected boolean refresh = false;
 
-	protected Document getRoot() {
-		if (getIntent().getExtras()!=null) {
-			return (Document) getIntent().getExtras().get(ROOT_DOC_PARAM);
-		}
-		return null;
-	}
-
 	protected Map<Integer, String> getMapping() {
 		Map<Integer, String> mapping = new HashMap<Integer, String>();
 		mapping.put(R.id.title_entry, "dc:title");
@@ -60,7 +52,7 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
 			refresh=false;
 		}
 		Documents docs = (Documents) getNuxeoContext().getDocumentManager().query(
-				"select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:isCheckedInVersion = 0 AND ecm:parentId=? order by dc:modified desc", new String[]{getRoot().getId()}, null, null, 0, 10,
+				"select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:isCheckedInVersion = 0 AND ecm:parentId=? order by dc:modified desc", new String[]{getInitParam(ROOT_DOC_PARAM, Document.class).getId()}, null, null, 0, 10,
 				cacheParam);
 		if (docs!=null) {
 			return docs.asUpdatableDocumentsList();
@@ -76,7 +68,7 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
 	@Override
 	protected Document initNewDocument(String type) {
 		refresh=true;
-		return new Document(getRoot().getPath(),"appraisalPicture-" + documentsList.getCurrentSize(),"File");
+		return new Document(getInitParam(ROOT_DOC_PARAM, Document.class).getPath(),"appraisalPicture-" + documentsList.getCurrentSize(),"File");
 	}
 
 	@Override
@@ -108,12 +100,8 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
 		waitingMessage = (TextView) findViewById(R.id.waitingMessage);
 		refreshBtn = (Button) findViewById(R.id.refreshBtn);
 		listView = (ListView) findViewById(R.id.myList);
-	}
 
-	protected LinkedHashMap<String, String> getDocTypesForCreation() {
-		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
-		map.put("Picture", "Picture");
-		return map;
+		registerDocTypesForCreation("Picture", "Picture");
 	}
 
 	@Override

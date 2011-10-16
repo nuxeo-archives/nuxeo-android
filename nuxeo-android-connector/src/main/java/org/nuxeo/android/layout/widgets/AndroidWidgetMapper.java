@@ -55,6 +55,7 @@ public class AndroidWidgetMapper {
 		registerWidgetWrapper("blob", BlobWidgetWrapper.class);
 		registerWidgetWrapper("textarea", TextAreaWidgetWrapper.class);
 		registerWidgetWrapper("richtext_with_mimetype", RichTextWidgetWrapper.class);
+		registerWidgetWrapper("checkbox", CheckBoxWidgetWrapper.class);
 	}
 
 	protected String getAndroidWidgetType(WidgetDefinition wDef) {

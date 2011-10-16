@@ -52,6 +52,8 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 
 	protected LazyUpdatableDocumentsList documentsList;
 
+	protected LinkedHashMap<String, String> allowedDocumentTypes;
+
 	public BaseDocumentsListActivity() {
 		super();
 	}
@@ -99,12 +101,23 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 		return documentsList.getDocument(selectedPosition);
 	}
 
+	protected void registerDocTypesForCreation(String type, String label) {
+		if (allowedDocumentTypes==null) {
+			allowedDocumentTypes = new LinkedHashMap<String, String>();
+		}
+		allowedDocumentTypes.put(type, label);
+	}
+
 	protected LinkedHashMap<String, String> getDocTypesForCreation() {
-		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
-		map.put("File", "File Document");
-		map.put("Note", "Note Document");
-		map.put("Folder", "Folder Document");
-		return map;
+		if (allowedDocumentTypes==null) {
+			LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+			map.put("File", "File Document");
+			map.put("Note", "Note Document");
+			map.put("Folder", "Folder Document");
+			return map;
+		} else {
+			return allowedDocumentTypes;
+		}
 	}
 
 	protected void populateMenu(Menu menu) {
