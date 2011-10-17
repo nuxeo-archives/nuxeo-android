@@ -148,6 +148,7 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends LazyDocumentsLi
 			createOperation = buildCreateOperation(session, newDocument);
 		}
 
+		markDependencies(createOperation, newDocument);
 		String requestId = session.execDeferredUpdate(createOperation, new AsyncCallback<Object>() {
 
 			@Override
