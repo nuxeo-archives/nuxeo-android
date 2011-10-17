@@ -57,7 +57,8 @@ Here's an overview of its main targets:
  * Nuxeo Automation Thin Client (`nuxeo-automation-thin-client`)
 
     It is a fork from [nuxeo-automation-client](http://hg.nuxeo.org/nuxeo/nuxeo-features/file/5.4/nuxeo-automation/nuxeo-automation-client/)
-    making it usable with Google Android SDK 2.2 and reducing its dependencies. At the end, it would be nicer to have nuxeo-automation-client depends on such a light module.
+    making it usable with Google Android SDK 2.2 and reducing its dependencies.
+    This module only manage ReadOnly access to nuxeo and is depracted : use nuxeo-android-connector.
 
  * Nuxeo Android simple client (`nuxeo-android`)
 
@@ -65,7 +66,7 @@ Here's an overview of its main targets:
 
  * Nuxeo Android connector (`nuxeo-android-connector`)
 
-    New connector for using Nuxeo Platform services from Android. It's an alternative library of nuxeo-automation-thin-client.
+    New connector for using Nuxeo Platform services from Android. It's an alternative library of nuxeo-automation-thin-client that provide more infrastructure and support for Read/Write operation as well as off-line management.
 
  * Nuxeo Automation sample (`nuxeo-automation-sample`)
 

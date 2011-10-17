@@ -22,6 +22,7 @@
     <module>nuxeo-android-connector</module>
     <module>nuxeo-automation-thin-client</module>
     <module>nuxeo-automation-sample</module>
+    <module>nuxeo-appraisal-client</module>
 <!--    <module>nuxeo-automation-sample-test</module>-->
     <module>nuxeo-android</module>
   </modules>
