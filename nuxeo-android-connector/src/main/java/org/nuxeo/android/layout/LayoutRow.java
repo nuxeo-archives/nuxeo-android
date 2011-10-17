@@ -37,7 +37,7 @@ public class LayoutRow {
 	}
 
 	public List<NuxeoWidget> buildRow(LayoutContext context, Document doc, ViewGroup container, Map<String, WidgetDefinition> widgetDefs, LayoutMode mode) {
-		ViewGroup rowLayout = createTopLayoutContainer(context.getActivity(), container);
+		ViewGroup rowLayout = createTopLayoutContainer(context.getActivity(), container, mode);
 		List<NuxeoWidget> widgets = new ArrayList<NuxeoWidget>();
 		for (String name : widgetNames) {
 			WidgetDefinition def = widgetDefs.get(name);
@@ -51,9 +51,13 @@ public class LayoutRow {
 		return widgets;
 	}
 
-	protected ViewGroup createTopLayoutContainer(Context ctx, ViewGroup parent) {
+	protected ViewGroup createTopLayoutContainer(Context ctx, ViewGroup parent, LayoutMode mode) {
 		LinearLayout container = new LinearLayout(ctx);
-		container.setOrientation(LinearLayout.VERTICAL);
+		if (mode==LayoutMode.VIEW) {
+			container.setOrientation(LinearLayout.HORIZONTAL);
+		} else {
+			container.setOrientation(LinearLayout.VERTICAL);
+		}
 		LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
 		container.setLayoutParams(params);
 		parent.addView(container);

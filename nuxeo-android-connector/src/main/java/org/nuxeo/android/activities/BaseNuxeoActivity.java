@@ -18,6 +18,7 @@
 package org.nuxeo.android.activities;
 
 import java.io.File;
+import java.io.Serializable;
 
 import org.nuxeo.android.context.NuxeoContext;
 import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
@@ -174,4 +175,17 @@ public abstract class BaseNuxeoActivity extends Activity {
 		}
 		return null;
 	}
+
+
+    public void restart(String paramName, Serializable paramValue) {
+        Intent intent = getIntent();
+        overridePendingTransition(0, 0);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        if (paramName!=null) {
+        	intent.putExtra(paramName, paramValue);
+        }
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(intent);
+    }
 }

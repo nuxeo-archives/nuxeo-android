@@ -55,6 +55,9 @@ public class CheckBoxWidgetWrapper extends BaseAndroidWidgetWrapper<Boolean> imp
 
 	protected void applyBinding() {
 		checkbox.setChecked(getCurrentValue());
+		if (LayoutMode.VIEW==mode) {
+			checkbox.setEnabled(false);
+		}
 	}
 
 	@Override

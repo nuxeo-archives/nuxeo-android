@@ -25,6 +25,7 @@ import org.nuxeo.android.layout.widgets.AndroidWidgetMapper;
 import org.nuxeo.android.layout.widgets.AndroidWidgetWrapper;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -73,26 +74,43 @@ public class WidgetDefinition {
 		this.mode = mode;
 
 		View view = null;
-		LayoutParams paramsL = new LinearLayout.LayoutParams(
+		LayoutParams labelLayoutParams = new LinearLayout.LayoutParams(
 				LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 1f);
-		LayoutParams paramsW = new LinearLayout.LayoutParams(
+		LayoutParams widgetLayoutParams = new LinearLayout.LayoutParams(
 				LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 1f);
 
+		if (LayoutMode.VIEW==mode) {
+			labelLayoutParams = new LinearLayout.LayoutParams(
+					LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 0.6f);
+			widgetLayoutParams = new LinearLayout.LayoutParams(
+					LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 0.4f);
+		}
 
 		AndroidWidgetWrapper wrapper = AndroidWidgetMapper.getInstance()
 				.getWidgetWrapper(this);
+
 		if (wrapper != null) {
 			view = wrapper.buildView(context, mode, doc, attributeNames, this);
-			view.setLayoutParams(paramsW);
-			view.setPadding(2, 2, 2, 2);
+			view.setLayoutParams(widgetLayoutParams);
+			view.setPadding(1, 1, 1, 1);
+			if (LayoutMode.VIEW==mode) {
+				view.setBackgroundColor(Color.rgb(240, 240, 250));
+			}
 		}
 
 		if (view != null) {
 			if (label != null) {
 				TextView labelW = new TextView(context.getActivity());
 				labelW.setText(label + " :");
-				labelW.setLayoutParams(paramsL);
+				labelW.setTextColor(Color.rgb(80, 80, 80));
+				labelW.setLayoutParams(labelLayoutParams);
 				parent.addView(labelW);
+				if (LayoutMode.VIEW!=mode) {
+					labelW.setBackgroundColor(Color.rgb(160, 160, 170));
+					labelW.setTextColor(Color.rgb(20, 20, 40));
+					labelW.setPadding(5, 5, 5, 5);
+				}
+
 			}
 			parent.addView(view);
 			return new NuxeoWidget(this, view, wrapper);

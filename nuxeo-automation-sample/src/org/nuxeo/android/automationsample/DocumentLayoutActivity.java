@@ -97,7 +97,7 @@ public class DocumentLayoutActivity extends BaseDocumentLayoutActivity implement
 			startActivity(new Intent(getApplicationContext(), HistorySampleActivity.class).putExtra(HistorySampleActivity.DOCUMENT, getCurrentDocument()));
 			break;
 		}
-		return false;
+		return super.onOptionsItemSelected(item);
 	}
 
 }

@@ -26,6 +26,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.IdRef;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
@@ -38,6 +39,10 @@ public abstract class BaseDocumentLayoutActivity extends BaseNuxeoActivity {
 	protected Document currentDocument;
 
 	protected boolean requireAsyncFetch = true;
+
+	public static final int MNU_SWITCH_EDIT = 1000;
+
+	public static final int MNU_SWITCH_VIEW = 1001;
 
 	protected NuxeoLayout layout;
 
@@ -139,9 +144,28 @@ public abstract class BaseDocumentLayoutActivity extends BaseNuxeoActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		populateMenu(menu);
+		if (LayoutMode.VIEW==getMode()) {
+			menu.add(Menu.NONE, MNU_SWITCH_EDIT, 0, "Switch to Edit");
+		}
+		if (LayoutMode.EDIT==getMode()) {
+			menu.add(Menu.NONE, MNU_SWITCH_VIEW, 0, "Switch to View");
+		}
 		return super.onCreateOptionsMenu(menu);
 	}
 
 	protected abstract void populateMenu(Menu menu);
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case MNU_SWITCH_EDIT:
+			restart(MODE, LayoutMode.EDIT);
+			return true;
+		case MNU_SWITCH_VIEW:
+			restart(MODE, LayoutMode.VIEW);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
 }
