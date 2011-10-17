@@ -23,7 +23,7 @@ import java.io.Serializable;
 import org.nuxeo.android.context.NuxeoContext;
 import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
-import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
+import org.nuxeo.ecm.automation.client.jaxrs.impl.NotAvailableOffline;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -61,9 +61,25 @@ public abstract class BaseNuxeoActivity extends Activity {
 			try {
 				Object result = retrieveNuxeoData();
 				return result;
-			} catch (Exception e) {
+			}
+			catch (NotAvailableOffline naoe) {
+				BaseNuxeoActivity.this.runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+			            Toast.makeText(BaseNuxeoActivity.this,
+			                    "This screen can bot be displayed offline",
+			                    Toast.LENGTH_LONG).show();
+					}
+				});
+				return null;
+			}
+			catch (Exception e) {
 				Log.e("NuxeoAsyncTask", "Error while executing async Nuxeo task in activity", e);
-				cancel(true);
+				try {
+					cancel(true);
+				} catch (Throwable t) {
+					// NOP
+				}
 				return null;
 			}
 		}
@@ -72,6 +88,8 @@ public abstract class BaseNuxeoActivity extends Activity {
 		protected void onPostExecute(Object result) {
 			if (result!=null) {
 				onNuxeoDataRetrieved(result);
+			} else {
+				onNuxeoDataRetrieveFailed();
 			}
 		}
 	}
@@ -110,6 +128,13 @@ public abstract class BaseNuxeoActivity extends Activity {
 	 * The input object will be the output of the retrieveNuxeoData
 	 */
 	protected void onNuxeoDataRetrieved(Object data) {
+
+	}
+
+	/**
+	 * Called on the UI Thread when the async process is completed in error.
+	 */
+	protected void onNuxeoDataRetrieveFailed() {
 
 	}
 

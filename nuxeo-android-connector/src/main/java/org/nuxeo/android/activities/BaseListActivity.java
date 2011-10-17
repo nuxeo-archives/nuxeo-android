@@ -92,6 +92,11 @@ public abstract class BaseListActivity extends BaseNuxeoActivity implements
 	}
 
 	@Override
+	protected void onNuxeoDataRetrieveFailed() {
+		setupViewsOnDataLoaded();
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		populateMenu(menu);
 		return super.onCreateOptionsMenu(menu);

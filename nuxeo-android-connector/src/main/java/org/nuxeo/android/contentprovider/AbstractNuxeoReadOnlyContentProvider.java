@@ -36,7 +36,6 @@ import android.content.Context;
 import android.content.UriMatcher;
 import android.content.pm.ProviderInfo;
 import android.content.res.AssetFileDescriptor;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
@@ -319,15 +318,11 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 	public ParcelFileDescriptor openFile(Uri uri, String mode)
 			throws FileNotFoundException {
 
-		//Log.i("NuxeoContentProvider", "called on openFile with uri : " + uri.toString());
-		//Log.i("NuxeoContentProvider", "Match=> " + uriMatcher.match(uri));
-
 		FileBlob blob = resolveBlob(uri);
 		if (blob!=null) {
 			return ParcelFileDescriptor.open(blob.getFile(), ParcelFileDescriptor.MODE_READ_ONLY);
 		}
-		return super.openFile(uri, mode);
+		return null;
 	}
-
 
 }

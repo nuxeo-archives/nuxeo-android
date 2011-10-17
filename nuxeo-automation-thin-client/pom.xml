@@ -26,4 +26,19 @@
     </dependency>
   </dependencies>
 
+   <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <!-- All tests disabled as this module is now unused -->
+            <exclude>**/*Test*.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+
 </project>

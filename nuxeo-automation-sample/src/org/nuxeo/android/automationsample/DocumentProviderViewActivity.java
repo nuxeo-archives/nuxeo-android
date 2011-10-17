@@ -25,7 +25,7 @@ public class DocumentProviderViewActivity extends BaseSampleDocumentsListActivit
 	public static final String PROVIDER_NAME_PARAM = "providerName";
 
 	@Override
-	protected LazyUpdatableDocumentsList fetchDocumentsList() throws Exception {
+	protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam) throws Exception {
 		DocumentProvider docProvider = getAutomationClient().getDocumentProvider();
 		String providerName = getIntent().getExtras().getString(PROVIDER_NAME_PARAM);
 		return docProvider.getDocumentsList(providerName, getNuxeoSession());

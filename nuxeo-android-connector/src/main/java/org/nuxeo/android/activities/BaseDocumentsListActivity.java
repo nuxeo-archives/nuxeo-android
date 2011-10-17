@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import org.nuxeo.android.documentprovider.LazyDocumentsList;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.android.layout.LayoutMode;
+import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.content.Intent;
@@ -50,6 +51,8 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 	protected static final int CTXMNU_EDIT_DOCUMENT = 1;
 	protected static final int CTXMNU_VIEW_ATTACHEMENT = 2;
 
+	protected boolean refresh = false;
+
 	protected LazyUpdatableDocumentsList documentsList;
 
 	protected LinkedHashMap<String, String> allowedDocumentTypes;
@@ -61,19 +64,30 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 	// Executed on the background thread to avoid freezing the UI
 	@Override
 	protected Object retrieveNuxeoData() throws Exception {
-		return fetchDocumentsList();
+		byte cacheParam = CacheBehavior.STORE;
+		if (refresh) {
+			cacheParam = (byte) (cacheParam | CacheBehavior.FORCE_REFRESH);
+			refresh=false;
+		}
+		return fetchDocumentsList(cacheParam);
+	}
+
+	protected void forceRefresh() {
+		refresh=true;
 	}
 
 	// Called on the UIThread when Nuxeo data has been retrieved
 	@Override
 	protected void onNuxeoDataRetrieved(Object data) {
 		super.onNuxeoDataRetrieved(data);
-		// get the DocumentList from the async call result
-		documentsList = (LazyUpdatableDocumentsList) data;
-		displayDocumentList(listView, documentsList);
+		if (data!=null) {
+			// get the DocumentList from the async call result
+			documentsList = (LazyUpdatableDocumentsList) data;
+			displayDocumentList(listView, documentsList);
+		}
 	}
 
-	protected abstract LazyUpdatableDocumentsList fetchDocumentsList() throws Exception;
+	protected abstract LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam) throws Exception;
 
 	protected abstract void displayDocumentList(ListView listView, LazyDocumentsList documentsList);
 
@@ -90,7 +104,11 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 	}
 
 	protected void doRefresh() {
-		documentsList.refreshAll();
+		if (documentsList!=null) {
+			documentsList.refreshAll();
+		} else {
+			runAsyncDataRetrieval();
+		}
 	}
 
 	protected LazyDocumentsList getDocumentsList() {
@@ -176,22 +194,28 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 					int idx = item.getItemId()-MNU_NEW_LISTITEM -1;
 					if (idx < getDocTypesForCreation().size()) {
 						String type = new ArrayList<String>(getDocTypesForCreation().keySet()).get(idx);
+						forceRefresh();
 						Document newDoc = initNewDocument(type);
-						startActivityForResult(
+						if (newDoc!=null) {
+							startActivityForResult(
 								new Intent(this, getEditActivityClass()).putExtra(
 										BaseDocumentLayoutActivity.DOCUMENT, newDoc).putExtra(
 										BaseDocumentLayoutActivity.MODE, LayoutMode.CREATE),
 								ACTION_CREATE_DOCUMENT);
+						}
 					}
 
 				} else if (item.getItemId() == MNU_NEW_LISTITEM) {
 					if (getDocTypesForCreation().size()==1) {
+						forceRefresh();
 						Document newDoc = initNewDocument(getDocTypesForCreation().keySet().iterator().next());
-						startActivityForResult(
+						if (newDoc!=null) {
+							startActivityForResult(
 								new Intent(this, getEditActivityClass()).putExtra(
 										BaseDocumentLayoutActivity.DOCUMENT, newDoc).putExtra(
 										BaseDocumentLayoutActivity.MODE, LayoutMode.CREATE),
 								ACTION_CREATE_DOCUMENT);
+						}
 					}
 				}
 				break;

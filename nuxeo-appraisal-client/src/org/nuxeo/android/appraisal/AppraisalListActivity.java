@@ -52,13 +52,12 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
 	}
 
 	@Override
-	protected LazyUpdatableDocumentsList fetchDocumentsList() throws Exception {
+	protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam) throws Exception {
 		String user = getNuxeoContext().getSession().getLogin().getUsername();
 		Documents docs = (Documents) getNuxeoContext()
 				.getDocumentManager()
-				.query(
-						"select * from Appraisal where appraisal:assignee=? AND ecm:currentLifeCycleState=? order by dc:modified desc",
-						new String[]{user, "assigned"}, null, "common,dublincore,appraisal", 0, 10, CacheBehavior.STORE);
+				.query("select * from Appraisal where appraisal:assignee=? AND ecm:currentLifeCycleState=? order by dc:modified desc",
+						new String[]{user, "assigned"}, null, "common,dublincore,appraisal", 0, 10,cacheParam);
 		if (docs != null) {
 			return docs.asUpdatableDocumentsList();
 		}

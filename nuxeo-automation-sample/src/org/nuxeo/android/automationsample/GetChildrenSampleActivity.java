@@ -21,7 +21,6 @@ package org.nuxeo.android.automationsample;
 import org.nuxeo.android.activities.BaseDocumentLayoutActivity;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.android.layout.LayoutMode;
-import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
@@ -68,10 +67,10 @@ public class GetChildrenSampleActivity extends BaseSampleDocumentsListActivity {
 	}
 
 	@Override
-	protected LazyUpdatableDocumentsList fetchDocumentsList() throws Exception {
+	protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam) throws Exception {
 		Documents docs = (Documents) getNuxeoContext().getDocumentManager().query(
 				"select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:isCheckedInVersion = 0 AND ecm:parentId=? order by dc:modified desc", new String[]{getRootUUID()}, null, null, 0, 10,
-				CacheBehavior.STORE);
+				cacheParam);
 		if (docs!=null) {
 			return docs.asUpdatableDocumentsList();
 		}

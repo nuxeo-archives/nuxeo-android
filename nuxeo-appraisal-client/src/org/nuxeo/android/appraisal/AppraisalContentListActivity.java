@@ -26,8 +26,6 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
 
 	public static final String ROOT_DOC_PARAM = "rootDoc";
 
-	protected boolean refresh = false;
-
 	protected Map<Integer, String> getMapping() {
 		Map<Integer, String> mapping = new HashMap<Integer, String>();
 		mapping.put(R.id.title_entry, "dc:title");
@@ -45,15 +43,9 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
 	}
 
 	@Override
-	protected LazyUpdatableDocumentsList fetchDocumentsList() throws Exception {
-		byte cacheParam = CacheBehavior.STORE;
-		if (refresh) {
-			cacheParam = (byte) (cacheParam | CacheBehavior.FORCE_REFRESH);
-			refresh=false;
-		}
+	protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam) throws Exception {
 		Documents docs = (Documents) getNuxeoContext().getDocumentManager().query(
-				"select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:isCheckedInVersion = 0 AND ecm:parentId=? order by dc:modified desc", new String[]{getInitParam(ROOT_DOC_PARAM, Document.class).getId()}, null, null, 0, 10,
-				cacheParam);
+				"select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:isCheckedInVersion = 0 AND ecm:parentId=? order by dc:modified desc", new String[]{getInitParam(ROOT_DOC_PARAM, Document.class).getId()}, null, null, 0, 10,cacheParam);
 		if (docs!=null) {
 			return docs.asUpdatableDocumentsList();
 		}
@@ -67,8 +59,11 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
 
 	@Override
 	protected Document initNewDocument(String type) {
-		refresh=true;
-		return new Document(getInitParam(ROOT_DOC_PARAM, Document.class).getPath(),"appraisalPicture-" + documentsList.getCurrentSize(),"File");
+		if (documentsList==null) {
+			return null;
+		} else {
+			return new Document(getInitParam(ROOT_DOC_PARAM, Document.class).getPath(),"appraisalPicture-" + documentsList.getCurrentSize(),"File");
+		}
 	}
 
 	@Override
@@ -83,15 +78,11 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
 		String dirtyString =  PropertiesHelper.toStringProperties(dirty);
 
 		PathRef parent = new PathRef(newDocument.getParentPath());
-		createOperation.setInput(parent);
-		createOperation.set("properties", dirtyString);
+		createOperation.setInput(parent).set("properties", dirtyString);
 		if (newDocument.getName()!=null) {
 			createOperation.set("name", newDocument.getName());
 		}
-
 		documentsList.createDocument(newDocument, createOperation);
-		// add dependency if needed
-		//markDependencies(createOperation, newDocument);
 	}
 
 	@Override
@@ -100,15 +91,7 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
 		waitingMessage = (TextView) findViewById(R.id.waitingMessage);
 		refreshBtn = (Button) findViewById(R.id.refreshBtn);
 		listView = (ListView) findViewById(R.id.myList);
-
 		registerDocTypesForCreation("Picture", "Picture");
 	}
-
-	@Override
-    protected void onDestroy() {
-		super.onDestroy();
-		unbindDrawables(findViewById(R.id.listViewContainer));
-		System.gc();
-    }
 
 }

@@ -27,4 +27,5 @@ public class DocumentProviderCreateActivity extends BaseNuxeoActivity {
 		return false;
 	}
 
+
 }

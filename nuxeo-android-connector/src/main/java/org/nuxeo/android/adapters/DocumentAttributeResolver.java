@@ -21,8 +21,6 @@ import java.util.Date;
 
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
-import android.net.Uri;
-
 public class DocumentAttributeResolver {
 
 	public static final String ID = "uuid";

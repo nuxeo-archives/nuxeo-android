@@ -72,7 +72,6 @@ public abstract class AbstractDocumentListAdapter extends BaseAdapter {
 		});
 	}
 
-
 	protected boolean useLoadingView() {
 		return loadingLayout!=null && !docList.isFullyLoaded();
 	}
@@ -81,11 +80,12 @@ public abstract class AbstractDocumentListAdapter extends BaseAdapter {
 	public int getCount() {
 		if (currentCount<0) {
 			currentCount = docList.getCurrentSize();
-			if (useLoadingView()) {
-                currentCount += 1;
-			}
 		}
-		return currentCount;
+		if (useLoadingView()) {
+            return currentCount + 1;
+		} else {
+			return currentCount;
+		}
 	}
 
 	protected Document getDocument(int position) {
