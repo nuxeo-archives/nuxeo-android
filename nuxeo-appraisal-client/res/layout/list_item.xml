@@ -2,19 +2,39 @@
  <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent"
       android:layout_height="fill_parent" >
 
+   <ImageView android:src="@drawable/appraisal"
+   android:id="@+id/logo"
+     android:layout_width="64dip"
+     android:layout_height="64dip"
+     android:layout_centerVertical="true"
+     android:scaleType="fitCenter"
+    />
+
    <TextView
 	android:id="@+id/title_entry"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
 	android:textSize="16dip"
 	android:textStyle="bold"
+	android:layout_toRightOf="@id/logo"
 	android:padding="3dip" />
+
+
+   <ImageView android:src="@drawable/client"
+   android:id="@+id/clientLogo"
+     android:layout_width="20dip"
+     android:layout_height="20dip"
+     android:layout_centerVertical="false"
+     android:scaleType="fitCenter"
+     android:layout_toRightOf="@id/title_entry"
+     android:padding="2dip"
+    />
 
    <TextView
 	android:id="@+id/client"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
-	android:layout_toRightOf="@id/title_entry"
+	android:layout_toRightOf="@id/clientLogo"
 	android:textStyle="italic"
 	android:textSize="14dip"/>
 
@@ -25,6 +45,7 @@
 	android:textSize="12dip"
 	android:textStyle="italic"
 	android:layout_below="@id/title_entry"
+	android:layout_toRightOf="@id/logo"
 	android:text="declaration"/>
 
    <TextView
@@ -43,6 +64,7 @@
 	android:textSize="12dip"
 	android:textStyle="italic"
 	android:layout_below="@id/declaration_label"
+	android:layout_toRightOf="@id/logo"
 	android:text="visite"/>
 
    <TextView

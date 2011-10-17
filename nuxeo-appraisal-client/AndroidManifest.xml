@@ -11,7 +11,7 @@
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <application android:icon="@drawable/icon" android:label="Appraisal" android:name="org.nuxeo.android.appraisal.AppraisalApp">
+    <application android:icon="@drawable/appraisal" android:label="Appraisal" android:name="org.nuxeo.android.appraisal.AppraisalApp">
         <activity android:name="AppraisalListActivity"
                   android:label="Pending Appraisals" android:theme="@style/Theme.NuxeoAndroid">
             <intent-filter>
