@@ -26,7 +26,7 @@ public interface TransientStateManager {
 
 	void storeDocumentState(Document doc, OperationType opType);
 
-	List<DocumentDeltaSet> getDeltaSets(List<String> ids);
+	List<DocumentDeltaSet> getDeltaSets(List<String> ids, String listName);
 
 	Documents mergeTransientState(Documents docs, boolean add, String listName);
 
@@ -37,5 +37,7 @@ public interface TransientStateManager {
     void markAsConflict(String uid);
 
     void markAsResolved(String uid);
+
+    long getEntryCount();
 
 }

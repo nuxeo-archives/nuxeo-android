@@ -57,22 +57,22 @@ public class AndroidTransientStateManager extends BroadcastReceiver implements T
 	public void storeDocumentState(Document doc, OperationType opType, String requestId, String listName) {
 		DocumentDeltaSet delta = new DocumentDeltaSet(opType, doc, requestId, listName);
 		getTableWrapper().storeDeltaSet(delta);
-		// XXX store Blobs too
 	}
 
 	public void storeDocumentState(Document doc, OperationType opType) {
 		storeDocumentState(doc, opType, null, null);
 	}
 
-	public List<DocumentDeltaSet> getDeltaSets(List<String> ids) {
-		List<DocumentDeltaSet> deltas = getTableWrapper().getDeltaSets(ids);
+	public List<DocumentDeltaSet> getDeltaSets(List<String> ids, String targetListName) {
+		List<DocumentDeltaSet> deltas = getTableWrapper().getDeltaSets(ids, targetListName);
 		// XXX get Blobs
 		return deltas;
 	}
 
 	public Documents mergeTransientState(Documents docs, boolean add, String listName) {
 
-		List<DocumentDeltaSet> deltas = getDeltaSets(docs.getIds());
+		List<DocumentDeltaSet> deltas = getDeltaSets(docs.getIds(), listName);
+
 		for (DocumentDeltaSet delta : deltas) {
 			if (add && delta.getOperationType()== OperationType.CREATE && ! docs.containsDocWithId(delta.getId())) {
 				if (listName == null || listName.equals(delta.getListName())) {
@@ -102,14 +102,16 @@ public class AndroidTransientStateManager extends BroadcastReceiver implements T
 
 		String eventName = intent.getAction();
 		Document doc = (Document) intent.getExtras().get(NuxeoBroadcastMessages.EXTRA_DOCUMENT_PAYLOAD_KEY);
+		String requestId = intent.getExtras().getString(NuxeoBroadcastMessages.EXTRA_REQUESTID_PAYLOAD_KEY);
+		String listName = intent.getExtras().getString(NuxeoBroadcastMessages.EXTRA_SOURCEDOCUMENTSLIST_PAYLOAD_KEY);
 		if (eventName.equals(NuxeoBroadcastMessages.DOCUMENT_CREATED_CLIENT)) {
-			storeDocumentState(doc, OperationType.CREATE);
+			storeDocumentState(doc, OperationType.CREATE, requestId, listName);
 		}
 		else if (eventName.equals(NuxeoBroadcastMessages.DOCUMENT_UPDATED_CLIENT)) {
-			storeDocumentState(doc, OperationType.UPDATE);
+			storeDocumentState(doc, OperationType.UPDATE, requestId, listName);
 		}
 		else if (eventName.equals(NuxeoBroadcastMessages.DOCUMENT_DELETED_CLIENT)) {
-			storeDocumentState(doc, OperationType.DELETE);
+			storeDocumentState(doc, OperationType.DELETE, requestId, listName);
 		}
 		else if (eventName.equals(NuxeoBroadcastMessages.DOCUMENT_UPDATED_SERVER) || eventName.equals(NuxeoBroadcastMessages.DOCUMENT_DELETED_SERVER) ) {
 			if (doc!=null) {
@@ -118,7 +120,6 @@ public class AndroidTransientStateManager extends BroadcastReceiver implements T
 			// XXX Trigger list refresh ?
 		}
 		else if (eventName.equals(NuxeoBroadcastMessages.DOCUMENT_CREATED_SERVER)) {
-			String requestId = intent.getExtras().getString(NuxeoBroadcastMessages.EXTRA_REQUESTID_PAYLOAD_KEY);
 			if (requestId!=null) {
 				getTableWrapper().deleteEntryByRequestId(requestId);
 			}
@@ -138,4 +139,8 @@ public class AndroidTransientStateManager extends BroadcastReceiver implements T
 		getTableWrapper().updateConflictMarker(uid, false);
 	}
 
+	@Override
+	public long getEntryCount() {
+		return getTableWrapper().getCount();
+	}
 }

@@ -60,7 +60,7 @@ public class DocumentDeltaSet {
 
 	public Document apply(Document doc) {
 		if (opType== OperationType.CREATE) {
-			return  new Document(id, path, docType, doc.getDirtyProperties());
+			return  new Document(id, path, docType, dirtyProps);
 		} else if (opType== OperationType.UPDATE) {
 			if (doc!=null) {
 				doc.getProperties().map().putAll(dirtyProps.map());

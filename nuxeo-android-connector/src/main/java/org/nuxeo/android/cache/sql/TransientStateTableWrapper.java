@@ -78,23 +78,27 @@ public class TransientStateTableWrapper extends AbstractSQLTableWrapper {
 		+ PATH_COLUMN + ","
 		+ OPTYPE_COLUMN + ","
 		+ DOCTYPE_COLUMN + ","
-		+ PROPS_COLUMN + ") " ;
+		+ PROPS_COLUMN + ","
+		+ REQUESTID_COLUMN + ","
+		+ LISTNAME_COLUMN + ") " ;
 
 		sql = sql + " VALUES ("
 		+ "'" + deltaSet.getId() + "',"
 		+ "'" + deltaSet.getPath() + "',"
 		+ "'" + deltaSet.getOperationType().toString() + "',"
 		+ "'" + deltaSet.getDocType() + "',"
-		+ "'" + JSONExporter.toJSON(deltaSet.getDirtyProps()) + "');";
+		+ "'" + JSONExporter.toJSON(deltaSet.getDirtyProps()) + "',"
+		+ "'" + deltaSet.getRequestId() + "',"
+		+ "'" + deltaSet.getListName() + "');";
 
-		// XXX manage Blobs
+		// blobs are stored indirectly in the BlobStore and referenced via a JSONBlob in the properties of the Document
 
 		execTransactionalSQL(db, sql);
 	}
 
 
 
-	public List<DocumentDeltaSet> getDeltaSets(List<String> ids) {
+	public List<DocumentDeltaSet> getDeltaSets(List<String> ids, String targetListName) {
 
 		SQLiteDatabase db = getReadableDatabase();
 
@@ -102,7 +106,11 @@ public class TransientStateTableWrapper extends AbstractSQLTableWrapper {
 		for (String id : ids) {
 			sql = sql + "'" + id + "', ";
 		}
-		sql = sql + "'');";
+		sql = sql + "'') ";
+		if (targetListName!=null) {
+			sql = sql +" or " + LISTNAME_COLUMN + "='" + targetListName + "'";
+		}
+		sql = sql +";";
 		Cursor cursor = db.rawQuery(sql,null);
 
 		List<DocumentDeltaSet> result = new ArrayList<DocumentDeltaSet>();
@@ -124,7 +132,7 @@ public class TransientStateTableWrapper extends AbstractSQLTableWrapper {
 					String requestId = cursor.getString(cursor.getColumnIndex(REQUESTID_COLUMN));
 					String conflict = cursor.getString(cursor.getColumnIndex(CONFLICT_COLUMN));
 
-					DocumentDeltaSet delta = new DocumentDeltaSet(opType,uuid, path, docType, props, listName, requestId);
+					DocumentDeltaSet delta = new DocumentDeltaSet(opType,uuid, path, docType, props, requestId, listName);
 					if (conflict!=null) {
 						delta.setConflict(Boolean.parseBoolean(conflict));
 					}

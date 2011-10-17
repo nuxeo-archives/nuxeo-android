@@ -23,6 +23,7 @@ import org.nuxeo.android.upload.FileUploader;
 import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
 import org.nuxeo.ecm.automation.client.cache.DeferredUpdateManager;
 import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
+import org.nuxeo.ecm.automation.client.cache.TransientStateManager;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -78,7 +79,7 @@ public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity 
 
 	protected void fireUpdateCacheInfoDisplay() {
 		AndroidAutomationClient client = getAutomationClient();
-		updateCacheInfoDisplay(client.getResponseCacheManager(), client.getDeferredUpdatetManager(), client.getBlobStoreManager(), client.getFileUploader());
+		updateCacheInfoDisplay(client.getResponseCacheManager(), client.getDeferredUpdatetManager(), client.getBlobStoreManager(), client.getFileUploader(), client.getTransientStateManager());
 	}
 
 	protected void resetNetworkStatusAndRefresh() {
@@ -105,7 +106,7 @@ public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity 
 
 	protected abstract void updateOfflineDisplay(NuxeoNetworkStatus settings);
 
-	protected abstract void updateCacheInfoDisplay(ResponseCacheManager cacheManager, DeferredUpdateManager deferredUpdateManager, BlobStoreManager blobStoreManager, FileUploader fileUploader);
+	protected abstract void updateCacheInfoDisplay(ResponseCacheManager cacheManager, DeferredUpdateManager deferredUpdateManager, BlobStoreManager blobStoreManager, FileUploader fileUploader, TransientStateManager stateManager);
 
 	protected void flushResponseCache() {
 		getAutomationClient().getResponseCacheManager().clear();
@@ -125,6 +126,11 @@ public abstract class AbstractNetworkSettingsActivity extends BaseNuxeoActivity 
 
 	protected void flushBlobStore(String name) {
 		getAutomationClient().getBlobStoreManager().getBlobStore(name).clear();
+		fireUpdateCacheInfoDisplay();
+	}
+
+	protected void flushTransientState() {
+		getAutomationClient().getTransientStateManager().flushTransientState();
 		fireUpdateCacheInfoDisplay();
 	}
 

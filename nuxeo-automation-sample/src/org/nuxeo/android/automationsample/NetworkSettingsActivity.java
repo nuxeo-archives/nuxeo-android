@@ -24,7 +24,7 @@ import org.nuxeo.android.network.NuxeoNetworkStatus;
 import org.nuxeo.android.upload.FileUploader;
 import org.nuxeo.ecm.automation.client.cache.DeferredUpdateManager;
 import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
-
+import org.nuxeo.ecm.automation.client.cache.TransientStateManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -48,6 +48,9 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
     private Button clearPendingButton;
     private TextView pendingUploadCount;
     private Button clearPendingUploadButton;
+    private TextView transientstateCount;
+    private Button cleartransientStateButton;
+
     private TextView iconCacheSize;
     private Button clearIconCache;
     private TextView blobCacheSize;
@@ -82,6 +85,10 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
         clearPendingUploadButton= (Button) findViewById(R.id.clearPendingUploadBtn);
         clearPendingUploadButton.setOnClickListener(this);
 
+        transientstateCount = (TextView) findViewById(R.id.transientStateCount);
+        cleartransientStateButton= (Button) findViewById(R.id.clearTransientStateBtn);
+        cleartransientStateButton.setOnClickListener(this);
+
         iconCacheSize = (TextView) findViewById(R.id.iconCacheSize);
         clearIconCache = (Button) findViewById(R.id.clearIconCache);
         clearIconCache.setOnClickListener(this);
@@ -106,7 +113,7 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
 	}
 
 	@Override
-	protected void updateCacheInfoDisplay(ResponseCacheManager cacheManager, DeferredUpdateManager deferredUpdatetManager, BlobStoreManager blobStoreManager, FileUploader fileUploader) {
+	protected void updateCacheInfoDisplay(ResponseCacheManager cacheManager, DeferredUpdateManager deferredUpdatetManager, BlobStoreManager blobStoreManager, FileUploader fileUploader, TransientStateManager stateManager) {
 		cacheEntriesCount.setText("Cache contains " + cacheManager.getEntryCount() + " entries");
 		cacheSize.setText("Cache size : " + cacheManager.getSize() + "(b)" );
 		pendingCount.setText(deferredUpdatetManager.getPendingRequestCount() + " pending updates");
@@ -121,6 +128,8 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
 
 		BlobStore layoutStore = blobStoreManager.getBlobStore("layouts");
 		layoutCacheSize.setText("Layouts cache size : " + layoutStore.getSize() + "(b)");
+
+		transientstateCount.setText("Transient objects :  " + stateManager.getEntryCount());
 
 	}
 
@@ -149,6 +158,8 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
 			flushBlobStore("blobs");
 		} else if (view == clearLayoutCache) {
 			flushBlobStore("layouts");
+		} else if (view == cleartransientStateButton) {
+			flushTransientState();
 		}
 	}
 
