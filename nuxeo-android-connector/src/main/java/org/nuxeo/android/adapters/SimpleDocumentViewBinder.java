@@ -59,7 +59,9 @@ public class SimpleDocumentViewBinder implements DocumentViewBinder {
 		if (widget instanceof TextView) {
 			if (attribute.startsWith(DocumentsListAdapter.DATE_PREIX)) {
 				Date date = DocumentAttributeResolver.getDate(doc, attribute.substring(DocumentsListAdapter.DATE_PREIX.length()));
-				((TextView)widget).setText(fmt.format(date));
+				if (date!=null) {
+					((TextView)widget).setText(fmt.format(date));
+				}
 			} else {
 				((TextView)widget).setText(DocumentAttributeResolver.getString(doc, attribute));
 			}

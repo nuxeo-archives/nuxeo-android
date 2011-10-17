@@ -10,6 +10,7 @@ import org.nuxeo.android.adapters.DocumentsListAdapter;
 import org.nuxeo.android.documentprovider.LazyDocumentsList;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
+import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
@@ -56,8 +57,8 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
 		Documents docs = (Documents) getNuxeoContext()
 				.getDocumentManager()
 				.query(
-						"select * from Appraisal where appraisal:assignee=? order by dc:modified desc",
-						new String[]{user}, null, "common,dublincore,appraisal", 0, 10, CacheBehavior.STORE);
+						"select * from Appraisal where appraisal:assignee=? AND ecm:currentLifeCycleState=? order by dc:modified desc",
+						new String[]{user, "assigned"}, null, "common,dublincore,appraisal", 0, 10, CacheBehavior.STORE);
 		if (docs != null) {
 			return docs.asUpdatableDocumentsList();
 		}
@@ -124,11 +125,18 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
                 .putExtra(AppraisalContentListActivity.ROOT_DOC_PARAM, doc));
 	            return true;
 			case CTXMNU_VALIDATE:
-
+				validateDocument(doc);
 				return true;
 			default:
 				return super.onContextItemSelected(item);
 		}
+	}
+
+	protected void validateDocument(Document doc) {
+		OperationRequest request = getNuxeoSession().newRequest("Document.SetLifeCycle");
+		request.setInput(doc);
+		request.set("value", "to_expert_visit_done");
+		documentsList.updateDocument(doc, request);
 	}
 
 	@Override

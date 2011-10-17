@@ -42,7 +42,7 @@ public class LazyUpdatableDocumentsListImpl extends AbstractLazyUpdatebleDocumen
 		updateOperation.set("save", true);
 		updateOperation.set("changeToken", updatedDocument.getChangeToken()); // prevent dirty updates !
 		// add dependency if needed
-		markDependencies(updateOperation, updatedDocument);
+		//markDependencies(updateOperation, updatedDocument);
 		return updateOperation;
 	}
 
@@ -57,12 +57,6 @@ public class LazyUpdatableDocumentsListImpl extends AbstractLazyUpdatebleDocumen
 		// add dependency if needed
 		markDependencies(createOperation, newDocument);
 		return createOperation;
-	}
-
-	protected void markDependencies(OperationRequest operation, Document doc) {
-		for (String token : doc.getPendingUploads()) {
-			operation.getDependencies().add(DependencyType.FILE_UPLOAD, token);
-		}
 	}
 
 }

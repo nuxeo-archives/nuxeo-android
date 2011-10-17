@@ -26,6 +26,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.ConflictException;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
+import org.nuxeo.ecm.automation.client.jaxrs.Dependency.DependencyType;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
@@ -82,6 +83,8 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends LazyDocumentsLi
 			if (updateOperation==null) {
 				updateOperation = buildUpdateOperation(session, updatedDocument);
 			}
+			// add dependency if needed
+			markDependencies(updateOperation, updatedDocument);
 			String requestId = session.execDeferredUpdate(updateOperation, new AsyncCallback<Object>() {
 
 				@Override
@@ -205,5 +208,10 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends LazyDocumentsLi
 
 	protected abstract OperationRequest buildCreateOperation(Session session, Document newDocument);
 
+	protected void markDependencies(OperationRequest operation, Document doc) {
+		for (String token : doc.getPendingUploads()) {
+			operation.getDependencies().add(DependencyType.FILE_UPLOAD, token);
+		}
+	}
 
 }
