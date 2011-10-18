@@ -29,70 +29,76 @@ import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.adapters.DocumentService;
+import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 import org.nuxeo.ecm.automation.client.jaxrs.model.DocRef;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
 public class DocumentManager extends DocumentService {
 
-	public DocumentManager(Session session) {
-		super(session);
-	}
+    public DocumentManager(Session session) {
+        super(session);
+    }
 
-	public Document getDocument(DocRef docRef, boolean refresh) throws Exception {
-		OperationRequest fetchOperation = session.newRequest(DocumentService.FetchDocument).set("value", docRef);
-		fetchOperation.setHeader("X-NXDocumentProperties", "*");
-		byte cacheFlag = CacheBehavior.STORE;
-		if (refresh) {
-			cacheFlag = (byte) (cacheFlag | CacheBehavior.FORCE_REFRESH);
-		}
-		return (Document) fetchOperation.execute(cacheFlag);
-	}
+    public Document getDocument(DocRef docRef, boolean refresh)
+            throws Exception {
+        OperationRequest fetchOperation = session.newRequest(
+                DocumentService.FetchDocument).set("value", docRef);
+        fetchOperation.setHeader("X-NXDocumentProperties", "*");
+        byte cacheFlag = CacheBehavior.STORE;
+        if (refresh) {
+            cacheFlag = (byte) (cacheFlag | CacheBehavior.FORCE_REFRESH);
+        }
+        return (Document) fetchOperation.execute(cacheFlag);
+    }
 
-	public Documents query(String nxql, String[] queryParams, String[] sortInfo, String schemaList, int page, int pageSize, byte cacheFlags) throws Exception {
+    public Documents query(String nxql, String[] queryParams,
+            String[] sortInfo, String schemaList, int page, int pageSize,
+            byte cacheFlags) throws Exception {
 
-		OperationRequest fetchOperation = session.newRequest("Document.PageProvider").set(
-				"query", nxql).set("pageSize",pageSize).set("page",0);
-		if (queryParams!=null) {
-			fetchOperation.set("queryParams", queryParams);
-		}
-		if (sortInfo!=null) {
-			fetchOperation.set("sortInfo", sortInfo);
-		}
-		// define returned properties
-		if (schemaList==null) {
-			schemaList = "common,dublincore";
-		}
-		fetchOperation.setHeader("X-NXDocumentProperties", schemaList);
+        OperationRequest fetchOperation = session.newRequest(
+                "Document.PageProvider").set("query", nxql).set("pageSize",
+                pageSize).set("page", 0);
+        if (queryParams != null) {
+            fetchOperation.set("queryParams", queryParams);
+        }
+        if (sortInfo != null) {
+            fetchOperation.set("sortInfo", sortInfo);
+        }
+        // define returned properties
+        if (schemaList == null) {
+            schemaList = "common,dublincore";
+        }
+        fetchOperation.setHeader("X-NXDocumentProperties", schemaList);
 
-		Documents docs = (Documents) fetchOperation.execute(cacheFlags);
-		return docs;
+        Documents docs = (Documents) fetchOperation.execute(cacheFlags);
+        return docs;
 
-	}
+    }
 
-	public Document getUserHome() throws Exception {
-		return (Document) session.newRequest("UserWorkspace.Get").execute();
-	}
+    public Document getUserHome() throws Exception {
+        return (Document) session.newRequest("UserWorkspace.Get").execute();
+    }
 
-    public List<JSONObject> getAuditEntriesForDocument(String docId, boolean refresh) throws Exception {
+    public List<JSONObject> getAuditEntriesForDocument(String docId,
+            boolean refresh) throws Exception {
 
-    	byte cacheFlag = CacheBehavior.STORE;
-		if (refresh) {
-			cacheFlag = (byte) (cacheFlag | CacheBehavior.FORCE_REFRESH);
-		}
+        byte cacheFlag = CacheBehavior.STORE;
+        if (refresh) {
+            cacheFlag = (byte) (cacheFlag | CacheBehavior.FORCE_REFRESH);
+        }
         List<JSONObject> result = new ArrayList<JSONObject>();
-        String auditQuery = "from LogEntry log"
-        + " WHERE log.docUUID = '" + docId + "'"
-        + "   AND log.docLifeCycle IS NOT NULL"
-        + "   AND log.docLifeCycle <> 'undefined'"
-        + " ORDER BY log.eventDate DESC";
+        String auditQuery = "from LogEntry log" + " WHERE log.docUUID = '"
+                + docId + "'" + "   AND log.docLifeCycle IS NOT NULL"
+                + "   AND log.docLifeCycle <> 'undefined'"
+                + " ORDER BY log.eventDate DESC";
 
-        Blob blob = (Blob) session.newRequest("Audit.Query").set(
-                    "query", auditQuery).set("maxResults",5).execute(cacheFlag);
-        if (blob!=null) {
+        Blob blob = (Blob) session.newRequest("Audit.Query").set("query",
+                auditQuery).set("maxResults", 5).execute(cacheFlag);
+        if (blob != null) {
             String jsonData = readBlobAsString(blob);
             JSONArray array = new JSONArray(jsonData);
-            for (int i = 0; i< array.length(); i++) {
+            for (int i = 0; i < array.length(); i++) {
                 result.add(array.getJSONObject(i));
             }
         }
@@ -101,17 +107,18 @@ public class DocumentManager extends DocumentService {
 
     public List<JSONObject> getUserTasks(boolean refresh) throws Exception {
 
-    	byte cacheFlag = CacheBehavior.STORE;
-		if (refresh) {
-			cacheFlag = (byte) (cacheFlag | CacheBehavior.FORCE_REFRESH);
-		}
+        byte cacheFlag = CacheBehavior.STORE;
+        if (refresh) {
+            cacheFlag = (byte) (cacheFlag | CacheBehavior.FORCE_REFRESH);
+        }
 
         List<JSONObject> result = new ArrayList<JSONObject>();
-        Blob blob=(Blob) getSession().newRequest("Workflow.GetTask").execute(cacheFlag);
-        if (blob!=null) {
+        Blob blob = (Blob) getSession().newRequest("Workflow.GetTask").execute(
+                cacheFlag);
+        if (blob != null) {
             String jsonData = readBlobAsString(blob);
             JSONArray array = new JSONArray(jsonData);
-            for (int i = 0; i< array.length(); i++) {
+            for (int i = 0; i < array.length(); i++) {
                 result.add(array.getJSONObject(i));
             }
         }
@@ -120,9 +127,10 @@ public class DocumentManager extends DocumentService {
 
     protected String readBlobAsString(Blob blob) throws Exception {
         StringBuffer sb = new StringBuffer();
-        BufferedReader blobReader=null;
+        BufferedReader blobReader = null;
         try {
-            blobReader = new BufferedReader(new InputStreamReader(blob.getStream()));
+            blobReader = new BufferedReader(new InputStreamReader(
+                    blob.getStream()));
             String line;
             while ((line = blobReader.readLine()) != null) {
                 sb.append(line);
