@@ -19,9 +19,16 @@ package org.nuxeo.android.automationsample;
 
 import java.util.List;
 
+import org.nuxeo.android.config.NuxeoServerConfig;
+import org.nuxeo.android.context.NuxeoContext;
+import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -128,5 +135,25 @@ public class HomeSampleActivity extends Activity implements View.OnClickListener
 	        return super.onOptionsItemSelected(item);
 	 }
 
+	 // to make testing easier
+	 protected NuxeoContext getNuxeoContext() {
+		 return NuxeoContext.get(getApplicationContext());
+	 }
 
+	 public void setOffline(boolean offline) {
+		 getNuxeoContext().getNetworkStatus().setForceOffline(offline);
+	 }
+
+	 public void setSettings(String url, String login, String password) {
+		SharedPreferences prefs =  PreferenceManager.getDefaultSharedPreferences(getApplicationContext()); //getPreferences(MODE_PRIVATE);
+		Editor prefEditor = prefs.edit();
+		prefEditor.putString(NuxeoServerConfig.PREF_SERVER_URL, url);
+		prefEditor.putString(NuxeoServerConfig.PREF_SERVER_LOGIN, login);
+		prefEditor.putString(NuxeoServerConfig.PREF_SERVER_PASSWORD, password);
+		prefEditor.commit();
+	 }
+
+	 public void fushPending() {
+		 getNuxeoContext().getNuxeoClient().getDeferredUpdatetManager().executePendingRequests(getNuxeoContext().getSession());
+	 }
 }
