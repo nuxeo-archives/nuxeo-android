@@ -15,7 +15,7 @@
  *     Nuxeo - initial API and implementation
  */
 
-package org.nuxeo.android.appraisal;
+package org.nuxeo.android.automation;
 
 import org.nuxeo.android.activities.AbstractNetworkSettingsActivity;
 import org.nuxeo.android.cache.blob.BlobStore;
@@ -25,42 +25,61 @@ import org.nuxeo.android.upload.FileUploader;
 import org.nuxeo.ecm.automation.client.cache.DeferredUpdateManager;
 import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
 import org.nuxeo.ecm.automation.client.cache.TransientStateManager;
-import org.nuxeo.android.appraisal.R;
+
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.TextView;
 
-public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity implements OnCheckedChangeListener, OnClickListener{
+public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity
+        implements OnCheckedChangeListener, OnClickListener {
 
     private TextView cacheEntriesCount;
+
     private TextView cacheSize;
+
     private CheckBox forceOfflineChk;
+
     private CheckBox networkReachable;
+
     private CheckBox serverReachable;
+
     private Button clearCacheButton;
+
     private Button refreshButton;
+
     private TextView pendingCount;
+
     private Button execPendingButton;
+
     private Button clearPendingButton;
+
     private TextView pendingUploadCount;
+
     private Button clearPendingUploadButton;
+
     private TextView transientstateCount;
+
     private Button cleartransientStateButton;
 
     private TextView iconCacheSize;
+
     private Button clearIconCache;
+
     private TextView blobCacheSize;
+
     private Button clearBlobCache;
+
     private TextView layoutCacheSize;
+
     private Button clearLayoutCache;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
 
         setContentView(R.layout.offline_screen);
 
@@ -79,15 +98,15 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
         pendingCount = (TextView) findViewById(R.id.pendingUpdatesCount);
         execPendingButton = (Button) findViewById(R.id.execPendingBtn);
         execPendingButton.setOnClickListener(this);
-        clearPendingButton= (Button) findViewById(R.id.clearPendingBtn);
+        clearPendingButton = (Button) findViewById(R.id.clearPendingBtn);
         clearPendingButton.setOnClickListener(this);
 
         pendingUploadCount = (TextView) findViewById(R.id.pendingUploadCount);
-        clearPendingUploadButton= (Button) findViewById(R.id.clearPendingUploadBtn);
+        clearPendingUploadButton = (Button) findViewById(R.id.clearPendingUploadBtn);
         clearPendingUploadButton.setOnClickListener(this);
 
         transientstateCount = (TextView) findViewById(R.id.transientStateCount);
-        cleartransientStateButton= (Button) findViewById(R.id.clearTransientStateBtn);
+        cleartransientStateButton = (Button) findViewById(R.id.clearTransientStateBtn);
         cleartransientStateButton.setOnClickListener(this);
 
         iconCacheSize = (TextView) findViewById(R.id.iconCacheSize);
@@ -102,71 +121,81 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity imp
         clearLayoutCache = (Button) findViewById(R.id.clearLayoutCache);
         clearLayoutCache.setOnClickListener(this);
 
-		super.onCreate(savedInstanceState);
-	}
+        super.onCreate(savedInstanceState);
+    }
 
-	@Override
-	protected void updateOfflineDisplay(NuxeoNetworkStatus settings) {
-		forceOfflineChk.setChecked(settings.isForceOffline());
-		networkReachable.setChecked(settings.isNetworkReachable());
-		serverReachable.setChecked(settings.isNuxeoServerReachable());
-		execPendingButton.setEnabled(settings.canUseNetwork());
-	}
+    @Override
+    protected void updateOfflineDisplay(NuxeoNetworkStatus settings) {
+        forceOfflineChk.setChecked(settings.isForceOffline());
+        networkReachable.setChecked(settings.isNetworkReachable());
+        serverReachable.setChecked(settings.isNuxeoServerReachable());
+        execPendingButton.setEnabled(settings.canUseNetwork());
+    }
 
-	@Override
-	protected void updateCacheInfoDisplay(ResponseCacheManager cacheManager, DeferredUpdateManager deferredUpdatetManager, BlobStoreManager blobStoreManager, FileUploader fileUploader, TransientStateManager stateManager) {
-		cacheEntriesCount.setText("Cache contains " + cacheManager.getEntryCount() + " entries");
-		cacheSize.setText("Cache size : " + cacheManager.getSize() + "(b)" );
-		pendingCount.setText(deferredUpdatetManager.getPendingRequestCount() + " pending updates");
+    @Override
+    protected void updateCacheInfoDisplay(ResponseCacheManager cacheManager,
+            DeferredUpdateManager deferredUpdatetManager,
+            BlobStoreManager blobStoreManager, FileUploader fileUploader,
+            TransientStateManager stateManager) {
+        cacheEntriesCount.setText("Cache contains "
+                + cacheManager.getEntryCount() + " entries");
+        cacheSize.setText("Cache size : " + cacheManager.getSize() + "(b)");
+        pendingCount.setText(deferredUpdatetManager.getPendingRequestCount()
+                + " pending updates");
 
-		pendingUploadCount.setText(fileUploader.getPendingUploadCount() + " pending upload");
+        pendingUploadCount.setText(fileUploader.getPendingUploadCount()
+                + " pending upload");
 
-		BlobStore iconStore = blobStoreManager.getBlobStore("icons");
-		iconCacheSize.setText("Icons cache size : " + iconStore.getSize() + "(b)");
+        BlobStore iconStore = blobStoreManager.getBlobStore("icons");
+        iconCacheSize.setText("Icons cache size : " + iconStore.getSize()
+                + "(b)");
 
-		BlobStore blobStore = blobStoreManager.getBlobStore("blobs");
-		blobCacheSize.setText("Blobs cache size : " + blobStore.getSize() + "(b)");
+        BlobStore blobStore = blobStoreManager.getBlobStore("blobs");
+        blobCacheSize.setText("Blobs cache size : " + blobStore.getSize()
+                + "(b)");
 
-		BlobStore layoutStore = blobStoreManager.getBlobStore("layouts");
-		layoutCacheSize.setText("Layouts cache size : " + layoutStore.getSize() + "(b)");
+        BlobStore layoutStore = blobStoreManager.getBlobStore("layouts");
+        layoutCacheSize.setText("Layouts cache size : " + layoutStore.getSize()
+                + "(b)");
 
-		transientstateCount.setText("Transient objects :  " + stateManager.getEntryCount());
+        transientstateCount.setText("Transient objects :  "
+                + stateManager.getEntryCount());
 
-	}
+    }
 
-	@Override
-	public void onCheckedChanged(CompoundButton view, boolean checked) {
-		if (view == forceOfflineChk) {
-			goOffline(checked);
-		}
-	}
+    @Override
+    public void onCheckedChanged(CompoundButton view, boolean checked) {
+        if (view == forceOfflineChk) {
+            goOffline(checked);
+        }
+    }
 
-	@Override
-	public void onClick(View view) {
-		if (view == clearCacheButton) {
-			flushResponseCache();
-		} else if (view == refreshButton) {
-			resetNetworkStatusAndRefresh();
-		} else if (view == execPendingButton) {
-			executePendingUpdates();
-		} else if (view == clearPendingButton) {
-			flushDeferredUpdateManager();
-		} else if (view == clearPendingUploadButton) {
-			flushPendingUploads();
-		} else if (view == clearIconCache) {
-			flushBlobStore("icons");
-		} else if (view == clearBlobCache) {
-			flushBlobStore("blobs");
-		} else if (view == clearLayoutCache) {
-			flushBlobStore("layouts");
-		} else if (view == cleartransientStateButton) {
-			flushTransientState();
-		}
-	}
+    @Override
+    public void onClick(View view) {
+        if (view == clearCacheButton) {
+            flushResponseCache();
+        } else if (view == refreshButton) {
+            resetNetworkStatusAndRefresh();
+        } else if (view == execPendingButton) {
+            executePendingUpdates();
+        } else if (view == clearPendingButton) {
+            flushDeferredUpdateManager();
+        } else if (view == clearPendingUploadButton) {
+            flushPendingUploads();
+        } else if (view == clearIconCache) {
+            flushBlobStore("icons");
+        } else if (view == clearBlobCache) {
+            flushBlobStore("blobs");
+        } else if (view == clearLayoutCache) {
+            flushBlobStore("layouts");
+        } else if (view == cleartransientStateButton) {
+            flushTransientState();
+        }
+    }
 
-	@Override
-	protected boolean requireAsyncDataRetrieval() {
-		return false;
-	}
+    @Override
+    protected boolean requireAsyncDataRetrieval() {
+        return false;
+    }
 
 }

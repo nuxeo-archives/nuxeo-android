@@ -9,24 +9,19 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>nuxeo-appraisal-client</artifactId>
-  <name>NuxeoAppraisalClient</name>
-  <description>Nuxeo Appraisal Demo Client</description>
-  <packaging>apk</packaging>
+  <artifactId>nuxeo-android-connector-ui</artifactId>
+  <name>Nuxeo Android Connector UI</name>
+  <description>Android library providing UI activities using Nuxeo Android Connector</description>
+  <packaging>apklib</packaging>
 
   <dependencies>
     <dependency>
-      <groupId>org.nuxeo.android</groupId>
-      <artifactId>nuxeo-android-connector</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.nuxeo.android</groupId>
-      <artifactId>nuxeo-android-connector-ui</artifactId>
-      <type>apklib</type>
-    </dependency>
-    <dependency>
       <groupId>com.google.android</groupId>
       <artifactId>android</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.android</groupId>
+      <artifactId>nuxeo-android-connector</artifactId>
     </dependency>
   </dependencies>
 
