@@ -280,9 +280,25 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 	public Document getCurrentDocument() {
 		int pos = getRelativePositionOnPage();
 		Documents currentDocs = getCurrentPage();
+
 		if (currentDocs.size()> pos) {
 			return currentDocs.get(pos);
 		} else {
+			int tryCount=0;
+			// Yurk !!!
+			while (tryCount < 5) {
+				currentDocs = getCurrentPage();
+				if (currentDocs.size()> pos) {
+					return currentDocs.get(pos);
+				} else {
+					try {
+						Thread.currentThread().sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				tryCount++;
+			}
 			Log.e(LazyDocumentsListImpl.class.getSimpleName(), "global position : " + getCurrentPosition());
 			Log.e(LazyDocumentsListImpl.class.getSimpleName(), "total size : " + getCurrentSize());
 			Log.e(LazyDocumentsListImpl.class.getSimpleName(), "current page idex : " + currentPage);
