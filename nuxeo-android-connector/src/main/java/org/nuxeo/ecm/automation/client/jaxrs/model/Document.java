@@ -289,10 +289,24 @@ public class Document extends DocRef implements Serializable {
 	}
 
 	public Uri getBlob(int idx) {
+		if (getStatusFlag().equals(DocumentStatus.NEW) || getStatusFlag().equals(DocumentStatus.UPDATED)) {
+			List<String> rids = getPendingUploads();
+			if (rids.size()>0) {
+				String rid = rids.get(0);
+				return Uri.parse("content://" + NuxeoContentProviderConfig.getAuthority() + "/uploads/" + rid + "/");
+			}
+		}
 		return Uri.parse("content://" + NuxeoContentProviderConfig.getAuthority() + "/blobs/" + getId() + "/" + idx);
 	}
 
 	public Uri getPicture(String format) {
+		if (getStatusFlag().equals(DocumentStatus.NEW) || getStatusFlag().equals(DocumentStatus.UPDATED)) {
+			List<String> rids = getPendingUploads();
+			if (rids.size()>0) {
+				String rid = rids.get(0);
+				return Uri.parse("content://" + NuxeoContentProviderConfig.getAuthority() + "/uploads/" + rid );
+			}
+		}
 		if (format==null) {
 			return Uri.parse("content://" + NuxeoContentProviderConfig.getAuthority() + "/pictures/" + getId() + "/");
 		} else {

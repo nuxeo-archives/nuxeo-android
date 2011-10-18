@@ -140,6 +140,10 @@ public class FileUploader {
 		store.deleteBlob(blob.getProperty(UPLOAD_UUID));
 	}
 
+    public BlobWithProperties getBlob(String key) {
+		return store.getBlob(key);
+	}
+
 	public void cancelUpload(String batchId) {
 		// XXX
 	}

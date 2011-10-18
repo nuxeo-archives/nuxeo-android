@@ -18,13 +18,8 @@
 package org.nuxeo.android.cache.sql;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.nuxeo.ecm.automation.client.cache.DocumentDeltaSet;
 import org.nuxeo.ecm.automation.client.cache.OperationType;
 import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyMap;
@@ -126,7 +121,7 @@ public class TransientStateTableWrapper extends AbstractSQLTableWrapper {
 					PropertyMap props = null;
 					String jsonProps =cursor.getString(cursor.getColumnIndex(PROPS_COLUMN));
 					if (jsonProps!=null) {
-						props = new PropertyMap(readMapFromJson(jsonProps));
+						props = JSONExporter.getFromJSONString(jsonProps);
 					}
 					String listName = cursor.getString(cursor.getColumnIndex(LISTNAME_COLUMN));
 					String requestId = cursor.getString(cursor.getColumnIndex(REQUESTID_COLUMN));
@@ -145,22 +140,6 @@ public class TransientStateTableWrapper extends AbstractSQLTableWrapper {
 				cursor.close();
 			}
 		}
-	}
-
-
-	protected Map<String, Object> readMapFromJson(String data) {
-		Map<String, Object> result = new HashMap<String, Object>();
-		try {
-			JSONObject jsonMap = new JSONObject(data);
-			Iterator<String> keyIterator = jsonMap.keys();
-			while (keyIterator.hasNext()) {
-				String key = keyIterator.next();
-				result.put(key, jsonMap.get(key));
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return result;
 	}
 
 	public void deleteEntryByRequestId(String key) {

@@ -57,9 +57,11 @@ import android.util.Log;
  * content://nuxeo/icons/<subPath>            : access to small Nuxeo icon of the given path
  *
  * content://nuxeo/blobs/<UUID>               : access to main blog of the doc with the given UUID
- * content://nuxeo/blobs/<UUID>/<idx>         : access to blog [idx] of the doc with the given UUID
- * content://nuxeo/blobs/<UUID>/<subPath>     : access to blog in the field <subpath> of the doc with the given UUID
-
+ * content://nuxeo/blobs/<UUID>/<idx>         : access to blob [idx] of the doc with the given UUID
+ * content://nuxeo/blobs/<UUID>/<subPath>     : access to blob in the field <subpath> of the doc with the given UUID
+ *
+ * content://nuxeo/uploads/<REQUESTID>            : access to tmp blob matching uploadId REQUESTID
+ *
  * @author tiry
  *
  */
@@ -73,6 +75,7 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 	public static final String ALL_DOCUMENTS = "documents";
 	public static final String ICONS = "icons";
 	public static final String BLOBS = "blobs";
+	public static final String UPLOAD = "uploads";
 	public static final String PICTURES = "pictures";
 
 	protected static final int ALL_DOCUMENTS_PROVIDER = 0;
@@ -82,6 +85,7 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 	protected static final int DOCUMENTS_PROVIDER = 4;
 	protected static final int DOCUMENT_PROVIDER = 5;
 	protected static final int PICTURES_PROVIDER = 6;
+	protected static final int UPLOAD_PROVIDER = 7;
 
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
@@ -128,6 +132,7 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 		uriMatcher.addURI(authority, PICTURES+ "/*", PICTURES_PROVIDER);
 		uriMatcher.addURI(authority, "*", DOCUMENTS_PROVIDER);
 		uriMatcher.addURI(authority, "*/*", DOCUMENT_PROVIDER);
+		uriMatcher.addURI(authority, UPLOAD + "/*", UPLOAD_PROVIDER);
 	}
 
 	protected UriMatcher getMatcher() {
@@ -225,6 +230,7 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 			case BLOBS_PROVIDER :
 			case ICONS_PROVIDER :
 			case PICTURES_PROVIDER :
+			case UPLOAD_PROVIDER :
 				FileBlob blob = resolveBlob(uri);
 				if (blob!=null) {
 					mimeType = blob.getMimeType();
@@ -275,6 +281,9 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 			if (iconFile!=null) {
 				return iconFile;
 			}
+		}
+		else if (resourceType.equals("uploads")) {
+			return getClient().getFileUploader().getBlob(uri.getLastPathSegment());
 		}
 		else if (resourceType.equals("blobs")) {
 			String uid = uri.getPathSegments().get(1);

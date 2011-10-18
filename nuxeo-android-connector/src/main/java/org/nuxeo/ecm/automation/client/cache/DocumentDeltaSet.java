@@ -17,7 +17,12 @@
 
 package org.nuxeo.ecm.automation.client.cache;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
+import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyList;
 import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyMap;
 
 public class DocumentDeltaSet {
@@ -36,7 +41,10 @@ public class DocumentDeltaSet {
 
 	protected final String listName;
 
+	protected final List<String> pendingUploads;
 	protected boolean conflict;
+
+	protected static final String PENDING_UPLOAD_VPROB = "pending:upload";
 
 	public DocumentDeltaSet(OperationType opType,String id, String path, String docType, PropertyMap dirtyProps, String requestId, String listName) {
 		this.dirtyProps = dirtyProps;
@@ -46,6 +54,13 @@ public class DocumentDeltaSet {
 		this.id=id;
 		this.listName=listName;
 		this.requestId=requestId;
+		pendingUploads = new ArrayList<String>();
+		if (dirtyProps.getList(PENDING_UPLOAD_VPROB, null)!=null) {
+			for (Serializable pid : dirtyProps.getList(PENDING_UPLOAD_VPROB).list()) {
+				pendingUploads.add((String)pid);
+			}
+			dirtyProps.map().remove(PENDING_UPLOAD_VPROB);
+		}
 	}
 
 	public DocumentDeltaSet(OperationType opType,Document doc, String requestId, String listName) {
@@ -56,6 +71,11 @@ public class DocumentDeltaSet {
 		this.id = doc.getId();
 		this.listName=listName;
 		this.requestId=requestId;
+		List<String> uploadids=doc.getPendingUploads();
+		if (uploadids!=null && uploadids.size()>0) {
+			this.dirtyProps.set(PENDING_UPLOAD_VPROB, new PropertyList(new ArrayList<Serializable>(uploadids)));
+		}
+		pendingUploads = uploadids;
 	}
 
 	public Document apply(Document doc) {
