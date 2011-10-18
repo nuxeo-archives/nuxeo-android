@@ -19,14 +19,14 @@ public class StartActivityForResultTest
     solo.waitForActivity("org.nuxeo.android.automationsample.GetChildrenSampleActivity", ACTIVITY_WAIT_MILLIS);
     solo.sendKey(Solo.MENU);
     solo.clickOnScreen(136f, 748f);
-    solo.clickOnScreen(185f, 370f);
     solo.clickInList(1);
     solo.waitForActivity("org.nuxeo.android.automationsample.DocumentLayoutActivity", ACTIVITY_WAIT_MILLIS);
     solo.clickOnScreen(111f, 230f);
     solo.clearEditText(0);
     solo.enterText(0, "Title");
-    solo.clickOnScreen(97f, 558f);
-    final View fileButton = getActivity().getWindow().getDecorView().findViewWithTag("file:file:content");
+    // solo.clickOnScreen(97f, 558f);
+    final View fileButton = solo.getCurrentActivity().getWindow().getDecorView().findViewWithTag("file:file:content");
+    assertNotNull("Could not find the file button", fileButton);
     solo.clickOnView(fileButton);
   }
 
