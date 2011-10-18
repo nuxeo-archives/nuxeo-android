@@ -27,6 +27,7 @@ public abstract class BasisTest
       throws Exception
   {
     solo = new Solo(getInstrumentation(), getActivity());
+    getActivity().setSettings("http://192.168.56.1:8080/nuxeo/", "Administrator", "Administrator");
   }
 
   @Override
@@ -64,5 +65,20 @@ public abstract class BasisTest
     }
     return null;
   }
+
+	protected void goOnline() throws Exception {
+		getActivity().setOffline(false);
+		Thread.sleep(500);
+	}
+
+	protected void goOffline() throws Exception {
+		getActivity().setOffline(true);
+		Thread.sleep(500);
+	}
+
+	protected void flushPending() throws Exception {
+		getActivity().fushPending();
+		Thread.sleep(500);
+	}
 
 }
