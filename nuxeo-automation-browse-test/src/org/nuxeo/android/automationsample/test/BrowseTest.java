@@ -9,13 +9,6 @@ public class BrowseTest extends BaseBrowsingTest {
 	}
 
 	@Override
-	public void setUp() throws Exception {
-		solo = new Solo(getInstrumentation(), getActivity());
-		getActivity().setSettings("http://10.213.3.241:8080/nuxeo/", "Administrator", "Administrator");
-		Thread.sleep(500);
-	}
-
-	@Override
 	public void tearDown() throws Exception {
 		try {
 			solo.finalize();
