@@ -1,6 +1,5 @@
 package org.nuxeo.android.automationsample.test;
 
-import com.jayway.android.robotium.solo.Solo;
 
 public class BrowseTest extends BaseBrowsingTest {
 
@@ -19,12 +18,44 @@ public class BrowseTest extends BaseBrowsingTest {
 		super.tearDown();
 	}
 
-	public void testOnlineCreateEdit() throws Exception {
+	public void testCreateEdit() throws Exception {
+
+		doOnlineTests();
+
+		doOfflineCreate();
+
+		doOfflineEdit();
+
+	}
+
+	protected void doOnlineTests() throws Exception {
 		goOnline();
 		// check online creation
-		browseAndCreate("online");
+		browseAndCreate(true);
 		// check online edit
-		browseAndEdit("online");
+		browseAndEdit(true);
 	}
+
+	protected void doOfflineCreate() throws Exception {
+		goOffline();
+		// do offline creation
+		String title =browseAndCreate(false);
+
+		goOnline();
+		flushPending();
+		browseAndCheck(title);
+	}
+
+	protected void doOfflineEdit() throws Exception {
+		goOffline();
+		// do offline creation
+		String title =browseAndEdit(false);
+
+		goOnline();
+		flushPending();
+		browseAndCheck(title);
+	}
+
+
 
 }

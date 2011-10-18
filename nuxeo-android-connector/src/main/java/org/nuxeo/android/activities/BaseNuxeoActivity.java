@@ -36,6 +36,8 @@ import android.widget.Toast;
 
 public abstract class BaseNuxeoActivity extends Activity {
 
+	protected boolean loadingInProgress = false;
+
 	protected NuxeoContext getNuxeoContext() {
 		return NuxeoContext.get(getApplicationContext());
 	}
@@ -52,6 +54,7 @@ public abstract class BaseNuxeoActivity extends Activity {
 
 		@Override
 		protected void onPreExecute() {
+			loadingInProgress=true;
 			onNuxeoDataRetrievalStarted();
 			super.onPreExecute();
 		}
@@ -86,6 +89,7 @@ public abstract class BaseNuxeoActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(Object result) {
+			loadingInProgress=false;
 			if (result!=null) {
 				onNuxeoDataRetrieved(result);
 			} else {
@@ -213,4 +217,9 @@ public abstract class BaseNuxeoActivity extends Activity {
         overridePendingTransition(0, 0);
         startActivity(intent);
     }
+
+    public boolean isReady() {
+    	return !loadingInProgress;
+    }
+
 }

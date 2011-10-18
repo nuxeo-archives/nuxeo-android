@@ -19,14 +19,10 @@ package org.nuxeo.android.automationsample;
 
 import java.util.List;
 
-
-import org.nuxeo.android.config.NuxeoServerConfig;
-import org.nuxeo.android.context.NuxeoContext;
-import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
-
 import org.nuxeo.android.automation.NetworkSettingsActivity;
 import org.nuxeo.android.automation.ServerSettingsActivity;
-
+import org.nuxeo.android.config.NuxeoServerConfig;
+import org.nuxeo.android.context.NuxeoContext;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -318,4 +318,16 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 		menu.add(Menu.NONE, CTXMNU_VIEW_ATTACHEMENT, 2, "View attachment");
 	}
 
+	@Override
+	public boolean isReady() {
+    	if (super.isReady()) {
+    		if (documentsList!=null) {
+    			return documentsList.getLoadingPagesCount()==0;
+    		}
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+
 }
