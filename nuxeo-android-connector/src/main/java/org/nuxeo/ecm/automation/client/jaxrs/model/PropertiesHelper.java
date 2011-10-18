@@ -114,37 +114,37 @@ public class PropertiesHelper {
     }
 
     public static String toStringProperties(PropertyMap props) {
-    	StringBuffer sb = new StringBuffer();
-    	for (String propName : props.getKeys()) {
-    		Object value = props.map().get(propName);
-    		if (value!=null) {
-	    		sb.append(propName);
-	    		sb.append("=");
-	    		sb.append(encodePropertyAsString(value));
-	    		sb.append("\n");
-    		} else {
-    			Log.w(PropertiesHelper.class.getSimpleName(), "No value for " + propName);
-    		}
-    	}
-    	return sb.toString();
+        StringBuffer sb = new StringBuffer();
+        for (String propName : props.getKeys()) {
+            Object value = props.map().get(propName);
+            if (value != null) {
+                sb.append(propName);
+                sb.append("=");
+                sb.append(encodePropertyAsString(value));
+                sb.append("\n");
+            } else {
+                Log.w(PropertiesHelper.class.getSimpleName(), "No value for "
+                        + propName);
+            }
+        }
+        return sb.toString();
     }
 
     public static String encodePropertyAsString(Object prop) {
-    	if (prop instanceof PropertyList) {
-    		PropertyList list = (PropertyList) prop;
-    		StringBuffer sb = new StringBuffer();
-    		for (Object item : list.list()) {
-    			sb.append(encodePropertyAsString(item));
-    			sb.append(";");
-    		}
-    		return sb.toString();
-    	} else if (prop instanceof PropertyMap) {
-    		PropertyMap map = (PropertyMap) prop;
-    		return new JSONObject(map.map()).toString();
-    	}
-    	else {
-    		String value = prop.toString();
-    		return value.replace("\n", " \\\n");
-    	}
+        if (prop instanceof PropertyList) {
+            PropertyList list = (PropertyList) prop;
+            StringBuffer sb = new StringBuffer();
+            for (Object item : list.list()) {
+                sb.append(encodePropertyAsString(item));
+                sb.append(";");
+            }
+            return sb.toString();
+        } else if (prop instanceof PropertyMap) {
+            PropertyMap map = (PropertyMap) prop;
+            return new JSONObject(map.map()).toString();
+        } else {
+            String value = prop.toString();
+            return value.replace("\n", " \\\n");
+        }
     }
 }
