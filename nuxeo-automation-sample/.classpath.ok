@@ -8,7 +8,8 @@
   <classpathentry kind="var" path="M2_REPO/org/json/json/20080701/json-20080701.jar" sourcepath="M2_REPO/org/json/json/20080701/json-20080701-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/khronos/opengl-api/gl1.1-android-2.1_r1/opengl-api-gl1.1-android-2.1_r1.jar" sourcepath="M2_REPO/org/khronos/opengl-api/gl1.1-android-2.1_r1/opengl-api-gl1.1-android-2.1_r1-sources.jar"/>
   <classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-  <classpathentry kind="src" path="gen"/>
   <classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="src" path="nuxeo-android-connector-ui_src"/>
   <classpathentry kind="output" path="target/classes"/>
 </classpath>

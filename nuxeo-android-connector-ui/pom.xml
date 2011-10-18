@@ -25,29 +25,6 @@
     </dependency>
   </dependencies>
 
-  <profiles>
-    <profile>
-      <id>release</id>
-      <properties>
-        <keystore.type>JKS</keystore.type>
-        <keystore.alias>nuxeocom</keystore.alias>
-      </properties>
-    </profile>
-    <profile>
-      <!-- development profile - do not use it in production mode -->
-      <id>dev</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <keystore.path>../nuxeo-dev.jks</keystore.path>
-        <keystore.type>JKS</keystore.type>
-        <keystore.alias>nuxeo-shell-dev</keystore.alias>
-        <keystore.password>nuxeodev</keystore.password>
-      </properties>
-    </profile>
-  </profiles>
-
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
@@ -56,41 +33,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jarsigner-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>signing</id>
-            <goals>
-              <goal>sign</goal>
-            </goals>
-            <phase>package</phase>
-            <inherited>true</inherited>
-            <configuration>
-              <archiveDirectory></archiveDirectory>
-              <includes>
-                <include>target/*.apk</include>
-              </includes>
-              <storetype>${keystore.type}</storetype>
-              <keystore>${keystore.path}</keystore>
-              <alias>${keystore.alias}</alias>
-              <storepass>${keystore.password}</storepass>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>com.jayway.maven.plugins.android.generation2</groupId>
         <artifactId>maven-android-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>alignApk</id>
-            <phase>package</phase>
-            <goals>
-              <goal>zipalign</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="lib" path="libs/com.smartnsoft.droid4me.jar"/>
-	<classpathentry kind="lib" path="libs/com.smartnsoft.droid4me.ext.jar"/>
-	<classpathentry kind="src" path="/nuxeo-automation-thin-client"/>
-	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="lib" path="libs/com.smartnsoft.droid4me.jar"/>
+  <classpathentry kind="lib" path="libs/com.smartnsoft.droid4me.ext.jar"/>
+  <classpathentry kind="src" path="/nuxeo-automation-thin-client"/>
+  <classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+  <classpathentry kind="src" path="src"/>
+  <classpathentry kind="src" path="gen"/>
+  <classpathentry kind="output" path="target/classes"/>
 </classpath>
