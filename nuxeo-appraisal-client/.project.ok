@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-  <name>nuxeo-automation-sample</name>
-  <comment>Nuxeo Android sample client for nuxeo automation.</comment>
+  <name>nuxeo-appraisal-client</name>
+  <comment>Nuxeo Appraisal Client for nuxeo automation.</comment>
   <projects>
     <project>nuxeo-android-connector</project>
   </projects>
@@ -31,4 +31,11 @@
     <nature>com.android.ide.eclipse.adt.AndroidNature</nature>
     <nature>org.eclipse.jdt.core.javanature</nature>
   </natures>
+  <linkedResources>
+    <link>
+      <name>nuxeo-android-connector-ui_src</name>
+      <type>2</type>
+      <locationURI>_android_nuxeo_android_connector_ui_42a7c944/src</locationURI>
+    </link>
+  </linkedResources>
 </projectDescription>
