@@ -8,24 +8,23 @@ public class StartActivityForResultTest
     extends BasisTest
 {
 
-  public void testAttachFile()
+  public void testAttachFile() throws Exception
   {
-    solo.waitForActivity("org.nuxeo.android.automationsample.HomeSampleActivity", ACTIVITY_WAIT_MILLIS);
+	waitForNuxeoActivity("org.nuxeo.android.automationsample.HomeSampleActivity");
     solo.clickOnView(findViewById(org.nuxeo.android.automationsample.R.id.browsetBtn));
-    solo.waitForActivity("org.nuxeo.android.automationsample.GetChildrenSampleActivity", ACTIVITY_WAIT_MILLIS);
+    waitForNuxeoActivity("org.nuxeo.android.automationsample.GetChildrenSampleActivity");
     solo.clickInList(1);
-    solo.waitForActivity("org.nuxeo.android.automationsample.GetChildrenSampleActivity", ACTIVITY_WAIT_MILLIS);
+    waitForNuxeoActivity("org.nuxeo.android.automationsample.GetChildrenSampleActivity");
     solo.clickInList(3);
-    solo.waitForActivity("org.nuxeo.android.automationsample.GetChildrenSampleActivity", ACTIVITY_WAIT_MILLIS);
+    waitForNuxeoActivity("org.nuxeo.android.automationsample.GetChildrenSampleActivity");
     solo.sendKey(Solo.MENU);
-    solo.clickOnScreen(136f, 748f);
+    solo.clickOnText("New item");
     solo.clickInList(1);
-    solo.waitForActivity("org.nuxeo.android.automationsample.DocumentLayoutActivity", ACTIVITY_WAIT_MILLIS);
+    waitForNuxeoActivity("org.nuxeo.android.automationsample.DocumentLayoutActivity");
     solo.clickOnScreen(111f, 230f);
     solo.clearEditText(0);
     solo.enterText(0, "Title");
-    // solo.clickOnScreen(97f, 558f);
-    final View fileButton = solo.getCurrentActivity().getWindow().getDecorView().findViewWithTag("file:file:content");
+    final View fileButton = findViewByTag("file:file:content");
     assertNotNull("Could not find the file button", fileButton);
     solo.clickOnView(fileButton);
   }

@@ -176,4 +176,8 @@ public abstract class BasisTest
 			return null;
 		}
 	}
+
+	protected View findViewByTag(String tag) {
+		return solo.getCurrentActivity().getWindow().getDecorView().findViewWithTag(tag);
+	}
 }
