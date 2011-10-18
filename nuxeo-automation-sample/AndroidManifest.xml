@@ -4,12 +4,12 @@
       android:versionCode="1"
       android:versionName="1.0">
 
-	<uses-sdk android:minSdkVersion="8" />
+  <uses-sdk android:minSdkVersion="8" />
 
-	<!-- We need this permission, in order to access to Internet -->
-	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <!-- We need this permission, in order to access to Internet -->
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:name="org.nuxeo.android.automationsample.NuxeoSampleApplication">
         <activity android:name="HomeSampleActivity"
@@ -38,7 +38,7 @@
                   android:label="Browse a DocumentProvider" android:theme="@style/Theme.NuxeoAndroid">
         </activity>
 
-        <activity android:name="NetworkSettingsActivity"
+        <activity android:name="org.nuxeo.android.automation.NetworkSettingsActivity"
                   android:label="Nuxeo Offline Settings" android:theme="@style/Theme.NuxeoAndroid">
         </activity>
         <activity android:name="ContentProviderSampleActivity"
@@ -47,7 +47,7 @@
         <activity android:name="DocumentLayoutActivity"
                   android:label="CreateEditActivity" android:theme="@style/Theme.NuxeoAndroid">
         </activity>
-        <activity android:name=".ServerSettingsActivity"
+        <activity android:name="org.nuxeo.android.automation.ServerSettingsActivity"
                   android:label="Settings" android:theme="@style/Theme.NuxeoAndroid">
         </activity>
         <activity android:name="HistorySampleActivity"
@@ -55,8 +55,8 @@
                 android:theme="@style/Theme.NuxeoAndroid">
         </activity>
 
-		<provider android:name="org.nuxeo.android.contentprovider.NuxeoDocumentContentProvider"
-		          android:authorities="nxsample">
-		</provider>
+    <provider android:name="org.nuxeo.android.contentprovider.NuxeoDocumentContentProvider"
+              android:authorities="nxsample">
+    </provider>
     </application>
 </manifest>

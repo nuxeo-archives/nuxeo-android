@@ -15,7 +15,7 @@
  *     Nuxeo - initial API and implementation
  */
 
-package org.nuxeo.android.automationsample;
+package org.nuxeo.android.automation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,15 +29,19 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class ServerSettingsActivity extends AbstractNuxeoSettingsActivity implements OnClickListener {
+public class ServerSettingsActivity extends AbstractNuxeoSettingsActivity
+        implements OnClickListener {
 
-	protected TextView login;
-	protected TextView password;
-	protected TextView serverUrl;
-	protected Button saveButton;
+    protected TextView login;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
+    protected TextView password;
+
+    protected TextView serverUrl;
+
+    protected Button saveButton;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
 
         setContentView(R.layout.settings);
 
@@ -51,38 +55,41 @@ public class ServerSettingsActivity extends AbstractNuxeoSettingsActivity implem
         refreshDisplay();
 
         super.onCreate(savedInstanceState);
-	}
+    }
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		refreshDisplay();
-	}
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshDisplay();
+    }
 
-	protected void refreshDisplay() {
-		Map<String, Object> prefs = getNuxeoPreferences();
+    protected void refreshDisplay() {
+        Map<String, Object> prefs = getNuxeoPreferences();
         serverUrl.setText(prefs.get(NuxeoServerConfig.PREF_SERVER_URL).toString());
         login.setText(prefs.get(NuxeoServerConfig.PREF_SERVER_LOGIN).toString());
         password.setText(prefs.get(NuxeoServerConfig.PREF_SERVER_PASSWORD).toString());
-	}
+    }
 
-	@Override
-	public void onClick(View view) {
-		if (view == saveButton) {
-			Map<String, Object> prefs = new HashMap<String, Object>();
+    @Override
+    public void onClick(View view) {
+        if (view == saveButton) {
+            Map<String, Object> prefs = new HashMap<String, Object>();
 
-			prefs.put(NuxeoServerConfig.PREF_SERVER_URL, serverUrl.getText().toString());
-			prefs.put(NuxeoServerConfig.PREF_SERVER_LOGIN, login.getText().toString());
-			prefs.put(NuxeoServerConfig.PREF_SERVER_PASSWORD, password.getText().toString());
+            prefs.put(NuxeoServerConfig.PREF_SERVER_URL,
+                    serverUrl.getText().toString());
+            prefs.put(NuxeoServerConfig.PREF_SERVER_LOGIN,
+                    login.getText().toString());
+            prefs.put(NuxeoServerConfig.PREF_SERVER_PASSWORD,
+                    password.getText().toString());
 
-			saveNuxeoPreferences(prefs);
-			finish();
-		}
-	}
+            saveNuxeoPreferences(prefs);
+            finish();
+        }
+    }
 
-	@Override
-	protected boolean requireAsyncDataRetrieval() {
-		return false;
-	}
+    @Override
+    protected boolean requireAsyncDataRetrieval() {
+        return false;
+    }
 
 }

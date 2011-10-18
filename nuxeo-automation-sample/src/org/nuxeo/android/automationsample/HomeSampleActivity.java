@@ -19,6 +19,9 @@ package org.nuxeo.android.automationsample;
 
 import java.util.List;
 
+import org.nuxeo.android.automation.NetworkSettingsActivity;
+import org.nuxeo.android.automation.ServerSettingsActivity;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
