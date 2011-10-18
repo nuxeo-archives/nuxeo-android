@@ -23,9 +23,9 @@
     <module>nuxeo-automation-thin-client</module>
     <module>nuxeo-automation-sample</module>
     <module>nuxeo-appraisal-client</module>
-    <!-- <module>nuxeo-automation-sample-test</module> -->
-    <!-- <module>nuxeo-android</module> -->
+    <module>nuxeo-android</module>
     <module>nuxeo-android-connector-ui</module>
+    <module>nuxeo-automation-browse-test</module>
   </modules>
 
   <dependencyManagement>
