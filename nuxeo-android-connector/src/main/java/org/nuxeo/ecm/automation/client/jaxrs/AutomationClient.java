@@ -16,7 +16,6 @@
  */
 package org.nuxeo.ecm.automation.client.jaxrs;
 
-
 /**
  * The connection to the automation service is done the first time you create a
  * session. To create a session you need to pass the authentication
@@ -48,16 +47,12 @@ public interface AutomationClient {
 
     /**
      * Get access to this request interceptor
-     *
-     * @return
      */
     RequestInterceptor getRequestInterceptor();
 
     /**
      * Creates a new session. If no interceptors configured connect
      * anonymously.
-     *
-     * @return
      */
     Session getSession();
 
