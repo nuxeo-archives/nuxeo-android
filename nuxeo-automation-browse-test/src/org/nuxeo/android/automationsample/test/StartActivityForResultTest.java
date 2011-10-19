@@ -31,6 +31,7 @@ public class StartActivityForResultTest
     assertNotNull("Could not find the title EditText control", titleEditText);
     hideSoftKeyboard(titleEditText);
     solo.clickOnView(fileButton);
+    solo.waitForText("File upload completed");
   }
 
 }

@@ -21,7 +21,19 @@
       android:icon="@drawable/icon"
       android:label="@string/app_name"
     >
+
       <uses-library android:name="android.test.runner"/>
+
+      <activity
+        android:name=".FilePickerActivity"
+        android:label="File Picker"
+      >
+        <intent-filter>
+          <category android:name="android.intent.category.DEFAULT"/>
+          <action android:name="org.openintents.action.PICK_FILE"/>
+        </intent-filter>
+      </activity>
+
     </application>
 
 </manifest>
