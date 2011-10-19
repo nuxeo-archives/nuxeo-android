@@ -15,8 +15,9 @@ import android.util.Log;
 
 public class BitmapSampler {
 
-    public static final int REQUIRED_SIZE=70;
+    public static final int REQUIRED_SIZE=100;
 
+    // XXX
 	protected static File getCacheDir(Context context) {
 
 		File dir = context.getExternalCacheDir();
@@ -30,6 +31,7 @@ public class BitmapSampler {
 
     public static FileBlob sampleBitmapFile(Context ctx, FileBlob blob) {
 
+    	// XXX cleanup file ...
     	Bitmap sampled = decodeFile(blob.getFile());
     	try {
     		   File dir = getCacheDir(ctx);
@@ -47,14 +49,13 @@ public class BitmapSampler {
 
     }
 
+    // taken from http://stackoverflow.com/questions/477572/android-strange-out-of-memory-issue/823966#823966
 	protected static  Bitmap decodeFile(File f){
 	    try {
 	        //Decode image size
 	        BitmapFactory.Options o = new BitmapFactory.Options();
 	        o.inJustDecodeBounds = true;
 	        BitmapFactory.decodeStream(new FileInputStream(f),null,o);
-
-
 
 	        //Find the correct scale value. It should be the power of 2.
 	        int width_tmp=o.outWidth, height_tmp=o.outHeight;

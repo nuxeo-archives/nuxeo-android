@@ -1,38 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
- <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent"
-      android:layout_height="wrap_content" android:orientation="horizontal" android:padding="2dip">
+ <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent"
+      android:layout_height="wrap_content" android:padding="2dip" android:layout_gravity="top|left">
 
    <ImageView
 	android:id="@+id/thumb"
 	android:layout_width="100dip"
-	android:layout_height="wrap_content"
-	android:layout_gravity="top"
+	android:layout_height="100dip"
+	android:layout_gravity="top|left"
+	android:padding="2dip"
 	/>
-
-   <LinearLayout android:orientation="vertical"
-    android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:layout_gravity="top"
-	>
 
 	   <TextView
 		android:id="@+id/title_entry"
-		android:layout_width="fill_parent"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:textSize="16dip"
 		android:textStyle="bold"
-		android:padding="3dip"/>
+		android:padding="3dip"
+		android:layout_gravity="top|left"
+	    android:layout_toRightOf="@id/thumb"/>
 
 	   <TextView
 		android:id="@+id/description"
-		android:layout_width="fill_parent"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:textSize="12dip"
 		android:padding="3dip"
-		android:text="This is the descriptiojn"
+		android:text="This is the description"
+		android:layout_gravity="top|left"
+		android:layout_toRightOf="@id/thumb"
+		android:layout_below ="@id/title_entry"
 		/>
 
-  </LinearLayout>
-
- </LinearLayout>
+ </RelativeLayout>
 
