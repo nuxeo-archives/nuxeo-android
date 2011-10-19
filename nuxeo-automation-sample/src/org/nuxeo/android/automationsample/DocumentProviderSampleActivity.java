@@ -47,7 +47,7 @@ implements View.OnClickListener, OnItemClickListener {
 
 	protected ListView listView;
 	protected TextView waitingMessage;
-	protected Button refreshBtn;
+	protected View refreshBtn;
 
 	List<String> providerNames;
 
@@ -60,7 +60,7 @@ implements View.OnClickListener, OnItemClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.nxcp);
 		waitingMessage = (TextView) findViewById(R.id.waitingMessage);
-		refreshBtn = (Button) findViewById(R.id.refreshBtn);
+		refreshBtn = findViewById(R.id.refreshBtn);
 		refreshBtn.setOnClickListener(this);
 		listView = (ListView) findViewById(R.id.myList);
 		registerForContextMenu(listView);
@@ -130,7 +130,6 @@ implements View.OnClickListener, OnItemClickListener {
 	protected void onNuxeoDataRetrievalStarted() {
 		waitingMessage.setText("Loading data ...");
 		waitingMessage.setVisibility(View.VISIBLE);
-		refreshBtn.setGravity(Gravity.RIGHT);
 		refreshBtn.setEnabled(false);
 	}
 
