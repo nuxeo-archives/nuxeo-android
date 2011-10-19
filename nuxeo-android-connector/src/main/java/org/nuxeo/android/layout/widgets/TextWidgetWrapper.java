@@ -76,6 +76,7 @@ public class TextWidgetWrapper extends BaseAndroidWidgetWrapper<String> implemen
 			return txtWidget;
 		} else {
 			editWidget = new EditText(ctx);
+			editWidget.setTag("edittext:"+getAttributeName());
 			applyBinding();
 			return editWidget;
 		}

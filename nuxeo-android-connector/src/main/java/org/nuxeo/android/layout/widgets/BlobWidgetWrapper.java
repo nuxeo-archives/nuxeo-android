@@ -195,10 +195,10 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 				public void onClick(View arg0) {
 					progressBar.setVisibility(View.VISIBLE);
 					progressBar.invalidate();
-					registerActivityResultHandler(PICK_ANY, getHandler(getLayoutContext().getLayoutId()));
-					Intent intent = new Intent("org.openintents.action.PICK_FILE");
-					intent.putExtra("org.openintents.extra.TITLE", "Select a file to attach");
-					getHomeActivity().startActivityForResult(intent, PICK_ANY);
+//					registerActivityResultHandler(PICK_ANY, getHandler(getLayoutContext().getLayoutId()));
+//					Intent intent = new Intent("org.openintents.action.PICK_FILE");
+//					intent.putExtra("org.openintents.extra.TITLE", "Select a file to attach");
+//					getHomeActivity().startActivityForResult(intent, PICK_ANY);
 					}
 			});
 		}
