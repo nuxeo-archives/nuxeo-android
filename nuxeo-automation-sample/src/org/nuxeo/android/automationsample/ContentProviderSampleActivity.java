@@ -24,7 +24,6 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import android.database.Cursor;
 import android.net.Uri;
 import android.view.Menu;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -36,7 +35,7 @@ public class ContentProviderSampleActivity extends BaseListActivity {
 	protected void setupViews() {
 		setContentView(R.layout.nxcp);
 		waitingMessage = (TextView) findViewById(R.id.waitingMessage);
-		refreshBtn = (Button) findViewById(R.id.refreshBtn);
+		refreshBtn = findViewById(R.id.refreshBtn);
 		listView = (ListView) findViewById(R.id.myList);
 	}
 
