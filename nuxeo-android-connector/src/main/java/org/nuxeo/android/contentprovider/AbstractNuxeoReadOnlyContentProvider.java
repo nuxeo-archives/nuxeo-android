@@ -283,7 +283,10 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends ContentProvid
 			}
 		}
 		else if (resourceType.equals("uploads")) {
-			return getClient().getFileUploader().getBlob(uri.getLastPathSegment());
+			FileBlob tmpBlob =  getClient().getFileUploader().getBlob(uri.getLastPathSegment());
+			if (tmpBlob.getMimeType()!=null && tmpBlob.getMimeType().startsWith("image")) {
+				return BitmapSampler.sampleBitmapFile(getContext(), tmpBlob);
+			}
 		}
 		else if (resourceType.equals("blobs")) {
 			String uid = uri.getPathSegments().get(1);
