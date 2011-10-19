@@ -19,11 +19,9 @@ package org.nuxeo.android.activities;
 
 
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -40,7 +38,7 @@ public abstract class BaseListActivity extends BaseNuxeoActivity implements
 
 	protected ListView listView;
 	protected TextView waitingMessage;
-	protected Button refreshBtn;
+	protected View refreshBtn;
 
 	public BaseListActivity() {
 		super();
@@ -67,7 +65,6 @@ public abstract class BaseListActivity extends BaseNuxeoActivity implements
 			waitingMessage.setVisibility(View.VISIBLE);
 		}
 		if (refreshBtn != null) {
-			refreshBtn.setGravity(Gravity.RIGHT);
 			refreshBtn.setEnabled(false);
 		}
 	}

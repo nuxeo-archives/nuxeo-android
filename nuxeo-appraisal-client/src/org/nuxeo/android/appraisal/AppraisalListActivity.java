@@ -21,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -85,7 +84,7 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
     protected void setupViews() {
         setContentView(R.layout.listview_layout);
         waitingMessage = (TextView) findViewById(R.id.waitingMessage);
-        refreshBtn = (Button) findViewById(R.id.refreshBtn);
+        refreshBtn = findViewById(R.id.refreshBtn);
         listView = (ListView) findViewById(R.id.myList);
     }
 

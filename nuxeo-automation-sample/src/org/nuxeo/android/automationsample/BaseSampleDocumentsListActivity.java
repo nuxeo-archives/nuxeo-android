@@ -67,7 +67,7 @@ public abstract class BaseSampleDocumentsListActivity extends
 	protected void setupViews() {
 		setContentView(R.layout.nxcp);
 		waitingMessage = (TextView) findViewById(R.id.waitingMessage);
-		refreshBtn = (Button) findViewById(R.id.refreshBtn);
+		refreshBtn = findViewById(R.id.refreshBtn);
 		listView = (ListView) findViewById(R.id.myList);
 	}
 

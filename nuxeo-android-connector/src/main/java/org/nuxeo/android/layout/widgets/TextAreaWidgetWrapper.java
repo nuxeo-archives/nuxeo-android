@@ -27,6 +27,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.content.Context;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -75,14 +76,16 @@ public class TextAreaWidgetWrapper extends BaseAndroidWidgetWrapper<String> impl
 		if (mode==LayoutMode.VIEW) {
 			txtWidget = new TextView(ctx);
 			txtWidget.setSingleLine(false);
-			txtWidget.setMaxLines(3);
+			txtWidget.setLines(3);
+			txtWidget.setGravity(Gravity.TOP | Gravity.LEFT);
 			view = txtWidget;
 		}
 		else  {
 			editWidget = new EditText(ctx);
 			editWidget.setSingleLine(false);
 			editWidget.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-			editWidget.setMaxLines(3);
+			editWidget.setLines(3);
+			editWidget.setGravity(Gravity.TOP | Gravity.LEFT);
 			view = editWidget;
 		}
 		applyBinding();
