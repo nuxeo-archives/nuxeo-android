@@ -68,7 +68,7 @@ public class AppraisalLayoutActivity extends BaseDocumentLayoutActivity implemen
 	protected void onResume() {
 		super.onResume();
 		if (getMode()==LayoutMode.VIEW) {
-			saveBtn.setVisibility(View.INVISIBLE);
+			saveBtn.setVisibility(View.GONE);
 		} else {
 			saveBtn.setVisibility(View.VISIBLE);
 		}

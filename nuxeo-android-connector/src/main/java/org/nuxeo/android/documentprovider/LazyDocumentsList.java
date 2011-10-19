@@ -30,6 +30,8 @@ public interface LazyDocumentsList {
 
 	public abstract Documents getCurrentPage();
 
+	public abstract Documents getFirstPage();
+
 	public abstract Documents fetchAndChangeCurrentPage(int targetPage);
 
 	public abstract int getCurrentPosition();

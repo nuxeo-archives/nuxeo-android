@@ -107,6 +107,10 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 		return getClient().getMessageHelper();
 	}
 
+	public Documents getFirstPage() {
+		return pages.get(0);
+	}
+
 	public Documents getCurrentPage() {
 		return pages.get(currentPage);
 	}

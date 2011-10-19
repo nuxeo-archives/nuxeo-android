@@ -120,6 +120,9 @@ public class WidgetDefinition {
 	}
 
 	public SelectOptions getSelectOptions() {
+		if (selectOptions==null) {
+			return new SelectOptions();
+		}
 		return selectOptions;
 	}
 

@@ -88,6 +88,29 @@ public abstract class AbstractDocumentListAdapter extends BaseAdapter {
 		}
 	}
 
+	public Object getDocumentStatus(Integer position) {
+		Document doc = getDocument(position);
+		if (doc==null) {
+			return null;
+		}
+		return doc.getStatusFlag().toString();
+	}
+
+	public Object getDocumentAttribute(Integer position, String attributeName) {
+		Document doc = getDocument(position);
+		if (doc==null) {
+			return null;
+		}
+		return doc.getProperties().get(attributeName);
+	}
+
+	public int getFirstPageCount() {
+		if (docList==null || docList.getPageCount()==0) {
+			return 0;
+		}
+		return docList.getFirstPage().size();
+	}
+
 	protected Document getDocument(int position) {
 		// XXX use this for now to be sure to trigger lazy fetch
 		// => to be replaced by docList.getDocument(position);

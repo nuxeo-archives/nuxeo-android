@@ -10,6 +10,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.content.Context;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.EditText;
@@ -84,7 +85,8 @@ public class RichTextWidgetWrapper extends BaseAndroidWidgetWrapper<List<String>
 			editWidget = new EditText(ctx);
 			editWidget.setSingleLine(false);
 			editWidget.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-			editWidget.setMaxLines(5);
+			editWidget.setLines(3);
+			editWidget.setGravity(Gravity.TOP | Gravity.LEFT);
 			applyBinding();
 			return editWidget;
 		}

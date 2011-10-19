@@ -174,6 +174,7 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 
 			uploadImg = new Button(layoutWidget.getContext());
 			buttonLayout.addView(uploadImg);
+			uploadImg.setTag("img:" + getAttributeName());
 			uploadImg.setBackgroundResource(android.R.drawable.ic_menu_gallery);
 			uploadImg.setOnClickListener(new View.OnClickListener() {
 				@Override
@@ -187,6 +188,7 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 
 			uploadFile = new Button(layoutWidget.getContext());
 			buttonLayout.addView(uploadFile);
+			uploadFile.setTag("file:" + getAttributeName());
 			uploadFile.setBackgroundResource(android.R.drawable.arrow_up_float);
 			uploadFile.setOnClickListener(new View.OnClickListener() {
 				@Override

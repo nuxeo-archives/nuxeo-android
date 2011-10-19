@@ -93,10 +93,10 @@ public class FileDownloader {
 		}
 	}
 
-	public String getLayoutDefinition(String name, boolean viaDocType) {
+	public String getLayoutDefinition(String name, boolean viaDocType, String defMode) {
 		String url = client.getServerConfig().getServerBaseUrl() + "site/layout-manager/layouts";
 		if (viaDocType) {
-			url = url + "/docType/" + name + "?mode=edit";
+			url = url + "/docType/" + name + "?mode=" + defMode;
 		} else {
 			url = url + "?layoutName=" + name + "&mode=edit";
 		}

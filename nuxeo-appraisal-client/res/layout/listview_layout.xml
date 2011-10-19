@@ -3,6 +3,7 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:padding="2dip"
     android:id="@+id/listViewContainer"
     >
   <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -13,7 +14,7 @@
     >
     <TextView android:id="@+id/waitingMessage"       android:layout_width="wrap_content"
        android:layout_height="wrap_content" />
-    <Button android:text="Refresh" android:id="@+id/refreshBtn" android:layout_width="wrap_content" android:layout_height="fill_parent" android:textSize="10dp" android:padding="4dp"></Button>
+    <ImageButton android:id="@+id/refreshBtn" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="10dp" android:src="@drawable/android:stat_notify_sync" android:background="@drawable/android:btn_default_small"></ImageButton>
   </LinearLayout>
 
 <ListView

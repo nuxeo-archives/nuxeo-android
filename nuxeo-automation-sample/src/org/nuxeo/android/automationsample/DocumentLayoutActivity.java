@@ -70,7 +70,7 @@ public class DocumentLayoutActivity extends BaseDocumentLayoutActivity implement
 	protected void onResume() {
 		super.onResume();
 		if (getMode()==LayoutMode.VIEW) {
-			saveBtn.setVisibility(View.INVISIBLE);
+			saveBtn.setVisibility(View.GONE);
 		} else {
 			saveBtn.setVisibility(View.VISIBLE);
 		}

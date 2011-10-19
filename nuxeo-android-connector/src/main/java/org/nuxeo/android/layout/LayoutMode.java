@@ -19,7 +19,7 @@ package org.nuxeo.android.layout;
 
 public enum LayoutMode {
 
-	CREATE("create"), EDIT("EDIT"), VIEW("view");
+	CREATE("create"), EDIT("edit"), VIEW("view");
 
 	private final String value;
 

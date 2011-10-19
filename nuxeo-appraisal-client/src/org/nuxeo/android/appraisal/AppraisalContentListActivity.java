@@ -17,7 +17,6 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.PathRef;
 import org.nuxeo.ecm.automation.client.jaxrs.model.PropertiesHelper;
 import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyMap;
 
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -88,7 +87,7 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
     protected void setupViews() {
         setContentView(R.layout.listview_layout);
         waitingMessage = (TextView) findViewById(R.id.waitingMessage);
-        refreshBtn = (Button) findViewById(R.id.refreshBtn);
+        refreshBtn = findViewById(R.id.refreshBtn);
         listView = (ListView) findViewById(R.id.myList);
         registerDocTypesForCreation("Picture", "Picture");
     }

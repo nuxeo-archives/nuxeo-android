@@ -51,10 +51,8 @@ public class ServerSettingsActivity extends AbstractNuxeoSettingsActivity
         saveButton = (Button) findViewById(R.id.saveSettingsButton);
 
         saveButton.setOnClickListener(this);
-
-        refreshDisplay();
-
         super.onCreate(savedInstanceState);
+        refreshDisplay();
     }
 
     @Override

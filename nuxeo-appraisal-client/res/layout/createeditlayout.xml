@@ -3,7 +3,8 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
    android:layout_width="fill_parent"
    android:layout_height="fill_parent"
-   android:orientation="vertical">
+   android:orientation="vertical"
+   android:padding="2dip">
 
   <TextView
     android:id="@+id/currentDocTitle"
@@ -14,8 +15,8 @@
   <LinearLayout  android:layout_width="fill_parent"
    android:layout_height="30dip"
    android:orientation="horizontal">
-    <Button android:text="Save" android:id="@+id/updateDocument" android:layout_width="100dip" android:layout_height="30dip"></Button>
-    <Button android:text="Cancel" android:id="@+id/cancelDocument" android:layout_width="100dip" android:layout_height="30dip"></Button>
+    <Button android:text="Save" android:id="@+id/updateDocument" android:layout_width="100dip" android:layout_height="wrap_content" android:padding="1dip" android:background="@drawable/android:btn_default_small"></Button>
+    <Button android:text="Cancel" android:id="@+id/cancelDocument" android:layout_width="100dip" android:layout_height="wrap_content" android:padding="1dip" android:background="@drawable/android:btn_default_small"></Button>
   </LinearLayout>
 
   <ScrollView android:id="@+id/layoutContainer"
