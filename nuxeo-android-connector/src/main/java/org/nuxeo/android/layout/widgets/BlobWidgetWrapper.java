@@ -17,6 +17,8 @@
 
 package org.nuxeo.android.layout.widgets;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
@@ -28,15 +30,18 @@ import org.nuxeo.android.layout.LayoutContext;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.android.layout.WidgetDefinition;
 import org.nuxeo.android.upload.FileUploader;
+import org.nuxeo.ecm.automation.client.android.AndroidResponseCacheManager;
 import org.nuxeo.ecm.automation.client.android.UIAsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallbackWithProgress;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyMap;
 
+import android.R.drawable;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -50,6 +55,7 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 	protected static final int REQUEST_CODE_BASE = new Random().nextInt(1000);
 	protected static final int PICK_IMG = REQUEST_CODE_BASE + 0;
 	protected static final int PICK_ANY = REQUEST_CODE_BASE + 1;
+	protected static final int TAKE_PICTURE = REQUEST_CODE_BASE + 2;
 
 	protected int uploadInProgress = 0;
 	protected boolean changedValue=false;
@@ -63,9 +69,22 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 	protected LinearLayout buttonLayout;
 	protected Button uploadImg;
 	protected Button uploadFile;
+	protected Button takePicture;
 	protected Button openBtn;
 
 	protected AsyncCallbackWithProgress<Serializable> uploadCB;
+
+	protected File targetImageFile;
+
+	protected File getCacheDir(Context context) {
+
+		File dir = context.getExternalCacheDir();
+		if (dir==null) {
+			Log.w(AndroidResponseCacheManager.class.getSimpleName(), "No external directory accessible, using main storage");
+			dir = context.getFilesDir();
+		}
+		return dir;
+	}
 
 	@Override
 	public boolean validateBeforeModelUpdate() {
@@ -189,7 +208,7 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 			uploadFile = new Button(layoutWidget.getContext());
 			buttonLayout.addView(uploadFile);
 			uploadFile.setTag("file:" + getAttributeName());
-			uploadFile.setBackgroundResource(android.R.drawable.arrow_up_float);
+			uploadFile.setBackgroundResource(android.R.drawable.ic_menu_upload);
 			uploadFile.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
@@ -201,6 +220,29 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 					getHomeActivity().startActivityForResult(intent, PICK_ANY);
 					}
 			});
+
+			takePicture = new Button(layoutWidget.getContext());
+			buttonLayout.addView(takePicture);
+			takePicture.setTag("file:" + getAttributeName());
+			takePicture.setBackgroundResource(android.R.drawable.ic_menu_camera);
+			takePicture.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+					progressBar.setVisibility(View.VISIBLE);
+					progressBar.invalidate();
+					Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+					File cacheDir = getCacheDir(getHomeActivity().getApplicationContext());
+					try {
+						targetImageFile = File.createTempFile("NewPicture", ".jpg", cacheDir);
+						intent.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(targetImageFile));
+						registerActivityResultHandler(TAKE_PICTURE, getHandler(getLayoutContext().getLayoutId()));
+						getHomeActivity().startActivityForResult(intent, TAKE_PICTURE);
+					} catch (IOException e) {
+						Log.e(BlobWidgetWrapper.this.getClass().getSimpleName(), "Unable to get file for image transfert", e);
+					}
+				}
+			});
+
 		}
 
 		applyBinding();
@@ -269,7 +311,7 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 
 	protected ActivityResultUriToFileHandler getHandler(final String batchId) {
 
-		return new ActivityResultUriToFileHandler(getRootContext()) {
+		return new ActivityResultUriToFileHandler(getRootContext(), targetImageFile) {
 
 			@Override
 			protected void onStreamBlobAvailable(Blob blobToUpload) {

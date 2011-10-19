@@ -88,7 +88,8 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 		}
 		fetchOperation.setHeader("X-NXDocumentProperties", schemas);
 		this.name=nxql;
-		fetchPageSync(currentPage);
+		//fetchPageSync(currentPage);
+		fetchPageAsync(currentPage, false);
 	}
 
 	public LazyDocumentsListImpl (OperationRequest fetchOperation, String pageParametrerName) {
@@ -96,7 +97,8 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 		this.currentPage = 0;
 		this.session=fetchOperation.getSession();
 		this.fetchOperation = fetchOperation;
-		fetchPageSync(currentPage);
+		//fetchPageSync(currentPage);
+		fetchPageAsync(currentPage, false);
 	}
 
 	protected AndroidAutomationClient getClient() {
@@ -132,6 +134,7 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 	}
 
 	protected Documents fetchPageSync(int targetPage) {
+		Log.w(this.getClass().getSimpleName(), "WARN -- sync fetching of new page -- " + targetPage + " ... this is very wrong !!!");
 		if (pages.containsKey(targetPage)) {
 			return pages.get(targetPage);
 		}
@@ -175,6 +178,7 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 					public void onSuccess(String executionId, Object data) {
 						Log.i(LazyDocumentsListImpl.class.getSimpleName(), "Page fetch successful");
 						Documents docs = (Documents) data;
+						pageSize = docs.getPageSize();
 						docs = afterPageFetch(targetPage, docs);
 						loadingInProgress.remove(""+targetPage);
 						pages.put(targetPage, docs);

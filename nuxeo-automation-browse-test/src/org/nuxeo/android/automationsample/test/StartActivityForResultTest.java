@@ -8,9 +8,10 @@ public class StartActivityForResultTest
     extends BasisTest
 {
 
-  public void testAttachFile() throws Exception
+  public void testAttachFile()
+      throws Exception
   {
-	waitForNuxeoActivity("org.nuxeo.android.automationsample.HomeSampleActivity");
+    waitForNuxeoActivity("org.nuxeo.android.automationsample.HomeSampleActivity");
     solo.clickOnView(findViewById(org.nuxeo.android.automationsample.R.id.browsetBtn));
     waitForNuxeoActivity("org.nuxeo.android.automationsample.GetChildrenSampleActivity");
     solo.clickInList(1);
@@ -23,10 +24,14 @@ public class StartActivityForResultTest
     waitForNuxeoActivity("org.nuxeo.android.automationsample.DocumentLayoutActivity");
     solo.clickOnScreen(111f, 230f);
     solo.clearEditText(0);
-    solo.enterText(0, "Title");
+    solo.enterText(0, "Title " + System.currentTimeMillis());
     final View fileButton = findViewByTag("file:file:content");
     assertNotNull("Could not find the file button", fileButton);
+    final View titleEditText = findViewByTag("edittext:dc:title");
+    assertNotNull("Could not find the title EditText control", titleEditText);
+    hideSoftKeyboard(titleEditText);
     solo.clickOnView(fileButton);
+    solo.waitForText("File upload completed");
   }
 
 }

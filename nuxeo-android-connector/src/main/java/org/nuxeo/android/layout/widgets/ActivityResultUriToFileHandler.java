@@ -17,6 +17,7 @@
 
 package org.nuxeo.android.layout.widgets;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.FileNameMap;
@@ -24,6 +25,7 @@ import java.net.URLConnection;
 
 import org.nuxeo.android.layout.ActivityResultHandler;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
+import org.nuxeo.ecm.automation.client.jaxrs.model.FileBlob;
 import org.nuxeo.ecm.automation.client.jaxrs.model.StreamBlob;
 
 import android.app.Activity;
@@ -41,14 +43,29 @@ public abstract class ActivityResultUriToFileHandler implements ActivityResultHa
 
 	protected FileNameMap fileNameMap = URLConnection.getFileNameMap();
 
+	protected File targetFile;
+
 	public ActivityResultUriToFileHandler(Context context) {
 		this.context = context;
+	}
+
+	public ActivityResultUriToFileHandler(Context context, File targetFile) {
+		this.context = context;
+		this.targetFile = targetFile;
 	}
 
 	@Override
 	public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
 
 		if (resultCode == Activity.RESULT_OK) {
+			if (data==null && targetFile!=null) {
+				Blob blob = new FileBlob(targetFile);
+				String mimeType = fileNameMap.getContentTypeFor(targetFile.getName());
+				blob.setMimeType(mimeType);
+				onStreamBlobAvailable(blob);
+				// XXX manage file deletion !!!
+				return  true;
+			}
 			Uri dataUri = data.getData();
 			if (dataUri!=null) {
 				AssetFileDescriptor afd = null;
