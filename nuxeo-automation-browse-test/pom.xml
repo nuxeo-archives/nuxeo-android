@@ -144,7 +144,7 @@
             <wait>20000</wait>
           </emulator>
           <test>
-            <skip>false</skip>
+            <skip>auto</skip>
             <debug>false</debug>
             <coverage>true</coverage>
             <logonly>false</logonly>
