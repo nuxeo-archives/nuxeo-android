@@ -6,3 +6,6 @@
 */.settings/*
 */.project
 */.externalToolBuilders
+nuxeo-automation-browse-test/avd/virtual_2.2.avd/userdata-qemu.img
+nuxeo-automation-browse-test/avd/virtual_2.2.avd/cache.img
+nuxeo-automation-browse-test/avd/virtual_2.2.avd/sdcard.img
