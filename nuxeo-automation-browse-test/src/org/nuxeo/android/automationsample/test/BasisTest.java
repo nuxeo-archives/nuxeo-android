@@ -99,7 +99,7 @@ public abstract class BasisTest
       throws Exception
   {
     Thread.sleep(200);
-    boolean result = solo.waitForActivity("org.nuxeo.android.automationsample.GetChildrenSampleActivity", ACTIVITY_WAIT_MILLIS);
+    boolean result = solo.waitForActivity(activityName, ACTIVITY_WAIT_MILLIS);
 
     if (!result)
     {
