@@ -27,6 +27,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
@@ -55,8 +56,12 @@ public class LayoutDefinition {
 		ViewGroup container = createTopLayoutContainer(ctx, parent);
 		LayoutContext context = new LayoutContext(ctx, container);
 		NuxeoLayout layout = new NuxeoLayout(context, doc);
-		for (LayoutRow row : rows) {
-			layout.addWidgets(row.buildRow(context, doc, container, widgetDefs, mode));
+		try {
+			for (LayoutRow row : rows) {
+				layout.addWidgets(row.buildRow(context, doc, container, widgetDefs, mode));
+			}
+		} catch (Throwable t) {
+			Log.e(this.getClass().getSimpleName(), "Error during Layout definition parsing", t);
 		}
 		return layout;
 	}

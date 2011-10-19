@@ -93,7 +93,7 @@ public class SelectOptions {
 		if (idx>=0) {
 			return itemLabels.get(idx);
 		} else {
-			return "";
+			return value;
 		}
 	}
 }

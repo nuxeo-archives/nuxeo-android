@@ -17,7 +17,10 @@
 
 package org.nuxeo.android.layout;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.nuxeo.android.download.FileDownloader;
@@ -42,6 +45,16 @@ public class AndroidLayoutService implements NuxeoLayoutService {
 		return downloader;
 	}
 
+	protected static final List<String> builtinTypes = Arrays.asList(new String[]{"File", "Folder", "Workspace", "Domain", "Note", "Picture"});
+
+	protected String getLayoutDefinitionModeForType(LayoutMode mode, String docType) {
+		if (builtinTypes.contains(docType)) {
+			return "edit";
+		} else {
+			return mode.toString();
+		}
+	}
+
 	@Override
 	public NuxeoLayout getLayout(Activity ctx, Document doc, ViewGroup parent, LayoutMode mode) {
 		return getLayout(ctx, doc, parent, mode, null);
@@ -50,16 +63,18 @@ public class AndroidLayoutService implements NuxeoLayoutService {
 	@Override
 	public NuxeoLayout getLayout(Activity ctx, Document doc, ViewGroup parent, LayoutMode mode, String layoutName) {
 		boolean useDocType=false;
+		String defMode = null;
 		if (layoutName==null) {
 			useDocType = true;
-			layoutName = DOCTYPE_PREFIX + doc.getType();
+			defMode = getLayoutDefinitionModeForType(mode, doc.getType());
+			layoutName = DOCTYPE_PREFIX + doc.getType() + defMode;
 		}
 		LayoutDefinition def = definitions.get(layoutName);
 		if (def==null) {
 			if (useDocType) {
-				def = loadLayout(doc.getType(), true);
+				def = loadLayout(doc.getType(), true, defMode);
 			} else {
-				def = loadLayout(layoutName, false);
+				def = loadLayout(layoutName, false, null);
 			}
 		}
 		if (def!=null) {
@@ -69,9 +84,9 @@ public class AndroidLayoutService implements NuxeoLayoutService {
 		}
 	}
 
-	protected LayoutDefinition loadLayout(String layoutName, boolean docType) {
+	protected LayoutDefinition loadLayout(String layoutName, boolean docType, String defMode) {
 
-		String jsonLayout=getFileDownloader().getLayoutDefinition(layoutName, docType);
+		String jsonLayout=getFileDownloader().getLayoutDefinition(layoutName, docType, defMode);
 		if (jsonLayout==null) {
 			return null;
 		}
@@ -79,7 +94,7 @@ public class AndroidLayoutService implements NuxeoLayoutService {
 		if (layoutDefinition!=null) {
 			String key = layoutName;
 			if (docType) {
-				key = DOCTYPE_PREFIX + key;
+				key = DOCTYPE_PREFIX + key + defMode;
 			}
 			definitions.put(key, layoutDefinition);
 		}
