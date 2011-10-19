@@ -20,6 +20,8 @@ public abstract class BasisTest
 {
 
   protected static final int ACTIVITY_WAIT_MILLIS = 500;
+  
+  protected static final int NUMBER_OF_TRIES = 10;
 
   protected Solo solo;
 
@@ -209,6 +211,20 @@ public abstract class BasisTest
       return null;
     }
   }
+  
+	
+	// return true if the the title expected is found
+	protected boolean waitForDocumentTitle(int position, String expectedTitle) throws Exception{
+		String title = getDocumentTitle(position);
+		int nbTry = NUMBER_OF_TRIES;
+		while (!(expectedTitle.equals(title)) && nbTry>0) {
+			Thread.sleep(200);
+			title = getDocumentTitle(position);
+			nbTry-=1;
+		}
+		
+		return nbTry > 0;
+	}
 
   protected View findViewByTag(/* Class<? extends Activity> activityClass, */String tag)
   {

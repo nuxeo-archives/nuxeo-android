@@ -82,9 +82,9 @@ public class BaseBrowsingTest extends BasisTest{
 		solo.clickOnView(findViewById(org.nuxeo.android.automationsample.R.id.updateDocument));
 		waitForNuxeoActivity("org.nuxeo.android.automationsample.GetChildrenSampleActivity");
 
-		String newTitle = getDocumentTitle(0);
-		assertNotNull(newTitle);
-		assertEquals(title, newTitle);
+		solo.clickOnView(findViewById(org.nuxeo.android.automationsample.R.id.refreshBtn));
+		
+		assertTrue("failed to get expected title: '" + title +"'", waitForDocumentTitle(0, title));
 
 		if (online) {
 			waitForDocumentStatus(0, "");
@@ -96,7 +96,7 @@ public class BaseBrowsingTest extends BasisTest{
 		solo.goBack();
 		solo.goBack();
 
-		return newTitle;
+		return title;
 	}
 
 	protected void browseAndCheck(String title) throws Exception {
