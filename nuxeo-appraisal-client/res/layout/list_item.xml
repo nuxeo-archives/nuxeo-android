@@ -3,11 +3,12 @@
       android:layout_height="fill_parent" >
 
    <ImageView android:src="@drawable/appraisal"
-   android:id="@+id/logo"
-     android:layout_width="64dip"
-     android:layout_height="64dip"
+   android:id="@+id/icon"
+     android:layout_width="32dip"
+     android:layout_height="32dip"
      android:layout_centerVertical="true"
      android:scaleType="fitCenter"
+     android:padding="2dip"
     />
 
    <TextView
@@ -16,7 +17,7 @@
 	android:layout_height="wrap_content"
 	android:textSize="16dip"
 	android:textStyle="bold"
-	android:layout_toRightOf="@id/logo"
+	android:layout_toRightOf="@id/icon"
 	android:padding="3dip" />
 
 
@@ -36,7 +37,8 @@
 	android:layout_height="wrap_content"
 	android:layout_toRightOf="@id/clientLogo"
 	android:textStyle="italic"
-	android:textSize="14dip"/>
+	android:textSize="14dip"
+	android:padding="2dip"/>
 
    <TextView
     android:id="@+id/declaration_label"
@@ -45,8 +47,9 @@
 	android:textSize="12dip"
 	android:textStyle="italic"
 	android:layout_below="@id/title_entry"
-	android:layout_toRightOf="@id/logo"
-	android:text="declaration"/>
+	android:layout_toRightOf="@id/icon"
+	android:text="declaration : "
+	android:padding="2dip"/>
 
    <TextView
     android:id="@+id/declaration_date"
@@ -55,7 +58,8 @@
 	android:textSize="12dip"
 	android:textStyle="italic"
 	android:layout_below="@id/title_entry"
-	android:layout_toRightOf="@id/declaration_label"/>
+	android:layout_toRightOf="@id/declaration_label"
+	android:padding="2dip"/>
 
    <TextView
     android:id="@+id/visite_label"
@@ -64,8 +68,9 @@
 	android:textSize="12dip"
 	android:textStyle="italic"
 	android:layout_below="@id/declaration_label"
-	android:layout_toRightOf="@id/logo"
-	android:text="visite"/>
+	android:layout_toRightOf="@id/icon"
+	android:text="visite : "
+	android:padding="2dip"/>
 
    <TextView
     android:id="@+id/visite_date"
@@ -74,7 +79,8 @@
 	android:textSize="12dip"
 	android:textStyle="italic"
 	android:layout_below="@id/declaration_label"
-	android:layout_toRightOf="@id/visite_label"/>
+	android:layout_toRightOf="@id/visite_label"
+	android:padding="2dip"/>
 
    <TextView
 	android:id="@+id/status_entry"

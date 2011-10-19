@@ -13,17 +13,17 @@
 
     <application android:icon="@drawable/appraisal" android:label="Appraisal" android:name="org.nuxeo.android.appraisal.AppraisalApp">
         <activity android:name="AppraisalListActivity"
-                  android:label="Pending Appraisals" android:theme="@style/Theme.NuxeoAndroid">
+                  android:label="Pending Appraisals assigned to me" android:theme="@style/Theme.NuxeoAndroid">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name="AppraisalContentListActivity"
-                  android:label="Appraisal content" android:theme="@style/Theme.NuxeoAndroid">
+                  android:label="Appraisal pictures" android:theme="@style/Theme.NuxeoAndroid">
         </activity>
         <activity android:name="AppraisalLayoutActivity"
-                  android:label="Appraisal content" android:theme="@style/Theme.NuxeoAndroid">
+                  android:label="Appraisal view" android:theme="@style/Theme.NuxeoAndroid">
         </activity>
         <!-- <activity android:name="DocumentLayoutActivity"
                   android:label="CreateEditActivity" android:theme="@style/Theme.NuxeoAndroid">

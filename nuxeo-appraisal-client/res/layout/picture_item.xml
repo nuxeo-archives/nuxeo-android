@@ -32,5 +32,15 @@
 		android:layout_below ="@id/title_entry"
 		/>
 
+	   <TextView
+			android:id="@+id/status_entry"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/thumb"
+			android:layout_below ="@id/description"
+			android:textSize="8dip"
+			android:textColor="#FF0000"
+			android:padding="2dip" />
+
  </RelativeLayout>
 

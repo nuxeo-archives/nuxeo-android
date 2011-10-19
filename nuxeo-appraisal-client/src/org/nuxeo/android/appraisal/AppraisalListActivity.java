@@ -46,7 +46,9 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
     }
 
     protected Map<Integer, String> getMapping() {
+
         Map<Integer, String> mapping = new HashMap<Integer, String>();
+        mapping.put(R.id.icon, "iconUri");
         mapping.put(R.id.title_entry, "dc:title");
         mapping.put(R.id.status_entry, "status");
         mapping.put(R.id.client, "appraisal:customerName");
