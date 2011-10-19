@@ -88,6 +88,13 @@ public abstract class AbstractDocumentListAdapter extends BaseAdapter {
 		}
 	}
 
+	public int getRealCount() {
+		if (currentCount<0) {
+			return docList.getCurrentSize();
+		}
+		return currentCount;
+	}
+
 	public Object getDocumentStatus(Integer position) {
 		Document doc = getDocument(position);
 		if (doc==null) {
@@ -138,7 +145,10 @@ public abstract class AbstractDocumentListAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View recycledView, ViewGroup parent) {
 
-		if ((position==getCount()-1) && useLoadingView()) {
+		int realCount = getRealCount();
+		boolean showLoading = useLoadingView();
+
+		if ((position>=realCount) && showLoading) {
 			return getLoadingView(parent);
 		}
 

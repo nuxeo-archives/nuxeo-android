@@ -134,10 +134,11 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 	}
 
 	protected Documents fetchPageSync(int targetPage) {
-		Log.w(this.getClass().getSimpleName(), "WARN -- sync fetching of new page -- " + targetPage + " ... this is very wrong !!!");
 		if (pages.containsKey(targetPage)) {
 			return pages.get(targetPage);
 		}
+
+		Log.w(this.getClass().getSimpleName(), "WARN -- sync fetching of new page -- " + targetPage + " ... this is very wrong !!!");
 
 		Documents docs = null;
 		if (loadingInProgress.addIfAbsent(""+targetPage)) {
