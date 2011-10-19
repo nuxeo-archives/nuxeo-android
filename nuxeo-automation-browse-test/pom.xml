@@ -27,6 +27,7 @@
       <groupId>org.nuxeo.android</groupId>
       <artifactId>nuxeo-automation-sample</artifactId>
       <type>apk</type>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.nuxeo.android</groupId>

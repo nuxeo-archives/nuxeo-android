@@ -56,7 +56,7 @@ public abstract class BasisTest extends
     @Override
     public void setUp() throws Exception {
         solo = new Solo(getInstrumentation(), getActivity());
-        getActivity().setSettings("http://10.213.3.241:8080/nuxeo/",
+        getActivity().setSettings("http://10.0.2.2:8080/nuxeo/",
                 "Administrator", "Administrator");
     }
 
