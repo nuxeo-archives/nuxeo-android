@@ -101,10 +101,16 @@ public abstract class BaseDocumentLayoutActivity extends BaseNuxeoActivity {
 	@Override
 	protected void onNuxeoDataRetrieved(Object data) {
 		currentDocument = (Document) data;
-		layout.refreshFromDocument(currentDocument);
-	    Toast.makeText(this,
-	            "Refreshed document",
-	            Toast.LENGTH_SHORT).show();
+		if (layout==null) {
+		    Toast.makeText(this,
+		            "Unable to get Layout",
+		            Toast.LENGTH_SHORT).show();
+		} else {
+			layout.refreshFromDocument(currentDocument);
+		    Toast.makeText(this,
+		            "Refreshed document",
+		            Toast.LENGTH_SHORT).show();
+		}
 	    requireAsyncFetch=false;
 	}
 

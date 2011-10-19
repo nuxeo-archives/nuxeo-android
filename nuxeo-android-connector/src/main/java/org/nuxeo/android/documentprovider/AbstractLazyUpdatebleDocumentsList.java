@@ -83,6 +83,7 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends LazyDocumentsLi
             if (updateOperation==null) {
                 updateOperation = buildUpdateOperation(session, updatedDocument);
             }
+            markDependencies(updateOperation, updatedDocument);
             String requestId = session.execDeferredUpdate(updateOperation, new AsyncCallback<Object>() {
 
                 @Override
@@ -145,6 +146,8 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends LazyDocumentsLi
         if (createOperation==null) {
             createOperation = buildCreateOperation(session, newDocument);
         }
+
+        markDependencies(createOperation, newDocument);
 
         String requestId = session.execDeferredUpdate(createOperation, new AsyncCallback<Object>() {
 
