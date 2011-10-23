@@ -16,6 +16,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <nuxeo.distribution.version>5.4.3-SNAPSHOT</nuxeo.distribution.version>
   </properties>
 
   <modules>
@@ -23,9 +24,9 @@
     <module>nuxeo-automation-thin-client</module>
     <module>nuxeo-automation-sample</module>
     <module>nuxeo-appraisal-client</module>
-    <!-- <module>nuxeo-automation-sample-test</module> -->
-    <!-- <module>nuxeo-android</module> -->
+    <module>nuxeo-android</module>
     <module>nuxeo-android-connector-ui</module>
+    <module>nuxeo-automation-browse-test</module>
   </modules>
 
   <dependencyManagement>
@@ -79,17 +80,38 @@
         <!-- <version>2.3.3</version> -->
         <scope>provided</scope>
       </dependency>
+
       <dependency>
         <groupId>com.google.android</groupId>
         <artifactId>android-test</artifactId>
         <version>2.2.1</version>
         <scope>provided</scope>
       </dependency>
-
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>4.4</version>
+        <!-- <scope>provided</scope> -->
+      </dependency>
+      <dependency>
+        <groupId>com.jayway.android.robotium</groupId>
+        <artifactId>robotium-solo</artifactId>
+        <version>2.5</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.nuxeo</groupId>
+        <artifactId>nuxeo-ftest</artifactId>
+        <version>1.6.4</version>
+        <type>zip</type>
+      </dependency>
+
+      <dependency>
+        <groupId>org.nuxeo.ecm.distribution</groupId>
+        <artifactId>nuxeo-distribution-tomcat</artifactId>
+        <version>${nuxeo.distribution.version}</version>
+        <type>zip</type>
+        <classifier>nuxeo-dm</classifier>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -110,13 +132,10 @@
             </sdk>
             <deleteConflictingFiles>true</deleteConflictingFiles>
             <undeployBeforeDeploy>true</undeployBeforeDeploy>
-            <attachSources>true</attachSources>
+            <!-- <attachSources>true</attachSources> -->
             <sign>
               <debug>false</debug>
             </sign>
-            <emulator>
-              <avd>em22</avd>
-            </emulator>
             <zipalign>
               <verbose>true</verbose>
               <inputApk>${project.build.directory}/${artifactId}-${version}.apk</inputApk>
@@ -136,6 +155,12 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jarsigner-plugin</artifactId>
           <version>1.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.nuxeo.build</groupId>
+          <artifactId>nuxeo-distribution-tools</artifactId>
+          <version>1.10.1</version>
+          <extensions>true</extensions>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -164,6 +189,32 @@
       </snapshots>
     </repository>
   </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>public</id>
+      <url>http://maven.nuxeo.org/nexus/content/groups/public</url>
+      <name>Nuxeo virtual release repository</name>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>public-snapshot</id>
+      <url>http://maven.nuxeo.org/nexus/content/groups/public-snapshot</url>
+      <name>Nuxeo virtual snapshot repository</name>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <updatePolicy>always</updatePolicy>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
 
   <distributionManagement>
     <site>
