@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
+import org.nuxeo.android.cache.blob.BlobStoreManager;
 import org.nuxeo.ecm.automation.client.android.AndroidResponseCacheManager;
 import org.nuxeo.ecm.automation.client.jaxrs.model.FileBlob;
 
@@ -17,24 +18,12 @@ public class BitmapSampler {
 
     public static final int REQUIRED_SIZE=100;
 
-    // XXX
-	protected static File getCacheDir(Context context) {
-
-		File dir = context.getExternalCacheDir();
-		if (dir==null) {
-			Log.w(AndroidResponseCacheManager.class.getSimpleName(), "No external directory accessible, using main storage");
-			dir = context.getFilesDir();
-		}
-		return dir;
-	}
-
-
     public static FileBlob sampleBitmapFile(Context ctx, FileBlob blob) {
 
     	// XXX cleanup file ...
     	Bitmap sampled = decodeFile(blob.getFile());
     	try {
-    		   File dir = getCacheDir(ctx);
+    		   File dir = BlobStoreManager.getRootCacheDir(ctx);
     		   String filename = "sampled-" + blob.getFileName() + ".jpg";
     		   File sampledFile = new File(dir,filename);
     		   if (!sampledFile.exists()) {

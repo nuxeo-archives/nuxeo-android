@@ -36,6 +36,7 @@ import org.nuxeo.ecm.automation.client.cache.OperationType;
 import org.nuxeo.ecm.automation.client.cache.ResponseCacheManager;
 import org.nuxeo.ecm.automation.client.cache.TransientStateManager;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
+import org.nuxeo.ecm.automation.client.jaxrs.LoginInfo;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpAutomationClient;
@@ -73,6 +74,10 @@ public class AndroidAutomationClient extends HttpAutomationClient {
 
     protected final NuxeoLayoutService layoutService;
 
+	protected SessionCache sessionCache = new SessionCache();
+
+	protected Session currentSession;
+
     public AndroidAutomationClient(String url, Context androidContext, SQLStateManager sqlStateManager, BlobStoreManager blobStoreManager, NuxeoNetworkStatus offlineSettings, NuxeoServerConfig serverConfig) {
         super(url);
         //this.http = new DefaultHttpClient(new ThreadSafeClientConnManager(new BasicHttpParams(), new SchemeRegistry()), new BasicHttpParams());
@@ -93,6 +98,10 @@ public class AndroidAutomationClient extends HttpAutomationClient {
         this.serverConfig=serverConfig;
         this.fileUploader = new FileUploader(this);
         this.layoutService = new AndroidLayoutService(fileDownloader);
+    }
+
+    public void dropCurrentSession() {
+    	currentSession = null;
     }
 
     @Override
@@ -193,4 +202,52 @@ public class AndroidAutomationClient extends HttpAutomationClient {
 
 		return super.getAdapter(objToAdapt, adapterType);
 	}
+
+	@Override
+    public Session getSession(final String username, final String password) {
+
+		// use the current live session if available
+		if (currentSession!=null ) {
+			LoginInfo li = currentSession.getLogin();
+			if (li!=null && li.getUsername().equals(username)) {
+				return currentSession;
+			}
+		}
+
+		// try to find a cached session
+		CachedSession session = sessionCache.getCachedSession(this, url, username, password);
+		if (session!=null) {
+			registry = session.getOperationRegistry();
+			currentSession = session;
+
+			// try to create a real session in Async mode
+			async.submit(new Runnable() {
+				@Override
+				public void run() {
+					if (networkStatus.isNuxeoServerReachable()) {
+						Session liveSession = AndroidAutomationClient.this.createSession(username, password);
+						if (liveSession!=null) {
+							currentSession = liveSession;
+						}
+					}
+				}
+			});
+			return session;
+		}
+
+		// create a real session (require sync call to the server)
+		currentSession =  createSession(username, password);
+
+		if (currentSession!=null) {
+			sessionCache.storeSession(this, url, username, password);
+		}
+
+		return currentSession;
+	}
+
+	protected Session createSession(String username, String password) {
+		return super.getSession(username, password);
+	}
+
+
 }

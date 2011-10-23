@@ -25,7 +25,6 @@ import org.nuxeo.android.network.NetworkStatusBroadCastReceiver;
 import org.nuxeo.android.network.NuxeoNetworkStatus;
 import org.nuxeo.android.repository.DocumentManager;
 import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
-import org.nuxeo.ecm.automation.client.jaxrs.DisconnectedSession;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 
 import android.content.BroadcastReceiver;
@@ -48,8 +47,6 @@ public class NuxeoContext extends BroadcastReceiver {
 	protected NuxeoNetworkStatus networkStatus;
 
 	protected AndroidAutomationClient nuxeoClient;
-
-	protected Session nuxeoSession;
 
     protected final SQLStateManager sqlStateManager;
 
@@ -94,15 +91,9 @@ public class NuxeoContext extends BroadcastReceiver {
 	}
 
 	public synchronized Session getSession() {
-		if (nuxeoSession!=null && nuxeoSession instanceof DisconnectedSession && networkStatus.canUseNetwork()) {
-			nuxeoSession = null;
-		}
-		if (nuxeoSession==null) {
-			nuxeoSession = getNuxeoClient().getSession(
+		return getNuxeoClient().getSession(
 					serverConfig.getLogin(),
 					serverConfig.getPassword());
-		}
-		return nuxeoSession;
 	}
 
 	public DocumentManager getDocumentManager() {
@@ -110,7 +101,7 @@ public class NuxeoContext extends BroadcastReceiver {
 	}
 
 	protected void onConfigChanged() {
-		nuxeoSession = null;
+		getNuxeoClient().dropCurrentSession();
 		nuxeoClient = null;
 	}
 

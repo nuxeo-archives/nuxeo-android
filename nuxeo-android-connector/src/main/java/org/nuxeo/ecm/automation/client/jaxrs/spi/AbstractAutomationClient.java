@@ -29,7 +29,6 @@ import org.nuxeo.ecm.automation.client.cache.OperationType;
 import org.nuxeo.ecm.automation.client.jaxrs.AdapterFactory;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.AutomationClient;
-import org.nuxeo.ecm.automation.client.jaxrs.DisconnectedSession;
 import org.nuxeo.ecm.automation.client.jaxrs.LoginInfo;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.RequestInterceptor;
@@ -107,6 +106,7 @@ public abstract class AbstractAutomationClient implements AutomationClient {
     }
 
     protected OperationRegistry connect(Connector connector) {
+    	Log.w(this.getClass().getSimpleName(), "Using Synch request to init the automation session");
         Request req = new Request(Request.GET, url);
         req.put("Accept", CTYPE_AUTOMATION);
         // TODO handle authorization failure
@@ -145,13 +145,7 @@ public abstract class AbstractAutomationClient implements AutomationClient {
         try {
             session = getSession();
         } catch (Throwable t) {
-            LoginInfo fakeLoginInfo = new LoginInfo(username);
-            Connector connector = newConnector();
-            if (registry==null) {
-                registry = connect(connector);
-            }
-            Log.e(this.getClass().getSimpleName(), "WARN : using Disconnected Session !!!", t);
-            session = new DisconnectedSession(this, connector, fakeLoginInfo);
+            Log.e(this.getClass().getSimpleName(), "Unable to create live session", t);
         }
         return session;
     }

@@ -21,8 +21,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.nuxeo.ecm.automation.client.android.AndroidResponseCacheManager;
-
 import android.content.Context;
 import android.util.Log;
 
@@ -32,14 +30,17 @@ public class BlobStoreManager {
 
 	protected final Map<String, BlobStore> stores = new HashMap<String, BlobStore>();
 
-	public BlobStoreManager(Context context) {
-
+	public static File getRootCacheDir(Context context) {
 		File dir = context.getExternalCacheDir();
 		if (dir==null) {
-			Log.w(AndroidResponseCacheManager.class.getSimpleName(), "No external directory accessible, using main storage");
+			Log.w(BlobStoreManager.class.getSimpleName(), "No external directory accessible, using main storage");
 			dir = context.getFilesDir();
 		}
-		rootDir =dir;
+		return dir;
+	}
+
+	public BlobStoreManager(Context context) {
+		rootDir =getRootCacheDir(context);
 	}
 
 	public BlobStore getBlobStore(String dir) {

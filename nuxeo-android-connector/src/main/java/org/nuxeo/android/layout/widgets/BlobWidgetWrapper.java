@@ -24,20 +24,19 @@ import java.util.List;
 import java.util.Random;
 
 import org.nuxeo.android.adapters.DocumentAttributeResolver;
+import org.nuxeo.android.cache.blob.BlobStoreManager;
 import org.nuxeo.android.cache.blob.BlobWithProperties;
 import org.nuxeo.android.contentprovider.NuxeoContentProviderConfig;
 import org.nuxeo.android.layout.LayoutContext;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.android.layout.WidgetDefinition;
 import org.nuxeo.android.upload.FileUploader;
-import org.nuxeo.ecm.automation.client.android.AndroidResponseCacheManager;
 import org.nuxeo.ecm.automation.client.android.UIAsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallbackWithProgress;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Blob;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyMap;
 
-import android.R.drawable;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -75,16 +74,6 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 	protected AsyncCallbackWithProgress<Serializable> uploadCB;
 
 	protected File targetImageFile;
-
-	protected File getCacheDir(Context context) {
-
-		File dir = context.getExternalCacheDir();
-		if (dir==null) {
-			Log.w(AndroidResponseCacheManager.class.getSimpleName(), "No external directory accessible, using main storage");
-			dir = context.getFilesDir();
-		}
-		return dir;
-	}
 
 	@Override
 	public boolean validateBeforeModelUpdate() {
@@ -231,7 +220,7 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> imp
 					progressBar.setVisibility(View.VISIBLE);
 					progressBar.invalidate();
 					Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-					File cacheDir = getCacheDir(getHomeActivity().getApplicationContext());
+					File cacheDir = BlobStoreManager.getRootCacheDir(getHomeActivity().getApplicationContext());
 					try {
 						targetImageFile = File.createTempFile("NewPicture", ".jpg", cacheDir);
 						intent.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(targetImageFile));
