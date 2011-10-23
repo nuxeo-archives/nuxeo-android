@@ -19,8 +19,8 @@ public abstract class BasisTest
     extends ActivityInstrumentationTestCase2<HomeSampleActivity>
 {
 
-  protected static final int ACTIVITY_WAIT_MILLIS = 500;
-  
+  protected static final int ACTIVITY_WAIT_MILLIS = 2000;
+
   protected static final int NUMBER_OF_TRIES = 10;
 
   protected Solo solo;
@@ -35,7 +35,7 @@ public abstract class BasisTest
       throws Exception
   {
     solo = new Solo(getInstrumentation(), getActivity());
-    getActivity().setSettings("http://10.213.3.241:8080/nuxeo/", "Administrator", "Administrator");
+    getActivity().setSettings("http://10.0.2.2:8080/nuxeo/", "Administrator", "Administrator");
   }
 
   @Override
@@ -103,7 +103,8 @@ public abstract class BasisTest
 
     if (!result)
     {
-      return false;
+      String currentActivityName = solo.getCurrentActivity().getClass().getName();
+      throw new AssertionError("Unable to find activity " + activityName + " ( current name is " + currentActivityName + ")");
     }
     Activity currentActivity = solo.getCurrentActivity();
 
@@ -211,8 +212,8 @@ public abstract class BasisTest
       return null;
     }
   }
-  
-	
+
+
 	// return true if the the title expected is found
 	protected boolean waitForDocumentTitle(int position, String expectedTitle) throws Exception{
 		String title = getDocumentTitle(position);
@@ -222,7 +223,7 @@ public abstract class BasisTest
 			title = getDocumentTitle(position);
 			nbTry-=1;
 		}
-		
+
 		return nbTry > 0;
 	}
 
@@ -251,7 +252,7 @@ public abstract class BasisTest
 
   /**
    * Sometimes, we need to hide the soft keyboard, because the virtual keyboard process seems to intercept the touch event.
-   * 
+   *
    *  <p>See
    * http://code.google.com/p/robotium/issues/detail?can=1&q=133&colspec=ID%20Type%20Stars%20Status%20Priority%20Milestone%20Owner%20Summary&id=133 for the discussion thread.
    * </p>
