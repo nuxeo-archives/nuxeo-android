@@ -21,7 +21,7 @@ import android.view.View;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class StartActivityForResultTest extends BasisTest {
+public abstract class StartActivityForResultTest extends BasisTest {
 
     public void XXXtestAttachFile() throws Exception {
         waitForNuxeoActivity("org.nuxeo.android.automationsample.HomeSampleActivity");

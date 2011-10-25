@@ -19,7 +19,7 @@ package org.nuxeo.android.automationsample.test;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class BaseBrowsingTest extends BasisTest {
+public abstract class BaseBrowsingTest extends BasisTest {
 
     protected String browseAndCreate(boolean online) throws Exception {
 
