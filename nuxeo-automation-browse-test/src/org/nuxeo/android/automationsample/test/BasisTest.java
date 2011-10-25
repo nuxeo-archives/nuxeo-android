@@ -26,6 +26,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.SmallTest;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListAdapter;
@@ -43,9 +44,9 @@ import com.jayway.android.robotium.solo.Solo;
 public abstract class BasisTest extends
         ActivityInstrumentationTestCase2<HomeSampleActivity> {
 
-    protected static final int ACTIVITY_WAIT_MILLIS = 500;
+    protected static final int ACTIVITY_WAIT_MILLIS = 2000;
 
-    protected static final int NUMBER_OF_TRIES = 10;
+    protected static final int NUMBER_OF_TRIES = 20;
 
     protected Solo solo;
 
@@ -104,22 +105,37 @@ public abstract class BasisTest extends
         Thread.sleep(500);
     }
 
+    protected boolean waitForActivity(String activityName, long timeout) {
+    	 long now = System.currentTimeMillis();
+         long endTime;
+         for(endTime = now + (long)timeout; !solo.getCurrentActivity().getClass().getName().equals(activityName) && now < endTime; now = System.currentTimeMillis());
+         return now < endTime;
+    }
+
     protected boolean waitForNuxeoActivity(String activityName)
             throws Exception {
-        Thread.sleep(200);
-        boolean result = solo.waitForActivity(activityName,
+        Thread.sleep(300);
+        boolean result = waitForActivity(activityName,
                 ACTIVITY_WAIT_MILLIS);
 
         if (!result) {
-            return false;
+        	  String currentActivityName = solo.getCurrentActivity().getClass().getName();
+      	      throw new AssertionError("Unable to find activity " + activityName + " ( current name is " + currentActivityName + ")");
         }
+
         Activity currentActivity = solo.getCurrentActivity();
 
-        Method method = currentActivity.getClass().getMethod("isReady");
+        Method method = null;
+
+        try {
+        	method = currentActivity.getClass().getMethod("isReady");
+        } catch (NoSuchMethodException e) {
+
+		}
 
         if (method == null) {
             if (!currentActivity.getClass().getSimpleName().equals(
-                    "HomeSampleActiivty")) {
+                    "HomeSampleActivity")) {
                 throw new RuntimeException("Unable to find isReady method");
             }
             return result;
@@ -137,10 +153,10 @@ public abstract class BasisTest extends
 
     protected boolean waitForDocumentStatus(int position, String status)
             throws Exception {
-        int nbTry = 10;
+        int nbTry = NUMBER_OF_TRIES;
         String actualStatus = getDocumentStatus(position);
         while (!(status.equals(actualStatus)) && nbTry > 0) {
-            Thread.sleep(200);
+            Thread.sleep(300);
             actualStatus = getDocumentStatus(position);
             nbTry -= 1;
         }
@@ -173,12 +189,17 @@ public abstract class BasisTest extends
         ListView listview = listViews.get(0);
         ListAdapter adapter = listview.getAdapter();
 
-        Method method = adapter.getClass().getMethod("getDocumentAttribute",
-                Integer.class, String.class);
+        Method method = null;
+
+        try  {
+        	method = adapter.getClass().getMethod("getDocumentAttribute", Integer.class, String.class);
+        } catch (NoSuchMethodException e) {
+        	Log.e(this.getClass().getSimpleName(), "Unable to find test method getDocumentAttribute on adapter " + adapter.getClass().getName());
+		}
+
         if (method != null) {
             return method.invoke(adapter, position, "dc:created");
         } else {
-
             return null;
         }
     }
@@ -186,17 +207,28 @@ public abstract class BasisTest extends
     protected String getDocumentTitle(int position) throws Exception {
         ArrayList<ListView> listViews = solo.getCurrentListViews();
         if (listViews == null || listViews.size() == 0) {
-            return null;
+            return "No List View";
         }
         ListView listview = listViews.get(0);
         ListAdapter adapter = listview.getAdapter();
 
-        Method method = adapter.getClass().getMethod("getDocumentAttribute",
-                Integer.class, String.class);
-        if (method != null) {
-            return (String) method.invoke(adapter, position, "dc:title");
-        } else {
+        Method method = null;
 
+        try {
+        	method = adapter.getClass().getMethod("getDocumentAttribute",
+                Integer.class, String.class);
+        } catch (NoSuchMethodException e) {
+        	throw new RuntimeException("Unable to find test method getDocumentAttribute on adapter " + adapter.getClass().getName());
+        	//Log.e(this.getClass().getSimpleName(), "Unable to find test method getDocumentAttribute on adapter " + adapter.getClass().getName());
+		}
+
+        if (method != null) {
+            String value =  (String) method.invoke(adapter, position, "dc:title");
+            if (value==null) {
+            	throw new RuntimeException("Null title returned");
+            }
+            return value;
+        } else {
             return null;
         }
     }
@@ -207,9 +239,14 @@ public abstract class BasisTest extends
         String title = getDocumentTitle(position);
         int nbTry = NUMBER_OF_TRIES;
         while (!(expectedTitle.equals(title)) && nbTry > 0) {
-            Thread.sleep(200);
+            Thread.sleep(300);
             title = getDocumentTitle(position);
             nbTry -= 1;
+        }
+
+        if (nbTry==0) {
+        	String activityName = solo.getCurrentActivity().getClass().getSimpleName();
+        	throw new AssertionError("Unable to find title " + expectedTitle + "; actual title is " + title + " on activity " + activityName);
         }
 
         return nbTry > 0;
