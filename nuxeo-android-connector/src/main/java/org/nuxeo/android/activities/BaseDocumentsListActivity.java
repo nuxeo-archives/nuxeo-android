@@ -322,12 +322,14 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 	public boolean isReady() {
     	if (super.isReady()) {
     		if (documentsList!=null) {
-    			return documentsList.getLoadingPagesCount()==0;
+    			return documentsList.getLoadingPagesCount()==0 && documentsList.getLoadedPageCount()>0;
+    		} else {
+    			return false;
     		}
-    		return true;
     	} else {
     		return false;
     	}
     }
+
 
 }

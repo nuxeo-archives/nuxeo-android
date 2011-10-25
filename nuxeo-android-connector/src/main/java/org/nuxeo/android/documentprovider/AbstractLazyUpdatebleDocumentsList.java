@@ -122,6 +122,14 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends LazyDocumentsLi
     }
 
     protected String addPendingCreatedDocument(Document newDoc) {
+    	if (pages.size()==0) {
+    		while (pages.size()==0) {
+    			try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+				}
+    		}
+    	}
         pages.get(0).add(0, newDoc);
         notifyContentChanged(0);
         return newDoc.getId();
@@ -176,6 +184,9 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends LazyDocumentsLi
 
     @Override
     protected int computeTargetPage(int position) {
+    	if (pages==null || pages.size()==0) {
+    		return 0; // ????
+    	}
         if (position < pages.get(0).size()) {
             return 0;
         }

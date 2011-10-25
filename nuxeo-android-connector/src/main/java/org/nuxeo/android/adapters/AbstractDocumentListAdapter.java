@@ -24,6 +24,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,8 +107,10 @@ public abstract class AbstractDocumentListAdapter extends BaseAdapter {
 	public Object getDocumentAttribute(Integer position, String attributeName) {
 		Document doc = getDocument(position);
 		if (doc==null) {
+			Log.i(this.getClass().getSimpleName(), "No document found in list for position " + position);
 			return null;
 		}
+		Log.i(this.getClass().getSimpleName(), "document found in list at position " + position + ", returning attibute " + attributeName);
 		return doc.getProperties().get(attributeName);
 	}
 

@@ -71,6 +71,8 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 
 	public LazyDocumentsListImpl (Session session, String nxql, String[] queryParams, String sortOrder, String schemas, int pageSize) {
 
+		pages = new ConcurrentHashMap<Integer,Documents>();
+
 		// XXX sort order !
 		this.pageSize = pageSize;
 		this.currentPage = 0;
@@ -93,6 +95,9 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
 	}
 
 	public LazyDocumentsListImpl (OperationRequest fetchOperation, String pageParametrerName) {
+
+		pages = new ConcurrentHashMap<Integer,Documents>();
+
 		this.pageParameterName = pageParametrerName;
 		this.currentPage = 0;
 		this.session=fetchOperation.getSession();
