@@ -142,9 +142,9 @@ public abstract class BasisTest extends
         }
 
         boolean ready = (Boolean) method.invoke(currentActivity);
-        int nbTry = 10;
+        int nbTry = NUMBER_OF_TRIES;
         while (!ready && nbTry > 0) {
-            Thread.sleep(200);
+            Thread.sleep(300);
             ready = (Boolean) method.invoke(currentActivity);
             nbTry -= 1;
         }
