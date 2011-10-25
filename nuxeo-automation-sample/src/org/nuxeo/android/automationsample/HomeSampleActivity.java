@@ -154,6 +154,12 @@ public class HomeSampleActivity extends Activity implements View.OnClickListener
 		prefEditor.commit();
 	 }
 
+	 public void resetAllCaches() {
+		 getNuxeoContext().getNuxeoClient().getDeferredUpdatetManager().purgePendingUpdates();
+		 getNuxeoContext().getNuxeoClient().getResponseCacheManager().clear();
+		 getNuxeoContext().getNuxeoClient().getFileUploader().purgePendingUploads();
+	 }
+
 	 public void fushPending() {
 		 getNuxeoContext().getNuxeoClient().getDeferredUpdatetManager().executePendingRequests(getNuxeoContext().getSession());
 	 }

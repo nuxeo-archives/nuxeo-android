@@ -27,7 +27,6 @@ import org.nuxeo.android.adapters.DocumentsListAdapter;
 import org.nuxeo.android.documentprovider.LazyDocumentsList;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
