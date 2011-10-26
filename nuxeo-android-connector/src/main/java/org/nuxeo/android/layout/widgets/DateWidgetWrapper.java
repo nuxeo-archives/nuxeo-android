@@ -37,95 +37,104 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class DateWidgetWrapper extends BaseAndroidWidgetWrapper<Calendar> implements AndroidWidgetWrapper, View.OnClickListener, OnDateSetListener {
+public class DateWidgetWrapper extends BaseAndroidWidgetWrapper<Calendar>
+        implements AndroidWidgetWrapper, View.OnClickListener,
+        OnDateSetListener {
 
-	protected static SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd");
-	protected LinearLayout layout;
-	protected TextView txt;
-	protected Button btn;
-	protected DatePickerDialog datePickerDialog;
+    protected static SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd");
 
-	@Override
-	public boolean validateBeforeModelUpdate() {
-		return true;
-	}
+    protected LinearLayout layout;
 
-	@Override
-	public void updateModel(Document doc) {
-		if (mode!=LayoutMode.VIEW) {
-			if (getCurrentValue()!=null) {
-				doc.set(getAttributeName(), getCurrentValue().getTime());
-			}
-		}
-	}
+    protected TextView txt;
 
-	@Override
-	public void refreshViewFromDocument(Document doc) {
-		initCurrentValueFromDocument(doc);
-		applyBinding();
-	}
+    protected Button btn;
 
-	protected void initCurrentValueFromDocument(Document doc) {
-		Date date = DocumentAttributeResolver.getDate(doc, getAttributeName());
-		if (date!=null) {
-			currentValue = Calendar.getInstance();
-			currentValue.setTime(date);
-		}
-	}
+    protected DatePickerDialog datePickerDialog;
 
-	protected void applyBinding() {
-		Calendar value = getCurrentValue();
-		if (value!=null) {
-			txt.setText(fmt.format(value.getTime()));
-		} else {
-			txt.setText("-- not set --");
-		}
-		txt.invalidate();
-	}
+    @Override
+    public boolean validateBeforeModelUpdate() {
+        return true;
+    }
 
-	@Override
-	public View buildView(LayoutContext context, LayoutMode mode, Document doc,
-			List<String> attributeNames, WidgetDefinition widgetDef) {
+    @Override
+    public void updateModel(Document doc) {
+        if (mode != LayoutMode.VIEW) {
+            if (getCurrentValue() != null) {
+                doc.set(getAttributeName(), getCurrentValue().getTime());
+            }
+        }
+    }
 
-		super.buildView(context, mode, doc, attributeNames, widgetDef);
+    @Override
+    public void refreshViewFromDocument(Document doc) {
+        initCurrentValueFromDocument(doc);
+        applyBinding();
+    }
 
-		Context ctx = context.getActivity();
+    protected void initCurrentValueFromDocument(Document doc) {
+        Date date = DocumentAttributeResolver.getDate(doc, getAttributeName());
+        if (date != null) {
+            currentValue = Calendar.getInstance();
+            currentValue.setTime(date);
+        }
+    }
 
-		layout = new LinearLayout(ctx);
-		layout.setOrientation(LinearLayout.HORIZONTAL);
+    protected void applyBinding() {
+        Calendar value = getCurrentValue();
+        if (value != null) {
+            txt.setText(fmt.format(value.getTime()));
+        } else {
+            txt.setText("-- not set --");
+        }
+        txt.invalidate();
+    }
 
-		txt = new TextView(ctx);
-		layout.addView(txt);
-		if (mode!=LayoutMode.VIEW) {
-			btn = new Button(ctx);
-			btn.setBackgroundResource(android.R.drawable.ic_menu_agenda);
-			//btn.setImageResource(android.R.drawable.edit_text);
-			btn.setOnClickListener(this);
-			layout.addView(btn);
-		}
-		applyBinding();
-		return layout;
+    @Override
+    public View buildView(LayoutContext context, LayoutMode mode, Document doc,
+            List<String> attributeNames, WidgetDefinition widgetDef) {
 
-	}
+        super.buildView(context, mode, doc, attributeNames, widgetDef);
 
-	@Override
-	public void onClick(View view) {
-		Calendar value = getCurrentValue();
-		if (value==null) {
-			value=Calendar.getInstance();
-		}
-		datePickerDialog = new DatePickerDialog(getRootContext(), 0, this, value.get(Calendar.YEAR), value.get(Calendar.MONTH), value.get(Calendar.DAY_OF_MONTH));
-		datePickerDialog.show();
-	}
+        Context ctx = context.getActivity();
 
-	@Override
-	public void onDateSet(DatePicker dialog, int year, int monthOfYear, int dayOfMonth) {
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.YEAR, year);
-		cal.set(Calendar.MONTH, monthOfYear);
-		cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-		currentValue = cal;
-		applyBinding();
-	}
+        layout = new LinearLayout(ctx);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+
+        txt = new TextView(ctx);
+        layout.addView(txt);
+        if (mode != LayoutMode.VIEW) {
+            btn = new Button(ctx);
+            btn.setBackgroundResource(android.R.drawable.ic_menu_agenda);
+            // btn.setImageResource(android.R.drawable.edit_text);
+            btn.setOnClickListener(this);
+            layout.addView(btn);
+        }
+        applyBinding();
+        return layout;
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        Calendar value = getCurrentValue();
+        if (value == null) {
+            value = Calendar.getInstance();
+        }
+        datePickerDialog = new DatePickerDialog(getRootContext(), 0, this,
+                value.get(Calendar.YEAR), value.get(Calendar.MONTH),
+                value.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
+    }
+
+    @Override
+    public void onDateSet(DatePicker dialog, int year, int monthOfYear,
+            int dayOfMonth) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, monthOfYear);
+        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        currentValue = cal;
+        applyBinding();
+    }
 
 }

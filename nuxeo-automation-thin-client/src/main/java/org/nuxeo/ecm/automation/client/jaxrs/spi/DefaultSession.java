@@ -73,19 +73,19 @@ public class DefaultSession implements Session {
         OperationInput input = request.getInput();
         if (input != null && input.isBinary()) {
             throw new Exception("Binary request are not supported");
-//            MultipartInput mpinput = new MultipartInput();
-//            mpinput.setRequest(content);
-//            ctype = mpinput.getContentType();
-//            if (input instanceof Blob) {
-//                Blob blob = (Blob) input;
-//                mpinput.setBlob(blob);
-//            } else if (input instanceof Blobs) {
-//                mpinput.setBlobs((Blobs) input);
-//            } else {
-//                throw new IllegalArgumentException(
-//                        "Unsupported binary input object: " + input);
-//            }
-//            req = new Request(Request.POST, request.getUrl(), mpinput);
+            // MultipartInput mpinput = new MultipartInput();
+            // mpinput.setRequest(content);
+            // ctype = mpinput.getContentType();
+            // if (input instanceof Blob) {
+            // Blob blob = (Blob) input;
+            // mpinput.setBlob(blob);
+            // } else if (input instanceof Blobs) {
+            // mpinput.setBlobs((Blobs) input);
+            // } else {
+            // throw new IllegalArgumentException(
+            // "Unsupported binary input object: " + input);
+            // }
+            // req = new Request(Request.POST, request.getUrl(), mpinput);
         } else {
             req = new Request(Request.POST, request.getUrl(), content);
             ctype = CTYPE_REQUEST_NOCHARSET;
@@ -96,7 +96,8 @@ public class DefaultSession implements Session {
         }
         req.put("Accept", REQUEST_ACCEPT_HEADER);
         req.put("Content-Type", ctype);
-        return connector.execute(req, request.forceRefresh(), request.isCachable());
+        return connector.execute(req, request.forceRefresh(),
+                request.isCachable());
     }
 
     public void execute(final OperationRequest request,
@@ -152,7 +153,8 @@ public class DefaultSession implements Session {
         return newRequest(id, false);
     }
 
-    public OperationRequest newRequest(String id, boolean cachable) throws Exception {
+    public OperationRequest newRequest(String id, boolean cachable)
+            throws Exception {
         return newRequest(id, new HashMap<String, String>());
     }
 

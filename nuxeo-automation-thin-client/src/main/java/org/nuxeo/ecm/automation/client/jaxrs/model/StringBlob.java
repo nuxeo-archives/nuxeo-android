@@ -22,7 +22,7 @@ import java.io.InputStream;
 
 /**
  * An in memory bob containing a string.
- *
+ * 
  * @author bstefanescu
  */
 public class StringBlob extends Blob {
@@ -32,15 +32,15 @@ public class StringBlob extends Blob {
 
     protected String charset;
 
-
     public StringBlob(String content) {
         this.content = content;
     }
 
-    /** Creates a <code>StringBlob</code> that is used in the Blob.Attach call
-     *
-     *  @param fileName Name that is used to save the file as
-     *  @param content Base64 encoded content
+    /**
+     * Creates a <code>StringBlob</code> that is used in the Blob.Attach call
+     * 
+     * @param fileName Name that is used to save the file as
+     * @param content Base64 encoded content
      */
     public StringBlob(String fileName, String content) {
         super(fileName, null);
@@ -49,11 +49,11 @@ public class StringBlob extends Blob {
 
     /**
      * Creates a <code>StringBlob</code> that is used in the Blob.Attach call
-     *
+     * 
      * @param fileName Name that is used to save the file as
      * @param content Base64 encoded content
      * @param mimeType Mime type to use for this content
-     *
+     * 
      */
     public StringBlob(String fileName, String content, String mimeType) {
         super(fileName, mimeType);
@@ -61,8 +61,10 @@ public class StringBlob extends Blob {
     }
 
     /**
-     * Set the charset to be used when to transform the content into a byte stream.
+     * Set the charset to be used when to transform the content into a byte
+     * stream.
      * If npt specified the default charset will be used.
+     * 
      * @param charset
      */
     public void setCharset(String charset) {
@@ -75,7 +77,8 @@ public class StringBlob extends Blob {
 
     @Override
     public InputStream getStream() throws IOException {
-        byte[] bytes = charset == null ? content.getBytes() : content.getBytes(charset);
+        byte[] bytes = charset == null ? content.getBytes()
+                : content.getBytes(charset);
         return new ByteArrayInputStream(bytes);
     }
 

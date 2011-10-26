@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2006-2008 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -22,7 +22,7 @@ package org.nuxeo.ecm.automation.client.jaxrs;
  */
 public interface AsyncCallback<T> {
 
-    void onError(String executionId,Throwable e);
+    void onError(String executionId, Throwable e);
 
     void onSuccess(String executionId, T data);
 

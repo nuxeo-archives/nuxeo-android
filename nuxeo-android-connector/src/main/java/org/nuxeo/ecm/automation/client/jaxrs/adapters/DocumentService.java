@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2006-2008 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -345,7 +345,7 @@ public class DocumentService {
     /**
      * Increment is one of "None", "Major", "Minor". If null the server default
      * will be used.
-     *
+     * 
      * See {@link VersionIncrement}
      */
     public Document createVersion(DocRef doc, String increment)

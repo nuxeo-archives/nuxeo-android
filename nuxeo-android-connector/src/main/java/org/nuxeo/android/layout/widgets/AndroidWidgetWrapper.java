@@ -30,14 +30,15 @@ import android.view.View;
 
 public interface AndroidWidgetWrapper {
 
-	View buildView(LayoutContext context, LayoutMode mode, Document doc, List<String> attributeNames, WidgetDefinition widgetDef);
+    View buildView(LayoutContext context, LayoutMode mode, Document doc,
+            List<String> attributeNames, WidgetDefinition widgetDef);
 
-	boolean validateBeforeModelUpdate();
+    boolean validateBeforeModelUpdate();
 
-	void updateModel(Document doc);
+    void updateModel(Document doc);
 
-	void refreshViewFromDocument(Document doc);
+    void refreshViewFromDocument(Document doc);
 
-	Map<Integer, ActivityResultHandler> getAndFlushPendingActivityResultHandler();
+    Map<Integer, ActivityResultHandler> getAndFlushPendingActivityResultHandler();
 
 }

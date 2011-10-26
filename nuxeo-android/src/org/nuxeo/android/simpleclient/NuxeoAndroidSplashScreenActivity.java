@@ -32,14 +32,13 @@ import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableExce
 
 /**
  * The first activity displayed while the application is loading.
- *
+ * 
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.17
  */
 public final class NuxeoAndroidSplashScreenActivity extends
         SmartSplashScreenActivity implements
-        LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy,
-        TitleBarDiscarded {
+        LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy, TitleBarDiscarded {
 
     private final static int MISSING_SD_CARD_DIALOG_ID = 0;
 

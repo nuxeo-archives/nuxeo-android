@@ -1,3 +1,19 @@
+/*
+ * (C) Copyright 2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Lesser General Public License
+ * (LGPL) version 2.1 which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/lgpl.html
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * Contributors:
+ *     Nuxeo - initial API and implementation
+ */
 package org.nuxeo.android.simpleclient.docviews;
 
 import java.io.File;
@@ -21,19 +37,18 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.smartnsoft.droid4me.app.AppPublics;
-import com.smartnsoft.droid4me.app.SmartActivity;
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListener;
 import com.smartnsoft.droid4me.app.AppPublics.BroadcastListenerProvider;
 import com.smartnsoft.droid4me.app.AppPublics.SendLoadingIntent;
+import com.smartnsoft.droid4me.app.SmartActivity;
 import com.smartnsoft.droid4me.download.ImageDownloader;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy;
 
-public abstract  class BaseDocumentViewActivity extends
+public abstract class BaseDocumentViewActivity extends
         SmartActivity<TitleBarAggregate> implements
         BusinessObjectsRetrievalAsynchronousPolicy, SendLoadingIntent,
-        BroadcastListenerProvider,
-        TitleBarShowHomeFeature,
+        BroadcastListenerProvider, TitleBarShowHomeFeature,
         TitleBarRefreshFeature {
 
     public static final String DOCUMENT_ID = "document_id";
@@ -61,15 +76,17 @@ public abstract  class BaseDocumentViewActivity extends
         return getIntent().getStringExtra(DOCUMENT_ID);
     }
 
-    protected Document fetchDocument(boolean forceRefresh) throws BusinessObjectUnavailableException {
+    protected Document fetchDocument(boolean forceRefresh)
+            throws BusinessObjectUnavailableException {
 
         String docId = getTargetDocId();
-        if (document==null) {
+        if (document == null) {
             document = (Document) getIntent().getSerializableExtra(DOCUMENT);
         }
 
-        if (refresh || forceRefresh || document==null) {
-            document = NuxeoAndroidServices.getInstance().getDocument(docId, getSchemas(),refresh || forceRefresh);
+        if (refresh || forceRefresh || document == null) {
+            document = NuxeoAndroidServices.getInstance().getDocument(docId,
+                    getSchemas(), refresh || forceRefresh);
         }
         return document;
     }
@@ -79,12 +96,13 @@ public abstract  class BaseDocumentViewActivity extends
                 "org.nuxeo.android.simpleclient_preferences", 0).getString(
                 SettingsActivity.PREF_SERVER_URL, "");
         String urlImage = serverUrl + (serverUrl.endsWith("/") ? "" : "/")
-        + targetDocument.getString("common:icon", "");
-        ImageDownloader.getInstance().get(icon, urlImage, null, this.getHandler(),
+                + targetDocument.getString("common:icon", "");
+        ImageDownloader.getInstance().get(icon, urlImage, null,
+                this.getHandler(),
                 NuxeoAndroidApplication.CACHE_IMAGE_INSTRUCTIONS);
     }
 
-    //*************
+    // *************
     protected void addToClipBoard(final String uuid) {
 
         AppPublics.THREAD_POOL.execute(this, new Runnable() {
@@ -101,8 +119,7 @@ public abstract  class BaseDocumentViewActivity extends
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     log.error("Error while adding to clipboard", e);
                     return;
                 }
@@ -110,7 +127,7 @@ public abstract  class BaseDocumentViewActivity extends
         });
     }
 
-    //************* Download management
+    // ************* Download management
 
     protected void downloadAndDisplayBlob(final String flag) {
 
@@ -124,14 +141,15 @@ public abstract  class BaseDocumentViewActivity extends
                     downloadedBlob = executeDownloadOperation(flag);
                 } catch (BusinessObjectUnavailableException e) {
                     log.error("Error while getting file from server", e);
-                   return;
+                    return;
                 }
 
-                if (downloadedBlob!=null) {
+                if (downloadedBlob != null) {
                     final Blob blob = downloadedBlob;
-                    final File downloadedFile = new File(getDownloadedFilePath(downloadedBlob, flag));
+                    final File downloadedFile = new File(getDownloadedFilePath(
+                            downloadedBlob, flag));
                     byte[] buffer = new byte[4096];
-                    try  {
+                    try {
                         InputStream in = downloadedBlob.getStream();
                         OutputStream out = new FileOutputStream(downloadedFile);
                         int read;
@@ -148,7 +166,8 @@ public abstract  class BaseDocumentViewActivity extends
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            displayDownloadedFile(downloadedFile, getDownloadedMimeType(blob, flag));
+                            displayDownloadedFile(downloadedFile,
+                                    getDownloadedMimeType(blob, flag));
                         }
                     });
                 }
@@ -158,8 +177,10 @@ public abstract  class BaseDocumentViewActivity extends
         });
     }
 
-    protected Blob executeDownloadOperation(String flag) throws BusinessObjectUnavailableException {
-        throw new UnsupportedOperationException("The download operation is not set");
+    protected Blob executeDownloadOperation(String flag)
+            throws BusinessObjectUnavailableException {
+        throw new UnsupportedOperationException(
+                "The download operation is not set");
     }
 
     protected String getDownloadedFilePath(Blob blob, String flag) {
@@ -179,11 +200,9 @@ public abstract  class BaseDocumentViewActivity extends
 
         try {
             startActivity(intent);
-        }
-        catch (android.content.ActivityNotFoundException e) {
-            Toast.makeText(this,
-                "No Application Available to View " + mimeTye,
-                Toast.LENGTH_SHORT).show();
+        } catch (android.content.ActivityNotFoundException e) {
+            Toast.makeText(this, "No Application Available to View " + mimeTye,
+                    Toast.LENGTH_SHORT).show();
         }
 
     }

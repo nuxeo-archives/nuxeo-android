@@ -41,19 +41,23 @@ import com.smartnsoft.droid4me.menu.StaticMenuCommand;
 
 /**
  * The starting screen of the application.
- *
+ * 
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.17
  */
-public final class HomeActivity extends
-        SmartActivity<TitleBarAggregate> implements
-        View.OnClickListener, TitleBarShowSearchFeature {
+public final class HomeActivity extends SmartActivity<TitleBarAggregate>
+        implements View.OnClickListener, TitleBarShowSearchFeature {
 
     private ImageButton searchDocuments;
+
     private ImageButton myDocuments;
+
     private ImageButton clipboard;
+
     private ImageButton savedSearches;
+
     private ImageButton browse;
+
     private ImageButton tasks;
 
     public void onRetrieveDisplayObjects() {
@@ -94,8 +98,8 @@ public final class HomeActivity extends
                                 SettingsActivity.class));
                     }
                 }));
-        commands.add(new StaticMenuCommand(R.string.Home_menu_offline, '2', 'a',
-                android.R.drawable.ic_menu_manage,
+        commands.add(new StaticMenuCommand(R.string.Home_menu_offline, '2',
+                'a', android.R.drawable.ic_menu_manage,
                 new Commands.StaticEnabledExecutable() {
                     @Override
                     public void run() {

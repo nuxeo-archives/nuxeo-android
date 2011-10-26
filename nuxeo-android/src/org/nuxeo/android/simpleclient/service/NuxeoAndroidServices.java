@@ -45,7 +45,7 @@ import com.smartnsoft.droid4me.ws.WebServiceCaller;
 
 /**
  * A single point of access to the web services.
- *
+ * 
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.17
  */
@@ -108,8 +108,7 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
                 + SettingsActivity.PREF_SERVER_URL_SUFFIX;
         userLogin = prefs.getString(SettingsActivity.PREF_LOGIN, "");
         password = prefs.getString(SettingsActivity.PREF_PASSWORD, "");
-        client = new CacheAwareHttpAutomationClient(serverUrl,
-                cacheManager);
+        client = new CacheAwareHttpAutomationClient(serverUrl, cacheManager);
     }
 
     protected Session getSession() {
@@ -118,16 +117,17 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
         } else {
             if (session.isOffline()) {
                 // try to reconnect ?
-                if ((System.currentTimeMillis()-lastOnlineConnectionTest) /1000 > NETWORK_CHECK_INTERVAL_SEC) {
-                    lastOnlineConnectionTest  = System.currentTimeMillis();
+                if ((System.currentTimeMillis() - lastOnlineConnectionTest) / 1000 > NETWORK_CHECK_INTERVAL_SEC) {
+                    lastOnlineConnectionTest = System.currentTimeMillis();
                     session = client.getSession(userLogin, password);
                 }
-            }        }
+            }
+        }
         return session;
     }
 
     public int getKnownOperationsCount() {
-        if (session!=null) {
+        if (session != null) {
             return session.getOperations().size();
         } else {
             return getSession().getOperations().size();
@@ -139,7 +139,7 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
     }
 
     public boolean isOfflineMode() {
-        if (session!=null) {
+        if (session != null) {
             return session.isOffline();
         } else {
             return getSession().isOffline();
@@ -149,8 +149,7 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
     public void flushCache() {
         release();
         cacheManager.flushCache();
-        client = new CacheAwareHttpAutomationClient(serverUrl,
-                cacheManager);
+        client = new CacheAwareHttpAutomationClient(serverUrl, cacheManager);
     }
 
     public long getCacheSize() {
@@ -165,13 +164,17 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
         }
     }
 
-    public Document getDocument(String uuid , boolean refresh) throws BusinessObjectUnavailableException {
-        String query = "SELECT * FROM Document WHERE ecm:uuid = '" + uuid + "' ";
+    public Document getDocument(String uuid, boolean refresh)
+            throws BusinessObjectUnavailableException {
+        String query = "SELECT * FROM Document WHERE ecm:uuid = '" + uuid
+                + "' ";
         return queryDocuments(query, DEFAULT_SCHEMAS, refresh, true).get(0);
     }
 
-    public Document getDocument(String uuid , String schemas, boolean refresh) throws BusinessObjectUnavailableException {
-        String query = "SELECT * FROM Document WHERE ecm:uuid = '" + uuid + "' ";
+    public Document getDocument(String uuid, String schemas, boolean refresh)
+            throws BusinessObjectUnavailableException {
+        String query = "SELECT * FROM Document WHERE ecm:uuid = '" + uuid
+                + "' ";
         return queryDocuments(query, schemas, refresh, true).get(0);
     }
 
@@ -186,19 +189,20 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
         return queryDocuments(query, refresh, true);
     }
 
-    public Documents getDomains(boolean refresh) throws BusinessObjectUnavailableException {
-            String query = "SELECT * FROM Domain WHERE ecm:currentLifeCycleState != 'deleted'"
-        + " ORDER BY dc:title";
+    public Documents getDomains(boolean refresh)
+            throws BusinessObjectUnavailableException {
+        String query = "SELECT * FROM Domain WHERE ecm:currentLifeCycleState != 'deleted'"
+                + " ORDER BY dc:title";
         return queryDocuments(query, refresh, true);
     }
 
-    public Documents getChildren(String parentUUID, boolean refresh) throws BusinessObjectUnavailableException {
+    public Documents getChildren(String parentUUID, boolean refresh)
+            throws BusinessObjectUnavailableException {
         String query = "SELECT * FROM Document WHERE ecm:parentId = '"
-            + parentUUID
-            + "' AND ecm:mixinType != 'HiddenInNavigation' "
-            + " AND ecm:isCheckedInVersion = 0"
-            + " AND ecm:currentLifeCycleState != 'deleted'"
-            + " ORDER BY dc:title";
+                + parentUUID + "' AND ecm:mixinType != 'HiddenInNavigation' "
+                + " AND ecm:isCheckedInVersion = 0"
+                + " AND ecm:currentLifeCycleState != 'deleted'"
+                + " ORDER BY dc:title";
         return queryDocuments(query, refresh, true);
     }
 
@@ -229,24 +233,26 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
         return queryDocuments(query, refresh, true);
     }
 
-
     public Documents getMyWorklistContent(boolean refresh)
             throws BusinessObjectUnavailableException {
 
         Documents docs;
         try {
-            docs = (Documents) getSession().newRequest("Seam.FetchFromWorklist").setHeader("X-NXDocumentProperties",
-                    DEFAULT_SCHEMAS).execute(refresh, true);
+            docs = (Documents) getSession().newRequest("Seam.FetchFromWorklist").setHeader(
+                    "X-NXDocumentProperties", DEFAULT_SCHEMAS).execute(refresh,
+                    true);
         } catch (Exception e) {
             throw new BusinessObjectUnavailableException(e);
         }
         return docs;
     }
 
-    public void addToMyWorklist(String uuid) throws BusinessObjectUnavailableException {
+    public void addToMyWorklist(String uuid)
+            throws BusinessObjectUnavailableException {
         try {
             // add to work list
-            getSession().newRequest("Seam.AddToWorklist").setInput(new DocRef(uuid)).execute(true, false);
+            getSession().newRequest("Seam.AddToWorklist").setInput(
+                    new DocRef(uuid)).execute(true, false);
             // force refresh the cache
             getMyWorklistContent(true);
 
@@ -255,27 +261,27 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
         }
     }
 
-    public List<JSONObject> getAuditEntries(String docId, boolean refresh) throws BusinessObjectUnavailableException {
+    public List<JSONObject> getAuditEntries(String docId, boolean refresh)
+            throws BusinessObjectUnavailableException {
 
         List<JSONObject> result = new ArrayList<JSONObject>();
-        String auditQuery = "from LogEntry log"
-        + " WHERE log.docUUID = '" + docId + "'"
-        + "   AND log.docLifeCycle IS NOT NULL"
-        + "   AND log.docLifeCycle <> 'undefined'"
-        + " ORDER BY log.eventDate DESC";
+        String auditQuery = "from LogEntry log" + " WHERE log.docUUID = '"
+                + docId + "'" + "   AND log.docLifeCycle IS NOT NULL"
+                + "   AND log.docLifeCycle <> 'undefined'"
+                + " ORDER BY log.eventDate DESC";
 
-        Blob blob=null;
+        Blob blob = null;
         try {
-            blob = (Blob) getSession().newRequest("Audit.Query").set(
-                    "query", auditQuery).set("maxResults",5).execute(refresh, true);
+            blob = (Blob) getSession().newRequest("Audit.Query").set("query",
+                    auditQuery).set("maxResults", 5).execute(refresh, true);
         } catch (Exception e) {
             throw new BusinessObjectUnavailableException(e);
         }
-        if (blob!=null) {
+        if (blob != null) {
             String jsonData = readBlobAsString(blob);
             try {
                 JSONArray array = new JSONArray(jsonData);
-                for (int i = 0; i< array.length(); i++) {
+                for (int i = 0; i < array.length(); i++) {
                     result.add(array.getJSONObject(i));
                 }
             } catch (JSONException e) {
@@ -285,20 +291,22 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
         return result;
     }
 
-    public List<JSONObject> getTasks(boolean refresh) throws BusinessObjectUnavailableException {
+    public List<JSONObject> getTasks(boolean refresh)
+            throws BusinessObjectUnavailableException {
 
         List<JSONObject> result = new ArrayList<JSONObject>();
-        Blob blob=null;
+        Blob blob = null;
         try {
-            blob = (Blob) getSession().newRequest("Workflow.GetTask").execute(refresh, true);
+            blob = (Blob) getSession().newRequest("Workflow.GetTask").execute(
+                    refresh, true);
         } catch (Exception e) {
             throw new BusinessObjectUnavailableException(e);
         }
-        if (blob!=null) {
+        if (blob != null) {
             String jsonData = readBlobAsString(blob);
             try {
                 JSONArray array = new JSONArray(jsonData);
-                for (int i = 0; i< array.length(); i++) {
+                for (int i = 0; i < array.length(); i++) {
                     result.add(array.getJSONObject(i));
                 }
             } catch (JSONException e) {
@@ -308,17 +316,18 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
         return result;
     }
 
-    protected String readBlobAsString(Blob blob) throws BusinessObjectUnavailableException {
+    protected String readBlobAsString(Blob blob)
+            throws BusinessObjectUnavailableException {
         StringBuffer sb = new StringBuffer();
-        BufferedReader blobReader=null;
+        BufferedReader blobReader = null;
         try {
-            blobReader = new BufferedReader(new InputStreamReader(blob.getStream()));
+            blobReader = new BufferedReader(new InputStreamReader(
+                    blob.getStream()));
             String line;
             while ((line = blobReader.readLine()) != null) {
                 sb.append(line);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new BusinessObjectUnavailableException(e);
         } finally {
             if (blobReader != null) {
@@ -342,27 +351,28 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
         return queryDocuments(nxql, DEFAULT_SCHEMAS, refresh, allowCaching);
     }
 
-    public Documents queryDocuments(String nxql, String schemas, boolean refresh,
-            boolean allowCaching) throws BusinessObjectUnavailableException {
+    public Documents queryDocuments(String nxql, String schemas,
+            boolean refresh, boolean allowCaching)
+            throws BusinessObjectUnavailableException {
         Documents docs;
         try {
             docs = (Documents) getSession().newRequest("Document.Query").set(
-                    "query", nxql).setHeader("X-NXDocumentProperties",
-                    schemas).execute(refresh, allowCaching);
+                    "query", nxql).setHeader("X-NXDocumentProperties", schemas).execute(
+                    refresh, allowCaching);
         } catch (Exception e) {
             throw new BusinessObjectUnavailableException(e);
         }
         return docs;
     }
 
-
     public Blob getPictureView(String uuid, String viewName, boolean refresh,
             boolean allowCaching) throws BusinessObjectUnavailableException {
 
         Blob blob;
         try {
-            blob = (Blob) getSession().newRequest("Picture.getView").setInput(new DocRef(uuid)).set(
-                    "viewName", viewName).execute(refresh, allowCaching);
+            blob = (Blob) getSession().newRequest("Picture.getView").setInput(
+                    new DocRef(uuid)).set("viewName", viewName).execute(
+                    refresh, allowCaching);
         } catch (Exception e) {
             throw new BusinessObjectUnavailableException(e);
         }
@@ -374,20 +384,22 @@ public final class NuxeoAndroidServices extends WebServiceCaller implements
 
         Blob blob;
         try {
-            blob = (Blob) getSession().newRequest("Blob.Get").setInput(new DocRef(uuid)).set(
-                    "xpath", xpath).execute(refresh, allowCaching);
+            blob = (Blob) getSession().newRequest("Blob.Get").setInput(
+                    new DocRef(uuid)).set("xpath", xpath).execute(refresh,
+                    allowCaching);
         } catch (Exception e) {
             throw new BusinessObjectUnavailableException(e);
         }
         return blob;
     }
 
-    public Blob getPDF(String uuid, boolean refresh,
-            boolean allowCaching) throws BusinessObjectUnavailableException {
+    public Blob getPDF(String uuid, boolean refresh, boolean allowCaching)
+            throws BusinessObjectUnavailableException {
 
         Blob blob;
         try {
-            blob = (Blob) getSession().newRequest("Blob.ToPDF").setInput(new DocRef(uuid)).execute(refresh, allowCaching);
+            blob = (Blob) getSession().newRequest("Blob.ToPDF").setInput(
+                    new DocRef(uuid)).execute(refresh, allowCaching);
         } catch (Exception e) {
             throw new BusinessObjectUnavailableException(e);
         }

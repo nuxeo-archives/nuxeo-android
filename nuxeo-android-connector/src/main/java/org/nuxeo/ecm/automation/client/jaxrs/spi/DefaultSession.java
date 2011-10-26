@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2006-2008 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -77,19 +77,19 @@ public class DefaultSession implements Session {
         OperationInput input = request.getInput();
         if (input != null && input.isBinary()) {
             throw new Exception("Binary request are not supported");
-//            MultipartInput mpinput = new MultipartInput();
-//            mpinput.setRequest(content);
-//            ctype = mpinput.getContentType();
-//            if (input instanceof Blob) {
-//                Blob blob = (Blob) input;
-//                mpinput.setBlob(blob);
-//            } else if (input instanceof Blobs) {
-//                mpinput.setBlobs((Blobs) input);
-//            } else {
-//                throw new IllegalArgumentException(
-//                        "Unsupported binary input object: " + input);
-//            }
-//            req = new Request(Request.POST, request.getUrl(), mpinput);
+            // MultipartInput mpinput = new MultipartInput();
+            // mpinput.setRequest(content);
+            // ctype = mpinput.getContentType();
+            // if (input instanceof Blob) {
+            // Blob blob = (Blob) input;
+            // mpinput.setBlob(blob);
+            // } else if (input instanceof Blobs) {
+            // mpinput.setBlobs((Blobs) input);
+            // } else {
+            // throw new IllegalArgumentException(
+            // "Unsupported binary input object: " + input);
+            // }
+            // req = new Request(Request.POST, request.getUrl(), mpinput);
         } else {
             req = new Request(Request.POST, request.getUrl(), content);
             ctype = CTYPE_REQUEST_NOCHARSET;
@@ -101,19 +101,19 @@ public class DefaultSession implements Session {
         req.put("Accept", REQUEST_ACCEPT_HEADER);
         req.put("Content-Type", ctype);
 
-        //check offline settings
+        // check offline settings
         boolean refresh = request.isForceRefresh() && !client.isOffline();
         Object result = connector.execute(req, refresh, request.isCachable());
 
-        if (result !=null && result instanceof Documents) {
-        	((Documents) result).setSourceRequest(request);
+        if (result != null && result instanceof Documents) {
+            ((Documents) result).setSourceRequest(request);
         }
         return result;
     }
 
     public String execute(final OperationRequest request,
             final AsyncCallback<Object> cb) {
-    	return client.asyncExec(this, request, cb);
+        return client.asyncExec(this, request, cb);
     }
 
     public Blob getFile(String path) throws Exception {
@@ -128,13 +128,13 @@ public class DefaultSession implements Session {
 
     public String getFile(final String path, final AsyncCallback<Blob> cb)
             throws Exception {
-    	final String requestKey="file:" + path;
+        final String requestKey = "file:" + path;
         client.asyncExec(new Runnable() {
             public void run() {
                 try {
-                    cb.onSuccess(requestKey,getFile(path));
+                    cb.onSuccess(requestKey, getFile(path));
                 } catch (Throwable t) {
-                    cb.onError(requestKey,t);
+                    cb.onError(requestKey, t);
                 }
             }
         });
@@ -143,19 +143,18 @@ public class DefaultSession implements Session {
 
     public String getFiles(final String path, final AsyncCallback<Blobs> cb)
             throws Exception {
-    	final String requestKey="files:" + path;
+        final String requestKey = "files:" + path;
         client.asyncExec(new Runnable() {
             public void run() {
                 try {
-                    cb.onSuccess(requestKey,getFiles(path));
+                    cb.onSuccess(requestKey, getFiles(path));
                 } catch (Throwable t) {
-                    cb.onError(requestKey,t);
+                    cb.onError(requestKey, t);
                 }
             }
         });
         return requestKey;
     }
-
 
     public OperationRequest newRequest(String id) {
         return newRequest(id, new HashMap<String, String>());
@@ -184,14 +183,13 @@ public class DefaultSession implements Session {
 
     @Override
     public String execDeferredUpdate(OperationRequest request,
-			AsyncCallback<Object> cb, OperationType opType) {
-    	return client.execDeferredUpdate(request, cb, opType);
+            AsyncCallback<Object> cb, OperationType opType) {
+        return client.execDeferredUpdate(request, cb, opType);
     }
 
     @Override
     public DocumentMessageService getMessageHelper() {
-    	return client.getMessageHelper();
+        return client.getMessageHelper();
     }
 
 }
-

@@ -28,54 +28,54 @@ import android.net.Uri;
 
 public interface LazyDocumentsList {
 
-	public abstract Documents getCurrentPage();
+    public abstract Documents getCurrentPage();
 
-	public abstract Documents getFirstPage();
+    public abstract Documents getFirstPage();
 
-	public abstract Documents fetchAndChangeCurrentPage(int targetPage);
+    public abstract Documents fetchAndChangeCurrentPage(int targetPage);
 
-	public abstract int getCurrentPosition();
+    public abstract int getCurrentPosition();
 
-	public abstract int setCurrentPosition(int position);
+    public abstract int setCurrentPosition(int position);
 
-	public abstract Document getCurrentDocument();
+    public abstract Document getCurrentDocument();
 
-	public abstract int getPageCount();
+    public abstract int getPageCount();
 
-	public abstract int getLoadedPageCount();
+    public abstract int getLoadedPageCount();
 
-	public abstract Integer getLoadingPagesCount();
+    public abstract Integer getLoadingPagesCount();
 
-	public abstract Iterator<Document> getIterator();
+    public abstract Iterator<Document> getIterator();
 
-	public abstract Collection<Documents> getLoadedPages();
+    public abstract Collection<Documents> getLoadedPages();
 
-	public abstract int getCurrentSize();
+    public abstract int getCurrentSize();
 
-	public abstract void registerListener(DocumentsListChangeListener listener);
+    public abstract void registerListener(DocumentsListChangeListener listener);
 
-	public abstract void unregisterListener(DocumentsListChangeListener listener);
+    public abstract void unregisterListener(DocumentsListChangeListener listener);
 
-	public abstract Document getDocument(int index);
+    public abstract Document getDocument(int index);
 
-	public void refreshAll();
+    public void refreshAll();
 
-	public String getName();
+    public String getName();
 
-	public boolean isReadOnly();
+    public boolean isReadOnly();
 
-	public OperationRequest getFetchOperation();
+    public OperationRequest getFetchOperation();
 
-	public String getPageParameterName();
+    public String getPageParameterName();
 
-	public void setName(String name);
+    public void setName(String name);
 
-	public boolean isFullyLoaded();
+    public boolean isFullyLoaded();
 
-	public void setExposedMimeType(String exposedMimeType);
+    public void setExposedMimeType(String exposedMimeType);
 
-	public String getExposedMimeType();
+    public String getExposedMimeType();
 
-	public Uri getContentUri();
+    public Uri getContentUri();
 
 }

@@ -34,85 +34,88 @@ import android.util.Log;
 
 public class AndroidResponseCacheManager implements ResponseCacheManager {
 
-	protected final SQLStateManager sqlStateManager;
-	protected final BlobStore blobStore;
+    protected final SQLStateManager sqlStateManager;
 
-	protected final String BLOBSTORE_KEY = "responses";
+    protected final BlobStore blobStore;
 
-	public AndroidResponseCacheManager(SQLStateManager sqlStateManager, BlobStoreManager blobStoreManager) {
+    protected final String BLOBSTORE_KEY = "responses";
 
-		this.sqlStateManager = sqlStateManager;
-		this.blobStore = blobStoreManager.getBlobStore(BLOBSTORE_KEY);
-		sqlStateManager.registerWrapper(new ResponseCacheTableWrapper());
-	}
+    public AndroidResponseCacheManager(SQLStateManager sqlStateManager,
+            BlobStoreManager blobStoreManager) {
 
-	protected ResponseCacheTableWrapper getTableWrapper() {
-		return (ResponseCacheTableWrapper) sqlStateManager.getTableWrapper(ResponseCacheTableWrapper.TBLNAME);
-	}
+        this.sqlStateManager = sqlStateManager;
+        this.blobStore = blobStoreManager.getBlobStore(BLOBSTORE_KEY);
+        sqlStateManager.registerWrapper(new ResponseCacheTableWrapper());
+    }
 
-	@Override
-	public InputStream storeResponse(String key, ResponseCacheEntry entry) {
+    protected ResponseCacheTableWrapper getTableWrapper() {
+        return (ResponseCacheTableWrapper) sqlStateManager.getTableWrapper(ResponseCacheTableWrapper.TBLNAME);
+    }
 
-		getTableWrapper().storeCacheEntry(key, entry);
-		File cachedStream = storeStream(key, entry.getResponseStream());
-		if (cachedStream == null) {
-			Log.e(AndroidResponseCacheManager.class.getSimpleName(), "Response stream is null !!!!!");
-			return null;
-		}
-		try {
-			return new FileInputStream(cachedStream);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+    @Override
+    public InputStream storeResponse(String key, ResponseCacheEntry entry) {
 
-	protected File storeStream(String key, InputStream is) {
-		return blobStore.storeBlob(key, is, null, null);
-	}
+        getTableWrapper().storeCacheEntry(key, entry);
+        File cachedStream = storeStream(key, entry.getResponseStream());
+        if (cachedStream == null) {
+            Log.e(AndroidResponseCacheManager.class.getSimpleName(),
+                    "Response stream is null !!!!!");
+            return null;
+        }
+        try {
+            return new FileInputStream(cachedStream);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-	protected InputStream getStream(String key) {
-		Blob blob = blobStore.getBlob(key);
-		if (blob==null) {
-			return null;
-		}
-		try {
-			return blob.getStream();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+    protected File storeStream(String key, InputStream is) {
+        return blobStore.storeBlob(key, is, null, null);
+    }
 
-	@Override
-	public ResponseCacheEntry getResponseFromCache(String key) {
+    protected InputStream getStream(String key) {
+        Blob blob = blobStore.getBlob(key);
+        if (blob == null) {
+            return null;
+        }
+        try {
+            return blob.getStream();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-		ResponseCacheEntry entry = getTableWrapper().getEntry(key);
-		if (entry!=null) {
-			InputStream is = getStream(key);
-			if (is==null) {
-				return null;
-			} else {
-				entry.setResponseStream(is);
-				return entry;
-			}
-		}
-		return entry;
-	}
+    @Override
+    public ResponseCacheEntry getResponseFromCache(String key) {
 
-	@Override
-	public long getEntryCount() {
-		return getTableWrapper().getCount();
-	}
+        ResponseCacheEntry entry = getTableWrapper().getEntry(key);
+        if (entry != null) {
+            InputStream is = getStream(key);
+            if (is == null) {
+                return null;
+            } else {
+                entry.setResponseStream(is);
+                return entry;
+            }
+        }
+        return entry;
+    }
 
-	@Override
-	public void clear() {
-		blobStore.clear();
-		getTableWrapper().clearTable();
-	}
+    @Override
+    public long getEntryCount() {
+        return getTableWrapper().getCount();
+    }
 
-	@Override
-	public long getSize() {
-		return blobStore.getSize();
-	}
+    @Override
+    public void clear() {
+        blobStore.clear();
+        getTableWrapper().clearTable();
+    }
+
+    @Override
+    public long getSize() {
+        return blobStore.getSize();
+    }
 }

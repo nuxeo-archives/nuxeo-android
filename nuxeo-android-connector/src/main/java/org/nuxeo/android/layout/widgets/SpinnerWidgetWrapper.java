@@ -32,74 +32,80 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
-public class SpinnerWidgetWrapper extends BaseAndroidWidgetWrapper<String> implements AndroidWidgetWrapper {
+public class SpinnerWidgetWrapper extends BaseAndroidWidgetWrapper<String>
+        implements AndroidWidgetWrapper {
 
-	protected TextView textWidget;
-	protected Spinner spinner;
+    protected TextView textWidget;
 
-	@Override
-	public boolean validateBeforeModelUpdate() {
-		return true;
-	}
+    protected Spinner spinner;
 
-	@Override
-	public void updateModel(Document doc) {
-		if ( (mode !=LayoutMode.VIEW)  && spinner!=null) {
-			int pos = spinner.getSelectedItemPosition();
-			String key = widgetDef.getSelectOptions().getItemValue(pos);
-			DocumentAttributeResolver.put(doc, getAttributeName(), key);
-		}
-	}
+    @Override
+    public boolean validateBeforeModelUpdate() {
+        return true;
+    }
 
-	@Override
-	public void refreshViewFromDocument(Document doc) {
-		if (mode==LayoutMode.VIEW) {
-			applyBinding();
-		} else {
-			applyBinding();
-		}
-	}
+    @Override
+    public void updateModel(Document doc) {
+        if ((mode != LayoutMode.VIEW) && spinner != null) {
+            int pos = spinner.getSelectedItemPosition();
+            String key = widgetDef.getSelectOptions().getItemValue(pos);
+            DocumentAttributeResolver.put(doc, getAttributeName(), key);
+        }
+    }
 
-	protected void applyBinding() {
-		if (textWidget!=null) {
-			textWidget.setText(widgetDef.getSelectOptions().getLabel(getCurrentValue()));
-		} else {
-			int idx = widgetDef.getSelectOptions().getValueIndex(getCurrentValue());
-			if (idx>=0) {
-				spinner.setSelection(idx);
-			}
-		}
-	}
+    @Override
+    public void refreshViewFromDocument(Document doc) {
+        if (mode == LayoutMode.VIEW) {
+            applyBinding();
+        } else {
+            applyBinding();
+        }
+    }
 
-	@Override
-	protected void initCurrentValueFromDocument(Document doc) {
-		String value = DocumentAttributeResolver.getString(doc, getAttributeName());
-		setCurrentValue(value);
-	}
+    protected void applyBinding() {
+        if (textWidget != null) {
+            textWidget.setText(widgetDef.getSelectOptions().getLabel(
+                    getCurrentValue()));
+        } else {
+            int idx = widgetDef.getSelectOptions().getValueIndex(
+                    getCurrentValue());
+            if (idx >= 0) {
+                spinner.setSelection(idx);
+            }
+        }
+    }
 
-	@Override
-	public View buildView(LayoutContext context, LayoutMode mode, Document doc,
-			List<String> attributeNames, WidgetDefinition widgetDef) {
-		super.buildView(context, mode, doc, attributeNames, widgetDef);
+    @Override
+    protected void initCurrentValueFromDocument(Document doc) {
+        String value = DocumentAttributeResolver.getString(doc,
+                getAttributeName());
+        setCurrentValue(value);
+    }
 
-		Context ctx = context.getActivity();
-		if (mode==LayoutMode.VIEW) {
-			textWidget = new TextView(ctx);
-			applyBinding();
-			return textWidget;
-		} else {
-			spinner = new Spinner(ctx);
-			spinner.setAdapter(getAdapter(ctx, widgetDef.getSelectOptions().getItemLabels()));
-			applyBinding();
-			return spinner;
-		}
-	}
+    @Override
+    public View buildView(LayoutContext context, LayoutMode mode, Document doc,
+            List<String> attributeNames, WidgetDefinition widgetDef) {
+        super.buildView(context, mode, doc, attributeNames, widgetDef);
 
-	protected SpinnerAdapter getAdapter(Context ctx, List<String> opList) {
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(ctx,
-				android.R.layout.simple_spinner_item, opList);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		return adapter;
-	}
+        Context ctx = context.getActivity();
+        if (mode == LayoutMode.VIEW) {
+            textWidget = new TextView(ctx);
+            applyBinding();
+            return textWidget;
+        } else {
+            spinner = new Spinner(ctx);
+            spinner.setAdapter(getAdapter(ctx,
+                    widgetDef.getSelectOptions().getItemLabels()));
+            applyBinding();
+            return spinner;
+        }
+    }
+
+    protected SpinnerAdapter getAdapter(Context ctx, List<String> opList) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(ctx,
+                android.R.layout.simple_spinner_item, opList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return adapter;
+    }
 
 }

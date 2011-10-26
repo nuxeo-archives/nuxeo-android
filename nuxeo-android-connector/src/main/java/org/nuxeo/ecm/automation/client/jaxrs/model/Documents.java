@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2006-2008 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -26,7 +26,6 @@ import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsListImpl;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 
-
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  * @author tiry
@@ -37,13 +36,13 @@ public class Documents extends ArrayList<Document> implements OperationInput {
 
     protected boolean batched = false;
 
-    protected int pageSize=0;
+    protected int pageSize = 0;
 
-    protected int pageIndex=0;
+    protected int pageIndex = 0;
 
-    protected int pageCount=0;
+    protected int pageCount = 0;
 
-    protected int totalSize=0;
+    protected int totalSize = 0;
 
     protected OperationRequest sourceRequest;
 
@@ -54,22 +53,24 @@ public class Documents extends ArrayList<Document> implements OperationInput {
         super(size);
     }
 
-    public Documents(int size,int totalSize, int pageSize, int pageIndex, int pageCount) {
+    public Documents(int size, int totalSize, int pageSize, int pageIndex,
+            int pageCount) {
         super(size);
-        batched=true;
-        this.totalSize=totalSize;
-        this.pageSize=pageSize;
-        this.pageIndex=pageIndex;
-        this.pageCount=pageCount;
+        batched = true;
+        this.totalSize = totalSize;
+        this.pageSize = pageSize;
+        this.pageIndex = pageIndex;
+        this.pageCount = pageCount;
     }
 
-    public Documents(Documents docs,int totalSize, int pageSize, int pageIndex, int pageCount) {
+    public Documents(Documents docs, int totalSize, int pageSize,
+            int pageIndex, int pageCount) {
         super(docs);
-        batched=true;
-        this.totalSize=totalSize;
-        this.pageSize=pageSize;
-        this.pageIndex=pageIndex;
-        this.pageCount=pageCount;
+        batched = true;
+        this.totalSize = totalSize;
+        this.pageSize = pageSize;
+        this.pageIndex = pageIndex;
+        this.pageCount = pageCount;
     }
 
     public Documents(Documents docs) {
@@ -114,96 +115,95 @@ public class Documents extends ArrayList<Document> implements OperationInput {
         return super.toString();
     }
 
-	public boolean isBatched() {
-		return batched;
-	}
+    public boolean isBatched() {
+        return batched;
+    }
 
-	public int getPageSize() {
-		return pageSize;
-	}
+    public int getPageSize() {
+        return pageSize;
+    }
 
-	public int getPageIndex() {
-		return pageIndex;
-	}
+    public int getPageIndex() {
+        return pageIndex;
+    }
 
-	public int getPageCount() {
-		if (batched) {
-			return pageCount;
-		} else {
-			return 1;
-		}
-	}
+    public int getPageCount() {
+        if (batched) {
+            return pageCount;
+        } else {
+            return 1;
+        }
+    }
 
-	public int getTotalSize() {
-		return totalSize;
-	}
+    public int getTotalSize() {
+        return totalSize;
+    }
 
-	public OperationRequest getSourceRequest() {
-		return sourceRequest;
-	}
+    public OperationRequest getSourceRequest() {
+        return sourceRequest;
+    }
 
-	public void setSourceRequest(OperationRequest sourceRequest) {
-		this.sourceRequest = sourceRequest;
-	}
+    public void setSourceRequest(OperationRequest sourceRequest) {
+        this.sourceRequest = sourceRequest;
+    }
 
-	public NuxeoDocumentCursor asCursor(String pageParameterName) {
-		NuxeoDocumentCursor cursor = new NuxeoDocumentCursor(sourceRequest, pageParameterName, false);
-		return cursor;
-	}
+    public NuxeoDocumentCursor asCursor(String pageParameterName) {
+        NuxeoDocumentCursor cursor = new NuxeoDocumentCursor(sourceRequest,
+                pageParameterName, false);
+        return cursor;
+    }
 
-	public NuxeoDocumentCursor asCursor() {
-		return asCursor("page");
-	}
+    public NuxeoDocumentCursor asCursor() {
+        return asCursor("page");
+    }
 
-	public NuxeoDocumentCursor asUpdatableCursor(String pageParameterName) {
-		NuxeoDocumentCursor cursor = new NuxeoDocumentCursor(sourceRequest, pageParameterName, true);
-		return cursor;
-	}
+    public NuxeoDocumentCursor asUpdatableCursor(String pageParameterName) {
+        NuxeoDocumentCursor cursor = new NuxeoDocumentCursor(sourceRequest,
+                pageParameterName, true);
+        return cursor;
+    }
 
-	public LazyDocumentsList asDocumentsList() {
-		return new LazyDocumentsListImpl(sourceRequest, "page");
-	}
+    public LazyDocumentsList asDocumentsList() {
+        return new LazyDocumentsListImpl(sourceRequest, "page");
+    }
 
-	public LazyUpdatableDocumentsList asUpdatableDocumentsList() {
-  	    return new LazyUpdatableDocumentsListImpl(sourceRequest, "page");
-	}
+    public LazyUpdatableDocumentsList asUpdatableDocumentsList() {
+        return new LazyUpdatableDocumentsListImpl(sourceRequest, "page");
+    }
 
-	public void removeById(String uid) {
-		for (int i = 0; i< this.size(); i++) {
-			if (uid.equals(get(i).getId())) {
-				remove(i);
-				break;
-			}
-		}
-	}
+    public void removeById(String uid) {
+        for (int i = 0; i < this.size(); i++) {
+            if (uid.equals(get(i).getId())) {
+                remove(i);
+                break;
+            }
+        }
+    }
 
-	public boolean containsDocWithId(String uid) {
-		for (int i = 0; i< this.size(); i++) {
-			if (uid.equals(get(i).getId())) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public boolean containsDocWithId(String uid) {
+        for (int i = 0; i < this.size(); i++) {
+            if (uid.equals(get(i).getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	public Document getById(String uid) {
-		for (int i = 0; i< this.size(); i++) {
-			if (uid.equals(get(i).getId())) {
-				return get(i);
-			}
-		}
-		return null;
-	}
+    public Document getById(String uid) {
+        for (int i = 0; i < this.size(); i++) {
+            if (uid.equals(get(i).getId())) {
+                return get(i);
+            }
+        }
+        return null;
+    }
 
-
-	public List<String> getIds() {
-		List<String> ids = new ArrayList<String>();
-		for (int i = 0; i< this.size(); i++) {
-			ids.add(get(i).getId());
-		}
-		return ids;
-	}
-
-
+    public List<String> getIds() {
+        List<String> ids = new ArrayList<String>();
+        for (int i = 0; i < this.size(); i++) {
+            ids.add(get(i).getId());
+        }
+        return ids;
+    }
 
 }

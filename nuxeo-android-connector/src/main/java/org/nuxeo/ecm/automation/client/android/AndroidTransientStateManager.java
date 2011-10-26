@@ -33,114 +33,122 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-public class AndroidTransientStateManager extends BroadcastReceiver implements TransientStateManager {
+public class AndroidTransientStateManager extends BroadcastReceiver implements
+        TransientStateManager {
 
-	protected final SQLStateManager stateManager;
+    protected final SQLStateManager stateManager;
 
-	public AndroidTransientStateManager(Context androidContext, SQLStateManager stateManager) {
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(NuxeoBroadcastMessages.DOCUMENT_CREATED_CLIENT);
-		filter.addAction(NuxeoBroadcastMessages.DOCUMENT_CREATED_SERVER);
-		filter.addAction(NuxeoBroadcastMessages.DOCUMENT_UPDATED_CLIENT);
-		filter.addAction(NuxeoBroadcastMessages.DOCUMENT_UPDATED_SERVER);
-		filter.addAction(NuxeoBroadcastMessages.DOCUMENT_DELETED_CLIENT);
-		filter.addAction(NuxeoBroadcastMessages.DOCUMENT_DELETED_SERVER);
-		androidContext.registerReceiver(this, filter);
-		stateManager.registerWrapper(new TransientStateTableWrapper());
-		this.stateManager = stateManager;
-	}
+    public AndroidTransientStateManager(Context androidContext,
+            SQLStateManager stateManager) {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(NuxeoBroadcastMessages.DOCUMENT_CREATED_CLIENT);
+        filter.addAction(NuxeoBroadcastMessages.DOCUMENT_CREATED_SERVER);
+        filter.addAction(NuxeoBroadcastMessages.DOCUMENT_UPDATED_CLIENT);
+        filter.addAction(NuxeoBroadcastMessages.DOCUMENT_UPDATED_SERVER);
+        filter.addAction(NuxeoBroadcastMessages.DOCUMENT_DELETED_CLIENT);
+        filter.addAction(NuxeoBroadcastMessages.DOCUMENT_DELETED_SERVER);
+        androidContext.registerReceiver(this, filter);
+        stateManager.registerWrapper(new TransientStateTableWrapper());
+        this.stateManager = stateManager;
+    }
 
-	protected TransientStateTableWrapper getTableWrapper() {
-		return (TransientStateTableWrapper) stateManager.getTableWrapper(TransientStateTableWrapper.TBLNAME);
-	}
+    protected TransientStateTableWrapper getTableWrapper() {
+        return (TransientStateTableWrapper) stateManager.getTableWrapper(TransientStateTableWrapper.TBLNAME);
+    }
 
-	public void storeDocumentState(Document doc, OperationType opType, String requestId, String listName) {
-		DocumentDeltaSet delta = new DocumentDeltaSet(opType, doc, requestId, listName);
-		getTableWrapper().storeDeltaSet(delta);
-	}
+    public void storeDocumentState(Document doc, OperationType opType,
+            String requestId, String listName) {
+        DocumentDeltaSet delta = new DocumentDeltaSet(opType, doc, requestId,
+                listName);
+        getTableWrapper().storeDeltaSet(delta);
+    }
 
-	public void storeDocumentState(Document doc, OperationType opType) {
-		storeDocumentState(doc, opType, null, null);
-	}
+    public void storeDocumentState(Document doc, OperationType opType) {
+        storeDocumentState(doc, opType, null, null);
+    }
 
-	public List<DocumentDeltaSet> getDeltaSets(List<String> ids, String targetListName) {
-		List<DocumentDeltaSet> deltas = getTableWrapper().getDeltaSets(ids, targetListName);
-		// XXX get Blobs
-		return deltas;
-	}
+    public List<DocumentDeltaSet> getDeltaSets(List<String> ids,
+            String targetListName) {
+        List<DocumentDeltaSet> deltas = getTableWrapper().getDeltaSets(ids,
+                targetListName);
+        // XXX get Blobs
+        return deltas;
+    }
 
-	public Documents mergeTransientState(Documents docs, boolean add, String listName) {
+    public Documents mergeTransientState(Documents docs, boolean add,
+            String listName) {
 
-		List<DocumentDeltaSet> deltas = getDeltaSets(docs.getIds(), listName);
+        List<DocumentDeltaSet> deltas = getDeltaSets(docs.getIds(), listName);
 
-		for (DocumentDeltaSet delta : deltas) {
-			if (add && delta.getOperationType()== OperationType.CREATE && ! docs.containsDocWithId(delta.getId())) {
-				if (listName == null || listName.equals(delta.getListName())) {
-					docs.add(0, delta.apply(null));
-				}
-			} else if (delta.getOperationType()== OperationType.UPDATE) {
-				Document doc2Update = docs.getById(delta.getId());
-				delta.apply(doc2Update);
-				doc2Update.setInConflict(delta.isConflict());
-			} else if (delta.getOperationType()== OperationType.DELETE) {
-				docs.removeById(delta.getId());
-			}
-		}
-		return docs;
-	}
+        for (DocumentDeltaSet delta : deltas) {
+            if (add && delta.getOperationType() == OperationType.CREATE
+                    && !docs.containsDocWithId(delta.getId())) {
+                if (listName == null || listName.equals(delta.getListName())) {
+                    docs.add(0, delta.apply(null));
+                }
+            } else if (delta.getOperationType() == OperationType.UPDATE) {
+                Document doc2Update = docs.getById(delta.getId());
+                delta.apply(doc2Update);
+                doc2Update.setInConflict(delta.isConflict());
+            } else if (delta.getOperationType() == OperationType.DELETE) {
+                docs.removeById(delta.getId());
+            }
+        }
+        return docs;
+    }
 
-	public void flushTransientState(String uid) {
-		getTableWrapper().deleteEntry(uid);
-	}
+    public void flushTransientState(String uid) {
+        getTableWrapper().deleteEntry(uid);
+    }
 
-	public void flushTransientState() {
-		getTableWrapper().clearTable();
-	}
+    public void flushTransientState() {
+        getTableWrapper().clearTable();
+    }
 
-	@Override
-	public void onReceive(Context androidContext, Intent intent) {
+    @Override
+    public void onReceive(Context androidContext, Intent intent) {
 
-		String eventName = intent.getAction();
-		Document doc = (Document) intent.getExtras().get(NuxeoBroadcastMessages.EXTRA_DOCUMENT_PAYLOAD_KEY);
-		String requestId = intent.getExtras().getString(NuxeoBroadcastMessages.EXTRA_REQUESTID_PAYLOAD_KEY);
-		String listName = intent.getExtras().getString(NuxeoBroadcastMessages.EXTRA_SOURCEDOCUMENTSLIST_PAYLOAD_KEY);
-		if (eventName.equals(NuxeoBroadcastMessages.DOCUMENT_CREATED_CLIENT)) {
-			storeDocumentState(doc, OperationType.CREATE, requestId, listName);
-		}
-		else if (eventName.equals(NuxeoBroadcastMessages.DOCUMENT_UPDATED_CLIENT)) {
-			storeDocumentState(doc, OperationType.UPDATE, requestId, listName);
-		}
-		else if (eventName.equals(NuxeoBroadcastMessages.DOCUMENT_DELETED_CLIENT)) {
-			storeDocumentState(doc, OperationType.DELETE, requestId, listName);
-		}
-		else if (eventName.equals(NuxeoBroadcastMessages.DOCUMENT_UPDATED_SERVER) || eventName.equals(NuxeoBroadcastMessages.DOCUMENT_DELETED_SERVER) ) {
-			if (doc!=null) {
-				flushTransientState(doc.getId());
-			}
-			// XXX Trigger list refresh ?
-		}
-		else if (eventName.equals(NuxeoBroadcastMessages.DOCUMENT_CREATED_SERVER)) {
-			if (requestId!=null) {
-				getTableWrapper().deleteEntryByRequestId(requestId);
-			}
-			// XXX Trigger list refresh ?
-		}
+        String eventName = intent.getAction();
+        Document doc = (Document) intent.getExtras().get(
+                NuxeoBroadcastMessages.EXTRA_DOCUMENT_PAYLOAD_KEY);
+        String requestId = intent.getExtras().getString(
+                NuxeoBroadcastMessages.EXTRA_REQUESTID_PAYLOAD_KEY);
+        String listName = intent.getExtras().getString(
+                NuxeoBroadcastMessages.EXTRA_SOURCEDOCUMENTSLIST_PAYLOAD_KEY);
+        if (eventName.equals(NuxeoBroadcastMessages.DOCUMENT_CREATED_CLIENT)) {
+            storeDocumentState(doc, OperationType.CREATE, requestId, listName);
+        } else if (eventName.equals(NuxeoBroadcastMessages.DOCUMENT_UPDATED_CLIENT)) {
+            storeDocumentState(doc, OperationType.UPDATE, requestId, listName);
+        } else if (eventName.equals(NuxeoBroadcastMessages.DOCUMENT_DELETED_CLIENT)) {
+            storeDocumentState(doc, OperationType.DELETE, requestId, listName);
+        } else if (eventName.equals(NuxeoBroadcastMessages.DOCUMENT_UPDATED_SERVER)
+                || eventName.equals(NuxeoBroadcastMessages.DOCUMENT_DELETED_SERVER)) {
+            if (doc != null) {
+                flushTransientState(doc.getId());
+            }
+            // XXX Trigger list refresh ?
+        } else if (eventName.equals(NuxeoBroadcastMessages.DOCUMENT_CREATED_SERVER)) {
+            if (requestId != null) {
+                getTableWrapper().deleteEntryByRequestId(requestId);
+            }
+            // XXX Trigger list refresh ?
+        }
 
-	}
+    }
 
-	@Override
-	public void markAsConflict(String uid) {
-		getTableWrapper().updateConflictMarker(uid, true);
+    @Override
+    public void markAsConflict(String uid) {
+        getTableWrapper().updateConflictMarker(uid, true);
 
-	}
+    }
 
-	@Override
-	public void markAsResolved(String uid) {
-		getTableWrapper().updateConflictMarker(uid, false);
-	}
+    @Override
+    public void markAsResolved(String uid) {
+        getTableWrapper().updateConflictMarker(uid, false);
+    }
 
-	@Override
-	public long getEntryCount() {
-		return getTableWrapper().getCount();
-	}
+    @Override
+    public long getEntryCount() {
+        return getTableWrapper().getCount();
+    }
 }

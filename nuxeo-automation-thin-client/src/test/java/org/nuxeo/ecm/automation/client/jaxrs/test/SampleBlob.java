@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2006-2008 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -42,9 +42,8 @@ public class SampleBlob {
             Session session = client.getSession("Administrator",
                     "Administrator");
             // FileBlob fb = new FileBlob(new
-            // File("/Users/bstefanescu/operations.jpg"));
-            FileBlob fb = new FileBlob(new File(
-                    "/Users/fermigier/Pictures/bart.jpg"));
+            // File("~/operations.jpg"));
+            FileBlob fb = new FileBlob(new File("~/Pictures/bart.jpg"));
             fb.setMimeType("image/jpeg");
 
             // TODO avoid getting the output from server

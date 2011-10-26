@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2006-2008 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -75,7 +75,8 @@ public class IOUtils {
         }
     }
 
-    public static void writeToFile(String content, File file) throws IOException {
+    public static void writeToFile(String content, File file)
+            throws IOException {
         FileOutputStream out = new FileOutputStream(file);
         try {
             write(content, out);
@@ -84,7 +85,8 @@ public class IOUtils {
         }
     }
 
-    public static void write(String content, OutputStream out) throws IOException {
+    public static void write(String content, OutputStream out)
+            throws IOException {
         out.write(content.getBytes());
     }
 

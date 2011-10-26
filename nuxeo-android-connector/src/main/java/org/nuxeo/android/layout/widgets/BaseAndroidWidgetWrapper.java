@@ -34,84 +34,88 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 
-public abstract class BaseAndroidWidgetWrapper<T> implements ActivityResultHandlerRegistry {
+public abstract class BaseAndroidWidgetWrapper<T> implements
+        ActivityResultHandlerRegistry {
 
-	protected final Map<Integer, ActivityResultHandler> pendingActivityResultHandlers = new HashMap<Integer, ActivityResultHandler>();
+    protected final Map<Integer, ActivityResultHandler> pendingActivityResultHandlers = new HashMap<Integer, ActivityResultHandler>();
 
-	protected List<String> attributeNames;
+    protected List<String> attributeNames;
 
-	protected T currentValue;
+    protected T currentValue;
 
-	protected WidgetDefinition widgetDef;
+    protected WidgetDefinition widgetDef;
 
-	protected LayoutMode mode;
+    protected LayoutMode mode;
 
-	protected LayoutContext layoutContext;
+    protected LayoutContext layoutContext;
 
-	@Override
-	public void registerActivityResultHandler(int requestCode,
-			ActivityResultHandler handler) {
-		// store pending registration
-		pendingActivityResultHandlers.put(requestCode, handler);
-	}
+    @Override
+    public void registerActivityResultHandler(int requestCode,
+            ActivityResultHandler handler) {
+        // store pending registration
+        pendingActivityResultHandlers.put(requestCode, handler);
+    }
 
-	public Map<Integer, ActivityResultHandler> getAndFlushPendingActivityResultHandler() {
-		Map<Integer, ActivityResultHandler> pending = new HashMap<Integer, ActivityResultHandler>(pendingActivityResultHandlers);
-		pendingActivityResultHandlers.clear();
-		return pending;
-	}
+    public Map<Integer, ActivityResultHandler> getAndFlushPendingActivityResultHandler() {
+        Map<Integer, ActivityResultHandler> pending = new HashMap<Integer, ActivityResultHandler>(
+                pendingActivityResultHandlers);
+        pendingActivityResultHandlers.clear();
+        return pending;
+    }
 
-	protected AndroidAutomationClient getClient() {
-		return NuxeoContext.get(layoutContext.getActivity().getApplicationContext()).getNuxeoClient();
-	}
+    protected AndroidAutomationClient getClient() {
+        return NuxeoContext.get(
+                layoutContext.getActivity().getApplicationContext()).getNuxeoClient();
+    }
 
-	protected String getAttributeName() {
-		if (attributeNames==null || attributeNames.size()==0)  {
-			return null;
-		}
-		return attributeNames.get(0);
-	}
+    protected String getAttributeName() {
+        if (attributeNames == null || attributeNames.size() == 0) {
+            return null;
+        }
+        return attributeNames.get(0);
+    }
 
-	protected List<String> getAttributeNames() {
-		return attributeNames;
-	}
+    protected List<String> getAttributeNames() {
+        return attributeNames;
+    }
 
-	protected void setAttributeName(String attributeName) {
-		this.attributeNames.set(0,attributeName);
-	}
+    protected void setAttributeName(String attributeName) {
+        this.attributeNames.set(0, attributeName);
+    }
 
-	protected void setAttributeNames(List<String> attributeNames) {
-		this.attributeNames=attributeNames;
-	}
-	protected abstract void initCurrentValueFromDocument(Document doc);
+    protected void setAttributeNames(List<String> attributeNames) {
+        this.attributeNames = attributeNames;
+    }
 
-	protected T getCurrentValue() {
-		return currentValue;
-	}
+    protected abstract void initCurrentValueFromDocument(Document doc);
 
-	protected void setCurrentValue(T value) {
-		currentValue = value;
-	}
+    protected T getCurrentValue() {
+        return currentValue;
+    }
 
-	public View buildView(LayoutContext context, LayoutMode mode, Document doc,
-			List<String> attributeNames, WidgetDefinition widgetDef) {
-		setAttributeNames(attributeNames);
-		initCurrentValueFromDocument(doc);
-		this.widgetDef=widgetDef;
-		this.mode=mode;
-		this.layoutContext=context;
-		return null;
-	}
+    protected void setCurrentValue(T value) {
+        currentValue = value;
+    }
 
-	protected Context getRootContext() {
-		return layoutContext.getActivity();
-	}
+    public View buildView(LayoutContext context, LayoutMode mode, Document doc,
+            List<String> attributeNames, WidgetDefinition widgetDef) {
+        setAttributeNames(attributeNames);
+        initCurrentValueFromDocument(doc);
+        this.widgetDef = widgetDef;
+        this.mode = mode;
+        this.layoutContext = context;
+        return null;
+    }
 
-	protected Activity getHomeActivity() {
-		return layoutContext.getActivity();
-	}
+    protected Context getRootContext() {
+        return layoutContext.getActivity();
+    }
 
-	protected LayoutContext getLayoutContext() {
-		return layoutContext;
-	}
+    protected Activity getHomeActivity() {
+        return layoutContext.getActivity();
+    }
+
+    protected LayoutContext getLayoutContext() {
+        return layoutContext;
+    }
 }

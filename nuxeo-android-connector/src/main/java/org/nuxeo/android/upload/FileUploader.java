@@ -37,97 +37,119 @@ import android.util.Log;
 
 public class FileUploader {
 
-	public static final String UPLOAD_UUID = "uuid";
-	public static final String FILE_ID = "fileId";
-	public static final String BATCH_ID = "batchId";
+    public static final String UPLOAD_UUID = "uuid";
 
-	protected final BlobStore store;
+    public static final String FILE_ID = "fileId";
 
-	protected final AndroidAutomationClient client;
+    public static final String BATCH_ID = "batchId";
 
-	protected LinkedList<String> uploadDone = new LinkedList<String>();
+    protected final BlobStore store;
 
-	protected final CopyOnWriteArrayList<String> uploadInProgress = new CopyOnWriteArrayList<String>();
+    protected final AndroidAutomationClient client;
 
-	public FileUploader(AndroidAutomationClient client) {
-		store = client.getBlobStoreManager().getBlobStore("upload");
-		this.client = client;
-	}
+    protected LinkedList<String> uploadDone = new LinkedList<String>();
 
-	public BlobWithProperties storeAndUpload(final String batchId, String fileId, final Blob blob, final AsyncCallback<Serializable> cb) {
-		final BlobWithProperties res = storeFileForUpload(batchId, fileId, blob);
-		startUpload(batchId, fileId, res, cb);
-		return res;
-	}
+    protected final CopyOnWriteArrayList<String> uploadInProgress = new CopyOnWriteArrayList<String>();
 
-	public void startUpload(String key, final AsyncCallback<Serializable> cb) {
-		if (uploadInProgress.addIfAbsent(key)) {
-			BlobWithProperties blob = store.getBlob(key);
-			String batchId = blob.getProperty(BATCH_ID);
-			String fileId = blob.getProperty(FILE_ID);
-			startUpload(batchId, fileId, blob, cb);
-		}
-	}
+    public FileUploader(AndroidAutomationClient client) {
+        store = client.getBlobStoreManager().getBlobStore("upload");
+        this.client = client;
+    }
 
-    protected void startUpload(final String batchId, final String fileId, final BlobWithProperties blob, final AsyncCallback<Serializable> cb) {
+    public BlobWithProperties storeAndUpload(final String batchId,
+            String fileId, final Blob blob, final AsyncCallback<Serializable> cb) {
+        final BlobWithProperties res = storeFileForUpload(batchId, fileId, blob);
+        startUpload(batchId, fileId, res, cb);
+        return res;
+    }
 
-		client.asyncExec(new Runnable() {
+    public void startUpload(String key, final AsyncCallback<Serializable> cb) {
+        if (uploadInProgress.addIfAbsent(key)) {
+            BlobWithProperties blob = store.getBlob(key);
+            String batchId = blob.getProperty(BATCH_ID);
+            String fileId = blob.getProperty(FILE_ID);
+            startUpload(batchId, fileId, blob, cb);
+        }
+    }
 
-			@Override
-			public void run() {
+    protected void startUpload(final String batchId, final String fileId,
+            final BlobWithProperties blob, final AsyncCallback<Serializable> cb) {
 
-				Log.i(FileUploader.class.getSimpleName(), "Starting upload for Blob with UUID" + blob.getProperty(UPLOAD_UUID));
-				String url = client.getServerConfig().getServerBaseUrl() + "site/automation/batch/upload";
-				HttpPost post = new HttpPost(url);
-				post.setHeader("Cache-Control", "no-cache");
-				post.setHeader("X-File-Name", blob.getFileName());
-				post.setHeader("X-File-Size", blob.getLength()+"");
-				post.setHeader("X-File-Type", blob.getMimeType());
-				post.setHeader("X-Batch-Id", batchId);
-				post.setHeader("X-File-Idx", fileId);
+        client.asyncExec(new Runnable() {
 
-				try {
+            @Override
+            public void run() {
 
-					HttpEntity blobEntity = null;
+                Log.i(FileUploader.class.getSimpleName(),
+                        "Starting upload for Blob with UUID"
+                                + blob.getProperty(UPLOAD_UUID));
+                String url = client.getServerConfig().getServerBaseUrl()
+                        + "site/automation/batch/upload";
+                HttpPost post = new HttpPost(url);
+                post.setHeader("Cache-Control", "no-cache");
+                post.setHeader("X-File-Name", blob.getFileName());
+                post.setHeader("X-File-Size", blob.getLength() + "");
+                post.setHeader("X-File-Type", blob.getMimeType());
+                post.setHeader("X-Batch-Id", batchId);
+                post.setHeader("X-File-Idx", fileId);
 
-					if (cb!=null && cb instanceof UIAsyncCallback<?>) {
-						blobEntity = new RepeatableBlobEntityWithProgress(blob, (UIAsyncCallback<Serializable>)cb);
-						((UIAsyncCallback<Serializable>)cb).notifyStart();
-					} else {
-						blobEntity = new RepeatableBlobEntityWithProgress(blob, null);
-					}
+                try {
 
-					post.setEntity(blobEntity);
+                    HttpEntity blobEntity = null;
 
-					HttpResponse response = client.getConnector().executeSimpleHttp(post);
-					if (response.getStatusLine().getStatusCode()==200) {
-						Log.i(FileUploader.class.getSimpleName(), "Upload completed successfuly for Blob with UUID" + blob.getProperty(UPLOAD_UUID));
-						Log.i(FileUploader.class.getSimpleName(), "removing Blob with UUID" + blob.getProperty(UPLOAD_UUID));
-						removeBlob(blob);
-						if (cb!=null) {
-							cb.onSuccess(batchId, response.getStatusLine().getReasonPhrase());
-						}
-					} else {
-						if (cb!=null) {
-							cb.onError(batchId, new Exception("Server returned status code " + response.getStatusLine().getStatusCode()));
-						}
-						Log.e(FileUploader.class.getSimpleName(), "Server returned status code " + response.getStatusLine().getStatusCode());
-					}
+                    if (cb != null && cb instanceof UIAsyncCallback<?>) {
+                        blobEntity = new RepeatableBlobEntityWithProgress(blob,
+                                (UIAsyncCallback<Serializable>) cb);
+                        ((UIAsyncCallback<Serializable>) cb).notifyStart();
+                    } else {
+                        blobEntity = new RepeatableBlobEntityWithProgress(blob,
+                                null);
+                    }
 
-				} catch (Exception e) {
-					if (cb!=null) {
-						cb.onError(batchId, e);
-					}
-					Log.e(FileUploader.class.getSimpleName(), "Exception during upload", e);
-				}
-				finally {
-					uploadInProgress.remove(blob.getProperty(UPLOAD_UUID));
-				}
-			}
-		});
-	}
+                    post.setEntity(blobEntity);
 
-    public BlobWithProperties storeFileForUpload(String batchId, String fileId, Blob blob) {
+                    HttpResponse response = client.getConnector().executeSimpleHttp(
+                            post);
+                    if (response.getStatusLine().getStatusCode() == 200) {
+                        Log.i(FileUploader.class.getSimpleName(),
+                                "Upload completed successfuly for Blob with UUID"
+                                        + blob.getProperty(UPLOAD_UUID));
+                        Log.i(FileUploader.class.getSimpleName(),
+                                "removing Blob with UUID"
+                                        + blob.getProperty(UPLOAD_UUID));
+                        removeBlob(blob);
+                        if (cb != null) {
+                            cb.onSuccess(batchId,
+                                    response.getStatusLine().getReasonPhrase());
+                        }
+                    } else {
+                        if (cb != null) {
+                            cb.onError(
+                                    batchId,
+                                    new Exception(
+                                            "Server returned status code "
+                                                    + response.getStatusLine().getStatusCode()));
+                        }
+                        Log.e(FileUploader.class.getSimpleName(),
+                                "Server returned status code "
+                                        + response.getStatusLine().getStatusCode());
+                    }
+
+                } catch (Exception e) {
+                    if (cb != null) {
+                        cb.onError(batchId, e);
+                    }
+                    Log.e(FileUploader.class.getSimpleName(),
+                            "Exception during upload", e);
+                } finally {
+                    uploadInProgress.remove(blob.getProperty(UPLOAD_UUID));
+                }
+            }
+        });
+    }
+
+    public BlobWithProperties storeFileForUpload(String batchId, String fileId,
+            Blob blob) {
         String key = UUID.randomUUID().toString();
         Properties props = new Properties();
         props.put(BATCH_ID, batchId);
@@ -137,41 +159,41 @@ public class FileUploader {
     }
 
     protected void removeBlob(BlobWithProperties blob) {
-		store.deleteBlob(blob.getProperty(UPLOAD_UUID));
-	}
+        store.deleteBlob(blob.getProperty(UPLOAD_UUID));
+    }
 
     public BlobWithProperties getBlob(String key) {
-		return store.getBlob(key);
-	}
+        return store.getBlob(key);
+    }
 
-	public void cancelUpload(String batchId) {
-		// XXX
-	}
+    public void cancelUpload(String batchId) {
+        // XXX
+    }
 
-	public boolean isUploadDone(String key) {
-		if (uploadDone.contains(key)) {
-			return true;
-		}
+    public boolean isUploadDone(String key) {
+        if (uploadDone.contains(key)) {
+            return true;
+        }
 
-		for (Properties props : store) {
-			String uuid = props.getProperty(UPLOAD_UUID);
-			if (uuid!=null && uuid.equals(key)) {
-				return false;
-			}
-		}
+        for (Properties props : store) {
+            String uuid = props.getProperty(UPLOAD_UUID);
+            if (uuid != null && uuid.equals(key)) {
+                return false;
+            }
+        }
 
-		uploadDone.addLast(key);
-		if (uploadDone.size()>20) {
-			uploadDone.removeFirst();
-		}
-		return true;
-	}
+        uploadDone.addLast(key);
+        if (uploadDone.size() > 20) {
+            uploadDone.removeFirst();
+        }
+        return true;
+    }
 
-	public long getPendingUploadCount() {
-		return store.getCount();
-	}
+    public long getPendingUploadCount() {
+        return store.getCount();
+    }
 
-	public void purgePendingUploads() {
-		store.clear();
-	}
+    public void purgePendingUploads() {
+        store.clear();
+    }
 }

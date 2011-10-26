@@ -75,7 +75,8 @@ public class IOUtils {
         }
     }
 
-    public static void writeToFile(String content, File file) throws IOException {
+    public static void writeToFile(String content, File file)
+            throws IOException {
         FileOutputStream out = new FileOutputStream(file);
         try {
             write(content, out);
@@ -84,7 +85,8 @@ public class IOUtils {
         }
     }
 
-    public static void write(String content, OutputStream out) throws IOException {
+    public static void write(String content, OutputStream out)
+            throws IOException {
         out.write(content.getBytes());
     }
 

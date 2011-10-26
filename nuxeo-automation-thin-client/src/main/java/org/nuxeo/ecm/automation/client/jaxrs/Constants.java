@@ -26,12 +26,12 @@ public class Constants {
     public static final String CTYPE_ENTITY = "application/json+nxentity";
 
     public static final String CTYPE_MULTIPART_RELATED = "multipart/related"; // for
-                                                                                // blobs
-                                                                                // upload
+                                                                              // blobs
+                                                                              // upload
 
     public static final String CTYPE_MULTIPART_MIXED = "multipart/mixed"; // for
-                                                                            // blobs
-                                                                            // download
+                                                                          // blobs
+                                                                          // download
 
     public static final String REQUEST_ACCEPT_HEADER = CTYPE_ENTITY + ", */*";
 
@@ -48,7 +48,7 @@ public class Constants {
      * If the header is not specified, the default properties are returned (the
      * minimal document properties). To specify all the schemas you can use the
      * <code>*</code> as value. Example:
-     *
+     * 
      * <pre>
      * X-NXDocumentProperties: *
      * X-NXDocumentProperties: dublincore, file

@@ -36,111 +36,110 @@ import android.widget.Toast;
 
 public abstract class BaseNuxeoActivity extends Activity {
 
-	protected boolean loadingInProgress = false;
+    protected boolean loadingInProgress = false;
 
-	protected NuxeoContext getNuxeoContext() {
-		return NuxeoContext.get(getApplicationContext());
-	}
+    protected NuxeoContext getNuxeoContext() {
+        return NuxeoContext.get(getApplicationContext());
+    }
 
-	protected Session getNuxeoSession() {
-		return getNuxeoContext().getSession();
-	}
+    protected Session getNuxeoSession() {
+        return getNuxeoContext().getSession();
+    }
 
-	protected AndroidAutomationClient getAutomationClient() {
-		return getNuxeoContext().getNuxeoClient();
-	}
+    protected AndroidAutomationClient getAutomationClient() {
+        return getNuxeoContext().getNuxeoClient();
+    }
 
-	protected class NuxeoAsyncTask extends AsyncTask<Void, Integer, Object> {
+    protected class NuxeoAsyncTask extends AsyncTask<Void, Integer, Object> {
 
-		@Override
-		protected void onPreExecute() {
-			loadingInProgress=true;
-			onNuxeoDataRetrievalStarted();
-			super.onPreExecute();
-		}
+        @Override
+        protected void onPreExecute() {
+            loadingInProgress = true;
+            onNuxeoDataRetrievalStarted();
+            super.onPreExecute();
+        }
 
-		@Override
-		protected Object doInBackground(Void... arg0) {
-			try {
-				Object result = retrieveNuxeoData();
-				return result;
-			}
-			catch (NotAvailableOffline naoe) {
-				BaseNuxeoActivity.this.runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-			            Toast.makeText(BaseNuxeoActivity.this,
-			                    "This screen can bot be displayed offline",
-			                    Toast.LENGTH_LONG).show();
-					}
-				});
-				return null;
-			}
-			catch (Exception e) {
-				Log.e("NuxeoAsyncTask", "Error while executing async Nuxeo task in activity", e);
-				try {
-					cancel(true);
-				} catch (Throwable t) {
-					// NOP
-				}
-				return null;
-			}
-		}
+        @Override
+        protected Object doInBackground(Void... arg0) {
+            try {
+                Object result = retrieveNuxeoData();
+                return result;
+            } catch (NotAvailableOffline naoe) {
+                BaseNuxeoActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(BaseNuxeoActivity.this,
+                                "This screen can bot be displayed offline",
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+                return null;
+            } catch (Exception e) {
+                Log.e("NuxeoAsyncTask",
+                        "Error while executing async Nuxeo task in activity", e);
+                try {
+                    cancel(true);
+                } catch (Throwable t) {
+                    // NOP
+                }
+                return null;
+            }
+        }
 
-		@Override
-		protected void onPostExecute(Object result) {
-			loadingInProgress=false;
-			if (result!=null) {
-				onNuxeoDataRetrieved(result);
-			} else {
-				onNuxeoDataRetrieveFailed();
-			}
-		}
-	}
+        @Override
+        protected void onPostExecute(Object result) {
+            loadingInProgress = false;
+            if (result != null) {
+                onNuxeoDataRetrieved(result);
+            } else {
+                onNuxeoDataRetrieveFailed();
+            }
+        }
+    }
 
-	protected abstract boolean requireAsyncDataRetrieval();
+    protected abstract boolean requireAsyncDataRetrieval();
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		if (requireAsyncDataRetrieval()) {
-			runAsyncDataRetrieval();
-		}
-	}
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (requireAsyncDataRetrieval()) {
+            runAsyncDataRetrieval();
+        }
+    }
 
-	protected void runAsyncDataRetrieval() {
-		new NuxeoAsyncTask().execute((Void[])null);
-	}
+    protected void runAsyncDataRetrieval() {
+        new NuxeoAsyncTask().execute((Void[]) null);
+    }
 
-	/**
-	 * Should be overridden to include Async process.
-	 * Returning a null result will cancel the callback
-	 */
-	protected Object retrieveNuxeoData() throws Exception {
-		return null;
-	}
+    /**
+     * Should be overridden to include Async process.
+     * Returning a null result will cancel the callback
+     */
+    protected Object retrieveNuxeoData() throws Exception {
+        return null;
+    }
 
-	/**
-	 * Called on the UI Thread to notify that async process is started
-	 * This may be used to display a waiting message
-	 */
-	protected void onNuxeoDataRetrievalStarted() {
-	}
+    /**
+     * Called on the UI Thread to notify that async process is started
+     * This may be used to display a waiting message
+     */
+    protected void onNuxeoDataRetrievalStarted() {
+    }
 
-	/**
-	 * Called on the UI Thread when the async process is completed.
-	 * The input object will be the output of the retrieveNuxeoData
-	 */
-	protected void onNuxeoDataRetrieved(Object data) {
+    /**
+     * Called on the UI Thread when the async process is completed.
+     * The input object will be the output of the retrieveNuxeoData
+     */
+    protected void onNuxeoDataRetrieved(Object data) {
 
-	}
+    }
 
-	/**
-	 * Called on the UI Thread when the async process is completed in error.
-	 */
-	protected void onNuxeoDataRetrieveFailed() {
+    /**
+     * Called on the UI Thread when the async process is completed in error.
+     */
+    protected void onNuxeoDataRetrieveFailed() {
 
-	}
+    }
 
     protected void startViewerFromBlob(File tmpFile, String mimeTye) {
         Uri path = Uri.fromFile(tmpFile);
@@ -154,11 +153,9 @@ public abstract class BaseNuxeoActivity extends Activity {
 
         try {
             startActivity(intent);
-        }
-        catch (android.content.ActivityNotFoundException e) {
-            Toast.makeText(this,
-                "No Application Available to View " + mimeTye,
-                Toast.LENGTH_SHORT).show();
+        } catch (android.content.ActivityNotFoundException e) {
+            Toast.makeText(this, "No Application Available to View " + mimeTye,
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -170,48 +167,45 @@ public abstract class BaseNuxeoActivity extends Activity {
 
         try {
             startActivity(intent);
-        }
-        catch (android.content.ActivityNotFoundException e) {
+        } catch (android.content.ActivityNotFoundException e) {
             Toast.makeText(this,
-                "No Application Available to View uri " + uri.toString(),
-                Toast.LENGTH_SHORT).show();
+                    "No Application Available to View uri " + uri.toString(),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
     protected void unbindDrawables(View view) {
         if (view.getBackground() != null) {
-        view.getBackground().setCallback(null);
+            view.getBackground().setCallback(null);
         }
         if (view instanceof ViewGroup) {
             for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
-            unbindDrawables(((ViewGroup) view).getChildAt(i));
+                unbindDrawables(((ViewGroup) view).getChildAt(i));
             }
             try {
-            	((ViewGroup) view).removeAllViews();
+                ((ViewGroup) view).removeAllViews();
             } catch (Throwable e) {
-            	// NOP
-			}
+                // NOP
+            }
         }
-     }
-
+    }
 
     protected <T> T getInitParam(String name, Class<T> type) {
-		if (getIntent().getExtras()!=null) {
-			Object value = getIntent().getExtras().get(name);
-			if (value!=null) {
-				return type.cast(value);
-			}
-		}
-		return null;
-	}
-
+        if (getIntent().getExtras() != null) {
+            Object value = getIntent().getExtras().get(name);
+            if (value != null) {
+                return type.cast(value);
+            }
+        }
+        return null;
+    }
 
     public void restart(String paramName, Serializable paramValue) {
         Intent intent = getIntent();
         overridePendingTransition(0, 0);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        if (paramName!=null) {
-        	intent.putExtra(paramName, paramValue);
+        if (paramName != null) {
+            intent.putExtra(paramName, paramValue);
         }
         finish();
         overridePendingTransition(0, 0);
@@ -219,7 +213,7 @@ public abstract class BaseNuxeoActivity extends Activity {
     }
 
     public boolean isReady() {
-    	return !loadingInProgress;
+        return !loadingInProgress;
     }
 
 }

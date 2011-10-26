@@ -26,72 +26,72 @@ import org.nuxeo.ecm.automation.client.jaxrs.spi.Request;
 
 public class CacheKeyHelper {
 
-	private CacheKeyHelper() {
-	}
+    private CacheKeyHelper() {
+    }
 
-	public static String getHash(String valueToHash) {
-		MessageDigest digest;
-		try {
-			digest = java.security.MessageDigest.getInstance("MD5");
-		} catch (NoSuchAlgorithmException e) {
-			return null;
-		}
-		digest.update(valueToHash.getBytes());
-		byte messageDigest[] = digest.digest();
-		StringBuffer hexString = new StringBuffer();
-		for (int i = 0; i < messageDigest.length; i++) {
-			hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
-		}
-		return hexString.toString();
-	}
+    public static String getHash(String valueToHash) {
+        MessageDigest digest;
+        try {
+            digest = java.security.MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            return null;
+        }
+        digest.update(valueToHash.getBytes());
+        byte messageDigest[] = digest.digest();
+        StringBuffer hexString = new StringBuffer();
+        for (int i = 0; i < messageDigest.length; i++) {
+            hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+        }
+        return hexString.toString();
+    }
 
-	public static String getOperationDefinitionsCacheKey(String url) {
-		String key =  getHash(url) + "-automationDefinitions";
-		return key;
-	}
+    public static String getOperationDefinitionsCacheKey(String url) {
+        String key = getHash(url) + "-automationDefinitions";
+        return key;
+    }
 
-	public static String computeRequestKey(Request request) {
+    public static String computeRequestKey(Request request) {
 
-		String url = request.getUrl();
-		if (url.endsWith("/login")) {
-			// no caching
-			return null;
-		}
+        String url = request.getUrl();
+        if (url.endsWith("/login")) {
+            // no caching
+            return null;
+        }
 
-		if (url.endsWith("/automation/")) {
-			// automation operation definitions
-			return getOperationDefinitionsCacheKey(url);
-		}
+        if (url.endsWith("/automation/")) {
+            // automation operation definitions
+            return getOperationDefinitionsCacheKey(url);
+        }
 
-		StringBuffer sb = new StringBuffer();
-		sb.append(request.getUrl());
-		sb.append(request.asStringEntity());
+        StringBuffer sb = new StringBuffer();
+        sb.append(request.getUrl());
+        sb.append(request.asStringEntity());
 
-		return getHash(sb.toString());
-	}
+        return getHash(sb.toString());
+    }
 
-	public static String computeRequestKey(OperationRequest request) {
+    public static String computeRequestKey(OperationRequest request) {
 
-		String url = request.getUrl();
-		if (url.endsWith("/login")) {
-			// no caching
-			return null;
-		}
+        String url = request.getUrl();
+        if (url.endsWith("/login")) {
+            // no caching
+            return null;
+        }
 
-		if (url.endsWith("/automation/")) {
-			// automation operation definitions
-			return getOperationDefinitionsCacheKey(url);
-		}
+        if (url.endsWith("/automation/")) {
+            // automation operation definitions
+            return getOperationDefinitionsCacheKey(url);
+        }
 
-		StringBuffer sb = new StringBuffer();
-		sb.append(request.getUrl());
-		try {
-			sb.append(JsonMarshalling.writeRequest(request));
-		} catch (Exception e1) {
-			throw new RuntimeException("Unable to compute RequestKey", e1);
-		}
+        StringBuffer sb = new StringBuffer();
+        sb.append(request.getUrl());
+        try {
+            sb.append(JsonMarshalling.writeRequest(request));
+        } catch (Exception e1) {
+            throw new RuntimeException("Unable to compute RequestKey", e1);
+        }
 
-		return getHash(sb.toString());
-	}
+        return getHash(sb.toString());
+    }
 
 }

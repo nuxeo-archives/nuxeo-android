@@ -31,130 +31,136 @@ import android.util.Log;
 
 public class TransientStateTableWrapper extends AbstractSQLTableWrapper {
 
-	public static final String TBLNAME = "NuxeoTransientState";
+    public static final String TBLNAME = "NuxeoTransientState";
 
-	protected static final String KEY_COLUMN = "UID";
-	protected static final String PATH_COLUMN = "PATH";
-	protected static final String OPTYPE_COLUMN = "OPTYPE";
-	protected static final String DOCTYPE_COLUMN = "DOCTYPE";
-	protected static final String PROPS_COLUMN = "PROPS";
-	protected static final String LISTNAME_COLUMN = "LISTNAME";
-	protected static final String REQUESTID_COLUMN = "REQUESTID";
-	protected static final String CONFLICT_COLUMN = "CONFLICT";
+    protected static final String KEY_COLUMN = "UID";
 
+    protected static final String PATH_COLUMN = "PATH";
 
-	protected static final String CREATE_STATEMENT = "CREATE TABLE " + TBLNAME
-			+ " (" + KEY_COLUMN + " TEXT, " + PATH_COLUMN + " TEXT, "
-			+ OPTYPE_COLUMN + " TEXT, " + DOCTYPE_COLUMN + " TEXT, "
-			+ LISTNAME_COLUMN + " TEXT, " + REQUESTID_COLUMN + " TEXT, "
-			+ CONFLICT_COLUMN + " TEXT, "
-			+ PROPS_COLUMN + " TEXT); ";
+    protected static final String OPTYPE_COLUMN = "OPTYPE";
 
-	@Override
-	public String getCreateStatement() {
-		return CREATE_STATEMENT;
-	}
+    protected static final String DOCTYPE_COLUMN = "DOCTYPE";
 
-	@Override
-	public String getKeyColumnName() {
-		return KEY_COLUMN;
-	}
+    protected static final String PROPS_COLUMN = "PROPS";
 
-	@Override
-	public String getTableName() {
-		return TBLNAME;
-	}
+    protected static final String LISTNAME_COLUMN = "LISTNAME";
 
-	public void storeDeltaSet(DocumentDeltaSet deltaSet) {
+    protected static final String REQUESTID_COLUMN = "REQUESTID";
 
-		SQLiteDatabase db = getWritableDatabase();
+    protected static final String CONFLICT_COLUMN = "CONFLICT";
 
-		String sql = "INSERT INTO " + getTableName() + " (" + KEY_COLUMN + ","
-		+ PATH_COLUMN + ","
-		+ OPTYPE_COLUMN + ","
-		+ DOCTYPE_COLUMN + ","
-		+ PROPS_COLUMN + ","
-		+ REQUESTID_COLUMN + ","
-		+ LISTNAME_COLUMN + ") " ;
+    protected static final String CREATE_STATEMENT = "CREATE TABLE " + TBLNAME
+            + " (" + KEY_COLUMN + " TEXT, " + PATH_COLUMN + " TEXT, "
+            + OPTYPE_COLUMN + " TEXT, " + DOCTYPE_COLUMN + " TEXT, "
+            + LISTNAME_COLUMN + " TEXT, " + REQUESTID_COLUMN + " TEXT, "
+            + CONFLICT_COLUMN + " TEXT, " + PROPS_COLUMN + " TEXT); ";
 
-		sql = sql + " VALUES ("
-		+ "'" + deltaSet.getId() + "',"
-		+ "'" + deltaSet.getPath() + "',"
-		+ "'" + deltaSet.getOperationType().toString() + "',"
-		+ "'" + deltaSet.getDocType() + "',"
-		+ "'" + JSONExporter.toJSON(deltaSet.getDirtyProps()) + "',"
-		+ "'" + deltaSet.getRequestId() + "',"
-		+ "'" + deltaSet.getListName() + "');";
+    @Override
+    public String getCreateStatement() {
+        return CREATE_STATEMENT;
+    }
 
-		// blobs are stored indirectly in the BlobStore and referenced via a JSONBlob in the properties of the Document
+    @Override
+    public String getKeyColumnName() {
+        return KEY_COLUMN;
+    }
 
-		execTransactionalSQL(db, sql);
-	}
+    @Override
+    public String getTableName() {
+        return TBLNAME;
+    }
 
+    public void storeDeltaSet(DocumentDeltaSet deltaSet) {
 
+        SQLiteDatabase db = getWritableDatabase();
 
-	public List<DocumentDeltaSet> getDeltaSets(List<String> ids, String targetListName) {
+        String sql = "INSERT INTO " + getTableName() + " (" + KEY_COLUMN + ","
+                + PATH_COLUMN + "," + OPTYPE_COLUMN + "," + DOCTYPE_COLUMN
+                + "," + PROPS_COLUMN + "," + REQUESTID_COLUMN + ","
+                + LISTNAME_COLUMN + ") ";
 
-		SQLiteDatabase db = getReadableDatabase();
+        sql = sql + " VALUES (" + "'" + deltaSet.getId() + "'," + "'"
+                + deltaSet.getPath() + "'," + "'"
+                + deltaSet.getOperationType().toString() + "'," + "'"
+                + deltaSet.getDocType() + "'," + "'"
+                + JSONExporter.toJSON(deltaSet.getDirtyProps()) + "'," + "'"
+                + deltaSet.getRequestId() + "'," + "'" + deltaSet.getListName()
+                + "');";
 
-		String sql = "select * from " + getTableName() + " where " + getKeyColumnName() + " IN (";
-		for (String id : ids) {
-			sql = sql + "'" + id + "', ";
-		}
-		sql = sql + "'') ";
-		if (targetListName!=null) {
-			sql = sql +" or " + LISTNAME_COLUMN + "='" + targetListName + "'";
-		}
-		sql = sql +";";
-		Cursor cursor = db.rawQuery(sql,null);
+        // blobs are stored indirectly in the BlobStore and referenced via a
+        // JSONBlob in the properties of the Document
 
-		List<DocumentDeltaSet> result = new ArrayList<DocumentDeltaSet>();
+        execTransactionalSQL(db, sql);
+    }
 
-		try {
-			if (cursor.getCount()>0 && cursor.moveToFirst()) {
+    public List<DocumentDeltaSet> getDeltaSets(List<String> ids,
+            String targetListName) {
 
-				do {
-					String uuid = cursor.getString(cursor.getColumnIndex(KEY_COLUMN));
-					String path = cursor.getString(cursor.getColumnIndex(PATH_COLUMN));
-					OperationType opType = OperationType.fromString(cursor.getString(cursor.getColumnIndex(OPTYPE_COLUMN)));
-					String docType = cursor.getString(cursor.getColumnIndex(DOCTYPE_COLUMN));
-					PropertyMap props = null;
-					String jsonProps =cursor.getString(cursor.getColumnIndex(PROPS_COLUMN));
-					if (jsonProps!=null) {
-						props = JSONExporter.getFromJSONString(jsonProps);
-					}
-					String listName = cursor.getString(cursor.getColumnIndex(LISTNAME_COLUMN));
-					String requestId = cursor.getString(cursor.getColumnIndex(REQUESTID_COLUMN));
-					String conflict = cursor.getString(cursor.getColumnIndex(CONFLICT_COLUMN));
+        SQLiteDatabase db = getReadableDatabase();
 
-					DocumentDeltaSet delta = new DocumentDeltaSet(opType,uuid, path, docType, props, requestId, listName);
-					if (conflict!=null) {
-						delta.setConflict(Boolean.parseBoolean(conflict));
-					}
-					result.add(delta);
-				} while (cursor.moveToNext());
-			}
-		return result;
-		} finally {
-			if (cursor!=null) {
-				cursor.close();
-			}
-		}
-	}
+        String sql = "select * from " + getTableName() + " where "
+                + getKeyColumnName() + " IN (";
+        for (String id : ids) {
+            sql = sql + "'" + id + "', ";
+        }
+        sql = sql + "'') ";
+        if (targetListName != null) {
+            sql = sql + " or " + LISTNAME_COLUMN + "='" + targetListName + "'";
+        }
+        sql = sql + ";";
+        Cursor cursor = db.rawQuery(sql, null);
 
-	public void deleteEntryByRequestId(String key) {
-		SQLiteDatabase db = getWritableDatabase();
-		String sql = "delete  from " + getTableName() + " where " + REQUESTID_COLUMN + "='" + key + "'";
-		execTransactionalSQL(db, sql);
-	}
+        List<DocumentDeltaSet> result = new ArrayList<DocumentDeltaSet>();
 
-	public void updateConflictMarker(String uid, boolean conflict) {
-		//dump();
-		SQLiteDatabase db = getWritableDatabase();
-		String strConflict = new Boolean(conflict).toString();
-		String sql = "update  " + getTableName() + " set " + CONFLICT_COLUMN + "= '" + strConflict +  "'  where " + KEY_COLUMN + "='" + uid + "'";
+        try {
+            if (cursor.getCount() > 0 && cursor.moveToFirst()) {
+
+                do {
+                    String uuid = cursor.getString(cursor.getColumnIndex(KEY_COLUMN));
+                    String path = cursor.getString(cursor.getColumnIndex(PATH_COLUMN));
+                    OperationType opType = OperationType.fromString(cursor.getString(cursor.getColumnIndex(OPTYPE_COLUMN)));
+                    String docType = cursor.getString(cursor.getColumnIndex(DOCTYPE_COLUMN));
+                    PropertyMap props = null;
+                    String jsonProps = cursor.getString(cursor.getColumnIndex(PROPS_COLUMN));
+                    if (jsonProps != null) {
+                        props = JSONExporter.getFromJSONString(jsonProps);
+                    }
+                    String listName = cursor.getString(cursor.getColumnIndex(LISTNAME_COLUMN));
+                    String requestId = cursor.getString(cursor.getColumnIndex(REQUESTID_COLUMN));
+                    String conflict = cursor.getString(cursor.getColumnIndex(CONFLICT_COLUMN));
+
+                    DocumentDeltaSet delta = new DocumentDeltaSet(opType, uuid,
+                            path, docType, props, requestId, listName);
+                    if (conflict != null) {
+                        delta.setConflict(Boolean.parseBoolean(conflict));
+                    }
+                    result.add(delta);
+                } while (cursor.moveToNext());
+            }
+            return result;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+    public void deleteEntryByRequestId(String key) {
+        SQLiteDatabase db = getWritableDatabase();
+        String sql = "delete  from " + getTableName() + " where "
+                + REQUESTID_COLUMN + "='" + key + "'";
+        execTransactionalSQL(db, sql);
+    }
+
+    public void updateConflictMarker(String uid, boolean conflict) {
+        // dump();
+        SQLiteDatabase db = getWritableDatabase();
+        String strConflict = new Boolean(conflict).toString();
+        String sql = "update  " + getTableName() + " set " + CONFLICT_COLUMN
+                + "= '" + strConflict + "'  where " + KEY_COLUMN + "='" + uid
+                + "'";
         Log.i(this.getClass().getSimpleName(), sql);
-		execTransactionalSQL(db, sql);
-	}
+        execTransactionalSQL(db, sql);
+    }
 
 }

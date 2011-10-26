@@ -32,20 +32,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SimpleFetchSampleActivty extends BaseNuxeoActivity implements View.OnClickListener {
+public class SimpleFetchSampleActivty extends BaseNuxeoActivity implements
+        View.OnClickListener {
 
-	protected TextView statusText;
-	protected TextView docTitle;
-	protected ImageView iconView;
-	protected ImageView pictureView;
-	protected Button openBtn;
+    protected TextView statusText;
 
-	protected Document selectedDocument;
+    protected TextView docTitle;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.simplefetch);
+    protected ImageView iconView;
+
+    protected ImageView pictureView;
+
+    protected Button openBtn;
+
+    protected Document selectedDocument;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.simplefetch);
 
         statusText = (TextView) findViewById(R.id.statusText);
 
@@ -57,79 +62,83 @@ public class SimpleFetchSampleActivty extends BaseNuxeoActivity implements View.
 
         openBtn = (Button) findViewById(R.id.openBtn);
         openBtn.setOnClickListener(this);
-	}
+    }
 
-	@Override
-	protected boolean requireAsyncDataRetrieval() {
-		return true;
-	}
+    @Override
+    protected boolean requireAsyncDataRetrieval() {
+        return true;
+    }
 
-	@Override
-	protected void onNuxeoDataRetrievalStarted() {
+    @Override
+    protected void onNuxeoDataRetrievalStarted() {
         statusText.setText("Fetching ...");
         statusText.setVisibility(View.VISIBLE);
         openBtn.setVisibility(View.INVISIBLE);
-	}
+    }
 
-	@Override
-	protected void onNuxeoDataRetrieved(Object data) {
-		Documents docs = (Documents) data;
+    @Override
+    protected void onNuxeoDataRetrieved(Object data) {
+        Documents docs = (Documents) data;
 
-		if (docs.size()==0) {
-	        statusText.setText("No Picture found on your server ...");
-	        statusText.setVisibility(View.VISIBLE);
-	        openBtn.setVisibility(View.INVISIBLE);
-		} else {
-	        statusText.setText("");
-	        statusText.setVisibility(View.INVISIBLE);
-			selectedDocument = docs.get(0);
+        if (docs.size() == 0) {
+            statusText.setText("No Picture found on your server ...");
+            statusText.setVisibility(View.VISIBLE);
+            openBtn.setVisibility(View.INVISIBLE);
+        } else {
+            statusText.setText("");
+            statusText.setVisibility(View.INVISIBLE);
+            selectedDocument = docs.get(0);
 
-			docTitle.setText(selectedDocument.getTitle());
+            docTitle.setText(selectedDocument.getTitle());
 
-			// Document properties are fetched, but not binary data
-			// you can use ContentProvider binding to let Android fetch them via Uri
-			//
-			// icon : content://nuxeo/icons/<type>  (can use Document.getIcon())
-			// blob : content://nuxeo/blobs/<UUID>/<idx> (can use Document.getBlob(idx))
+            // Document properties are fetched, but not binary data
+            // you can use ContentProvider binding to let Android fetch them via
+            // Uri
+            //
+            // icon : content://nuxeo/icons/<type> (can use Document.getIcon())
+            // blob : content://nuxeo/blobs/<UUID>/<idx> (can use
+            // Document.getBlob(idx))
 
-			iconView.setImageURI(Uri.parse("content://" + NuxeoContentProviderConfig.getAuthority() + "/icons" + selectedDocument.getString("common:icon")));
+            iconView.setImageURI(Uri.parse("content://"
+                    + NuxeoContentProviderConfig.getAuthority() + "/icons"
+                    + selectedDocument.getString("common:icon")));
 
-			String contentUri = "content://" + NuxeoContentProviderConfig.getAuthority() + "/blobs/" + selectedDocument.getId();
-			pictureView.setImageURI(Uri.parse(contentUri));
+            String contentUri = "content://"
+                    + NuxeoContentProviderConfig.getAuthority() + "/blobs/"
+                    + selectedDocument.getId();
+            pictureView.setImageURI(Uri.parse(contentUri));
 
-			openBtn.setVisibility(View.VISIBLE);
-		}
+            openBtn.setVisibility(View.VISIBLE);
+        }
 
-	}
+    }
 
-	@Override
-	protected Object retrieveNuxeoData() throws Exception {
-		return getNuxeoContext().getDocumentManager().query(
-				"select * from Picture order by dc:modified desc", null, null, null, 0, 10,
-				CacheBehavior.STORE);
-	}
+    @Override
+    protected Object retrieveNuxeoData() throws Exception {
+        return getNuxeoContext().getDocumentManager().query(
+                "select * from Picture order by dc:modified desc", null, null,
+                null, 0, 10, CacheBehavior.STORE);
+    }
 
-	@Override
-	public void onClick(View srcView) {
-		if (srcView==openBtn) {
+    @Override
+    public void onClick(View srcView) {
+        if (srcView == openBtn) {
 
-			// could use startViewerFromBlob(Uri uri) from base class
-			// but do it by hand for now in order to show usage of Uri
-			// to send Nuxeo data to external applications
+            // could use startViewerFromBlob(Uri uri) from base class
+            // but do it by hand for now in order to show usage of Uri
+            // to send Nuxeo data to external applications
 
-			Uri contentUri = selectedDocument.getBlob();
-	        Intent intent = new Intent(Intent.ACTION_VIEW);
-	        intent.setData(contentUri);
-	        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            Uri contentUri = selectedDocument.getBlob();
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(contentUri);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-	        try {
-	            startActivity(intent);
-	        }
-	        catch (android.content.ActivityNotFoundException e) {
-	            Toast.makeText(this,
-	                "No Application Available to View this",
-	                Toast.LENGTH_SHORT).show();
-	        }
-		}
-	}
+            try {
+                startActivity(intent);
+            } catch (android.content.ActivityNotFoundException e) {
+                Toast.makeText(this, "No Application Available to View this",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }

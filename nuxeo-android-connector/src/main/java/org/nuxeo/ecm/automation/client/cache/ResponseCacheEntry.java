@@ -43,29 +43,30 @@ public class ResponseCacheEntry {
 
     protected String rqEntity;
 
-    public ResponseCacheEntry(String ctype, String disp, InputStream is, Request request) {
+    public ResponseCacheEntry(String ctype, String disp, InputStream is,
+            Request request) {
         this.is = is;
-        this.ctype=ctype;
+        this.ctype = ctype;
         this.disp = disp;
 
-        if (request!=null) {
-        	rqMethod = request.getMethod();
-        	if (request.getEntity()!=null) {
-        		rqEntity = request.getEntity().toString();
-        	}
+        if (request != null) {
+            rqMethod = request.getMethod();
+            if (request.getEntity() != null) {
+                rqEntity = request.getEntity().toString();
+            }
         }
     }
 
     public ResponseCacheEntry(Request request, Response response) {
         this.is = response.getInputStream();
-        this.ctype=response.getCtype();
+        this.ctype = response.getCtype();
         this.disp = response.getDisp();
 
-        if (request!=null) {
-        	rqMethod = request.getMethod();
-        	if (request.getEntity()!=null) {
-        		rqEntity = request.getEntity().toString();
-        	}
+        if (request != null) {
+            rqMethod = request.getMethod();
+            if (request.getEntity() != null) {
+                rqEntity = request.getEntity().toString();
+            }
         }
     }
 
@@ -94,18 +95,18 @@ public class ResponseCacheEntry {
     }
 
     public int getRequestMethod() {
-    	return rqMethod;
+        return rqMethod;
     }
 
     public String getRequestEntity() {
-    	return rqEntity;
+        return rqEntity;
     }
 
-	public void setRequestMethod(int rqMethod) {
-		this.rqMethod = rqMethod;
-	}
+    public void setRequestMethod(int rqMethod) {
+        this.rqMethod = rqMethod;
+    }
 
-	public void setRequestEntity(String rqEntity) {
-		this.rqEntity = rqEntity;
-	}
+    public void setRequestEntity(String rqEntity) {
+        this.rqEntity = rqEntity;
+    }
 }

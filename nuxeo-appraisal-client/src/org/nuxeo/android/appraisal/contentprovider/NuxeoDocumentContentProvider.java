@@ -19,11 +19,12 @@ package org.nuxeo.android.appraisal.contentprovider;
 
 import org.nuxeo.android.contentprovider.AbstractNuxeoReadOnlyContentProvider;
 
-public class NuxeoDocumentContentProvider extends AbstractNuxeoReadOnlyContentProvider {
+public class NuxeoDocumentContentProvider extends
+        AbstractNuxeoReadOnlyContentProvider {
 
-	@Override
-	protected int getDefaultPageSize() {
-		return 10;
-	}
+    @Override
+    protected int getDefaultPageSize() {
+        return 10;
+    }
 
 }

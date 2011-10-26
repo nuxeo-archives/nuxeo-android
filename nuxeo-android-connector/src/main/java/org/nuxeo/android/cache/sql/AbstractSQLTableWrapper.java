@@ -24,100 +24,102 @@ import android.util.Log;
 
 public abstract class AbstractSQLTableWrapper implements SQLTableWrapper {
 
-	protected SQLDBAccessor accessor;
+    protected SQLDBAccessor accessor;
 
-	@Override
-	public abstract String getCreateStatement();
+    @Override
+    public abstract String getCreateStatement();
 
-	@Override
-	public abstract String getTableName();
+    @Override
+    public abstract String getTableName();
 
-	@Override
-	public abstract String getKeyColumnName();
+    @Override
+    public abstract String getKeyColumnName();
 
-	@Override
-	public void setDBAccessor(SQLDBAccessor accessor) {
-		this.accessor = accessor;
-	}
+    @Override
+    public void setDBAccessor(SQLDBAccessor accessor) {
+        this.accessor = accessor;
+    }
 
-	protected SQLiteDatabase getWritableDatabase() {
-		return accessor.getWritableDatabase();
-	}
+    protected SQLiteDatabase getWritableDatabase() {
+        return accessor.getWritableDatabase();
+    }
 
-	protected SQLiteDatabase getReadableDatabase() {
-		return accessor.getReadableDatabase();
-	}
+    protected SQLiteDatabase getReadableDatabase() {
+        return accessor.getReadableDatabase();
+    }
 
-	protected void execTransactionalSQL(SQLiteDatabase db, String sql) {
-		execTransactionalSQL(db, sql, null);
-	}
-	protected void execTransactionalSQL(SQLiteDatabase db, String sql, Object[] args) {
-		db.beginTransaction();
-		if (args==null) {
-			db.execSQL(sql);
-		} else {
-			db.execSQL(sql, args);
-		}
-		db.setTransactionSuccessful();
-		db.endTransaction();
-	}
+    protected void execTransactionalSQL(SQLiteDatabase db, String sql) {
+        execTransactionalSQL(db, sql, null);
+    }
 
-	@Override
-	public long getCount() {
-		SQLiteDatabase db = getReadableDatabase();
+    protected void execTransactionalSQL(SQLiteDatabase db, String sql,
+            Object[] args) {
+        db.beginTransaction();
+        if (args == null) {
+            db.execSQL(sql);
+        } else {
+            db.execSQL(sql, args);
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
 
-		String sql = "select count(*) from " + getTableName() ;
-		SQLiteStatement statement=null;
-		try {
-			statement = db.compileStatement(sql);
-			return statement.simpleQueryForLong();
-		} finally {
-			if (statement!=null) {
-				statement.close();
-			}
-		}
-	}
+    @Override
+    public long getCount() {
+        SQLiteDatabase db = getReadableDatabase();
 
-	@Override
-	public void clearTable() {
-		SQLiteDatabase db = getWritableDatabase();
-		String sql = "delete  from " + getTableName() ;
-		execTransactionalSQL(db, sql);
-	}
+        String sql = "select count(*) from " + getTableName();
+        SQLiteStatement statement = null;
+        try {
+            statement = db.compileStatement(sql);
+            return statement.simpleQueryForLong();
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+        }
+    }
 
-	@Override
-	public void deleteEntry(String key) {
-		SQLiteDatabase db = getWritableDatabase();
-		String sql = "delete  from " + getTableName() + " where " + getKeyColumnName() + "='" + key + "'";
-		execTransactionalSQL(db, sql);
-	}
+    @Override
+    public void clearTable() {
+        SQLiteDatabase db = getWritableDatabase();
+        String sql = "delete  from " + getTableName();
+        execTransactionalSQL(db, sql);
+    }
 
+    @Override
+    public void deleteEntry(String key) {
+        SQLiteDatabase db = getWritableDatabase();
+        String sql = "delete  from " + getTableName() + " where "
+                + getKeyColumnName() + "='" + key + "'";
+        execTransactionalSQL(db, sql);
+    }
 
-	protected void dump() {
-		SQLiteDatabase db = getReadableDatabase();
+    protected void dump() {
+        SQLiteDatabase db = getReadableDatabase();
 
-		String sql = "select * from " + getTableName();
-		Cursor cursor = db.rawQuery(sql,null);
+        String sql = "select * from " + getTableName();
+        Cursor cursor = db.rawQuery(sql, null);
 
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < cursor.getColumnCount(); i++ ) {
-			sb.append( " | ");
-			sb.append(cursor.getColumnName(i));
-		}
-		Log.i(this.getClass().getSimpleName(),sb.toString());
-		if (cursor.getCount()>0 && cursor.moveToFirst()) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < cursor.getColumnCount(); i++) {
+            sb.append(" | ");
+            sb.append(cursor.getColumnName(i));
+        }
+        Log.i(this.getClass().getSimpleName(), sb.toString());
+        if (cursor.getCount() > 0 && cursor.moveToFirst()) {
 
-			do {
-				sb = new StringBuffer();
-				for (int i = 0; i < cursor.getColumnCount(); i++ ) {
-					sb.append( " | ");
-					sb.append(cursor.getString(i));
-				}
-				Log.i(this.getClass().getSimpleName(),sb.toString());
-			} while (cursor.moveToNext());
+            do {
+                sb = new StringBuffer();
+                for (int i = 0; i < cursor.getColumnCount(); i++) {
+                    sb.append(" | ");
+                    sb.append(cursor.getString(i));
+                }
+                Log.i(this.getClass().getSimpleName(), sb.toString());
+            } while (cursor.moveToNext());
 
-		}
-		cursor.close();
-	}
+        }
+        cursor.close();
+    }
 
 }

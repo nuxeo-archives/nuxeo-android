@@ -26,10 +26,12 @@ import org.nuxeo.ecm.automation.client.jaxrs.spi.auth.PortalSSOAuthInterceptor;
 
 public class SampleSSOPortal {
 
-        public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         try {
-            HttpAutomationClient client = new HttpAutomationClient("http://localhost:8080/nuxeo/site/automation");
-            client.setRequestInterceptor(new PortalSSOAuthInterceptor("nuxeo5secretkey", "Administrator"));
+            HttpAutomationClient client = new HttpAutomationClient(
+                    "http://localhost:8080/nuxeo/site/automation");
+            client.setRequestInterceptor(new PortalSSOAuthInterceptor(
+                    "nuxeo5secretkey", "Administrator"));
             Session session = client.getSession();
             DocumentService rs = session.getAdapter(DocumentService.class);
             Documents docs = rs.query("SELECT * from Workspace");
@@ -43,6 +45,5 @@ public class SampleSSOPortal {
             System.out.println(e.getRemoteStackTrace());
         }
     }
-
 
 }

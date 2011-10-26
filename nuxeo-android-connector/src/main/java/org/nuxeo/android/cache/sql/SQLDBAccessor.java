@@ -21,8 +21,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 public interface SQLDBAccessor {
 
-	SQLiteDatabase getWritableDatabase();
+    SQLiteDatabase getWritableDatabase();
 
-	SQLiteDatabase getReadableDatabase();
+    SQLiteDatabase getReadableDatabase();
 
 }

@@ -21,11 +21,10 @@ import org.nuxeo.android.activities.BaseNuxeoActivity;
 
 public class DocumentProviderCreateActivity extends BaseNuxeoActivity {
 
-	@Override
-	protected boolean requireAsyncDataRetrieval() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
+    @Override
+    protected boolean requireAsyncDataRetrieval() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
 }

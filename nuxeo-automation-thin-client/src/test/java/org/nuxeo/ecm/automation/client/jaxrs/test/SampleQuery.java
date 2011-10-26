@@ -39,7 +39,6 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
  */
 public class SampleQuery {
 
-
     private static class DummyCacheManager implements InputStreamCacheManager {
 
         Map<String, CacheEntry> cache = new HashMap<String, CacheEntry>();
@@ -60,9 +59,8 @@ public class SampleQuery {
                 cache.put(key, entry);
                 out.close();
                 return new FileInputStream(file);
-            }
-            catch (Exception e) {
-                //NOP
+            } catch (Exception e) {
+                // NOP
                 return entry.getInputStream();
             }
         }
@@ -71,7 +69,7 @@ public class SampleQuery {
         public CacheEntry getFromCache(String key) {
 
             CacheEntry entry = cache.get(key);
-            if (entry!=null) {
+            if (entry != null) {
                 File file = new File("/tmp/cache" + key);
                 InputStream is;
                 try {
@@ -89,10 +87,14 @@ public class SampleQuery {
     public static void main(String[] args) throws Exception {
         try {
 
-            HttpAutomationClient client = new CacheAwareHttpAutomationClient("http://10.213.2.104:8080/nuxeo/site/automation", new DummyCacheManager());
-            Session session = client.getSession("Administrator", "Administrator");
+            HttpAutomationClient client = new CacheAwareHttpAutomationClient(
+                    "http://10.213.2.104:8080/nuxeo/site/automation",
+                    new DummyCacheManager());
+            Session session = client.getSession("Administrator",
+                    "Administrator");
 
-            Documents docs = (Documents) session.newRequest("Document.Query").set("query", "SELECT * FROM Document").execute();
+            Documents docs = (Documents) session.newRequest("Document.Query").set(
+                    "query", "SELECT * FROM Document").execute();
 
             for (Document doc : docs) {
                 System.out.println(doc.getId());
@@ -100,36 +102,38 @@ public class SampleQuery {
 
             System.out.println("from cache");
 
-            docs = (Documents) session.newRequest("Document.Query").set("query", "SELECT * FROM Document").execute();
+            docs = (Documents) session.newRequest("Document.Query").set(
+                    "query", "SELECT * FROM Document").execute();
             for (Document doc : docs) {
                 System.out.println(doc.getId());
             }
 
             System.out.println("force refresh");
 
-            docs = (Documents) session.newRequest("Document.Query").set("query", "SELECT * FROM Document").execute(true,true);
+            docs = (Documents) session.newRequest("Document.Query").set(
+                    "query", "SELECT * FROM Document").execute(true, true);
             for (Document doc : docs) {
                 System.out.println(doc.getId());
             }
 
             System.out.println("no refresh");
 
-            docs = (Documents) session.newRequest("Document.Query").set("query", "SELECT * FROM Document").execute();
+            docs = (Documents) session.newRequest("Document.Query").set(
+                    "query", "SELECT * FROM Document").execute();
             for (Document doc : docs) {
                 System.out.println(doc.getId());
             }
 
-
-//            HttpAutomationClient client = new HttpAutomationClient(
-//                    "http://localhost:8080/nuxeo/site/automation");
-//            Session session = client.getSession("Administrator",
-//                    "Administrator");
-//            DocumentService rs = session.getAdapter(DocumentService.class);
-//            Documents docs = rs.query("SELECT * from Workspace");
-//            System.out.println(docs);
-//            for (Document d : docs) {
-//                System.out.println(d.getTitle() + " at " + d.getLastModified());
-//            }
+            // HttpAutomationClient client = new HttpAutomationClient(
+            // "http://localhost:8080/nuxeo/site/automation");
+            // Session session = client.getSession("Administrator",
+            // "Administrator");
+            // DocumentService rs = session.getAdapter(DocumentService.class);
+            // Documents docs = rs.query("SELECT * from Workspace");
+            // System.out.println(docs);
+            // for (Document d : docs) {
+            // System.out.println(d.getTitle() + " at " + d.getLastModified());
+            // }
             client.shutdown();
         } catch (RemoteException e) {
             e.printStackTrace();

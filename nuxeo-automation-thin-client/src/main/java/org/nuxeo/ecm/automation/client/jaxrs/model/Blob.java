@@ -31,10 +31,11 @@ public abstract class Blob implements OperationInput {
         return fromBase64String(fileName, content, null);
     }
 
-    public static Blob fromBase64String(String fileName, String content, String mimeType) {
-        return new StreamBlob(new ByteArrayInputStream(Base64.decode(content)), fileName, mimeType);
+    public static Blob fromBase64String(String fileName, String content,
+            String mimeType) {
+        return new StreamBlob(new ByteArrayInputStream(Base64.decode(content)),
+                fileName, mimeType);
     }
-
 
     protected String mimeType;
 

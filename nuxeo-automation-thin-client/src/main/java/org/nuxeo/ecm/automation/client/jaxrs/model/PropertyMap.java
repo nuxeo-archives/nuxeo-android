@@ -25,14 +25,14 @@ import java.util.Set;
 /**
  * A flat representation of a document properties. Dates are in
  * YYYY-MM-DDThh:mm:ssZ (UTC) format
- *
+ * 
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  */
 public class PropertyMap implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-	protected final HashMap<String, Object> map;
+    protected final HashMap<String, Object> map;
 
     public PropertyMap() {
         map = new HashMap<String, Object>();

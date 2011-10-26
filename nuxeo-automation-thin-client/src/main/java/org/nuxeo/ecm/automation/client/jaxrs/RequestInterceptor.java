@@ -24,10 +24,10 @@ import org.nuxeo.ecm.automation.client.jaxrs.spi.auth.PortalSSOAuthInterceptor;
 /**
  * Provide a way of intercepting requests before they are sent
  * server side. Authentication headers are injected this way.
- *
+ * 
  * @see BasicAuthInterceptor
  * @see PortalSSOAuthInterceptor
- *
+ * 
  */
 public interface RequestInterceptor {
 

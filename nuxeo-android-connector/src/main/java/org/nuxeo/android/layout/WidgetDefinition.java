@@ -34,119 +34,119 @@ import android.widget.TextView;
 
 public class WidgetDefinition {
 
-	protected String name;
+    protected String name;
 
-	protected String type;
+    protected String type;
 
-	protected String label;
+    protected String label;
 
-	protected List<String> attributeNames;
+    protected List<String> attributeNames;
 
-	protected LayoutMode mode;
+    protected LayoutMode mode;
 
-	protected SelectOptions selectOptions;
+    protected SelectOptions selectOptions;
 
-	protected JSONObject properties;
+    protected JSONObject properties;
 
-	public WidgetDefinition(String name, String type, String label,
-			List<String> fieldNames, JSONObject properties) {
-		this.name = name;
-		this.type = type;
-		this.label = label;
-		this.attributeNames = fieldNames;
-		this.properties = properties;
-	}
+    public WidgetDefinition(String name, String type, String label,
+            List<String> fieldNames, JSONObject properties) {
+        this.name = name;
+        this.type = type;
+        this.label = label;
+        this.attributeNames = fieldNames;
+        this.properties = properties;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public String getLabel() {
-		return label;
-	}
+    public String getLabel() {
+        return label;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public NuxeoWidget build(LayoutContext context, Document doc,
-			ViewGroup parent, LayoutMode mode) {
-		this.mode = mode;
+    public NuxeoWidget build(LayoutContext context, Document doc,
+            ViewGroup parent, LayoutMode mode) {
+        this.mode = mode;
 
-		View view = null;
-		LayoutParams labelLayoutParams = new LinearLayout.LayoutParams(
-				LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 1f);
-		LayoutParams widgetLayoutParams = new LinearLayout.LayoutParams(
-				LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 1f);
+        View view = null;
+        LayoutParams labelLayoutParams = new LinearLayout.LayoutParams(
+                LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 1f);
+        LayoutParams widgetLayoutParams = new LinearLayout.LayoutParams(
+                LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 1f);
 
-		if (LayoutMode.VIEW==mode) {
-			labelLayoutParams = new LinearLayout.LayoutParams(
-					LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 0.6f);
-			widgetLayoutParams = new LinearLayout.LayoutParams(
-					LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 0.4f);
-		}
+        if (LayoutMode.VIEW == mode) {
+            labelLayoutParams = new LinearLayout.LayoutParams(
+                    LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 0.6f);
+            widgetLayoutParams = new LinearLayout.LayoutParams(
+                    LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 0.4f);
+        }
 
-		AndroidWidgetWrapper wrapper = AndroidWidgetMapper.getInstance()
-				.getWidgetWrapper(this);
+        AndroidWidgetWrapper wrapper = AndroidWidgetMapper.getInstance().getWidgetWrapper(
+                this);
 
-		if (wrapper != null) {
-			view = wrapper.buildView(context, mode, doc, attributeNames, this);
-			view.setLayoutParams(widgetLayoutParams);
-			view.setPadding(1, 1, 1, 1);
-			if (LayoutMode.VIEW==mode) {
-				view.setBackgroundColor(Color.rgb(240, 240, 250));
-			}
-		}
+        if (wrapper != null) {
+            view = wrapper.buildView(context, mode, doc, attributeNames, this);
+            view.setLayoutParams(widgetLayoutParams);
+            view.setPadding(1, 1, 1, 1);
+            if (LayoutMode.VIEW == mode) {
+                view.setBackgroundColor(Color.rgb(240, 240, 250));
+            }
+        }
 
-		if (view != null) {
-			if (label != null) {
-				TextView labelW = new TextView(context.getActivity());
-				labelW.setText(label + " :");
-				labelW.setTextColor(Color.rgb(80, 80, 80));
-				labelW.setLayoutParams(labelLayoutParams);
-				parent.addView(labelW);
-				if (LayoutMode.VIEW!=mode) {
-					labelW.setBackgroundColor(Color.rgb(160, 160, 170));
-					labelW.setTextColor(Color.rgb(20, 20, 40));
-					labelW.setPadding(5, 5, 5, 5);
-				}
+        if (view != null) {
+            if (label != null) {
+                TextView labelW = new TextView(context.getActivity());
+                labelW.setText(label + " :");
+                labelW.setTextColor(Color.rgb(80, 80, 80));
+                labelW.setLayoutParams(labelLayoutParams);
+                parent.addView(labelW);
+                if (LayoutMode.VIEW != mode) {
+                    labelW.setBackgroundColor(Color.rgb(160, 160, 170));
+                    labelW.setTextColor(Color.rgb(20, 20, 40));
+                    labelW.setPadding(5, 5, 5, 5);
+                }
 
-			}
-			parent.addView(view);
-			return new NuxeoWidget(this, view, wrapper);
-		}
+            }
+            parent.addView(view);
+            return new NuxeoWidget(this, view, wrapper);
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public SelectOptions getSelectOptions() {
-		if (selectOptions==null) {
-			return new SelectOptions();
-		}
-		return selectOptions;
-	}
+    public SelectOptions getSelectOptions() {
+        if (selectOptions == null) {
+            return new SelectOptions();
+        }
+        return selectOptions;
+    }
 
-	public void setSelectOptions(SelectOptions selectOptions) {
-		this.selectOptions = selectOptions;
-	}
+    public void setSelectOptions(SelectOptions selectOptions) {
+        this.selectOptions = selectOptions;
+    }
 
-	public String getAttributeName() {
-		return attributeNames.get(0);
-	}
+    public String getAttributeName() {
+        return attributeNames.get(0);
+    }
 
-	public List<String> getAttributeNames() {
-		return attributeNames;
-	}
+    public List<String> getAttributeNames() {
+        return attributeNames;
+    }
 
-	public LayoutMode getMode() {
-		return mode;
-	}
+    public LayoutMode getMode() {
+        return mode;
+    }
 
-	public JSONObject getProperties() {
-		if (properties==null) {
-			properties = new JSONObject();
-		}
-		return properties;
-	}
+    public JSONObject getProperties() {
+        if (properties == null) {
+            properties = new JSONObject();
+        }
+        return properties;
+    }
 
 }

@@ -130,13 +130,13 @@ public abstract class AbstractAutomationClient implements AutomationClient {
 
     public Session getSession(final String username, final String password) {
         setRequestInterceptor(new BasicAuthInterceptor(username, password));
-        Session session=null;
+        Session session = null;
         try {
             session = getSession();
         } catch (Throwable t) {
             LoginInfo fakeLoginInfo = new LoginInfo(username);
             Connector connector = newConnector();
-            if (registry==null) {
+            if (registry == null) {
                 registry = connect(connector);
             }
             session = new DisconnectedSession(this, connector, fakeLoginInfo);
@@ -164,7 +164,7 @@ public abstract class AbstractAutomationClient implements AutomationClient {
         });
     }
 
-    protected Session login(Connector connector)  {
+    protected Session login(Connector connector) {
         Request request = new Request(Request.POST, url
                 + getRegistry().getPath("login"));
         request.put("Accept", CTYPE_ENTITY);

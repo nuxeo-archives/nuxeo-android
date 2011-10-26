@@ -37,79 +37,84 @@ import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
-public abstract class ActivityResultUriToFileHandler implements ActivityResultHandler {
+public abstract class ActivityResultUriToFileHandler implements
+        ActivityResultHandler {
 
-	protected Context context;
+    protected Context context;
 
-	protected FileNameMap fileNameMap = URLConnection.getFileNameMap();
+    protected FileNameMap fileNameMap = URLConnection.getFileNameMap();
 
-	protected File targetFile;
+    protected File targetFile;
 
-	public ActivityResultUriToFileHandler(Context context) {
-		this.context = context;
-	}
+    public ActivityResultUriToFileHandler(Context context) {
+        this.context = context;
+    }
 
-	public ActivityResultUriToFileHandler(Context context, File targetFile) {
-		this.context = context;
-		this.targetFile = targetFile;
-	}
+    public ActivityResultUriToFileHandler(Context context, File targetFile) {
+        this.context = context;
+        this.targetFile = targetFile;
+    }
 
-	@Override
-	public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override
+    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
 
-		if (resultCode == Activity.RESULT_OK) {
-			if (data==null && targetFile!=null) {
-				Blob blob = new FileBlob(targetFile);
-				String mimeType = fileNameMap.getContentTypeFor(targetFile.getName());
-				blob.setMimeType(mimeType);
-				onStreamBlobAvailable(blob);
-				// XXX manage file deletion !!!
-				return  true;
-			}
-			Uri dataUri = data.getData();
-			if (dataUri!=null) {
-				AssetFileDescriptor afd = null;
-				String mimeType = null;
-				String fileName = null;
+        if (resultCode == Activity.RESULT_OK) {
+            if (data == null && targetFile != null) {
+                Blob blob = new FileBlob(targetFile);
+                String mimeType = fileNameMap.getContentTypeFor(targetFile.getName());
+                blob.setMimeType(mimeType);
+                onStreamBlobAvailable(blob);
+                // XXX manage file deletion !!!
+                return true;
+            }
+            Uri dataUri = data.getData();
+            if (dataUri != null) {
+                AssetFileDescriptor afd = null;
+                String mimeType = null;
+                String fileName = null;
 
-				try {
-					afd = context.getContentResolver().openAssetFileDescriptor(dataUri, "r");
-					mimeType = context.getContentResolver().getType(dataUri);
-					if (dataUri.toString().startsWith("file://")) {
-						fileName = dataUri.getLastPathSegment();
-					}
-					if (mimeType==null && fileName!=null) {
-						mimeType = fileNameMap.getContentTypeFor(fileName);
-					}
-					if (fileName==null) {
-						fileName = dataUri.getEncodedPath().replace("/", "_");
-						if (mimeType!=null) {
-							String ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
-							fileName = fileName + "." + ext;
-						}
-					}
-				} catch (FileNotFoundException e) {
-					handleError("can not handle uri" + dataUri.toString(), e);
-					return false;
-				}
+                try {
+                    afd = context.getContentResolver().openAssetFileDescriptor(
+                            dataUri, "r");
+                    mimeType = context.getContentResolver().getType(dataUri);
+                    if (dataUri.toString().startsWith("file://")) {
+                        fileName = dataUri.getLastPathSegment();
+                    }
+                    if (mimeType == null && fileName != null) {
+                        mimeType = fileNameMap.getContentTypeFor(fileName);
+                    }
+                    if (fileName == null) {
+                        fileName = dataUri.getEncodedPath().replace("/", "_");
+                        if (mimeType != null) {
+                            String ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(
+                                    mimeType);
+                            fileName = fileName + "." + ext;
+                        }
+                    }
+                } catch (FileNotFoundException e) {
+                    handleError("can not handle uri" + dataUri.toString(), e);
+                    return false;
+                }
 
-				try {
-					Blob blob = new StreamBlob(afd.createInputStream(), fileName, mimeType);
-					onStreamBlobAvailable(blob);
-				} catch (IOException e) {
-					handleError("Can not read the stream" + dataUri.toString(), e);
-					return false;
-				}
-				return true;
-			}
-		}
-		return false;
-	}
+                try {
+                    Blob blob = new StreamBlob(afd.createInputStream(),
+                            fileName, mimeType);
+                    onStreamBlobAvailable(blob);
+                } catch (IOException e) {
+                    handleError("Can not read the stream" + dataUri.toString(),
+                            e);
+                    return false;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
 
-	protected void handleError(String message, Exception e) {
-		Log.e(this.getClass().getSimpleName(), message, e);
-		Toast.makeText(context, message, Toast.LENGTH_LONG).show();
-	}
+    protected void handleError(String message, Exception e) {
+        Log.e(this.getClass().getSimpleName(), message, e);
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+    }
 
-	protected abstract void onStreamBlobAvailable(Blob blobToUpload);
+    protected abstract void onStreamBlobAvailable(Blob blobToUpload);
 }

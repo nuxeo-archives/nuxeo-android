@@ -17,7 +17,6 @@
 
 package org.nuxeo.android.activities;
 
-
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -28,98 +27,102 @@ import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * Simple base class for sharing UI code between list view activities.
- * (one of the target is to hide as much as possible of the UI code that is not related to Nuxeo SDK itself)
- *
+ * (one of the target is to hide as much as possible of the UI code that is not
+ * related to Nuxeo SDK itself)
+ * 
  * @author tiry
- *
+ * 
  */
 public abstract class BaseListActivity extends BaseNuxeoActivity implements
-		View.OnClickListener, OnItemClickListener {
+        View.OnClickListener, OnItemClickListener {
 
-	protected ListView listView;
-	protected TextView waitingMessage;
-	protected View refreshBtn;
+    protected ListView listView;
 
-	public BaseListActivity() {
-		super();
-	}
+    protected TextView waitingMessage;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setupViews();
-		if (listView != null) {
-			registerForContextMenu(listView);
-			listView.setOnItemClickListener(this);
-		}
-		if (refreshBtn != null) {
-			refreshBtn.setOnClickListener(this);
-		}
-	}
+    protected View refreshBtn;
 
-	protected abstract void setupViews();
+    public BaseListActivity() {
+        super();
+    }
 
-	protected void setupViewsOnDataLoading() {
-		if (waitingMessage != null) {
-			waitingMessage.setText("Loading data ...");
-			waitingMessage.setVisibility(View.VISIBLE);
-		}
-		if (refreshBtn != null) {
-			refreshBtn.setEnabled(false);
-		}
-	}
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setupViews();
+        if (listView != null) {
+            registerForContextMenu(listView);
+            listView.setOnItemClickListener(this);
+        }
+        if (refreshBtn != null) {
+            refreshBtn.setOnClickListener(this);
+        }
+    }
 
-	protected void setupViewsOnDataLoaded() {
-		if (waitingMessage != null) {
-			waitingMessage.setVisibility(View.INVISIBLE);
-		}
-		if (refreshBtn != null) {
-			refreshBtn.setEnabled(true);
-		}
-	}
+    protected abstract void setupViews();
 
-	@Override
-	protected void onNuxeoDataRetrievalStarted() {
-		setupViewsOnDataLoading();
-	}
+    protected void setupViewsOnDataLoading() {
+        if (waitingMessage != null) {
+            waitingMessage.setText("Loading data ...");
+            waitingMessage.setVisibility(View.VISIBLE);
+        }
+        if (refreshBtn != null) {
+            refreshBtn.setEnabled(false);
+        }
+    }
 
-	@Override
-	protected void onNuxeoDataRetrieved(Object data) {
-		setupViewsOnDataLoaded();
-	}
+    protected void setupViewsOnDataLoaded() {
+        if (waitingMessage != null) {
+            waitingMessage.setVisibility(View.INVISIBLE);
+        }
+        if (refreshBtn != null) {
+            refreshBtn.setEnabled(true);
+        }
+    }
 
-	@Override
-	protected void onNuxeoDataRetrieveFailed() {
-		setupViewsOnDataLoaded();
-	}
+    @Override
+    protected void onNuxeoDataRetrievalStarted() {
+        setupViewsOnDataLoading();
+    }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		populateMenu(menu);
-		return super.onCreateOptionsMenu(menu);
-	}
+    @Override
+    protected void onNuxeoDataRetrieved(Object data) {
+        setupViewsOnDataLoaded();
+    }
 
-	protected abstract void populateMenu(Menu menu);
+    @Override
+    protected void onNuxeoDataRetrieveFailed() {
+        setupViewsOnDataLoaded();
+    }
 
-	@Override
-	public void onClick(View view) {
-		if (view == refreshBtn) {
-			doRefresh();
-		}
-	}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        populateMenu(menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
-	@Override
-	public void onItemClick(AdapterView<?> list, View container, int position, long id) {
-		onListItemClicked(position);
-	}
+    protected abstract void populateMenu(Menu menu);
 
-	protected abstract void onListItemClicked(int listItemPosition);
+    @Override
+    public void onClick(View view) {
+        if (view == refreshBtn) {
+            doRefresh();
+        }
+    }
 
-	protected abstract void doRefresh();
+    @Override
+    public void onItemClick(AdapterView<?> list, View container, int position,
+            long id) {
+        onListItemClicked(position);
+    }
 
-	@Override
-	protected boolean requireAsyncDataRetrieval() {
-		return true;
-	}
+    protected abstract void onListItemClicked(int listItemPosition);
+
+    protected abstract void doRefresh();
+
+    @Override
+    protected boolean requireAsyncDataRetrieval() {
+        return true;
+    }
 
 }

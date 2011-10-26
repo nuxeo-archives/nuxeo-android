@@ -23,9 +23,9 @@ import java.io.Serializable;
  */
 public class DocRef implements OperationInput, Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	protected final String ref;
+    protected final String ref;
 
     public static DocRef newRef(String ref) {
         if (ref.startsWith("/")) {

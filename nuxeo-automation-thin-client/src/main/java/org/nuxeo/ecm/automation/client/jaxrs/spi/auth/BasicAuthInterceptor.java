@@ -23,9 +23,9 @@ import org.nuxeo.ecm.automation.client.jaxrs.util.Base64;
 
 /**
  * Inject the basic authentication header in the request
- *
+ * 
  * @author matic
- *
+ * 
  */
 public class BasicAuthInterceptor implements RequestInterceptor {
 

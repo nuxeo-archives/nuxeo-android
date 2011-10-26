@@ -25,15 +25,16 @@ import android.os.Handler;
 
 public interface DeferredUpdateManager {
 
-	String execDeferredUpdate(OperationRequest request, AsyncCallback<Object> cb, OperationType opType, boolean exeuteNow);
+    String execDeferredUpdate(OperationRequest request,
+            AsyncCallback<Object> cb, OperationType opType, boolean exeuteNow);
 
-	void deleteDeferredUpdate(String key);
+    void deleteDeferredUpdate(String key);
 
-	void executePendingRequests(Session session);
+    void executePendingRequests(Session session);
 
-	void executePendingRequests(Session session, final Handler uiNotifier);
+    void executePendingRequests(Session session, final Handler uiNotifier);
 
-	long getPendingRequestCount();
+    long getPendingRequestCount();
 
-	void purgePendingUpdates();
+    void purgePendingUpdates();
 }

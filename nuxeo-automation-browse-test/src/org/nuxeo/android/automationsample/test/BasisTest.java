@@ -106,21 +106,24 @@ public abstract class BasisTest extends
     }
 
     protected boolean waitForActivity(String activityName, long timeout) {
-    	 long now = System.currentTimeMillis();
-         long endTime;
-         for(endTime = now + (long)timeout; !solo.getCurrentActivity().getClass().getName().equals(activityName) && now < endTime; now = System.currentTimeMillis());
-         return now < endTime;
+        long now = System.currentTimeMillis();
+        long endTime;
+        for (endTime = now + timeout; !solo.getCurrentActivity().getClass().getName().equals(
+                activityName)
+                && now < endTime; now = System.currentTimeMillis())
+            ;
+        return now < endTime;
     }
 
     protected boolean waitForNuxeoActivity(String activityName)
             throws Exception {
         Thread.sleep(300);
-        boolean result = waitForActivity(activityName,
-                ACTIVITY_WAIT_MILLIS);
+        boolean result = waitForActivity(activityName, ACTIVITY_WAIT_MILLIS);
 
         if (!result) {
-        	  String currentActivityName = solo.getCurrentActivity().getClass().getName();
-      	      throw new AssertionError("Unable to find activity " + activityName + " ( current name is " + currentActivityName + ")");
+            String currentActivityName = solo.getCurrentActivity().getClass().getName();
+            throw new AssertionError("Unable to find activity " + activityName
+                    + " ( current name is " + currentActivityName + ")");
         }
 
         Activity currentActivity = solo.getCurrentActivity();
@@ -128,10 +131,10 @@ public abstract class BasisTest extends
         Method method = null;
 
         try {
-        	method = currentActivity.getClass().getMethod("isReady");
+            method = currentActivity.getClass().getMethod("isReady");
         } catch (NoSuchMethodException e) {
 
-		}
+        }
 
         if (method == null) {
             if (!currentActivity.getClass().getSimpleName().equals(
@@ -191,11 +194,14 @@ public abstract class BasisTest extends
 
         Method method = null;
 
-        try  {
-        	method = adapter.getClass().getMethod("getDocumentAttribute", Integer.class, String.class);
+        try {
+            method = adapter.getClass().getMethod("getDocumentAttribute",
+                    Integer.class, String.class);
         } catch (NoSuchMethodException e) {
-        	Log.e(this.getClass().getSimpleName(), "Unable to find test method getDocumentAttribute on adapter " + adapter.getClass().getName());
-		}
+            Log.e(this.getClass().getSimpleName(),
+                    "Unable to find test method getDocumentAttribute on adapter "
+                            + adapter.getClass().getName());
+        }
 
         if (method != null) {
             return method.invoke(adapter, position, "dc:created");
@@ -215,17 +221,21 @@ public abstract class BasisTest extends
         Method method = null;
 
         try {
-        	method = adapter.getClass().getMethod("getDocumentAttribute",
-                Integer.class, String.class);
+            method = adapter.getClass().getMethod("getDocumentAttribute",
+                    Integer.class, String.class);
         } catch (NoSuchMethodException e) {
-        	throw new RuntimeException("Unable to find test method getDocumentAttribute on adapter " + adapter.getClass().getName());
-        	//Log.e(this.getClass().getSimpleName(), "Unable to find test method getDocumentAttribute on adapter " + adapter.getClass().getName());
-		}
+            throw new RuntimeException(
+                    "Unable to find test method getDocumentAttribute on adapter "
+                            + adapter.getClass().getName());
+            // Log.e(this.getClass().getSimpleName(),
+            // "Unable to find test method getDocumentAttribute on adapter " +
+            // adapter.getClass().getName());
+        }
 
         if (method != null) {
-            String value =  (String) method.invoke(adapter, position, "dc:title");
-            if (value==null) {
-            	throw new RuntimeException("Null title returned");
+            String value = (String) method.invoke(adapter, position, "dc:title");
+            if (value == null) {
+                throw new RuntimeException("Null title returned");
             }
             return value;
         } else {
@@ -244,16 +254,18 @@ public abstract class BasisTest extends
             nbTry -= 1;
         }
 
-        if (nbTry==0) {
-        	String activityName = solo.getCurrentActivity().getClass().getSimpleName();
-        	throw new AssertionError("Unable to find title " + expectedTitle + "; actual title is " + title + " on activity " + activityName);
+        if (nbTry == 0) {
+            String activityName = solo.getCurrentActivity().getClass().getSimpleName();
+            throw new AssertionError("Unable to find title " + expectedTitle
+                    + "; actual title is " + title + " on activity "
+                    + activityName);
         }
 
         return nbTry > 0;
     }
 
     protected View findViewByTag(
-            /* Class<? extends Activity> activityClass, */String tag) {
+    /* Class<? extends Activity> activityClass, */String tag) {
         // final List<View> views = solo.getViews();
         // for (View view : views)
         // {

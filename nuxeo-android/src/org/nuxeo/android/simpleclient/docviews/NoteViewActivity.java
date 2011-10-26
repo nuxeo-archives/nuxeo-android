@@ -1,3 +1,19 @@
+/*
+ * (C) Copyright 2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Lesser General Public License
+ * (LGPL) version 2.1 which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/lgpl.html
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * Contributors:
+ *     Nuxeo - initial API and implementation
+ */
 package org.nuxeo.android.simpleclient.docviews;
 
 import org.nuxeo.android.simpleclient.R;
@@ -22,16 +38,20 @@ import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectsRetrievalAsync
 
 public class NoteViewActivity extends BaseDocumentViewActivity implements
         BusinessObjectsRetrievalAsynchronousPolicy, SendLoadingIntent,
-        BroadcastListenerProvider,
-        TitleBarShowHomeFeature,
+        BroadcastListenerProvider, TitleBarShowHomeFeature,
         TitleBarRefreshFeature {
 
-;
+    ;
     private TextView title;
+
     private TextView content;
+
     private WebView htmlContent;
+
     private ScrollView txtContainer;
+
     private ScrollView htmlContainer;
+
     private ImageButton documentBtn;
 
     @Override
@@ -50,13 +70,12 @@ public class NoteViewActivity extends BaseDocumentViewActivity implements
     public void onRetrieveBusinessObjects()
             throws BusinessObjectUnavailableException {
         Document mynote = fetchDocument(false);
-        if (mynote.getString("note:note")==null) {
+        if (mynote.getString("note:note") == null) {
             fetchDocument(true);
         }
         fetchIcon(mynote);
 
     }
-
 
     @Override
     public void onFulfillDisplayObjects() {
@@ -64,7 +83,7 @@ public class NoteViewActivity extends BaseDocumentViewActivity implements
         if (document != null) {
             title.setText(document.getTitle());
             boolean useWebView = false; // WebViews are buggy before 2.3
-            if (android.os.Build.VERSION.SDK_INT>8) {
+            if (android.os.Build.VERSION.SDK_INT > 8) {
                 useWebView = true;
             }
             String mt = document.getString("note:mime_type", "text/plain");
@@ -72,11 +91,12 @@ public class NoteViewActivity extends BaseDocumentViewActivity implements
 
             if ("text/html".equals(mt)) {
                 if (useWebView) {
-                    htmlContent.loadDataWithBaseURL(null, contentText, "text/html", "utf-8",null);
+                    htmlContent.loadDataWithBaseURL(null, contentText,
+                            "text/html", "utf-8", null);
                     htmlContainer.setVisibility(0);
                     txtContainer.setVisibility(4);
                 } else {
-                    // Walkaround a WebView bug
+                    // Workaround a WebView bug
                     content.setText(Html.fromHtml(contentText));
                     htmlContainer.setVisibility(4);
                     txtContainer.setVisibility(0);
@@ -90,7 +110,8 @@ public class NoteViewActivity extends BaseDocumentViewActivity implements
             documentBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(NoteViewActivity.this, DocumentViewActivity.class).putExtra(
+                    startActivity(new Intent(NoteViewActivity.this,
+                            DocumentViewActivity.class).putExtra(
                             BaseDocumentViewActivity.DOCUMENT, document));
                 }
             });

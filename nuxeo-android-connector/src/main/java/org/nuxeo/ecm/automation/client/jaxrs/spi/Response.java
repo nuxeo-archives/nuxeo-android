@@ -21,41 +21,43 @@ import java.io.InputStream;
 
 public class Response {
 
-	protected int status;
-	protected String ctype;
-	protected String disp;
-	protected InputStream is;
+    protected int status;
 
-	public Response(int status, String ctype, String disp, InputStream is) {
-		this.status = status;
-		this.ctype = ctype;
-		this.disp = disp;
-		this.is = is;
-	}
+    protected String ctype;
 
-	public int getStatus() {
-		return status;
-	}
+    protected String disp;
 
-	public String getCtype() {
-		return ctype;
-	}
+    protected InputStream is;
 
-	public String getDisp() {
-		return disp;
-	}
+    public Response(int status, String ctype, String disp, InputStream is) {
+        this.status = status;
+        this.ctype = ctype;
+        this.disp = disp;
+        this.is = is;
+    }
 
-	public InputStream getInputStream() {
-		return is;
-	}
+    public int getStatus() {
+        return status;
+    }
 
-	public Object getResult(Request request) throws Exception {
-		return request.handleResult(status, ctype, disp, is);
-	}
+    public String getCtype() {
+        return ctype;
+    }
 
-	public void setInputStream(InputStream is) {
-		this.is = is;
-	}
+    public String getDisp() {
+        return disp;
+    }
 
+    public InputStream getInputStream() {
+        return is;
+    }
+
+    public Object getResult(Request request) throws Exception {
+        return request.handleResult(status, ctype, disp, is);
+    }
+
+    public void setInputStream(InputStream is) {
+        this.is = is;
+    }
 
 }

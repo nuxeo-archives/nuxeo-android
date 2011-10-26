@@ -28,63 +28,67 @@ import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class AppraisalLayoutActivity extends BaseDocumentLayoutActivity implements View.OnClickListener {
+public class AppraisalLayoutActivity extends BaseDocumentLayoutActivity
+        implements View.OnClickListener {
 
-	protected TextView title;
+    protected TextView title;
 
-	protected Button saveBtn;
-	protected Button cancelBtn;
+    protected Button saveBtn;
 
-	@Override
-	protected ViewGroup getLayoutContainer() {
-		return (ScrollView) findViewById(R.id.layoutContainer);
-	}
+    protected Button cancelBtn;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    protected ViewGroup getLayoutContainer() {
+        return (ScrollView) findViewById(R.id.layoutContainer);
+    }
 
-		setContentView(R.layout.createeditlayout);
-		title = (TextView) findViewById(R.id.currentDocTitle);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		if (isEditMode()) {
-			title.setText("Edit " + getCurrentDocument().getTitle() + " (" + getCurrentDocument().getType() + ")");
-		} else if (isCreateMode()) {
-			title.setText("Create new " + getCurrentDocument().getType());
-		} else {
-			title.setText("View " + getCurrentDocument().getTitle() + " (" + getCurrentDocument().getType() + ")");
-		}
+        setContentView(R.layout.createeditlayout);
+        title = (TextView) findViewById(R.id.currentDocTitle);
 
-		saveBtn = (Button) findViewById(R.id.updateDocument);
-		saveBtn.setOnClickListener(this);
+        if (isEditMode()) {
+            title.setText("Edit " + getCurrentDocument().getTitle() + " ("
+                    + getCurrentDocument().getType() + ")");
+        } else if (isCreateMode()) {
+            title.setText("Create new " + getCurrentDocument().getType());
+        } else {
+            title.setText("View " + getCurrentDocument().getTitle() + " ("
+                    + getCurrentDocument().getType() + ")");
+        }
 
-		cancelBtn = (Button) findViewById(R.id.cancelDocument);
-		cancelBtn.setOnClickListener(this);
+        saveBtn = (Button) findViewById(R.id.updateDocument);
+        saveBtn.setOnClickListener(this);
 
-		buildLayout();
-	}
+        cancelBtn = (Button) findViewById(R.id.cancelDocument);
+        cancelBtn.setOnClickListener(this);
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		if (getMode()==LayoutMode.VIEW) {
-			saveBtn.setVisibility(View.GONE);
-		} else {
-			saveBtn.setVisibility(View.VISIBLE);
-		}
-	}
+        buildLayout();
+    }
 
-	@Override
-	public void onClick(View view) {
-		if (view == saveBtn) {
-			saveDocument();
-		} else if (view == cancelBtn) {
-			cancelUpdate();
-		}
-	}
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (getMode() == LayoutMode.VIEW) {
+            saveBtn.setVisibility(View.GONE);
+        } else {
+            saveBtn.setVisibility(View.VISIBLE);
+        }
+    }
 
-	@Override
-	protected void populateMenu(Menu menu) {
-	}
+    @Override
+    public void onClick(View view) {
+        if (view == saveBtn) {
+            saveDocument();
+        } else if (view == cancelBtn) {
+            cancelUpdate();
+        }
+    }
+
+    @Override
+    protected void populateMenu(Menu menu) {
+    }
 
 }

@@ -23,7 +23,8 @@ import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableExce
 
 public class MyDocumentsActivity extends BaseDocumentListActivity {
 
-    protected Documents getDocuments(boolean refresh) throws BusinessObjectUnavailableException {
+    protected Documents getDocuments(boolean refresh)
+            throws BusinessObjectUnavailableException {
         return NuxeoAndroidServices.getInstance().getMyDocuments(refresh);
     }
 }

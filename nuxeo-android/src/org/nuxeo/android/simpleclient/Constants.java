@@ -22,7 +22,7 @@ import android.util.Log;
 
 /**
  * Gathers in one place the constants of the application.
- *
+ * 
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.17
  */

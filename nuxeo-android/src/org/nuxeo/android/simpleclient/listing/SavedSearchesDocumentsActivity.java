@@ -25,7 +25,8 @@ import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableExce
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.18
  */
-public final class SavedSearchesDocumentsActivity extends BaseDocumentListActivity {
+public final class SavedSearchesDocumentsActivity extends
+        BaseDocumentListActivity {
 
     protected Documents getDocuments(boolean refresh)
             throws BusinessObjectUnavailableException {

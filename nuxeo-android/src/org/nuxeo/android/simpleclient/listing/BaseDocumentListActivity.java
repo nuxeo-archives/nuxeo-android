@@ -1,3 +1,19 @@
+/*
+ * (C) Copyright 2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Lesser General Public License
+ * (LGPL) version 2.1 which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/lgpl.html
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * Contributors:
+ *     Nuxeo - initial API and implementation
+ */
 package org.nuxeo.android.simpleclient.listing;
 
 import java.util.ArrayList;
@@ -19,22 +35,25 @@ import com.smartnsoft.droid4me.framework.DetailsProvider.BusinessViewWrapper;
 import com.smartnsoft.droid4me.framework.DetailsProvider.ObjectEvent;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
 
-public abstract class BaseDocumentListActivity extends
-        BaseObjectListActivity {
+public abstract class BaseDocumentListActivity extends BaseObjectListActivity {
 
     @Override
-    public Intent handleEventOnListItem(Activity activity, Object viewAttributes, View view, Object obj, ObjectEvent objectEvent) {
-        return handleDocumentEventOnListItem(activity, viewAttributes, view, (Document) obj, objectEvent);
+    public Intent handleEventOnListItem(Activity activity,
+            Object viewAttributes, View view, Object obj,
+            ObjectEvent objectEvent) {
+        return handleDocumentEventOnListItem(activity, viewAttributes, view,
+                (Document) obj, objectEvent);
     }
 
-    public Intent handleDocumentEventOnListItem(Activity activity, Object viewAttributes, View view, Document doc, ObjectEvent objectEvent) {
+    public Intent handleDocumentEventOnListItem(Activity activity,
+            Object viewAttributes, View view, Document doc,
+            ObjectEvent objectEvent) {
         if (objectEvent == ObjectEvent.Clicked) {
             if (DocumentHelper.isFolderish(doc)) {
                 return new Intent(activity, DocumentChildrenListActivity.class).putExtra(
                         BaseDocumentViewActivity.DOCUMENT_ID, doc.getId()).putExtra(
                         BaseDocumentViewActivity.DOCUMENT, doc);
-            }
-            else if ("Note".equals(doc.getType())) {
+            } else if ("Note".equals(doc.getType())) {
                 return new Intent(activity, NoteViewActivity.class).putExtra(
                         BaseDocumentViewActivity.DOCUMENT_ID, doc.getId()).putExtra(
                         BaseDocumentViewActivity.DOCUMENT, doc);
@@ -67,5 +86,6 @@ public abstract class BaseDocumentListActivity extends
         return wrappers;
     }
 
-    protected abstract Documents getDocuments(boolean refresh)  throws BusinessObjectUnavailableException;
+    protected abstract Documents getDocuments(boolean refresh)
+            throws BusinessObjectUnavailableException;
 }

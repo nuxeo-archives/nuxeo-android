@@ -32,140 +32,152 @@ import android.widget.BaseAdapter;
 
 public abstract class AbstractDocumentListAdapter extends BaseAdapter {
 
-	protected LayoutInflater inflater;
-	protected final LazyDocumentsList docList;
-	protected int currentCount = -1;
-	protected final UUIDMapper mapper;
-	protected Handler handler;
+    protected LayoutInflater inflater;
 
-	protected final Integer loadingLayout;
-	protected View loadingView;
+    protected final LazyDocumentsList docList;
 
+    protected int currentCount = -1;
 
-	public AbstractDocumentListAdapter(Context context, LazyDocumentsList docList) {
-		this(context, docList, null);
-	}
+    protected final UUIDMapper mapper;
 
-	public AbstractDocumentListAdapter(Context context, LazyDocumentsList docList, Integer loadingLayout) {
-		super();
-		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		this.docList = docList;
-		this.mapper = new UUIDMapper();
-		this.loadingLayout=loadingLayout;
-		registerEventListener();
-	}
+    protected Handler handler;
 
-	protected void registerEventListener() {
-		// enforce UI Thread for the List resfresh : even if this seems strange to have to do this ...
-		handler = new Handler() {
-			@Override
-			public void handleMessage(Message msg) {
-				currentCount=-1;
-				notifyDataSetChanged();
-			}
-		};
+    protected final Integer loadingLayout;
 
-		docList.registerListener(new DocumentsListChangeListener() {
-			@Override
-			public void notifyContentChanged(int page) {
-				handler.sendEmptyMessage(page);
-			}
-		});
-	}
+    protected View loadingView;
 
-	protected boolean useLoadingView() {
-		return loadingLayout!=null && !docList.isFullyLoaded();
-	}
+    public AbstractDocumentListAdapter(Context context,
+            LazyDocumentsList docList) {
+        this(context, docList, null);
+    }
 
-	@Override
-	public int getCount() {
-		if (currentCount<0) {
-			currentCount = docList.getCurrentSize();
-		}
-		if (useLoadingView()) {
+    public AbstractDocumentListAdapter(Context context,
+            LazyDocumentsList docList, Integer loadingLayout) {
+        super();
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.docList = docList;
+        this.mapper = new UUIDMapper();
+        this.loadingLayout = loadingLayout;
+        registerEventListener();
+    }
+
+    protected void registerEventListener() {
+        // enforce UI Thread for the List resfresh : even if this seems strange
+        // to have to do this ...
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                currentCount = -1;
+                notifyDataSetChanged();
+            }
+        };
+
+        docList.registerListener(new DocumentsListChangeListener() {
+            @Override
+            public void notifyContentChanged(int page) {
+                handler.sendEmptyMessage(page);
+            }
+        });
+    }
+
+    protected boolean useLoadingView() {
+        return loadingLayout != null && !docList.isFullyLoaded();
+    }
+
+    @Override
+    public int getCount() {
+        if (currentCount < 0) {
+            currentCount = docList.getCurrentSize();
+        }
+        if (useLoadingView()) {
             return currentCount + 1;
-		} else {
-			return currentCount;
-		}
-	}
+        } else {
+            return currentCount;
+        }
+    }
 
-	public int getRealCount() {
-		if (currentCount<0) {
-			return docList.getCurrentSize();
-		}
-		return currentCount;
-	}
+    public int getRealCount() {
+        if (currentCount < 0) {
+            return docList.getCurrentSize();
+        }
+        return currentCount;
+    }
 
-	public Object getDocumentStatus(Integer position) {
-		Document doc = getDocument(position);
-		if (doc==null) {
-			return null;
-		}
-		return doc.getStatusFlag().toString();
-	}
+    public Object getDocumentStatus(Integer position) {
+        Document doc = getDocument(position);
+        if (doc == null) {
+            return null;
+        }
+        return doc.getStatusFlag().toString();
+    }
 
-	public Object getDocumentAttribute(Integer position, String attributeName) {
-		Document doc = getDocument(position);
-		if (doc==null) {
-			Log.i(this.getClass().getSimpleName(), "No document found in list for position " + position);
-			return null;
-		}
-		Log.i(this.getClass().getSimpleName(), "document found in list at position " + position + ", returning attibute " + attributeName);
-		return doc.getProperties().get(attributeName);
-	}
+    public Object getDocumentAttribute(Integer position, String attributeName) {
+        Document doc = getDocument(position);
+        if (doc == null) {
+            Log.i(this.getClass().getSimpleName(),
+                    "No document found in list for position " + position);
+            return null;
+        }
+        Log.i(this.getClass().getSimpleName(),
+                "document found in list at position " + position
+                        + ", returning attibute " + attributeName);
+        return doc.getProperties().get(attributeName);
+    }
 
-	public int getFirstPageCount() {
-		if (docList==null || docList.getPageCount()==0) {
-			return 0;
-		}
-		return docList.getFirstPage().size();
-	}
+    public int getFirstPageCount() {
+        if (docList == null || docList.getPageCount() == 0) {
+            return 0;
+        }
+        return docList.getFirstPage().size();
+    }
 
-	protected Document getDocument(int position) {
-		// XXX use this for now to be sure to trigger lazy fetch
-		// => to be replaced by docList.getDocument(position);
-		docList.setCurrentPosition(position);
-		return docList.getCurrentDocument();
-	}
+    protected Document getDocument(int position) {
+        // XXX use this for now to be sure to trigger lazy fetch
+        // => to be replaced by docList.getDocument(position);
+        docList.setCurrentPosition(position);
+        return docList.getCurrentDocument();
+    }
 
-	@Override
-	public Object getItem(int position) {
-		return getDocument(position);
-	}
+    @Override
+    public Object getItem(int position) {
+        return getDocument(position);
+    }
 
-	@Override
-	public long getItemId(int position) {
-		return mapper.getIdentifier(getDocument(position));
-	}
+    @Override
+    public long getItemId(int position) {
+        return mapper.getIdentifier(getDocument(position));
+    }
 
-	protected View getLoadingView(ViewGroup parent) {
-		if (loadingView==null) {
-			loadingView = inflater.inflate(loadingLayout, parent, false);
-		}
-		return loadingView;
-	}
+    protected View getLoadingView(ViewGroup parent) {
+        if (loadingView == null) {
+            loadingView = inflater.inflate(loadingLayout, parent, false);
+        }
+        return loadingView;
+    }
 
-	@Override
-	public View getView(int position, View recycledView, ViewGroup parent) {
+    @Override
+    public View getView(int position, View recycledView, ViewGroup parent) {
 
-		int realCount = getRealCount();
-		boolean showLoading = useLoadingView();
+        int realCount = getRealCount();
+        boolean showLoading = useLoadingView();
 
-		if ((position>=realCount) && showLoading) {
-			return getLoadingView(parent);
-		}
+        if ((position >= realCount) && showLoading) {
+            return getLoadingView(parent);
+        }
 
-		Document doc= getDocument(position);
-		View currentView = recycledView;
-		if (currentView==null || currentView ==  getLoadingView(parent)) {
-			currentView = createNewView(position, doc, inflater, parent);
-		}
-		bindViewToDocument(position, doc, currentView);
-		return currentView;
-	}
+        Document doc = getDocument(position);
+        View currentView = recycledView;
+        if (currentView == null || currentView == getLoadingView(parent)) {
+            currentView = createNewView(position, doc, inflater, parent);
+        }
+        bindViewToDocument(position, doc, currentView);
+        return currentView;
+    }
 
-	protected abstract View createNewView(int position, Document doc, LayoutInflater inflater, ViewGroup parent);
+    protected abstract View createNewView(int position, Document doc,
+            LayoutInflater inflater, ViewGroup parent);
 
-	protected abstract void bindViewToDocument(int position, Document doc, View view);
+    protected abstract void bindViewToDocument(int position, Document doc,
+            View view);
 
 }

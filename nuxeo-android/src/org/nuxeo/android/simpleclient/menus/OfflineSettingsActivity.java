@@ -1,3 +1,19 @@
+/*
+ * (C) Copyright 2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Lesser General Public License
+ * (LGPL) version 2.1 which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/lgpl.html
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * Contributors:
+ *     Nuxeo - initial API and implementation
+ */
 package org.nuxeo.android.simpleclient.menus;
 
 import org.nuxeo.android.simpleclient.R;
@@ -5,7 +21,6 @@ import org.nuxeo.android.simpleclient.service.NuxeoAndroidServices;
 import org.nuxeo.android.simpleclient.ui.TitleBarAggregate;
 import org.nuxeo.android.simpleclient.ui.TitleBarShowHomeFeature;
 
-import android.preference.Preference;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -15,24 +30,32 @@ import com.smartnsoft.droid4me.app.SmartActivity;
 import com.smartnsoft.droid4me.framework.LifeCycle;
 import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectUnavailableException;
 
-public class OfflineSettingsActivity extends
-        SmartActivity<TitleBarAggregate> implements
-        LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy,
+public class OfflineSettingsActivity extends SmartActivity<TitleBarAggregate>
+        implements LifeCycle.BusinessObjectsRetrievalAsynchronousPolicy,
         TitleBarShowHomeFeature {
 
     private int operationCount;
+
     private long cacheSize;
+
     private boolean offline;
+
     private TextView operationCountView;
+
     private TextView cacheSizeView;
+
     private TextView offlineView;
+
     private Button refreshOpAction;
+
     private Button clearCacheAction;
 
     @Override
     public void onFulfillDisplayObjects() {
-        cacheSizeView.setText("Current cache size : " + (cacheSize/1024) + " KB");
-        operationCountView.setText(operationCount + " operation definitions (cached)");
+        cacheSizeView.setText("Current cache size : " + (cacheSize / 1024)
+                + " KB");
+        operationCountView.setText(operationCount
+                + " operation definitions (cached)");
         if (offline) {
             offlineView.setText("Nuxeo Client is currently offline");
         } else {
@@ -78,8 +101,10 @@ public class OfflineSettingsActivity extends
         operationCount = NuxeoAndroidServices.getInstance().getKnownOperationsCount();
         offline = NuxeoAndroidServices.getInstance().isOfflineMode();
         cacheSize = NuxeoAndroidServices.getInstance().getCacheSize();
-        cacheSizeView.setText("Current cache size : " + (cacheSize/1024) + " KB");
-        operationCountView.setText(operationCount + " operation definitions (cached)");
+        cacheSizeView.setText("Current cache size : " + (cacheSize / 1024)
+                + " KB");
+        operationCountView.setText(operationCount
+                + " operation definitions (cached)");
         if (offline) {
             offlineView.setText("Nuxeo Client is currently offline");
         } else {

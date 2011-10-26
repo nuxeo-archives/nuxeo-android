@@ -33,14 +33,14 @@ import java.util.Date;
  * <li>Number
  * <li>Date
  * <ul>
- *
+ * 
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  */
 public class Document extends DocRef implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	protected final String path;
+    protected final String path;
 
     protected final String type;
 
@@ -58,8 +58,8 @@ public class Document extends DocRef implements Serializable {
      * Reserved to framework. Should be only called by client framework when
      * unmarshalling documents.
      */
-    public Document(String repoName, String id, String type, String path, String state,
-            String lock, PropertyMap properties) {
+    public Document(String repoName, String id, String type, String path,
+            String state, String lock, PropertyMap properties) {
         super(id);
         this.path = path;
         this.type = type;
@@ -154,6 +154,6 @@ public class Document extends DocRef implements Serializable {
     }
 
     public String getRelativeUrl() {
-    	return "/nxpath/" + repoName + path + "@view_documents";
+        return "/nxpath/" + repoName + path + "@view_documents";
     }
 }

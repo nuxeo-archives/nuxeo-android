@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2006-2008 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -40,7 +40,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.spi.Response;
 
 /**
  * Connector wrapping a {@link HttpClient} instance.
- *
+ * 
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  * @author tiry
  */
@@ -68,36 +68,36 @@ public class HttpConnector implements Connector {
     }
 
     @Override
-    public Object execute(Request request,  boolean forceRefresh, boolean cachable) {
+    public Object execute(Request request, boolean forceRefresh,
+            boolean cachable) {
         try {
-            Response response =  doExecute(request);
-            if (response!=null) {
-            	return response.getResult(request);
+            Response response = doExecute(request);
+            if (response != null) {
+                return response.getResult(request);
             } else {
-            	throw new RuntimeException("Cannot execute " + request);
+                throw new RuntimeException("Cannot execute " + request);
             }
         } catch (Throwable t) {
-        	throw new RuntimeException("Cannot execute " + request, t);
-        	}
+            throw new RuntimeException("Cannot execute " + request, t);
+        }
     }
 
     protected boolean isNetworkError(Throwable t) {
-    	String className = t.getClass().getName();
+        String className = t.getClass().getName();
 
-    	if (className.startsWith("java.net.")) {
-    		return true;
-    	}
-    	if (className.startsWith("org.apache.http.conn.")) {
-    		return true;
-    	}
+        if (className.startsWith("java.net.")) {
+            return true;
+        }
+        if (className.startsWith("org.apache.http.conn.")) {
+            return true;
+        }
 
-    	return false;
+        return false;
     }
 
-    protected Response doExecute(Request request)
-            throws Exception {
+    protected Response doExecute(Request request) throws Exception {
 
-    	HttpRequestBase httpReq = null;
+        HttpRequestBase httpReq = null;
         if (request.getMethod() == Request.POST) {
             HttpPost post = new HttpPost(request.getUrl());
             Object obj = request.getEntity();
@@ -116,7 +116,7 @@ public class HttpConnector implements Connector {
             }
             httpReq = post;
         } else {
-        	httpReq = new HttpGet(request.getUrl());
+            httpReq = new HttpGet(request.getUrl());
         }
 
         for (Map.Entry<String, String> entry : request.entrySet()) {
@@ -150,15 +150,16 @@ public class HttpConnector implements Connector {
 
         InputStream is = entity.getContent();
 
-        Response response = new Response(status,ctype, disp, is);
+        Response response = new Response(status, ctype, disp, is);
 
         return response;
     }
 
-	@Override
-	public HttpResponse executeSimpleHttp(HttpUriRequest httpRequest) throws Exception {
+    @Override
+    public HttpResponse executeSimpleHttp(HttpUriRequest httpRequest)
+            throws Exception {
 
-		return  http.execute(httpRequest, ctx);
-	}
+        return http.execute(httpRequest, ctx);
+    }
 
 }

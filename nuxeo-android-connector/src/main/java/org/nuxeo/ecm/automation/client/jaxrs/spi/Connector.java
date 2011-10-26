@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2006-2008 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -29,6 +29,6 @@ public interface Connector {
 
     Object execute(Request request, boolean forceRefresh, boolean cachable);
 
-    HttpResponse executeSimpleHttp(HttpUriRequest httpRequest) throws Exception ;
+    HttpResponse executeSimpleHttp(HttpUriRequest httpRequest) throws Exception;
 
 }

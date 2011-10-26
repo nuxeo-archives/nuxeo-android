@@ -30,116 +30,118 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
 
-public class NuxeoServerConfig implements OnSharedPreferenceChangeListener{
+public class NuxeoServerConfig implements OnSharedPreferenceChangeListener {
 
-	public static final String PREF_SERVER_URL = "nuxeo.serverUrl";
-	public static final String PREF_SERVER_LOGIN = "nuxeo.login";
-	public static final String PREF_SERVER_PASSWORD = "nuxeo.password";
+    public static final String PREF_SERVER_URL = "nuxeo.serverUrl";
 
-	protected Context androidContext;
+    public static final String PREF_SERVER_LOGIN = "nuxeo.login";
 
-	protected SharedPreferences sharedPrefs;
+    public static final String PREF_SERVER_PASSWORD = "nuxeo.password";
 
-	protected String serverBaseUrl = "http://10.0.2.2:8080/nuxeo/"; // http://android.demo.nuxeo.com/nuxeo/
+    protected Context androidContext;
 
-	protected String login = "Administrator"; // "droidUser";
+    protected SharedPreferences sharedPrefs;
 
-	protected String password = "Administrator"; // "nuxeo4android";
+    protected String serverBaseUrl = "http://10.0.2.2:8080/nuxeo/"; // http://android.demo.nuxeo.com/nuxeo/
 
-	public NuxeoServerConfig(Context androidContext) {
-		this.androidContext=androidContext;
-		setSharedPrefs(PreferenceManager.getDefaultSharedPreferences(androidContext));
-	}
+    protected String login = "Administrator"; // "droidUser";
 
-	public String getLogin() {
-		return login;
-	}
+    protected String password = "Administrator"; // "nuxeo4android";
 
-	public void setLogin(String login) {
-		this.login = login;
-	}
+    public NuxeoServerConfig(Context androidContext) {
+        this.androidContext = androidContext;
+        setSharedPrefs(PreferenceManager.getDefaultSharedPreferences(androidContext));
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getLogin() {
+        return login;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
-	public String getServerBaseUrl() {
-		return serverBaseUrl;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setServerBaseUrl(String serverBaseUrl) {
-		if (!serverBaseUrl.endsWith("/")) {
-			serverBaseUrl = serverBaseUrl + "/";
-		}
-		this.serverBaseUrl = serverBaseUrl;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public String getAutomationUrl() {
-		return serverBaseUrl + "site/automation";
-	}
+    public String getServerBaseUrl() {
+        return serverBaseUrl;
+    }
 
-	public String getHost() {
-		String url = getServerBaseUrl();
-		URI uri;
-		try {
-			uri = new URI(url);
-		} catch (URISyntaxException e) {
-			return null;
-		}
-		return uri.getHost();
-	}
+    public void setServerBaseUrl(String serverBaseUrl) {
+        if (!serverBaseUrl.endsWith("/")) {
+            serverBaseUrl = serverBaseUrl + "/";
+        }
+        this.serverBaseUrl = serverBaseUrl;
+    }
 
-	public int getHostIP() {
-		return getIPasInt(getHost());
-	}
+    public String getAutomationUrl() {
+        return serverBaseUrl + "site/automation";
+    }
 
-	protected  int getIPasInt(String hostname) {
-		if (hostname==null) {
-			return -1;
-		}
-	    InetAddress inetAddress;
-	    try {
-	        inetAddress = InetAddress.getByName(hostname);
-	    } catch (UnknownHostException e) {
-	        return -1;
-	    }
-	    byte[] addrBytes;
-	    int addr;
-	    addrBytes = inetAddress.getAddress();
-	    addr = ((addrBytes[3] & 0xff) << 24)
-	            | ((addrBytes[2] & 0xff) << 16)
-	            | ((addrBytes[1] & 0xff) << 8)
-	            |  (addrBytes[0] & 0xff);
-	    return addr;
-	}
+    public String getHost() {
+        String url = getServerBaseUrl();
+        URI uri;
+        try {
+            uri = new URI(url);
+        } catch (URISyntaxException e) {
+            return null;
+        }
+        return uri.getHost();
+    }
 
-	public SharedPreferences getSharedPrefs() {
-		return sharedPrefs;
-	}
+    public int getHostIP() {
+        return getIPasInt(getHost());
+    }
 
-	protected void setSharedPrefs(SharedPreferences sharedPrefs) {
-		this.sharedPrefs = sharedPrefs;
-		sharedPrefs.registerOnSharedPreferenceChangeListener(this);
-		initFromPrefs(sharedPrefs);
-	}
+    protected int getIPasInt(String hostname) {
+        if (hostname == null) {
+            return -1;
+        }
+        InetAddress inetAddress;
+        try {
+            inetAddress = InetAddress.getByName(hostname);
+        } catch (UnknownHostException e) {
+            return -1;
+        }
+        byte[] addrBytes;
+        int addr;
+        addrBytes = inetAddress.getAddress();
+        addr = ((addrBytes[3] & 0xff) << 24) | ((addrBytes[2] & 0xff) << 16)
+                | ((addrBytes[1] & 0xff) << 8) | (addrBytes[0] & 0xff);
+        return addr;
+    }
 
-	@Override
-	public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-		if (PREF_SERVER_LOGIN.equals(key) || PREF_SERVER_PASSWORD.equals(key) || PREF_SERVER_URL.equals(key)) {
-			initFromPrefs(prefs);
-			androidContext.sendBroadcast(new Intent(NuxeoBroadcastMessages.NUXEO_SETTINGS_CHANGED));
-		}
-	}
+    public SharedPreferences getSharedPrefs() {
+        return sharedPrefs;
+    }
 
-	protected void initFromPrefs(SharedPreferences prefs) {
-		serverBaseUrl = prefs.getString(PREF_SERVER_URL, serverBaseUrl);
-		login = prefs.getString(PREF_SERVER_LOGIN, login);
-		password = prefs.getString(PREF_SERVER_PASSWORD, password);
+    protected void setSharedPrefs(SharedPreferences sharedPrefs) {
+        this.sharedPrefs = sharedPrefs;
+        sharedPrefs.registerOnSharedPreferenceChangeListener(this);
+        initFromPrefs(sharedPrefs);
+    }
 
-	}
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+        if (PREF_SERVER_LOGIN.equals(key) || PREF_SERVER_PASSWORD.equals(key)
+                || PREF_SERVER_URL.equals(key)) {
+            initFromPrefs(prefs);
+            androidContext.sendBroadcast(new Intent(
+                    NuxeoBroadcastMessages.NUXEO_SETTINGS_CHANGED));
+        }
+    }
+
+    protected void initFromPrefs(SharedPreferences prefs) {
+        serverBaseUrl = prefs.getString(PREF_SERVER_URL, serverBaseUrl);
+        login = prefs.getString(PREF_SERVER_LOGIN, login);
+        password = prefs.getString(PREF_SERVER_PASSWORD, password);
+
+    }
 
 }

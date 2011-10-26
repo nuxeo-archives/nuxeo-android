@@ -160,9 +160,10 @@ public class DefaultOperationRequest implements OperationRequest {
         return params;
     }
 
-    public Object execute(boolean forceRefresh, boolean cachable) throws Exception {
-        this.refresh=forceRefresh;
-        this.cachable=cachable;
+    public Object execute(boolean forceRefresh, boolean cachable)
+            throws Exception {
+        this.refresh = forceRefresh;
+        this.cachable = cachable;
         return session.execute(this);
     }
 
@@ -192,7 +193,7 @@ public class DefaultOperationRequest implements OperationRequest {
     }
 
     public void forceCache() {
-        cachable=false;
-        refresh=false;
+        cachable = false;
+        refresh = false;
     }
 }

@@ -21,7 +21,7 @@ import java.io.InputStream;
 
 public interface ResponseCacheManager {
 
-	ResponseCacheEntry getResponseFromCache(String key);
+    ResponseCacheEntry getResponseFromCache(String key);
 
     InputStream storeResponse(String key, ResponseCacheEntry entry);
 

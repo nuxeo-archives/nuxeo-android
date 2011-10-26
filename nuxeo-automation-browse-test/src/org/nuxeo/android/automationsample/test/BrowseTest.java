@@ -48,7 +48,7 @@ public class BrowseTest extends BaseBrowsingTest {
     }
 
     protected void doOnlineTests() throws Exception {
-    	goOnline();
+        goOnline();
 
         // be sure to reset all caches
         getActivity().resetAllCaches();

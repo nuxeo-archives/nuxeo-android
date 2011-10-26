@@ -24,32 +24,30 @@ import android.view.ViewGroup;
 
 public class LayoutContext {
 
-	protected final Activity activity;
+    protected final Activity activity;
 
-	protected final ViewGroup rootView;
+    protected final ViewGroup rootView;
 
-	protected String layoutId;
+    protected String layoutId;
 
-	public LayoutContext(Activity activity, ViewGroup rootView) {
-		this.activity=activity;
-		this.rootView=rootView;
-	}
+    public LayoutContext(Activity activity, ViewGroup rootView) {
+        this.activity = activity;
+        this.rootView = rootView;
+    }
 
-	public String getLayoutId() {
-		if (layoutId==null) {
-			layoutId = UUID.randomUUID().toString();
-		}
-		return layoutId;
-	}
+    public String getLayoutId() {
+        if (layoutId == null) {
+            layoutId = UUID.randomUUID().toString();
+        }
+        return layoutId;
+    }
 
-	public ViewGroup getRootView() {
-		return rootView;
-	}
+    public ViewGroup getRootView() {
+        return rootView;
+    }
 
-	public Activity getActivity() {
-		return activity;
-	}
-
-
+    public Activity getActivity() {
+        return activity;
+    }
 
 }

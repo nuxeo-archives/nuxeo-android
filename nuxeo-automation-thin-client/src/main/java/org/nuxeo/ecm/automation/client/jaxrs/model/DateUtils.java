@@ -25,7 +25,6 @@ import java.util.Date;
  *
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  */
-@SuppressWarnings("deprecation")
 public class DateUtils {
 
     public static Date parseDate(String date) {
@@ -106,7 +105,7 @@ public class DateUtils {
         }
         String m = text.substring(p + 1, q);
         String s = text.substring(q + 1, text.length() - 1); // remove the
-                                                                // trailing Z
+                                                             // trailing Z
         int hour = Integer.parseInt(h);
         int minute = Integer.parseInt(m);
         int second = Integer.parseInt(s);

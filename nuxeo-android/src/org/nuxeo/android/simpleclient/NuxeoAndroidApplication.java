@@ -38,21 +38,17 @@ import android.os.Environment;
 import android.util.AndroidRuntimeException;
 import android.view.View;
 import android.view.Window;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.smartnsoft.droid4me.app.ActivityController;
 import com.smartnsoft.droid4me.app.AppPublics;
-import com.smartnsoft.droid4me.app.ProgressHandler;
 import com.smartnsoft.droid4me.app.SmartApplication;
 import com.smartnsoft.droid4me.bo.Business.InputAtom;
 import com.smartnsoft.droid4me.cache.DbPersistence;
 import com.smartnsoft.droid4me.cache.Persistence;
 import com.smartnsoft.droid4me.download.AdvancedImageDownloader;
-import com.smartnsoft.droid4me.download.ImageDownloader;
 import com.smartnsoft.droid4me.download.BasisImageDownloader.InputStreamDownloadInstructor;
+import com.smartnsoft.droid4me.download.ImageDownloader;
 
 /**
  * The entry point of the application.
@@ -61,7 +57,6 @@ import com.smartnsoft.droid4me.download.BasisImageDownloader.InputStreamDownload
  * @since 2011.02.17
  */
 public final class NuxeoAndroidApplication extends SmartApplication {
-
 
     @Override
     protected int getLogLevel() {

@@ -46,16 +46,21 @@ import com.smartnsoft.droid4me.framework.LifeCycle.BusinessObjectsRetrievalAsync
 
 public final class DocumentViewActivity extends BaseDocumentViewActivity
         implements BusinessObjectsRetrievalAsynchronousPolicy,
-        SendLoadingIntent, BroadcastListenerProvider,
-        TitleBarShowHomeFeature,
+        SendLoadingIntent, BroadcastListenerProvider, TitleBarShowHomeFeature,
         TitleBarRefreshFeature {
 
     private TextView title;
+
     private RelativeLayout layout;
+
     private LinearLayout linearLayout;
+
     private ImageButton pdfAction;
+
     private ImageButton downloadAction;
+
     private ImageButton historyAction;
+
     private ImageButton addClipboardAction;
 
     @Override
@@ -89,8 +94,7 @@ public final class DocumentViewActivity extends BaseDocumentViewActivity
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(DocumentViewActivity.this,
-                            "started PDF Conversion",
-                            Toast.LENGTH_SHORT).show();
+                            "started PDF Conversion", Toast.LENGTH_SHORT).show();
                     downloadAndDisplayBlob("pdf");
                 }
             });
@@ -98,15 +102,15 @@ public final class DocumentViewActivity extends BaseDocumentViewActivity
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(DocumentViewActivity.this,
-                            "started download",
-                            Toast.LENGTH_SHORT).show();
+                            "started download", Toast.LENGTH_SHORT).show();
                     downloadAndDisplayBlob("file");
                 }
             });
             historyAction.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(DocumentViewActivity.this, HistoryActivity.class).putExtra(
+                    startActivity(new Intent(DocumentViewActivity.this,
+                            HistoryActivity.class).putExtra(
                             BaseMiscActivity.DOCUMENT, document));
 
                 }
@@ -114,9 +118,10 @@ public final class DocumentViewActivity extends BaseDocumentViewActivity
             addClipboardAction.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(DocumentViewActivity.this,
-                            "Adding Document " + document.getTitle() + " to worklist",
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(
+                            DocumentViewActivity.this,
+                            "Adding Document " + document.getTitle()
+                                    + " to worklist", Toast.LENGTH_SHORT).show();
                     addToClipBoard(document.getId());
                 }
             });
@@ -125,7 +130,8 @@ public final class DocumentViewActivity extends BaseDocumentViewActivity
 
     }
 
-    protected void displayMetaData(LinearLayout currentLayout,  Document currentDocument) {
+    protected void displayMetaData(LinearLayout currentLayout,
+            Document currentDocument) {
         try {
             LinearFormManager.displayForm(this, currentLayout, currentDocument);
         } catch (JSONException e) {
@@ -139,11 +145,14 @@ public final class DocumentViewActivity extends BaseDocumentViewActivity
     }
 
     @Override
-    protected Blob executeDownloadOperation(String flag) throws BusinessObjectUnavailableException {
+    protected Blob executeDownloadOperation(String flag)
+            throws BusinessObjectUnavailableException {
         if ("file".equals(flag)) {
-            return NuxeoAndroidServices.getInstance().getBlob(document.getId(), "file:content", refresh, false);
+            return NuxeoAndroidServices.getInstance().getBlob(document.getId(),
+                    "file:content", refresh, false);
         } else {
-            return NuxeoAndroidServices.getInstance().getPDF(document.getId(), refresh, true);
+            return NuxeoAndroidServices.getInstance().getPDF(document.getId(),
+                    refresh, true);
         }
     }
 

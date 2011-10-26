@@ -32,61 +32,66 @@ import org.nuxeo.ecm.automation.client.jaxrs.spi.Response;
 
 public class CachedHttpConnector extends HttpConnector implements Connector {
 
-	protected final ResponseCacheManager cacheManager;
+    protected final ResponseCacheManager cacheManager;
 
-	protected final NuxeoNetworkStatus offlineSettings;
+    protected final NuxeoNetworkStatus offlineSettings;
 
-	public CachedHttpConnector(HttpClient http, ResponseCacheManager cacheManager, NuxeoNetworkStatus offlineSettings) {
-		super(http);
-		this.cacheManager = cacheManager;
-		this.offlineSettings = offlineSettings;
-	}
-
-    protected Object getResultFromCacheEntry(Request request, ResponseCacheEntry cachedResult) {
-        System.out.println("Cache HIT");
-        try {
-        	return request.handleResult(200, cachedResult.getReponseContentType(), cachedResult.getResponseContentDisposition(), cachedResult.getResponseStream());
-        } catch (Exception e) {
-        	e.printStackTrace();
-        	return null;
-		}
+    public CachedHttpConnector(HttpClient http,
+            ResponseCacheManager cacheManager,
+            NuxeoNetworkStatus offlineSettings) {
+        super(http);
+        this.cacheManager = cacheManager;
+        this.offlineSettings = offlineSettings;
     }
 
-	@Override
-    public Object execute(Request request,  boolean forceRefresh, boolean cachable) {
+    protected Object getResultFromCacheEntry(Request request,
+            ResponseCacheEntry cachedResult) {
+        System.out.println("Cache HIT");
+        try {
+            return request.handleResult(200,
+                    cachedResult.getReponseContentType(),
+                    cachedResult.getResponseContentDisposition(),
+                    cachedResult.getResponseStream());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-    	String cacheKey=null;
+    @Override
+    public Object execute(Request request, boolean forceRefresh,
+            boolean cachable) {
+
+        String cacheKey = null;
         ResponseCacheEntry cachedEntry = null;
-        if (cacheManager!=null ) {
+        if (cacheManager != null) {
             cacheKey = CacheKeyHelper.computeRequestKey(request);
             cachedEntry = cacheManager.getResponseFromCache(cacheKey);
-            if (cachedEntry!=null && !forceRefresh) {
+            if (cachedEntry != null && !forceRefresh) {
                 Object result = getResultFromCacheEntry(request, cachedEntry);
-                if (result!=null) {
-                	return result;
+                if (result != null) {
+                    return result;
                 }
             }
         }
 
         if (!offlineSettings.canUseNetwork()) {
-        	throw new NotAvailableOffline("No data in cache, must be online");
+            throw new NotAvailableOffline("No data in cache, must be online");
         }
 
         try {
-            Response response =  doExecute(request);
-            if (response!=null) {
-            	response = onBeforeResponseComplete(request, response, cacheKey);
-            	return response.getResult(request);
+            Response response = doExecute(request);
+            if (response != null) {
+                response = onBeforeResponseComplete(request, response, cacheKey);
+                return response.getResult(request);
             } else {
-            	throw new RuntimeException("Cannot execute " + request);
+                throw new RuntimeException("Cannot execute " + request);
             }
 
-        }
-        catch (ConflictException e) {
-        	throw e;
-        }
-        catch (RemoteException e) {
-            if (cachedEntry!=null) {
+        } catch (ConflictException e) {
+            throw e;
+        } catch (RemoteException e) {
+            if (cachedEntry != null) {
                 try {
                     return getResultFromCacheEntry(request, cachedEntry);
                 } catch (Exception e2) {
@@ -95,46 +100,50 @@ public class CachedHttpConnector extends HttpConnector implements Connector {
             } else {
                 throw e;
             }
-        }
-        catch (Throwable t) {
-        	if (isNetworkError(t)) {
-        		offlineSettings.setNetworkReachable(false);
-        		if (cachedEntry!=null) {
+        } catch (Throwable t) {
+            if (isNetworkError(t)) {
+                offlineSettings.setNetworkReachable(false);
+                if (cachedEntry != null) {
                     try {
                         return getResultFromCacheEntry(request, cachedEntry);
                     } catch (Throwable t2) {
-                        throw new NotAvailableOffline("Can not fetch result from cache", t2);
+                        throw new NotAvailableOffline(
+                                "Can not fetch result from cache", t2);
                     }
                 } else {
-                	throw new NotAvailableOffline("No data in cache, must be online");
+                    throw new NotAvailableOffline(
+                            "No data in cache, must be online");
                 }
-        	} else {
-        		throw new RuntimeException("Cannot execute " + request, t);
-        	}
+            } else {
+                throw new RuntimeException("Cannot execute " + request, t);
+            }
         }
     }
 
     protected boolean isNetworkError(Throwable t) {
-    	String className = t.getClass().getName();
+        String className = t.getClass().getName();
 
-    	if (className.startsWith("java.net.")) {
-    		return true;
-    	}
-    	if (className.startsWith("org.apache.http.conn.")) {
-    		return true;
-    	}
-    	return false;
+        if (className.startsWith("java.net.")) {
+            return true;
+        }
+        if (className.startsWith("org.apache.http.conn.")) {
+            return true;
+        }
+        return false;
     }
 
-    protected Response onBeforeResponseComplete(Request request, Response response, String cacheKey) {
+    protected Response onBeforeResponseComplete(Request request,
+            Response response, String cacheKey) {
 
-    	if (cacheKey!=null && cacheManager!=null && response.getStatus()==200) {
+        if (cacheKey != null && cacheManager != null
+                && response.getStatus() == 200) {
             // store in cache
-            InputStream is = cacheManager.storeResponse(cacheKey, new ResponseCacheEntry(request, response));
+            InputStream is = cacheManager.storeResponse(cacheKey,
+                    new ResponseCacheEntry(request, response));
             response.setInputStream(is);
         }
 
-    	return response;
+        return response;
     }
 
 }

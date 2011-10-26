@@ -22,12 +22,13 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 public interface LazyUpdatableDocumentsList extends LazyDocumentsList {
 
-	void updateDocument(Document updatedDocument);
+    void updateDocument(Document updatedDocument);
 
-	void updateDocument(Document updatedDocument, OperationRequest updateOperation);
+    void updateDocument(Document updatedDocument,
+            OperationRequest updateOperation);
 
-	void createDocument(Document newDocument);
+    void createDocument(Document newDocument);
 
-	void createDocument(Document newDocument, OperationRequest createOperation);
+    void createDocument(Document newDocument, OperationRequest createOperation);
 
 }

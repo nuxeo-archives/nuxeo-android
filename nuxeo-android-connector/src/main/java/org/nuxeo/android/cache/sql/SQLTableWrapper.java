@@ -19,18 +19,17 @@ package org.nuxeo.android.cache.sql;
 
 public interface SQLTableWrapper {
 
-	void setDBAccessor(SQLDBAccessor accessor);
+    void setDBAccessor(SQLDBAccessor accessor);
 
-	String getTableName();
+    String getTableName();
 
-	String getCreateStatement();
+    String getCreateStatement();
 
-	String getKeyColumnName();
+    String getKeyColumnName();
 
-	long getCount();
+    long getCount();
 
-	void clearTable();
+    void clearTable();
 
-	void deleteEntry(String key);
+    void deleteEntry(String key);
 }
-

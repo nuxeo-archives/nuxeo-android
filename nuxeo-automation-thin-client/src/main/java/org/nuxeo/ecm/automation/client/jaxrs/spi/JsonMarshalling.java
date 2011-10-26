@@ -44,7 +44,8 @@ import org.nuxeo.ecm.automation.client.jaxrs.util.JSONExporter;
 public class JsonMarshalling {
 
     @SuppressWarnings("unchecked")
-    public static OperationRegistry readRegistry(String content) throws JSONException {
+    public static OperationRegistry readRegistry(String content)
+            throws JSONException {
         JSONObject json = new JSONObject(content);
         HashMap<String, OperationDocumentation> ops = new HashMap<String, OperationDocumentation>();
         HashMap<String, OperationDocumentation> chains = new HashMap<String, OperationDocumentation>();
@@ -102,11 +103,13 @@ public class JsonMarshalling {
         throw new IllegalArgumentException("Unknown entity type: " + type);
     }
 
-    public static RemoteException readException(String content) throws JSONException {
+    public static RemoteException readException(String content)
+            throws JSONException {
         return readException(new JSONObject(content));
     }
 
-    protected static RemoteException readException(JSONObject json) throws NumberFormatException, JSONException {
+    protected static RemoteException readException(JSONObject json)
+            throws NumberFormatException, JSONException {
         return new RemoteException(Integer.parseInt(json.getString("status")),
                 json.optString("type", null), json.optString("message"),
                 json.optString("stack", null));
@@ -125,7 +128,8 @@ public class JsonMarshalling {
         return new LoginInfo(username, set, Boolean.parseBoolean(isAdmin));
     }
 
-    protected static Document readDocument(JSONObject json) throws JSONException {
+    protected static Document readDocument(JSONObject json)
+            throws JSONException {
         String uid = json.getString("uid");
         String path = json.getString("path");
         String repoName = json.getString("repository");
@@ -156,25 +160,24 @@ public class JsonMarshalling {
             PropertyList plist = new PropertyList();
             List<Serializable> list = plist.list();
             for (int i = 0, size = ar.length(); i < size; i++) {
-            	Serializable v = readValue(ar.get(i));
+                Serializable v = readValue(ar.get(i));
                 if (v != null) {
                     list.add(v);
                 }
             }
             return plist;
-       } else if (o instanceof JSONObject) {
-                JSONObject ob = (JSONObject) o;
-                PropertyMap pmap = new PropertyMap();
-                Map<String, Object> map = pmap.map();
-                Iterator<String> keys = ob.keys();
-                while (keys.hasNext()) {
-                    String key = keys.next();
-                    Object v = readValue(ob.get(key));
-                    map.put(key, v);
-                }
-                return pmap;
+        } else if (o instanceof JSONObject) {
+            JSONObject ob = (JSONObject) o;
+            PropertyMap pmap = new PropertyMap();
+            Map<String, Object> map = pmap.map();
+            Iterator<String> keys = ob.keys();
+            while (keys.hasNext()) {
+                String key = keys.next();
+                Object v = readValue(ob.get(key));
+                map.put(key, v);
             }
-        else {
+            return pmap;
+        } else {
             return o.toString();
         }
     }
@@ -189,7 +192,6 @@ public class JsonMarshalling {
                 entity.put("input", ref);
             }
         }
-
 
         entity.put("params", new JSONObject(req.getParameters()));
         entity.put("context", new JSONObject(req.getContextParameters()));

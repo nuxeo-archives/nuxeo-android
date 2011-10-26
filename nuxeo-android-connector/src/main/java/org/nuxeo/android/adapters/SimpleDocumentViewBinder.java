@@ -32,44 +32,52 @@ import android.widget.TextView;
 
 public class SimpleDocumentViewBinder implements DocumentViewBinder {
 
-	protected final int layoutId;
-	protected final Map<Integer, String> documentAttributesMapping;
+    protected final int layoutId;
 
-	protected static SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd");
+    protected final Map<Integer, String> documentAttributesMapping;
 
-	public SimpleDocumentViewBinder(int layoutId, Map<Integer, String> documentAttributesMapping) {
-		this.layoutId = layoutId;
-		this.documentAttributesMapping = documentAttributesMapping;
-	}
+    protected static SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd");
 
-	@Override
-	public void bindViewToDocument(int position, Document doc, View view) {
-		for (Integer idx : documentAttributesMapping.keySet()) {
-			View widget = view.findViewById(idx);
-			bindWidgetToDocumentAttribute(widget, doc, documentAttributesMapping.get(idx));
-		}
-	}
+    public SimpleDocumentViewBinder(int layoutId,
+            Map<Integer, String> documentAttributesMapping) {
+        this.layoutId = layoutId;
+        this.documentAttributesMapping = documentAttributesMapping;
+    }
 
-	@Override
-	public View createNewView(int position, Document doc, LayoutInflater inflater, ViewGroup parent) {
-		return inflater.inflate(layoutId, parent,false);
-	}
+    @Override
+    public void bindViewToDocument(int position, Document doc, View view) {
+        for (Integer idx : documentAttributesMapping.keySet()) {
+            View widget = view.findViewById(idx);
+            bindWidgetToDocumentAttribute(widget, doc,
+                    documentAttributesMapping.get(idx));
+        }
+    }
 
-	protected void bindWidgetToDocumentAttribute(View widget, Document doc, String attribute) {
-		if (widget instanceof TextView) {
-			if (attribute.startsWith(DocumentsListAdapter.DATE_PREIX)) {
-				Date date = DocumentAttributeResolver.getDate(doc, attribute.substring(DocumentsListAdapter.DATE_PREIX.length()));
-				if (date!=null) {
-					((TextView)widget).setText(fmt.format(date));
-				}
-			} else {
-				((TextView)widget).setText(DocumentAttributeResolver.getString(doc, attribute));
-			}
+    @Override
+    public View createNewView(int position, Document doc,
+            LayoutInflater inflater, ViewGroup parent) {
+        return inflater.inflate(layoutId, parent, false);
+    }
 
-		}
-		else if (widget instanceof ImageView) {
-			((ImageView)widget).setImageURI((Uri) DocumentAttributeResolver.get(doc, attribute));
-		}
-	}
+    protected void bindWidgetToDocumentAttribute(View widget, Document doc,
+            String attribute) {
+        if (widget instanceof TextView) {
+            if (attribute.startsWith(DocumentsListAdapter.DATE_PREIX)) {
+                Date date = DocumentAttributeResolver.getDate(
+                        doc,
+                        attribute.substring(DocumentsListAdapter.DATE_PREIX.length()));
+                if (date != null) {
+                    ((TextView) widget).setText(fmt.format(date));
+                }
+            } else {
+                ((TextView) widget).setText(DocumentAttributeResolver.getString(
+                        doc, attribute));
+            }
+
+        } else if (widget instanceof ImageView) {
+            ((ImageView) widget).setImageURI((Uri) DocumentAttributeResolver.get(
+                    doc, attribute));
+        }
+    }
 
 }

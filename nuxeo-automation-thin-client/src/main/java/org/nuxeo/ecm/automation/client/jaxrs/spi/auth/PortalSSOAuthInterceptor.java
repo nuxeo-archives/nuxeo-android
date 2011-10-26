@@ -27,15 +27,15 @@ import org.nuxeo.ecm.automation.client.jaxrs.spi.Request;
 import org.nuxeo.ecm.automation.client.jaxrs.util.Base64;
 
 /**
- *
+ * 
  * @author matic
- *
+ * 
  */
 public class PortalSSOAuthInterceptor implements RequestInterceptor {
 
     protected final String secret;
-    protected final String username;
 
+    protected final String username;
 
     public PortalSSOAuthInterceptor(String secretKey, String userName) {
         this.secret = secretKey;
@@ -44,17 +44,19 @@ public class PortalSSOAuthInterceptor implements RequestInterceptor {
 
     @Override
     public void processRequest(Request request, Connector connector) {
-                // compute token
+        // compute token
 
         long ts = new Date().getTime();
         long random = new Random(ts).nextInt();
 
-        String clearToken = String.format("%d:%d:%s:%s", ts, random, secret, username);
+        String clearToken = String.format("%d:%d:%s:%s", ts, random, secret,
+                username);
 
         byte[] hashedToken;
 
         try {
-            hashedToken = MessageDigest.getInstance("MD5").digest(clearToken.getBytes());
+            hashedToken = MessageDigest.getInstance("MD5").digest(
+                    clearToken.getBytes());
         } catch (NoSuchAlgorithmException e) {
             throw new Error("Cannot compute token", e);
         }
@@ -67,7 +69,6 @@ public class PortalSSOAuthInterceptor implements RequestInterceptor {
         request.put("NX_RD", String.valueOf(random));
         request.put("NX_TOKEN", base64HashedToken);
         request.put("NX_USER", username);
-
 
     }
 

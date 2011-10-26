@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2006-2008 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -26,12 +26,12 @@ public class Constants {
     public static final String CTYPE_ENTITY = "application/json+nxentity";
 
     public static final String CTYPE_MULTIPART_RELATED = "multipart/related"; // for
-                                                                                // blobs
-                                                                                // upload
+                                                                              // blobs
+                                                                              // upload
 
     public static final String CTYPE_MULTIPART_MIXED = "multipart/mixed"; // for
-                                                                            // blobs
-                                                                            // download
+                                                                          // blobs
+                                                                          // download
 
     public static final String REQUEST_ACCEPT_HEADER = CTYPE_ENTITY + ", */*";
 
@@ -40,7 +40,6 @@ public class Constants {
     public static final String CTYPE_REQUEST_NOCHARSET = "application/json+nxrequest";
 
     public static final String KEY_ENTITY_TYPE = "entity-type";
-    
 
     /**
      * Header to specify a comma separated list of schemas to be included in
@@ -49,7 +48,7 @@ public class Constants {
      * If the header is not specified, the default properties are returned (the
      * minimal document properties). To specify all the schemas you can use the
      * <code>*</code> as value. Example:
-     *
+     * 
      * <pre>
      * X-NXDocumentProperties: *
      * X-NXDocumentProperties: dublincore, file

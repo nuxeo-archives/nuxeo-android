@@ -29,39 +29,43 @@ import org.nuxeo.ecm.automation.client.jaxrs.spi.DefaultSession;
 
 public class OperationPersisterHelper {
 
-	public static OperationRequest rebuildOperation(Session session,String operationId, String jsonParams, String jsonHeaders, String jsonCtx, final String inputType, final String inputRef, Boolean inputBin) {
+    public static OperationRequest rebuildOperation(Session session,
+            String operationId, String jsonParams, String jsonHeaders,
+            String jsonCtx, final String inputType, final String inputRef,
+            Boolean inputBin) {
 
-		OperationDocumentation op = session.getOperation(operationId);
+        OperationDocumentation op = session.getOperation(operationId);
         Map<String, String> params = JSONHelper.readMapFromJson(jsonParams);
         Map<String, String> headers = JSONHelper.readMapFromJson(jsonHeaders);
         Map<String, String> ctx = JSONHelper.readMapFromJson(jsonCtx);
 
         OperationInput input = null;
-        if (inputType!=null) {
+        if (inputType != null) {
             if (inputBin) {
-            	input = new FileBlob(null);
-            	// XXX read Binary here
+                input = new FileBlob(null);
+                // XXX read Binary here
             } else {
-            	input = new OperationInput() {
+                input = new OperationInput() {
 
-					@Override
-					public boolean isBinary() {
-						return false;
-					}
+                    @Override
+                    public boolean isBinary() {
+                        return false;
+                    }
 
-					@Override
-					public String getInputType() {
-						return inputType;
-					}
+                    @Override
+                    public String getInputType() {
+                        return inputType;
+                    }
 
-					@Override
-					public String getInputRef() {
-						return inputRef;
-					}
-				};
+                    @Override
+                    public String getInputRef() {
+                        return inputRef;
+                    }
+                };
             }
         }
-		return new DefaultOperationRequest((DefaultSession) session,op, params, headers, ctx,input);
-	}
+        return new DefaultOperationRequest((DefaultSession) session, op,
+                params, headers, ctx, input);
+    }
 
 }

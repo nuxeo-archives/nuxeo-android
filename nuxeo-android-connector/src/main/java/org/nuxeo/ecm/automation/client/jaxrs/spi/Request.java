@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2006-2008 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -112,9 +112,9 @@ public class Request extends HashMap<String, String> {
         } else if (ctype.startsWith(CTYPE_AUTOMATION)) {
             return JsonMarshalling.readRegistry(IOUtils.read(stream));
         } else if (ctype.startsWith(CTYPE_MULTIPART_MIXED)) { // list of
-                                                                // blobs
+                                                              // blobs
             throw new Exception("Multipart is not supported");
-            //return readBlobs(ctype, stream);
+            // return readBlobs(ctype, stream);
         } else { // a blob?
             String fname = null;
             if (disp != null) {
@@ -126,19 +126,19 @@ public class Request extends HashMap<String, String> {
 
     protected static Blob readBlob(String ctype, String fileName, InputStream in)
             throws Exception {
-    	if ("application/json".equals(ctype)) {
-    		StringBlob blob = new StringBlob(IOUtils.read(in));
-    		return blob;
-    	} else {
-	        File file = IOUtils.copyToTempFile(in);
-	        file.deleteOnExit();
-	        FileBlob blob = new FileBlob(file);
-	        blob.setMimeType(ctype);
-	        if (fileName != null) {
-	            blob.setFileName(fileName);
-	        }
-	        return blob;
-    	}
+        if ("application/json".equals(ctype)) {
+            StringBlob blob = new StringBlob(IOUtils.read(in));
+            return blob;
+        } else {
+            File file = IOUtils.copyToTempFile(in);
+            file.deleteOnExit();
+            FileBlob blob = new FileBlob(file);
+            blob.setMimeType(ctype);
+            if (fileName != null) {
+                blob.setFileName(fileName);
+            }
+            return blob;
+        }
     }
 
     protected static String getFileName(String ctype) {
@@ -151,8 +151,8 @@ public class Request extends HashMap<String, String> {
 
     protected void handleException(int status, String ctype, InputStream stream)
             throws Exception {
-    	if (status==409) {
-        	throw new ConflictException();
+        if (status == 409) {
+            throw new ConflictException();
         }
         if (CTYPE_ENTITY.equals(ctype)) {
             String content = IOUtils.read(stream);

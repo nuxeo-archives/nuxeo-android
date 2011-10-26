@@ -24,7 +24,9 @@ import java.io.OutputStream;
 public class StreamHelper {
 
     private static final int BUFFER_SIZE = 1024 * 64; // 64K
+
     private static final int MAX_BUFFER_SIZE = 1024 * 1024; // 64K
+
     private static final int MIN_BUFFER_SIZE = 1024 * 8; // 64K
 
     public static byte[] readBytes(InputStream in) throws IOException {
@@ -66,13 +68,13 @@ public class StreamHelper {
         return new byte[preferredSize];
     }
 
-    public static void copy(InputStream in, OutputStream out) throws IOException {
+    public static void copy(InputStream in, OutputStream out)
+            throws IOException {
         byte[] buffer = createBuffer(in.available());
         int read;
         while ((read = in.read(buffer)) != -1) {
             out.write(buffer, 0, read);
         }
     }
-
 
 }

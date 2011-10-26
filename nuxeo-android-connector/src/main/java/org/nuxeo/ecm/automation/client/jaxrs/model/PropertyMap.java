@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2006-2008 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -25,14 +25,14 @@ import java.util.Set;
 /**
  * A flat representation of a document properties. Dates are in
  * YYYY-MM-DDThh:mm:ssZ (UTC) format
- *
+ * 
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  */
 public class PropertyMap implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-	protected final HashMap<String, Object> map;
+    protected final HashMap<String, Object> map;
 
     public PropertyMap() {
         map = new HashMap<String, Object>();

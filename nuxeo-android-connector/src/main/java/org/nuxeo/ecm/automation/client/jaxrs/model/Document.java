@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2006-2008 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -46,11 +46,11 @@ import android.util.Log;
  */
 public class Document extends DocRef implements Serializable {
 
-	private static final String NEW_UUID_PREFIX = "NEW-";
+    private static final String NEW_UUID_PREFIX = "NEW-";
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	protected final String parentPath;
+    protected final String parentPath;
 
     protected final String type;
 
@@ -76,7 +76,8 @@ public class Document extends DocRef implements Serializable {
      * Reserved to framework. Should be only called by client framework when
      * unmarshalling documents.
      */
-    public Document(String repoName, String id, String type, PropertyList facets, String changeToken, String path, String state,
+    public Document(String repoName, String id, String type,
+            PropertyList facets, String changeToken, String path, String state,
             String lock, PropertyMap properties) {
         super(id);
         this.type = type;
@@ -86,45 +87,45 @@ public class Document extends DocRef implements Serializable {
         this.repoName = repoName;
         // compute parent path and name
         if (path.endsWith("/")) {
-        	path = path.substring(0, path.length()-1);
+            path = path.substring(0, path.length() - 1);
         }
         int idx = path.lastIndexOf("/");
-        if (idx >0 ) {
-        	this.parentPath = path.substring(0, idx);
+        if (idx > 0) {
+            this.parentPath = path.substring(0, idx);
         } else {
-        	this.parentPath=null;
+            this.parentPath = null;
         }
-        this.name = path.substring(idx+1);
+        this.name = path.substring(idx + 1);
         this.changeToken = changeToken;
         this.facets = facets;
     }
 
     public Document(String parentPath, String name, String type) {
-    	super(NEW_UUID_PREFIX + System.currentTimeMillis());
-    	this.parentPath = parentPath;
-    	this.state=null;
-    	this.type=type;
-    	this.lock=null;
-    	this.properties = new PropertyMap();
-    	this.repoName = null;
-    	this.name=name;
+        super(NEW_UUID_PREFIX + System.currentTimeMillis());
+        this.parentPath = parentPath;
+        this.state = null;
+        this.type = type;
+        this.lock = null;
+        this.properties = new PropertyMap();
+        this.repoName = null;
+        this.name = name;
     }
 
     public Document(String id, String path, String type, PropertyMap dirtyProps) {
-    	super(id);
-    	this.type=type;
+        super(id);
+        this.type = type;
         int idx = path.lastIndexOf("/");
         this.parentPath = path.substring(0, idx);
-        this.name = path.substring(idx+1);
-    	this.state=null;
-    	this.properties = dirtyProps;
-    	this.repoName = null;
-    	this.lock=null;
-    	dirtyFields.addAll(dirtyProps.map.keySet());
+        this.name = path.substring(idx + 1);
+        this.state = null;
+        this.properties = dirtyProps;
+        this.repoName = null;
+        this.lock = null;
+        dirtyFields.addAll(dirtyProps.map.keySet());
     }
 
     public String getName() {
-    	return name;
+        return name;
     }
 
     public String getId() {
@@ -136,12 +137,12 @@ public class Document extends DocRef implements Serializable {
     }
 
     public String getPath() {
-    	if (parentPath==null) {
-    		return "/";
-    	}
-    	if (!parentPath.endsWith("/")) {
-    		return parentPath + "/" + name;
-    	}
+        if (parentPath == null) {
+            return "/";
+        }
+        if (!parentPath.endsWith("/")) {
+            return parentPath + "/" + name;
+        }
         return parentPath + name;
     }
 
@@ -222,134 +223,146 @@ public class Document extends DocRef implements Serializable {
     }
 
     public void set(String key, PropertyMap value) {
-    	properties.set(key, value);
+        properties.set(key, value);
         dirtyFields.add(key);
     }
 
-
     public void set(String key, PropertyList value) {
-    	properties.set(key, value);
+        properties.set(key, value);
         dirtyFields.add(key);
     }
 
     public String getRelativeUrl() {
-    	return "/nxpath/" + repoName + getPath() + "@view_documents";
+        return "/nxpath/" + repoName + getPath() + "@view_documents";
     }
 
     public boolean isDirty() {
-    	return dirtyFields.size()>0;
+        return dirtyFields.size() > 0;
     }
 
     public PropertyMap getDirtyProperties() {
-    	PropertyMap dirtyProps = new PropertyMap();
-    	for (String key : dirtyFields) {
-    		dirtyProps.map().put(key, properties.map().get(key));
-    	}
-    	return dirtyProps;
+        PropertyMap dirtyProps = new PropertyMap();
+        for (String key : dirtyFields) {
+            dirtyProps.map().put(key, properties.map().get(key));
+        }
+        return dirtyProps;
     }
 
     public String getDirtyPropertiesAsPropertiesString() {
-    	String dirtyString =  PropertiesHelper.toStringProperties(getDirtyProperties());
-    	Log.i(this.getClass().getSimpleName(), "Dirty props => " + dirtyString);
-    	return dirtyString;
+        String dirtyString = PropertiesHelper.toStringProperties(getDirtyProperties());
+        Log.i(this.getClass().getSimpleName(), "Dirty props => " + dirtyString);
+        return dirtyString;
     }
 
     public DocumentStatus getStatusFlag() {
-    	if (inConflict) {
-    		return DocumentStatus.CONFLICT;
-    	}
-    	if (ref==null || ref.startsWith(NEW_UUID_PREFIX)) {
-    		return DocumentStatus.NEW;
-    	}
-    	if (isDirty()) {
-    		return DocumentStatus.UPDATED;
-    	}
-    	return DocumentStatus.SYNCHRONIZED;
+        if (inConflict) {
+            return DocumentStatus.CONFLICT;
+        }
+        if (ref == null || ref.startsWith(NEW_UUID_PREFIX)) {
+            return DocumentStatus.NEW;
+        }
+        if (isDirty()) {
+            return DocumentStatus.UPDATED;
+        }
+        return DocumentStatus.SYNCHRONIZED;
     }
 
     public String getParentPath() {
-    	return parentPath;
+        return parentPath;
     }
 
-	public String getRepoName() {
-		return repoName;
-	}
+    public String getRepoName() {
+        return repoName;
+    }
 
-	public List<String> getDirtyFields() {
-		return dirtyFields;
-	}
+    public List<String> getDirtyFields() {
+        return dirtyFields;
+    }
 
-	public Uri getIcon() {
-		String icon = getString("common:icon");
-		if (icon==null || "null".equals(icon) || icon.equals("")) {
-			return null;
-		}
-		return Uri.parse("content://" + NuxeoContentProviderConfig.getAuthority() + "/icons" + getString("common:icon"));
-	}
+    public Uri getIcon() {
+        String icon = getString("common:icon");
+        if (icon == null || "null".equals(icon) || icon.equals("")) {
+            return null;
+        }
+        return Uri.parse("content://"
+                + NuxeoContentProviderConfig.getAuthority() + "/icons"
+                + getString("common:icon"));
+    }
 
-	public Uri getBlob() {
-		return getBlob(0);
-	}
+    public Uri getBlob() {
+        return getBlob(0);
+    }
 
-	public Uri getBlob(int idx) {
-		if (getStatusFlag().equals(DocumentStatus.NEW) || getStatusFlag().equals(DocumentStatus.UPDATED)) {
-			List<String> rids = getPendingUploads();
-			if (rids.size()>0) {
-				String rid = rids.get(0);
-				return Uri.parse("content://" + NuxeoContentProviderConfig.getAuthority() + "/uploads/" + rid + "/");
-			}
-		}
-		return Uri.parse("content://" + NuxeoContentProviderConfig.getAuthority() + "/blobs/" + getId() + "/" + idx);
-	}
+    public Uri getBlob(int idx) {
+        if (getStatusFlag().equals(DocumentStatus.NEW)
+                || getStatusFlag().equals(DocumentStatus.UPDATED)) {
+            List<String> rids = getPendingUploads();
+            if (rids.size() > 0) {
+                String rid = rids.get(0);
+                return Uri.parse("content://"
+                        + NuxeoContentProviderConfig.getAuthority()
+                        + "/uploads/" + rid + "/");
+            }
+        }
+        return Uri.parse("content://"
+                + NuxeoContentProviderConfig.getAuthority() + "/blobs/"
+                + getId() + "/" + idx);
+    }
 
-	public Uri getPicture(String format) {
-		if (getStatusFlag().equals(DocumentStatus.NEW) || getStatusFlag().equals(DocumentStatus.UPDATED)) {
-			List<String> rids = getPendingUploads();
-			if (rids.size()>0) {
-				String rid = rids.get(0);
-				return Uri.parse("content://" + NuxeoContentProviderConfig.getAuthority() + "/uploads/" + rid );
-			}
-		}
-		if (format==null) {
-			return Uri.parse("content://" + NuxeoContentProviderConfig.getAuthority() + "/pictures/" + getId() + "/");
-		} else {
-			return Uri.parse("content://" + NuxeoContentProviderConfig.getAuthority() + "/pictures/" + getId() + "/" + format);
-		}
-	}
+    public Uri getPicture(String format) {
+        if (getStatusFlag().equals(DocumentStatus.NEW)
+                || getStatusFlag().equals(DocumentStatus.UPDATED)) {
+            List<String> rids = getPendingUploads();
+            if (rids.size() > 0) {
+                String rid = rids.get(0);
+                return Uri.parse("content://"
+                        + NuxeoContentProviderConfig.getAuthority()
+                        + "/uploads/" + rid);
+            }
+        }
+        if (format == null) {
+            return Uri.parse("content://"
+                    + NuxeoContentProviderConfig.getAuthority() + "/pictures/"
+                    + getId() + "/");
+        } else {
+            return Uri.parse("content://"
+                    + NuxeoContentProviderConfig.getAuthority() + "/pictures/"
+                    + getId() + "/" + format);
+        }
+    }
 
-	public List<String> getPendingUploads() {
+    public List<String> getPendingUploads() {
 
-		List<String> tokens = new ArrayList<String>();
-		for (String key: dirtyFields) {
-			Object prop = properties.get(key);
-			if (prop!=null && prop instanceof PropertyMap) {
-				PropertyMap map = (PropertyMap) prop;
-				if (map!=null && map.getString("type", "").equals("blob")) {
-					String token = map.getString("android-require-uuid", null);
-					if (token!=null) {
-						tokens.add(token);
-					}
-				}
-			}
-		}
-		return tokens;
-	}
+        List<String> tokens = new ArrayList<String>();
+        for (String key : dirtyFields) {
+            Object prop = properties.get(key);
+            if (prop != null && prop instanceof PropertyMap) {
+                PropertyMap map = (PropertyMap) prop;
+                if (map.getString("type", "").equals("blob")) {
+                    String token = map.getString("android-require-uuid", null);
+                    if (token != null) {
+                        tokens.add(token);
+                    }
+                }
+            }
+        }
+        return tokens;
+    }
 
-	public String getChangeToken() {
-		return changeToken;
-	}
+    public String getChangeToken() {
+        return changeToken;
+    }
 
-	public PropertyList getFacets() {
-		return facets;
-	}
+    public PropertyList getFacets() {
+        return facets;
+    }
 
-	public void setInConflict(boolean inConflict) {
-		this.inConflict = inConflict;
-	}
+    public void setInConflict(boolean inConflict) {
+        this.inConflict = inConflict;
+    }
 
-	public boolean isFolder() {
-		return facets.list.contains("Folderish");
-	}
-
+    public boolean isFolder() {
+        return facets.list.contains("Folderish");
+    }
 
 }

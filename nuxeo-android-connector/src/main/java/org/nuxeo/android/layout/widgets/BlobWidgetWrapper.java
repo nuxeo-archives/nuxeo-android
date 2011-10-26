@@ -49,312 +49,341 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap> implements AndroidWidgetWrapper {
+public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap>
+        implements AndroidWidgetWrapper {
 
-	protected static final int REQUEST_CODE_BASE = new Random().nextInt(1000);
-	protected static final int PICK_IMG = REQUEST_CODE_BASE + 0;
-	protected static final int PICK_ANY = REQUEST_CODE_BASE + 1;
-	protected static final int TAKE_PICTURE = REQUEST_CODE_BASE + 2;
+    protected static final int REQUEST_CODE_BASE = new Random().nextInt(1000);
 
-	protected int uploadInProgress = 0;
-	protected boolean changedValue=false;
+    protected static final int PICK_IMG = REQUEST_CODE_BASE + 0;
 
-	protected LinearLayout layoutWidget;
-	protected LinearLayout fileAttributes;
-	protected TextView filename;
-	protected TextView size;
-	protected TextView mimetype;
-	protected ProgressBar progressBar;
-	protected LinearLayout buttonLayout;
-	protected Button uploadImg;
-	protected Button uploadFile;
-	protected Button takePicture;
-	protected Button openBtn;
+    protected static final int PICK_ANY = REQUEST_CODE_BASE + 1;
 
-	protected AsyncCallbackWithProgress<Serializable> uploadCB;
+    protected static final int TAKE_PICTURE = REQUEST_CODE_BASE + 2;
 
-	protected File targetImageFile;
+    protected int uploadInProgress = 0;
 
-	@Override
-	public boolean validateBeforeModelUpdate() {
-		if (uploadInProgress>0) {
-			Toast.makeText(getRootContext(),
-	                "File upload is still in progress",
-	                Toast.LENGTH_SHORT).show();
-			return false;
-		}
-		return true;
-	}
+    protected boolean changedValue = false;
 
-	@Override
-	public void updateModel(Document doc) {
-		if (mode!=LayoutMode.VIEW && currentValue!=null && changedValue) {
-			doc.set(getAttributeName(), currentValue);
-		}
-	}
+    protected LinearLayout layoutWidget;
 
-	protected void applyBinding() {
+    protected LinearLayout fileAttributes;
 
-		if (currentValue==null) {
-			filename.setText("No Blob!");
-			size.setVisibility(View.INVISIBLE);
-			mimetype.setVisibility(View.INVISIBLE);
-		} else {
-			filename.setText(currentValue.getString("name"));
-			size.setVisibility(View.VISIBLE);
-			mimetype.setVisibility(View.VISIBLE);
-			size.setText("(" + currentValue.getString("length") + " bytes )");
-			mimetype.setText("[" + currentValue.getString("mime-type") + "]");
-		}
-		if (mode!=LayoutMode.VIEW) {
-			progressBar.setVisibility(View.VISIBLE);
-		}
-		filename.invalidate();
-		size.invalidate();
-		mimetype.invalidate();
-		if (progressBar!=null) {
-			progressBar.invalidate();
-		}
-		layoutWidget.invalidate();
-	}
+    protected TextView filename;
 
-	@Override
-	public View buildView(LayoutContext context, LayoutMode mode, Document doc,
-			List<String> attributeNames, WidgetDefinition widgetDef) {
-		super.buildView(context, mode, doc, attributeNames, widgetDef);
+    protected TextView size;
 
-		Context ctx = context.getActivity();
-		layoutWidget = new LinearLayout(context.getActivity());
-		layoutWidget.setOrientation(LinearLayout.VERTICAL);
+    protected TextView mimetype;
 
-		fileAttributes = new LinearLayout(context.getActivity());
-		fileAttributes.setOrientation(LinearLayout.HORIZONTAL);
+    protected ProgressBar progressBar;
 
-		// Common part
-		filename = new TextView(ctx);
-		layoutWidget.addView(filename);
+    protected LinearLayout buttonLayout;
 
+    protected Button uploadImg;
 
-		size = new TextView(ctx);
-		mimetype = new TextView(ctx);
-		fileAttributes.addView(size);
-		fileAttributes.addView(mimetype);
+    protected Button uploadFile;
 
-		if (mode==LayoutMode.VIEW) {
-			openBtn = new Button(layoutWidget.getContext());
-			fileAttributes.addView(openBtn);
-			openBtn.setBackgroundResource(android.R.drawable.ic_input_get);
-			// XXX
-			String uriString = "content://" + NuxeoContentProviderConfig.getAuthority() + "/blobs/" + doc.getId() + "/" + getAttributeName();
-			final Uri contentUri = Uri.parse(uriString);
-			openBtn.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
+    protected Button takePicture;
 
-					Intent intent = new Intent(Intent.ACTION_VIEW);
-			        intent.setData(contentUri);
-			        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    protected Button openBtn;
 
-			        try {
-			        	getHomeActivity().startActivity(intent);
-			        }
-			        catch (android.content.ActivityNotFoundException e) {
-			        	Log.e(BlobWidgetWrapper.class.getSimpleName(), "Unable to start blob viewer",e);
-			            Toast.makeText(getRootContext(),
-			                "No Application Available to View blob",
-			                Toast.LENGTH_SHORT).show();
-			        }
-				}
-			});
-		}
+    protected AsyncCallbackWithProgress<Serializable> uploadCB;
 
-		layoutWidget.addView(fileAttributes);
+    protected File targetImageFile;
 
-		if (mode!=LayoutMode.VIEW) {
-			progressBar = new ProgressBar(ctx, null, android.R.attr.progressBarStyleHorizontal);
-			progressBar.setMax(100);
-			progressBar.setVisibility(View.INVISIBLE);
-			layoutWidget.addView(progressBar);
+    @Override
+    public boolean validateBeforeModelUpdate() {
+        if (uploadInProgress > 0) {
+            Toast.makeText(getRootContext(),
+                    "File upload is still in progress", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
 
-			buttonLayout = new LinearLayout(layoutWidget.getContext());
-			buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
-			layoutWidget.addView(buttonLayout);
+    @Override
+    public void updateModel(Document doc) {
+        if (mode != LayoutMode.VIEW && currentValue != null && changedValue) {
+            doc.set(getAttributeName(), currentValue);
+        }
+    }
 
-			uploadImg = new Button(layoutWidget.getContext());
-			buttonLayout.addView(uploadImg);
-			uploadImg.setTag("img:" + getAttributeName());
-			uploadImg.setBackgroundResource(android.R.drawable.ic_menu_gallery);
-			uploadImg.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					progressBar.setVisibility(View.VISIBLE);
-					progressBar.invalidate();
-					registerActivityResultHandler(PICK_IMG, getHandler(getLayoutContext().getLayoutId()));
-					getHomeActivity().startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), PICK_IMG);
-				}
-			});
+    protected void applyBinding() {
 
-			uploadFile = new Button(layoutWidget.getContext());
-			buttonLayout.addView(uploadFile);
-			uploadFile.setTag("file:" + getAttributeName());
-			uploadFile.setBackgroundResource(android.R.drawable.ic_menu_upload);
-			uploadFile.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View arg0) {
-					progressBar.setVisibility(View.VISIBLE);
-					progressBar.invalidate();
-					registerActivityResultHandler(PICK_ANY, getHandler(getLayoutContext().getLayoutId()));
-					Intent intent = new Intent("org.openintents.action.PICK_FILE");
-					intent.putExtra("org.openintents.extra.TITLE", "Select a file to attach");
-					getHomeActivity().startActivityForResult(intent, PICK_ANY);
-					}
-			});
+        if (currentValue == null) {
+            filename.setText("No Blob!");
+            size.setVisibility(View.INVISIBLE);
+            mimetype.setVisibility(View.INVISIBLE);
+        } else {
+            filename.setText(currentValue.getString("name"));
+            size.setVisibility(View.VISIBLE);
+            mimetype.setVisibility(View.VISIBLE);
+            size.setText("(" + currentValue.getString("length") + " bytes )");
+            mimetype.setText("[" + currentValue.getString("mime-type") + "]");
+        }
+        if (mode != LayoutMode.VIEW) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+        filename.invalidate();
+        size.invalidate();
+        mimetype.invalidate();
+        if (progressBar != null) {
+            progressBar.invalidate();
+        }
+        layoutWidget.invalidate();
+    }
 
-			takePicture = new Button(layoutWidget.getContext());
-			buttonLayout.addView(takePicture);
-			takePicture.setTag("file:" + getAttributeName());
-			takePicture.setBackgroundResource(android.R.drawable.ic_menu_camera);
-			takePicture.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View arg0) {
-					progressBar.setVisibility(View.VISIBLE);
-					progressBar.invalidate();
-					Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-					File cacheDir = BlobStoreManager.getRootCacheDir(getHomeActivity().getApplicationContext());
-					try {
-						targetImageFile = File.createTempFile("NewPicture", ".jpg", cacheDir);
-						intent.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(targetImageFile));
-						registerActivityResultHandler(TAKE_PICTURE, getHandler(getLayoutContext().getLayoutId()));
-						getHomeActivity().startActivityForResult(intent, TAKE_PICTURE);
-					} catch (IOException e) {
-						Log.e(BlobWidgetWrapper.this.getClass().getSimpleName(), "Unable to get file for image transfert", e);
-					}
-				}
-			});
+    @Override
+    public View buildView(LayoutContext context, LayoutMode mode, Document doc,
+            List<String> attributeNames, WidgetDefinition widgetDef) {
+        super.buildView(context, mode, doc, attributeNames, widgetDef);
 
-		}
+        Context ctx = context.getActivity();
+        layoutWidget = new LinearLayout(context.getActivity());
+        layoutWidget.setOrientation(LinearLayout.VERTICAL);
 
-		applyBinding();
+        fileAttributes = new LinearLayout(context.getActivity());
+        fileAttributes.setOrientation(LinearLayout.HORIZONTAL);
 
-		uploadCB = new UIAsyncCallback<Serializable>() {
+        // Common part
+        filename = new TextView(ctx);
+        layoutWidget.addView(filename);
 
-			@Override
-			public void onErrorUI(String executionId, Throwable e) {
-				//progressBar.setVisibility(View.INVISIBLE);
-				//progressBar.invalidate();
-				uploadInProgress-=1;
-				Toast.makeText(getRootContext(),
-		                "File upload failed",
-		                Toast.LENGTH_SHORT).show();
-			}
+        size = new TextView(ctx);
+        mimetype = new TextView(ctx);
+        fileAttributes.addView(size);
+        fileAttributes.addView(mimetype);
 
-			@Override
-			public void onProgressUpdate(int progress) {
-				progressBar.setProgress(progress);
-				progressBar.invalidate();
-			}
+        if (mode == LayoutMode.VIEW) {
+            openBtn = new Button(layoutWidget.getContext());
+            fileAttributes.addView(openBtn);
+            openBtn.setBackgroundResource(android.R.drawable.ic_input_get);
+            // XXX
+            String uriString = "content://"
+                    + NuxeoContentProviderConfig.getAuthority() + "/blobs/"
+                    + doc.getId() + "/" + getAttributeName();
+            final Uri contentUri = Uri.parse(uriString);
+            openBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-			@Override
-			public void onSuccessUI(String executionId, Serializable data) {
-				//progressBar.setVisibility(View.INVISIBLE);
-				progressBar.invalidate();
-				uploadInProgress-=1;
-				Toast.makeText(getRootContext(),
-		                "File upload completed",
-		                Toast.LENGTH_SHORT).show();
-			}
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(contentUri);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-			@Override
-			public void onStart() {
-				progressBar.setVisibility(View.VISIBLE);
-				progressBar.invalidate();
-				Toast.makeText(getRootContext(),
-		                "File upload started ...",
-		                Toast.LENGTH_SHORT).show();
-			}
-		};
+                    try {
+                        getHomeActivity().startActivity(intent);
+                    } catch (android.content.ActivityNotFoundException e) {
+                        Log.e(BlobWidgetWrapper.class.getSimpleName(),
+                                "Unable to start blob viewer", e);
+                        Toast.makeText(getRootContext(),
+                                "No Application Available to View blob",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
 
+        layoutWidget.addView(fileAttributes);
 
-		return layoutWidget;
-	}
+        if (mode != LayoutMode.VIEW) {
+            progressBar = new ProgressBar(ctx, null,
+                    android.R.attr.progressBarStyleHorizontal);
+            progressBar.setMax(100);
+            progressBar.setVisibility(View.INVISIBLE);
+            layoutWidget.addView(progressBar);
 
-	@Override
-	public void refreshViewFromDocument(Document doc) {
-		initCurrentValueFromDocument(doc);
-		applyBinding();
-	}
+            buttonLayout = new LinearLayout(layoutWidget.getContext());
+            buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
+            layoutWidget.addView(buttonLayout);
 
-	@Override
-	protected void initCurrentValueFromDocument(Document doc) {
-		Object blobField = DocumentAttributeResolver.get(doc, getAttributeName());
-		currentValue = null;
-		if (blobField!=null && blobField instanceof PropertyMap) {
-			currentValue = (PropertyMap) blobField;
-		} else {
-			if (blobField!=null) {
-				Log.d(this.getClass().getSimpleName(), blobField.toString());
-			}
-		}
-	}
+            uploadImg = new Button(layoutWidget.getContext());
+            buttonLayout.addView(uploadImg);
+            uploadImg.setTag("img:" + getAttributeName());
+            uploadImg.setBackgroundResource(android.R.drawable.ic_menu_gallery);
+            uploadImg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    progressBar.invalidate();
+                    registerActivityResultHandler(PICK_IMG,
+                            getHandler(getLayoutContext().getLayoutId()));
+                    getHomeActivity().startActivityForResult(
+                            new Intent(Intent.ACTION_PICK).setType("image/*"),
+                            PICK_IMG);
+                }
+            });
 
+            uploadFile = new Button(layoutWidget.getContext());
+            buttonLayout.addView(uploadFile);
+            uploadFile.setTag("file:" + getAttributeName());
+            uploadFile.setBackgroundResource(android.R.drawable.ic_menu_upload);
+            uploadFile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View arg0) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    progressBar.invalidate();
+                    registerActivityResultHandler(PICK_ANY,
+                            getHandler(getLayoutContext().getLayoutId()));
+                    Intent intent = new Intent(
+                            "org.openintents.action.PICK_FILE");
+                    intent.putExtra("org.openintents.extra.TITLE",
+                            "Select a file to attach");
+                    getHomeActivity().startActivityForResult(intent, PICK_ANY);
+                }
+            });
 
-	protected ActivityResultUriToFileHandler getHandler(final String batchId) {
+            takePicture = new Button(layoutWidget.getContext());
+            buttonLayout.addView(takePicture);
+            takePicture.setTag("file:" + getAttributeName());
+            takePicture.setBackgroundResource(android.R.drawable.ic_menu_camera);
+            takePicture.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View arg0) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    progressBar.invalidate();
+                    Intent intent = new Intent(
+                            "android.media.action.IMAGE_CAPTURE");
+                    File cacheDir = BlobStoreManager.getRootCacheDir(getHomeActivity().getApplicationContext());
+                    try {
+                        targetImageFile = File.createTempFile("NewPicture",
+                                ".jpg", cacheDir);
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT,
+                                Uri.fromFile(targetImageFile));
+                        registerActivityResultHandler(TAKE_PICTURE,
+                                getHandler(getLayoutContext().getLayoutId()));
+                        getHomeActivity().startActivityForResult(intent,
+                                TAKE_PICTURE);
+                    } catch (IOException e) {
+                        Log.e(BlobWidgetWrapper.this.getClass().getSimpleName(),
+                                "Unable to get file for image transfert", e);
+                    }
+                }
+            });
 
-		return new ActivityResultUriToFileHandler(getRootContext(), targetImageFile) {
+        }
 
-			@Override
-			protected void onStreamBlobAvailable(Blob blobToUpload) {
+        applyBinding();
 
-				Log.i(BlobWidgetWrapper.class.getSimpleName(), "Started blob upload with batchId " + batchId);
-				BlobWithProperties blobUploading = startUpload(blobToUpload, batchId);
+        uploadCB = new UIAsyncCallback<Serializable>() {
 
-				String uploadUUID = blobUploading.getProperty(FileUploader.UPLOAD_UUID);
-				Log.i(BlobWidgetWrapper.class.getSimpleName(), "Started blob upload UUID " + uploadUUID);
+            @Override
+            public void onErrorUI(String executionId, Throwable e) {
+                // progressBar.setVisibility(View.INVISIBLE);
+                // progressBar.invalidate();
+                uploadInProgress -= 1;
+                Toast.makeText(getRootContext(), "File upload failed",
+                        Toast.LENGTH_SHORT).show();
+            }
 
-				PropertyMap blobProp = new PropertyMap();
-				blobProp.set("type", "blob");
-				blobProp.set("length",new Long(blobUploading.getLength()));
-				blobProp.set("mime-type",blobUploading.getMimeType());
-				blobProp.set("name",blobToUpload.getFileName());
-				// set information for server side Blob mapping
-				blobProp.set("upload-batch",batchId);
-				blobProp.set("upload-fileId",blobUploading.getFileName());
-				// set information for the update query to know it's dependencies
-				blobProp.set("android-require-type", "upload");
-				blobProp.set("android-require-uuid", uploadUUID);
+            @Override
+            public void onProgressUpdate(int progress) {
+                progressBar.setProgress(progress);
+                progressBar.invalidate();
+            }
 
-				setCurrentValue(blobProp);
-				changedValue=true;
-				applyBinding();
-			}
-		};
-	}
+            @Override
+            public void onSuccessUI(String executionId, Serializable data) {
+                // progressBar.setVisibility(View.INVISIBLE);
+                progressBar.invalidate();
+                uploadInProgress -= 1;
+                Toast.makeText(getRootContext(), "File upload completed",
+                        Toast.LENGTH_SHORT).show();
+            }
 
-	protected BlobWithProperties startUpload(Blob blobToUpload, String batchId) {
+            @Override
+            public void onStart() {
+                progressBar.setVisibility(View.VISIBLE);
+                progressBar.invalidate();
+                Toast.makeText(getRootContext(), "File upload started ...",
+                        Toast.LENGTH_SHORT).show();
+            }
+        };
 
-		BlobWithProperties result = null;
+        return layoutWidget;
+    }
 
-		if (blobToUpload.getFileName()==null) {
-			blobToUpload.setFileName(getAttributeName());
-		}
+    @Override
+    public void refreshViewFromDocument(Document doc) {
+        initCurrentValueFromDocument(doc);
+        applyBinding();
+    }
 
-		final String fileId = blobToUpload.getFileName();
+    @Override
+    protected void initCurrentValueFromDocument(Document doc) {
+        Object blobField = DocumentAttributeResolver.get(doc,
+                getAttributeName());
+        currentValue = null;
+        if (blobField != null && blobField instanceof PropertyMap) {
+            currentValue = (PropertyMap) blobField;
+        } else {
+            if (blobField != null) {
+                Log.d(this.getClass().getSimpleName(), blobField.toString());
+            }
+        }
+    }
 
-		FileUploader uploader = getClient().getFileUploader();
+    protected ActivityResultUriToFileHandler getHandler(final String batchId) {
 
-		if (getClient().getNetworkStatus().canUseNetwork()) {
-			progressBar.setVisibility(View.VISIBLE);
-			result = uploader.storeAndUpload(batchId, fileId, blobToUpload, uploadCB);
-			uploadInProgress+=1;
-		} else {
-			Toast.makeText(getRootContext(),
-	                "File will be uploaded when network is back",
-	                Toast.LENGTH_SHORT).show();
-			result = uploader.storeFileForUpload(batchId, fileId, blobToUpload);
-		}
+        return new ActivityResultUriToFileHandler(getRootContext(),
+                targetImageFile) {
 
-		return result;
-	}
+            @Override
+            protected void onStreamBlobAvailable(Blob blobToUpload) {
 
+                Log.i(BlobWidgetWrapper.class.getSimpleName(),
+                        "Started blob upload with batchId " + batchId);
+                BlobWithProperties blobUploading = startUpload(blobToUpload,
+                        batchId);
+
+                String uploadUUID = blobUploading.getProperty(FileUploader.UPLOAD_UUID);
+                Log.i(BlobWidgetWrapper.class.getSimpleName(),
+                        "Started blob upload UUID " + uploadUUID);
+
+                PropertyMap blobProp = new PropertyMap();
+                blobProp.set("type", "blob");
+                blobProp.set("length", new Long(blobUploading.getLength()));
+                blobProp.set("mime-type", blobUploading.getMimeType());
+                blobProp.set("name", blobToUpload.getFileName());
+                // set information for server side Blob mapping
+                blobProp.set("upload-batch", batchId);
+                blobProp.set("upload-fileId", blobUploading.getFileName());
+                // set information for the update query to know it's
+                // dependencies
+                blobProp.set("android-require-type", "upload");
+                blobProp.set("android-require-uuid", uploadUUID);
+
+                setCurrentValue(blobProp);
+                changedValue = true;
+                applyBinding();
+            }
+        };
+    }
+
+    protected BlobWithProperties startUpload(Blob blobToUpload, String batchId) {
+
+        BlobWithProperties result = null;
+
+        if (blobToUpload.getFileName() == null) {
+            blobToUpload.setFileName(getAttributeName());
+        }
+
+        final String fileId = blobToUpload.getFileName();
+
+        FileUploader uploader = getClient().getFileUploader();
+
+        if (getClient().getNetworkStatus().canUseNetwork()) {
+            progressBar.setVisibility(View.VISIBLE);
+            result = uploader.storeAndUpload(batchId, fileId, blobToUpload,
+                    uploadCB);
+            uploadInProgress += 1;
+        } else {
+            Toast.makeText(getRootContext(),
+                    "File will be uploaded when network is back",
+                    Toast.LENGTH_SHORT).show();
+            result = uploader.storeFileForUpload(batchId, fileId, blobToUpload);
+        }
+
+        return result;
+    }
 
 }

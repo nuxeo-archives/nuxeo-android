@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2006-2008 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -31,10 +31,11 @@ public abstract class Blob implements OperationInput {
         return fromBase64String(fileName, content, null);
     }
 
-    public static Blob fromBase64String(String fileName, String content, String mimeType) {
-        return new StreamBlob(new ByteArrayInputStream(Base64.decode(content)), fileName, mimeType);
+    public static Blob fromBase64String(String fileName, String content,
+            String mimeType) {
+        return new StreamBlob(new ByteArrayInputStream(Base64.decode(content)),
+                fileName, mimeType);
     }
-
 
     protected String mimeType;
 

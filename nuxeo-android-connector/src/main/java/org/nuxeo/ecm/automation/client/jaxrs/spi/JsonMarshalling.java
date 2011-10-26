@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2006-2008 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -44,7 +44,8 @@ import org.nuxeo.ecm.automation.client.jaxrs.util.JSONExporter;
 public class JsonMarshalling {
 
     @SuppressWarnings("unchecked")
-    public static OperationRegistry readRegistry(String content) throws JSONException {
+    public static OperationRegistry readRegistry(String content)
+            throws JSONException {
         JSONObject json = new JSONObject(content);
         HashMap<String, OperationDocumentation> ops = new HashMap<String, OperationDocumentation>();
         HashMap<String, OperationDocumentation> chains = new HashMap<String, OperationDocumentation>();
@@ -86,15 +87,18 @@ public class JsonMarshalling {
         if ("document".equals(type)) {
             return readDocument(json);
         } else if ("documents".equals(type)) {
-        	boolean batched = json.optBoolean("isPaginable",false);
-        	JSONArray ar = json.getJSONArray("entries");
+            boolean batched = json.optBoolean("isPaginable", false);
+            JSONArray ar = json.getJSONArray("entries");
             int size = ar.length();
-            Documents docs=null;
+            Documents docs = null;
             if (batched) {
-            	docs = new Documents(size,json.optInt("totalSize", 0), json.optInt("pageSize", 0),json.optInt("pageIndex", 0),json.optInt("pageCount", 0));
-        	} else {
-        		docs = new Documents(size);
-        	}
+                docs = new Documents(size, json.optInt("totalSize", 0),
+                        json.optInt("pageSize", 0),
+                        json.optInt("pageIndex", 0),
+                        json.optInt("pageCount", 0));
+            } else {
+                docs = new Documents(size);
+            }
             for (int i = 0; i < size; i++) {
                 JSONObject obj = ar.getJSONObject(i);
                 docs.add(readDocument(obj));
@@ -108,11 +112,13 @@ public class JsonMarshalling {
         throw new IllegalArgumentException("Unknown entity type: " + type);
     }
 
-    public static RemoteException readException(String content) throws JSONException {
+    public static RemoteException readException(String content)
+            throws JSONException {
         return readException(new JSONObject(content));
     }
 
-    protected static RemoteException readException(JSONObject json) throws NumberFormatException, JSONException {
+    protected static RemoteException readException(JSONObject json)
+            throws NumberFormatException, JSONException {
         return new RemoteException(Integer.parseInt(json.getString("status")),
                 json.optString("type", null), json.optString("message"),
                 json.optString("stack", null));
@@ -131,7 +137,8 @@ public class JsonMarshalling {
         return new LoginInfo(username, set, Boolean.parseBoolean(isAdmin));
     }
 
-    protected static Document readDocument(JSONObject json) throws JSONException {
+    protected static Document readDocument(JSONObject json)
+            throws JSONException {
         String uid = json.getString("uid");
         String path = json.getString("path");
         String repoName = json.getString("repository");
@@ -142,9 +149,9 @@ public class JsonMarshalling {
         String lastModified = json.optString("lastModified", null);
         String changeToken = json.optString("changeToken", null);
         JSONArray jsonFacets = json.optJSONArray("facets");
-        PropertyList facets=null;
-        if (jsonFacets!=null) {
-        	facets = (PropertyList) readValue(jsonFacets);
+        PropertyList facets = null;
+        if (jsonFacets != null) {
+            facets = (PropertyList) readValue(jsonFacets);
         }
         JSONObject jsonProps = json.optJSONObject("properties");
         PropertyMap props;
@@ -155,7 +162,8 @@ public class JsonMarshalling {
         }
         props.set("dc:title", title);
         props.set("dc:modified", lastModified);
-        return new Document(repoName, uid, type, facets, changeToken,path, state, lock, props);
+        return new Document(repoName, uid, type, facets, changeToken, path,
+                state, lock, props);
     }
 
     @SuppressWarnings("unchecked")
@@ -168,25 +176,24 @@ public class JsonMarshalling {
             PropertyList plist = new PropertyList();
             List<Serializable> list = plist.list();
             for (int i = 0, size = ar.length(); i < size; i++) {
-            	Serializable v = readValue(ar.get(i));
+                Serializable v = readValue(ar.get(i));
                 if (v != null) {
                     list.add(v);
                 }
             }
             return plist;
-       } else if (o instanceof JSONObject) {
-                JSONObject ob = (JSONObject) o;
-                PropertyMap pmap = new PropertyMap();
-                Map<String, Object> map = pmap.map();
-                Iterator<String> keys = ob.keys();
-                while (keys.hasNext()) {
-                    String key = keys.next();
-                    Object v = readValue(ob.get(key));
-                    map.put(key, v);
-                }
-                return pmap;
+        } else if (o instanceof JSONObject) {
+            JSONObject ob = (JSONObject) o;
+            PropertyMap pmap = new PropertyMap();
+            Map<String, Object> map = pmap.map();
+            Iterator<String> keys = ob.keys();
+            while (keys.hasNext()) {
+                String key = keys.next();
+                Object v = readValue(ob.get(key));
+                map.put(key, v);
             }
-        else {
+            return pmap;
+        } else {
             return o.toString();
         }
     }
@@ -201,7 +208,6 @@ public class JsonMarshalling {
                 entity.put("input", ref);
             }
         }
-
 
         entity.put("params", new JSONObject(req.getParameters()));
         entity.put("context", new JSONObject(req.getContextParameters()));

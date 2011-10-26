@@ -26,9 +26,9 @@ import java.util.List;
  */
 public class PropertyList implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	protected final List<Serializable> list;
+    protected final List<Serializable> list;
 
     public PropertyList() {
         list = new ArrayList<Serializable>();

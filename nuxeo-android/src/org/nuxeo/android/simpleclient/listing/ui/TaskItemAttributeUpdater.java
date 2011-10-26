@@ -1,3 +1,19 @@
+/*
+ * (C) Copyright 2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Lesser General Public License
+ * (LGPL) version 2.1 which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/lgpl.html
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * Contributors:
+ *     Nuxeo - initial API and implementation
+ */
 package org.nuxeo.android.simpleclient.listing.ui;
 
 import java.text.SimpleDateFormat;
@@ -46,21 +62,18 @@ public class TaskItemAttributeUpdater implements ObjectItemViewUpdater {
                 dueDate = readDate(task.getJSONObject("dueDate"));
             }
 
-
             if ("workflowDirectiveValidation".equals(directive)) {
                 title.setText("Validate Document");
-            }
-            else if ("workflowDirectiveOpinion".equals(directive)) {
+            } else if ("workflowDirectiveOpinion".equals(directive)) {
                 title.setText("Give your opinion");
-            }
-            else {
+            } else {
                 title.setText(directive);
             }
             comment.setText(txtcomment);
             StringBuffer datesBuffer = new StringBuffer();
             datesBuffer.append("<b>created : </b>");
             datesBuffer.append(dateFormat.format(creationDate));
-            if (dueDate!=null) {
+            if (dueDate != null) {
                 datesBuffer.append(" <b style=\"color:red\">due : </b>");
                 datesBuffer.append(dateFormat.format(dueDate));
             }

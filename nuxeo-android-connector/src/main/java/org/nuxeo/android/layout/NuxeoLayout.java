@@ -28,52 +28,52 @@ import android.view.ViewGroup;
 
 public class NuxeoLayout implements ActivityResultHandler {
 
-	protected List<NuxeoWidget> widgets = new ArrayList<NuxeoWidget>();
+    protected List<NuxeoWidget> widgets = new ArrayList<NuxeoWidget>();
 
-	protected Document doc;
+    protected Document doc;
 
-	protected final LayoutContext context;
+    protected final LayoutContext context;
 
-	public NuxeoLayout(LayoutContext context, Document doc) {
-		this.context = context;
-		this.doc = doc;
-	}
+    public NuxeoLayout(LayoutContext context, Document doc) {
+        this.context = context;
+        this.doc = doc;
+    }
 
-	public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
+    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
 
-		for (NuxeoWidget widget : widgets) {
-			Map<Integer, ActivityResultHandler> handlers = widget.getAndFlushPendingActivityResultHandler();
-			if (handlers!=null) {
-				ActivityResultHandler handler = handlers.get(requestCode);
-				if (handler!=null) {
-					handler.onActivityResult(requestCode, resultCode, data);
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+        for (NuxeoWidget widget : widgets) {
+            Map<Integer, ActivityResultHandler> handlers = widget.getAndFlushPendingActivityResultHandler();
+            if (handlers != null) {
+                ActivityResultHandler handler = handlers.get(requestCode);
+                if (handler != null) {
+                    handler.onActivityResult(requestCode, resultCode, data);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
-	public ViewGroup getContainer() {
-		return context.getRootView();
-	}
+    public ViewGroup getContainer() {
+        return context.getRootView();
+    }
 
-	void addWidgets(List<NuxeoWidget> newwidgets) {
-		widgets.addAll(newwidgets);
-	}
+    void addWidgets(List<NuxeoWidget> newwidgets) {
+        widgets.addAll(newwidgets);
+    }
 
-	public void applyChanges(Document doc) {
-		this.doc = doc;
-		for (NuxeoWidget widget : widgets) {
-			widget.applyChanges(doc);
-		}
-	}
+    public void applyChanges(Document doc) {
+        this.doc = doc;
+        for (NuxeoWidget widget : widgets) {
+            widget.applyChanges(doc);
+        }
+    }
 
-	public void refreshFromDocument(Document doc) {
-		this.doc = doc;
-		for (NuxeoWidget widget : widgets) {
-			widget.refresh(doc);
-		}
-	}
+    public void refreshFromDocument(Document doc) {
+        this.doc = doc;
+        for (NuxeoWidget widget : widgets) {
+            widget.refresh(doc);
+        }
+    }
 
 }

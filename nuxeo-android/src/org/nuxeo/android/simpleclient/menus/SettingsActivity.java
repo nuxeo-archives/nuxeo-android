@@ -34,13 +34,13 @@ import com.smartnsoft.droid4me.app.SmartSplashScreenActivity;
 
 /**
  * The activity which enables to tune the application.
- *
+ * 
  * @author Nuxeo & Smart&Soft
  * @since 2011.02.17
  */
 public final class SettingsActivity extends
-        SmartPreferenceActivity<TitleBarAggregate>
-        implements TitleBarShowHomeFeature {
+        SmartPreferenceActivity<TitleBarAggregate> implements
+        TitleBarShowHomeFeature {
 
     public static final String PREF_SERVER_URL = "server_url";
 

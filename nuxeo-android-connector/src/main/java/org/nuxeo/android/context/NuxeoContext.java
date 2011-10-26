@@ -34,95 +34,103 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 
 /**
- *
+ * 
  * @author tiry
- *
+ * 
  */
 public class NuxeoContext extends BroadcastReceiver {
 
-	protected static NuxeoContext instance = null;
+    protected static NuxeoContext instance = null;
 
-	protected NuxeoServerConfig serverConfig;
+    protected NuxeoServerConfig serverConfig;
 
-	protected NuxeoNetworkStatus networkStatus;
+    protected NuxeoNetworkStatus networkStatus;
 
-	protected AndroidAutomationClient nuxeoClient;
+    protected AndroidAutomationClient nuxeoClient;
 
     protected final SQLStateManager sqlStateManager;
 
-	protected final Context androidContext;
+    protected final Context androidContext;
 
-	protected final BlobStoreManager blobStore;
+    protected final BlobStoreManager blobStore;
 
-	public static NuxeoContext get(Context context) {
-		if (context instanceof NuxeoContextProvider) {
-			NuxeoContextProvider nxApp = (NuxeoContextProvider) context;
-			return nxApp.getNuxeoContext();
-		} else {
-			throw new UnsupportedOperationException("Your application Context should implement NuxeoContextProvider !");
-		}
-	}
+    public static NuxeoContext get(Context context) {
+        if (context instanceof NuxeoContextProvider) {
+            NuxeoContextProvider nxApp = (NuxeoContextProvider) context;
+            return nxApp.getNuxeoContext();
+        } else {
+            throw new UnsupportedOperationException(
+                    "Your application Context should implement NuxeoContextProvider !");
+        }
+    }
 
-	public NuxeoContext(Context androidContext) {
-		this.androidContext=androidContext;
+    public NuxeoContext(Context androidContext) {
+        this.androidContext = androidContext;
 
-		// persistence managers
-		sqlStateManager = new SQLStateManager(androidContext);
-		blobStore = new BlobStoreManager(androidContext);
-		// config related services
-		serverConfig = new NuxeoServerConfig(androidContext);
-		networkStatus = new NuxeoNetworkStatus(androidContext, serverConfig, (ConnectivityManager) androidContext.getSystemService(Context.CONNECTIVITY_SERVICE));
-		androidContext.registerReceiver(new NetworkStatusBroadCastReceiver(networkStatus), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        // persistence managers
+        sqlStateManager = new SQLStateManager(androidContext);
+        blobStore = new BlobStoreManager(androidContext);
+        // config related services
+        serverConfig = new NuxeoServerConfig(androidContext);
+        networkStatus = new NuxeoNetworkStatus(
+                androidContext,
+                serverConfig,
+                (ConnectivityManager) androidContext.getSystemService(Context.CONNECTIVITY_SERVICE));
+        androidContext.registerReceiver(new NetworkStatusBroadCastReceiver(
+                networkStatus), new IntentFilter(
+                ConnectivityManager.CONNECTIVITY_ACTION));
 
-		// register this as listener for global config changes
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(NuxeoBroadcastMessages.NUXEO_SETTINGS_CHANGED);
-		filter.addAction(NuxeoBroadcastMessages.NUXEO_SERVER_CONNECTIVITY_CHANGED);
-		androidContext.registerReceiver(this, filter);
-		getNuxeoClient();
-	}
+        // register this as listener for global config changes
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(NuxeoBroadcastMessages.NUXEO_SETTINGS_CHANGED);
+        filter.addAction(NuxeoBroadcastMessages.NUXEO_SERVER_CONNECTIVITY_CHANGED);
+        androidContext.registerReceiver(this, filter);
+        getNuxeoClient();
+    }
 
-	public NuxeoServerConfig getServerConfig() {
-		return serverConfig;
-	}
+    public NuxeoServerConfig getServerConfig() {
+        return serverConfig;
+    }
 
-	public NuxeoNetworkStatus getNetworkStatus() {
-		return networkStatus;
-	}
+    public NuxeoNetworkStatus getNetworkStatus() {
+        return networkStatus;
+    }
 
-	public synchronized Session getSession() {
-		return getNuxeoClient().getSession(
-					serverConfig.getLogin(),
-					serverConfig.getPassword());
-	}
+    public synchronized Session getSession() {
+        return getNuxeoClient().getSession(serverConfig.getLogin(),
+                serverConfig.getPassword());
+    }
 
-	public DocumentManager getDocumentManager() {
-		return getSession().getAdapter(DocumentManager.class);
-	}
+    public DocumentManager getDocumentManager() {
+        return getSession().getAdapter(DocumentManager.class);
+    }
 
-	protected void onConfigChanged() {
-		getNuxeoClient().dropCurrentSession();
-		nuxeoClient = null;
-	}
+    protected void onConfigChanged() {
+        getNuxeoClient().dropCurrentSession();
+        nuxeoClient = null;
+    }
 
-	protected void onConnectivityChanged() {
-		// NOP (Session automatically detects)
-	}
+    protected void onConnectivityChanged() {
+        // NOP (Session automatically detects)
+    }
 
-	@Override
-	public void onReceive(Context ctx, Intent intent) {
-		if (intent.getAction().equals(NuxeoBroadcastMessages.NUXEO_SETTINGS_CHANGED)) {
-			onConfigChanged();
-		}
-		else if (intent.getAction().equals(NuxeoBroadcastMessages.NUXEO_SERVER_CONNECTIVITY_CHANGED)) {
-			onConnectivityChanged();
-		}
-	}
+    @Override
+    public void onReceive(Context ctx, Intent intent) {
+        if (intent.getAction().equals(
+                NuxeoBroadcastMessages.NUXEO_SETTINGS_CHANGED)) {
+            onConfigChanged();
+        } else if (intent.getAction().equals(
+                NuxeoBroadcastMessages.NUXEO_SERVER_CONNECTIVITY_CHANGED)) {
+            onConnectivityChanged();
+        }
+    }
 
-	public AndroidAutomationClient getNuxeoClient() {
-		if (nuxeoClient==null) {
-			nuxeoClient = new AndroidAutomationClient(serverConfig.getAutomationUrl(), androidContext,sqlStateManager,blobStore,networkStatus,serverConfig);
-		}
-		return nuxeoClient;
-	}
+    public AndroidAutomationClient getNuxeoClient() {
+        if (nuxeoClient == null) {
+            nuxeoClient = new AndroidAutomationClient(
+                    serverConfig.getAutomationUrl(), androidContext,
+                    sqlStateManager, blobStore, networkStatus, serverConfig);
+        }
+        return nuxeoClient;
+    }
 }

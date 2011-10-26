@@ -24,18 +24,19 @@ import org.nuxeo.android.documentprovider.LazyDocumentsList;
 
 public class NuxeoDynamicProvidersRegistry {
 
-	protected final static Map<String, LazyDocumentsList> documentsLists = new ConcurrentHashMap<String, LazyDocumentsList>();
+    protected final static Map<String, LazyDocumentsList> documentsLists = new ConcurrentHashMap<String, LazyDocumentsList>();
 
-	public static void registerNamedProvider(String name, LazyDocumentsList docList) {
-		documentsLists.put(name, docList);
-	}
+    public static void registerNamedProvider(String name,
+            LazyDocumentsList docList) {
+        documentsLists.put(name, docList);
+    }
 
-	public static void unregisterNamedProvider(String name) {
-		documentsLists.remove(name);
-	}
+    public static void unregisterNamedProvider(String name) {
+        documentsLists.remove(name);
+    }
 
-	public static LazyDocumentsList getNamedProvider(String name) {
-		return documentsLists.get(name);
-	}
+    public static LazyDocumentsList getNamedProvider(String name) {
+        return documentsLists.get(name);
+    }
 
 }

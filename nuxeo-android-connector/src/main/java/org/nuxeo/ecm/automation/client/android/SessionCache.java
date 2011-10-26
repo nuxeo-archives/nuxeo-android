@@ -1,3 +1,19 @@
+/*
+ * (C) Copyright 2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Lesser General Public License
+ * (LGPL) version 2.1 which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/lgpl.html
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * Contributors:
+ *     Nuxeo - initial API and implementation
+ */
 package org.nuxeo.ecm.automation.client.android;
 
 import java.io.File;
@@ -15,45 +31,49 @@ import android.util.Log;
 
 public class SessionCache {
 
-	protected String getCacheKey(String url, String username, String password) {
-		String key = url + ":" + username + ":" + password;
-		String sessionHash = CacheKeyHelper.getHash(key);
-		return "session-"+ sessionHash;
-	}
+    protected String getCacheKey(String url, String username, String password) {
+        String key = url + ":" + username + ":" + password;
+        String sessionHash = CacheKeyHelper.getHash(key);
+        return "session-" + sessionHash;
+    }
 
-	public CachedSession getCachedSession(AndroidAutomationClient client, String url, String username, String password) {
+    public CachedSession getCachedSession(AndroidAutomationClient client,
+            String url, String username, String password) {
 
-		File rootDir = BlobStoreManager.getRootCacheDir(client.androidContext);
-		String fileName = getCacheKey(url, username, password);
-		File cache = new File(rootDir, fileName);
-		if (cache.exists()) {
-			String automationDefKey = CacheKeyHelper.getOperationDefinitionsCacheKey(url);
-			ResponseCacheEntry response = client.responseCacheManager.getResponseFromCache(automationDefKey);
+        File rootDir = BlobStoreManager.getRootCacheDir(client.androidContext);
+        String fileName = getCacheKey(url, username, password);
+        File cache = new File(rootDir, fileName);
+        if (cache.exists()) {
+            String automationDefKey = CacheKeyHelper.getOperationDefinitionsCacheKey(url);
+            ResponseCacheEntry response = client.responseCacheManager.getResponseFromCache(automationDefKey);
 
-			if (response==null) {
-				return null;
-			}
-			try {
-				OperationRegistry cachedregistry = JsonMarshalling.readRegistry(IOUtils.read(response.getResponseStream()));
-				return new CachedSession(client, cachedregistry, new LoginInfo(username));
-			} catch (Exception e) {
-				Log.e(this.getClass().getSimpleName(), "Unable to create cached session", e);
-			}
-		}
-		return null;
-	}
+            if (response == null) {
+                return null;
+            }
+            try {
+                OperationRegistry cachedregistry = JsonMarshalling.readRegistry(IOUtils.read(response.getResponseStream()));
+                return new CachedSession(client, cachedregistry, new LoginInfo(
+                        username));
+            } catch (Exception e) {
+                Log.e(this.getClass().getSimpleName(),
+                        "Unable to create cached session", e);
+            }
+        }
+        return null;
+    }
 
-
-	public void storeSession(AndroidAutomationClient client, String url, String username, String password) {
-		File rootDir = BlobStoreManager.getRootCacheDir(client.androidContext);
-		String fileName = getCacheKey(url, username, password);
-		File cache = new File(rootDir, fileName);
-		try {
-			cache.createNewFile();
-		} catch (IOException e) {
-			Log.e(this.getClass().getSimpleName(), "Unable to create Session cache file", e);
-			throw new RuntimeException(e);
-		}
-	}
+    public void storeSession(AndroidAutomationClient client, String url,
+            String username, String password) {
+        File rootDir = BlobStoreManager.getRootCacheDir(client.androidContext);
+        String fileName = getCacheKey(url, username, password);
+        File cache = new File(rootDir, fileName);
+        try {
+            cache.createNewFile();
+        } catch (IOException e) {
+            Log.e(this.getClass().getSimpleName(),
+                    "Unable to create Session cache file", e);
+            throw new RuntimeException(e);
+        }
+    }
 
 }

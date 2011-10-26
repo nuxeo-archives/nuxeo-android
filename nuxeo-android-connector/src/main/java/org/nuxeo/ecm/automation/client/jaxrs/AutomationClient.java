@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2006-2008 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -29,7 +29,7 @@ package org.nuxeo.ecm.automation.client.jaxrs;
  * <p>
  * Note for implementors: the implementation should provide a constructor that
  * initialize the base URL
- *
+ * 
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  */
 public interface AutomationClient {
@@ -86,7 +86,7 @@ public interface AutomationClient {
      * Register an adapter for a given type. Registration is not thread safe.
      * You should register adapters at initialization time. An adapter type can
      * be bound to a single adaptable type.
-     *
+     * 
      */
     void registerAdapter(AdapterFactory<?> factory);
 

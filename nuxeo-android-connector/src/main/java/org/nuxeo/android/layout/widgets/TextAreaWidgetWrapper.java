@@ -32,71 +32,75 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class TextAreaWidgetWrapper extends BaseAndroidWidgetWrapper<String> implements AndroidWidgetWrapper {
+public class TextAreaWidgetWrapper extends BaseAndroidWidgetWrapper<String>
+        implements AndroidWidgetWrapper {
 
-	protected TextView txtWidget;
-	protected EditText editWidget;
+    protected TextView txtWidget;
 
-	@Override
-	public boolean validateBeforeModelUpdate() {
-		return true;
-	}
+    protected EditText editWidget;
 
-	@Override
-	public void updateModel(Document doc) {
-		if (editWidget!=null && ! editWidget.getText().toString().equals(getCurrentValue())) {
-			DocumentAttributeResolver.put(doc, getAttributeName(), editWidget.getText().toString());
-		}
-	}
+    @Override
+    public boolean validateBeforeModelUpdate() {
+        return true;
+    }
 
-	@Override
-	public void refreshViewFromDocument(Document doc) {
-		initCurrentValueFromDocument(doc);
-		applyBinding();
-	}
+    @Override
+    public void updateModel(Document doc) {
+        if (editWidget != null
+                && !editWidget.getText().toString().equals(getCurrentValue())) {
+            DocumentAttributeResolver.put(doc, getAttributeName(),
+                    editWidget.getText().toString());
+        }
+    }
 
-	protected void applyBinding() {
-		if (txtWidget!=null) {
-			txtWidget.setText(getCurrentValue());
-		}
-		if (editWidget!=null) {
-			editWidget.setText(getCurrentValue());
-		}
-	}
+    @Override
+    public void refreshViewFromDocument(Document doc) {
+        initCurrentValueFromDocument(doc);
+        applyBinding();
+    }
 
-	@Override
-	public View buildView(LayoutContext context, LayoutMode mode, Document doc,
-			List<String> attributeNames, WidgetDefinition widgetDef) {
+    protected void applyBinding() {
+        if (txtWidget != null) {
+            txtWidget.setText(getCurrentValue());
+        }
+        if (editWidget != null) {
+            editWidget.setText(getCurrentValue());
+        }
+    }
 
-		super.buildView(context, mode, doc, attributeNames, widgetDef);
+    @Override
+    public View buildView(LayoutContext context, LayoutMode mode, Document doc,
+            List<String> attributeNames, WidgetDefinition widgetDef) {
 
-		Context ctx = context.getActivity();
+        super.buildView(context, mode, doc, attributeNames, widgetDef);
 
-		View view = null;
-		if (mode==LayoutMode.VIEW) {
-			txtWidget = new TextView(ctx);
-			txtWidget.setSingleLine(false);
-			txtWidget.setLines(3);
-			txtWidget.setGravity(Gravity.TOP | Gravity.LEFT);
-			view = txtWidget;
-		}
-		else  {
-			editWidget = new EditText(ctx);
-			editWidget.setSingleLine(false);
-			editWidget.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-			editWidget.setLines(3);
-			editWidget.setGravity(Gravity.TOP | Gravity.LEFT);
-			view = editWidget;
-		}
-		applyBinding();
+        Context ctx = context.getActivity();
 
-		return view;
-	}
+        View view = null;
+        if (mode == LayoutMode.VIEW) {
+            txtWidget = new TextView(ctx);
+            txtWidget.setSingleLine(false);
+            txtWidget.setLines(3);
+            txtWidget.setGravity(Gravity.TOP | Gravity.LEFT);
+            view = txtWidget;
+        } else {
+            editWidget = new EditText(ctx);
+            editWidget.setSingleLine(false);
+            editWidget.setInputType(InputType.TYPE_CLASS_TEXT
+                    | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+            editWidget.setLines(3);
+            editWidget.setGravity(Gravity.TOP | Gravity.LEFT);
+            view = editWidget;
+        }
+        applyBinding();
 
+        return view;
+    }
 
-	@Override
-	protected void initCurrentValueFromDocument(Document doc) {
-		setCurrentValue(DocumentAttributeResolver.getString(doc, getAttributeName()));
-	}
+    @Override
+    protected void initCurrentValueFromDocument(Document doc) {
+        setCurrentValue(DocumentAttributeResolver.getString(doc,
+                getAttributeName()));
+    }
 
 }

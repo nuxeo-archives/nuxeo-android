@@ -28,15 +28,16 @@ import android.view.View;
 
 public class ReadOnlyTextWidgetWrapper extends TextWidgetWrapper {
 
-	@Override
-	public void updateModel(Document doc){
-		// NOP
-	}
+    @Override
+    public void updateModel(Document doc) {
+        // NOP
+    }
 
-	@Override
-	public View buildView(LayoutContext context, LayoutMode mode, Document doc,
-			List<String> attributeNames, WidgetDefinition widgetDef) {
-		return super.buildView(context, LayoutMode.VIEW, doc, attributeNames, widgetDef);
-	}
+    @Override
+    public View buildView(LayoutContext context, LayoutMode mode, Document doc,
+            List<String> attributeNames, WidgetDefinition widgetDef) {
+        return super.buildView(context, LayoutMode.VIEW, doc, attributeNames,
+                widgetDef);
+    }
 
 }

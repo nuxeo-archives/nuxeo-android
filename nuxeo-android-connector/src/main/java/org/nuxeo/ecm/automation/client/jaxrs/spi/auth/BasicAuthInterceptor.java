@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2006-2008 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -24,9 +24,9 @@ import org.nuxeo.ecm.automation.client.jaxrs.util.Base64;
 
 /**
  * Inject the basic authentication header in the request
- *
+ * 
  * @author matic
- *
+ * 
  */
 public class BasicAuthInterceptor implements RequestInterceptor {
 
@@ -46,10 +46,9 @@ public class BasicAuthInterceptor implements RequestInterceptor {
         request.put("Authorization", token);
     }
 
-	@Override
-	public void processHttpRequest(HttpRequest request) {
-		request.addHeader("Authorization", token);
-	}
-
+    @Override
+    public void processHttpRequest(HttpRequest request) {
+        request.addHeader("Authorization", token);
+    }
 
 }

@@ -29,130 +29,134 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class DocumentProviderTableWrapper extends AbstractSQLTableWrapper {
 
-	public static final String TBLNAME = "NuxeoDocumentProviders";
+    public static final String TBLNAME = "NuxeoDocumentProviders";
 
-	protected static final String KEY_COLUMN = "NAME";
+    protected static final String KEY_COLUMN = "NAME";
 
-	protected static final String OPID_COLUMN = "OPERATIONID";
-	protected static final String PARAMS_COLUMN = "PARAMS";
-	protected static final String HEADERS_COLUMN = "HEADERS";
-	protected static final String CTX_COLUMN = "CTX";
-	protected static final String INPUT_TYPE_COLUMN = "INPUT_TYPE";
-	protected static final String INPUT_REF_COLUMN = "INPUT_REF";
-	protected static final String INPUT_BINARY_COLUMN = "INPUT_BIN";
-	protected static final String PAGE_PARAM_COLUMN = "PAGEPARAM";
-	protected static final String READ_ONLY_COLUMN = "READONLY";
+    protected static final String OPID_COLUMN = "OPERATIONID";
 
-	protected static final String CREATE_STATEMENT = "CREATE TABLE " + TBLNAME
-			+ " (" + KEY_COLUMN + " TEXT, " + OPID_COLUMN + " TEXT, "
-			+ PARAMS_COLUMN + " TEXT, " + HEADERS_COLUMN + " TEXT, "
-			+ CTX_COLUMN + " TEXT, "
-			+ PAGE_PARAM_COLUMN + " TEXT, "
-			+ READ_ONLY_COLUMN + " TEXT, "
-			+ INPUT_TYPE_COLUMN + " TEXT, "
-			+ INPUT_REF_COLUMN + " TEXT, "
-			+ INPUT_BINARY_COLUMN + " TEXT);";
+    protected static final String PARAMS_COLUMN = "PARAMS";
 
-	@Override
-	public String getCreateStatement() {
-		return CREATE_STATEMENT;
-	}
+    protected static final String HEADERS_COLUMN = "HEADERS";
 
-	@Override
-	public String getKeyColumnName() {
-		return KEY_COLUMN;
-	}
+    protected static final String CTX_COLUMN = "CTX";
 
-	@Override
-	public String getTableName() {
-		return TBLNAME;
-	}
+    protected static final String INPUT_TYPE_COLUMN = "INPUT_TYPE";
 
-	public LazyDocumentsList getStoredProvider(Session session, String name) {
+    protected static final String INPUT_REF_COLUMN = "INPUT_REF";
 
-		SQLiteDatabase db = getReadableDatabase();
+    protected static final String INPUT_BINARY_COLUMN = "INPUT_BIN";
 
-		String sql = "select * from " + getTableName() + " where " + KEY_COLUMN + "='" + name + "'";
-		Cursor cursor = db.rawQuery(sql,null);
+    protected static final String PAGE_PARAM_COLUMN = "PAGEPARAM";
 
-		try {
-			if (cursor.getCount()>0 && cursor.moveToFirst()) {
-				String operationKey = cursor.getString(cursor.getColumnIndex(KEY_COLUMN));
-				String operationId = cursor.getString(cursor.getColumnIndex(OPID_COLUMN));
-				String jsonParams = cursor.getString(cursor.getColumnIndex(PARAMS_COLUMN));
-	            String jsonHeaders = cursor.getString(cursor.getColumnIndex(HEADERS_COLUMN));
-	            String jsonCtx = cursor.getString(cursor.getColumnIndex(CTX_COLUMN));
-	            String inputType = cursor.getString(cursor.getColumnIndex(INPUT_TYPE_COLUMN));
-	            String inputRef = cursor.getString(cursor.getColumnIndex(INPUT_REF_COLUMN));
-	            Boolean inputBin = false;
+    protected static final String READ_ONLY_COLUMN = "READONLY";
 
-	            if (inputType!=null) {
-	            	inputBin = new Boolean(cursor.getString(cursor.getColumnIndex(INPUT_BINARY_COLUMN)));
-	            }
+    protected static final String CREATE_STATEMENT = "CREATE TABLE " + TBLNAME
+            + " (" + KEY_COLUMN + " TEXT, " + OPID_COLUMN + " TEXT, "
+            + PARAMS_COLUMN + " TEXT, " + HEADERS_COLUMN + " TEXT, "
+            + CTX_COLUMN + " TEXT, " + PAGE_PARAM_COLUMN + " TEXT, "
+            + READ_ONLY_COLUMN + " TEXT, " + INPUT_TYPE_COLUMN + " TEXT, "
+            + INPUT_REF_COLUMN + " TEXT, " + INPUT_BINARY_COLUMN + " TEXT);";
 
-	            OperationRequest request = OperationPersisterHelper.rebuildOperation(session, operationId, jsonParams, jsonHeaders, jsonCtx, inputType, inputRef, inputBin);
-	            Boolean readOnly = new Boolean(cursor.getString(cursor.getColumnIndex(READ_ONLY_COLUMN)));
-	            String pageParam = cursor.getString(cursor.getColumnIndex(PAGE_PARAM_COLUMN));
+    @Override
+    public String getCreateStatement() {
+        return CREATE_STATEMENT;
+    }
 
-	            LazyDocumentsList result = null;
-	            if (readOnly) {
-	            	result =  new LazyDocumentsListImpl(request, pageParam);
-	            } else {
-	            	result =  new LazyUpdatableDocumentsListImpl(request, pageParam);
-	            }
-	            result.setName(name);
-	            return result;
-			}
-		}finally {
-			if (cursor!=null) {
-				cursor.close();
-			}
-		}
-		return null;
-	}
+    @Override
+    public String getKeyColumnName() {
+        return KEY_COLUMN;
+    }
 
-	public void storeProvider(String name, LazyDocumentsList docList) {
+    @Override
+    public String getTableName() {
+        return TBLNAME;
+    }
 
-		OperationRequest request = docList.getFetchOperation();
-		String pageParam = docList.getPageParameterName();
+    public LazyDocumentsList getStoredProvider(Session session, String name) {
 
-		SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
 
-		String sql = "INSERT INTO " + getTableName() + " (" + KEY_COLUMN + ","
-		+ OPID_COLUMN + ","
-		+ PARAMS_COLUMN + ","
-		+ HEADERS_COLUMN + ","
-		+ CTX_COLUMN  + ","
-		+ PAGE_PARAM_COLUMN + ","
-		+ READ_ONLY_COLUMN;
+        String sql = "select * from " + getTableName() + " where " + KEY_COLUMN
+                + "='" + name + "'";
+        Cursor cursor = db.rawQuery(sql, null);
 
-		String operationId = request.getDocumentation().getId();
-		String jsonParams = new JSONObject(request.getParameters()).toString();
+        try {
+            if (cursor.getCount() > 0 && cursor.moveToFirst()) {
+                String operationKey = cursor.getString(cursor.getColumnIndex(KEY_COLUMN));
+                String operationId = cursor.getString(cursor.getColumnIndex(OPID_COLUMN));
+                String jsonParams = cursor.getString(cursor.getColumnIndex(PARAMS_COLUMN));
+                String jsonHeaders = cursor.getString(cursor.getColumnIndex(HEADERS_COLUMN));
+                String jsonCtx = cursor.getString(cursor.getColumnIndex(CTX_COLUMN));
+                String inputType = cursor.getString(cursor.getColumnIndex(INPUT_TYPE_COLUMN));
+                String inputRef = cursor.getString(cursor.getColumnIndex(INPUT_REF_COLUMN));
+                Boolean inputBin = false;
+
+                if (inputType != null) {
+                    inputBin = new Boolean(
+                            cursor.getString(cursor.getColumnIndex(INPUT_BINARY_COLUMN)));
+                }
+
+                OperationRequest request = OperationPersisterHelper.rebuildOperation(
+                        session, operationId, jsonParams, jsonHeaders, jsonCtx,
+                        inputType, inputRef, inputBin);
+                Boolean readOnly = new Boolean(
+                        cursor.getString(cursor.getColumnIndex(READ_ONLY_COLUMN)));
+                String pageParam = cursor.getString(cursor.getColumnIndex(PAGE_PARAM_COLUMN));
+
+                LazyDocumentsList result = null;
+                if (readOnly) {
+                    result = new LazyDocumentsListImpl(request, pageParam);
+                } else {
+                    result = new LazyUpdatableDocumentsListImpl(request,
+                            pageParam);
+                }
+                result.setName(name);
+                return result;
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return null;
+    }
+
+    public void storeProvider(String name, LazyDocumentsList docList) {
+
+        OperationRequest request = docList.getFetchOperation();
+        String pageParam = docList.getPageParameterName();
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        String sql = "INSERT INTO " + getTableName() + " (" + KEY_COLUMN + ","
+                + OPID_COLUMN + "," + PARAMS_COLUMN + "," + HEADERS_COLUMN
+                + "," + CTX_COLUMN + "," + PAGE_PARAM_COLUMN + ","
+                + READ_ONLY_COLUMN;
+
+        String operationId = request.getDocumentation().getId();
+        String jsonParams = new JSONObject(request.getParameters()).toString();
         String jsonHeaders = new JSONObject(request.getHeaders()).toString();
         String jsonCtx = new JSONObject(request.getContextParameters()).toString();
 
-		String sqlValues =  " VALUES ("
-		+ "'" + name + "',"
-		+ "'" + operationId + "',"
-		+ "'" + jsonParams + "',"
-		+ "'" + jsonHeaders + "',"
-		+ "'" + jsonCtx + "',"
-		+ "'" + pageParam + "',"
-		+ "'" + new Boolean(docList.isReadOnly()).toString() + "'";
+        String sqlValues = " VALUES (" + "'" + name + "'," + "'" + operationId
+                + "'," + "'" + jsonParams + "'," + "'" + jsonHeaders + "',"
+                + "'" + jsonCtx + "'," + "'" + pageParam + "'," + "'"
+                + new Boolean(docList.isReadOnly()).toString() + "'";
 
-        if (request.getInput()!=null) {
-        	String inputType = request.getInput().getInputType();
-        	String inputRef = request.getInput().getInputRef();
-        	String inputBin = new Boolean(request.getInput().isBinary()).toString();
+        if (request.getInput() != null) {
+            String inputType = request.getInput().getInputType();
+            String inputRef = request.getInput().getInputRef();
+            String inputBin = new Boolean(request.getInput().isBinary()).toString();
 
-        	sql = sql + "," + INPUT_TYPE_COLUMN + "," + INPUT_REF_COLUMN + "," + INPUT_BINARY_COLUMN;
-        	sqlValues = sqlValues + ",'" + inputType + "','" + inputRef + "','" + inputBin + "'";
+            sql = sql + "," + INPUT_TYPE_COLUMN + "," + INPUT_REF_COLUMN + ","
+                    + INPUT_BINARY_COLUMN;
+            sqlValues = sqlValues + ",'" + inputType + "','" + inputRef + "','"
+                    + inputBin + "'";
         }
         String insertQuery = sql + " ) " + sqlValues + ");";
 
         execTransactionalSQL(db, insertQuery);
-	}
-
-
+    }
 
 }

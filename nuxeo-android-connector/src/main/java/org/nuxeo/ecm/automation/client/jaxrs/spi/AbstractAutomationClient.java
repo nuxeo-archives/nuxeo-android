@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2006-2008 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -106,7 +106,8 @@ public abstract class AbstractAutomationClient implements AutomationClient {
     }
 
     protected OperationRegistry connect(Connector connector) {
-    	Log.w(this.getClass().getSimpleName(), "Using Synch request to init the automation session");
+        Log.w(this.getClass().getSimpleName(),
+                "Using Synch request to init the automation session");
         Request req = new Request(Request.GET, url);
         req.put("Accept", CTYPE_AUTOMATION);
         // TODO handle authorization failure
@@ -132,7 +133,7 @@ public abstract class AbstractAutomationClient implements AutomationClient {
     }
 
     public Connector getConnector() {
-    	Connector connector = newConnector();
+        Connector connector = newConnector();
         if (requestInterceptor != null) {
             connector = new ConnectorHandler(connector, requestInterceptor);
         }
@@ -141,11 +142,12 @@ public abstract class AbstractAutomationClient implements AutomationClient {
 
     public Session getSession(final String username, final String password) {
         setBasicAuth(username, password);
-        Session session=null;
+        Session session = null;
         try {
             session = getSession();
         } catch (Throwable t) {
-            Log.e(this.getClass().getSimpleName(), "Unable to create live session", t);
+            Log.e(this.getClass().getSimpleName(),
+                    "Unable to create live session", t);
         }
         return session;
     }
@@ -162,15 +164,15 @@ public abstract class AbstractAutomationClient implements AutomationClient {
                 try {
                     Session session = getSession();
                     // TODO handle failures
-                    cb.onSuccess(null,session);
+                    cb.onSuccess(null, session);
                 } catch (Throwable t) {
-                    cb.onError(null,t);
+                    cb.onError(null, t);
                 }
             }
         });
     }
 
-    protected Session login(Connector connector)  {
+    protected Session login(Connector connector) {
         Request request = new Request(Request.POST, url
                 + getRegistry().getPath("login"));
         request.put("Accept", CTYPE_ENTITY);
@@ -185,25 +187,26 @@ public abstract class AbstractAutomationClient implements AutomationClient {
     }
 
     public void asyncExec(Runnable runnable) {
-    	throw new UnsupportedOperationException("Async execution not supported");
+        throw new UnsupportedOperationException("Async execution not supported");
     }
 
-    public String asyncExec(final Session session, final OperationRequest request, final AsyncCallback<Object> cb) {
+    public String asyncExec(final Session session,
+            final OperationRequest request, final AsyncCallback<Object> cb) {
         throw new UnsupportedOperationException("Async execution not supported");
     }
 
     protected abstract Connector newConnector();
 
     public boolean isOffline() {
-    	return false;
+        return false;
     }
 
     public String execDeferredUpdate(OperationRequest request,
-			AsyncCallback<Object> cb, OperationType opType) {
-    	throw new UnsupportedOperationException("No defered update managger");
+            AsyncCallback<Object> cb, OperationType opType) {
+        throw new UnsupportedOperationException("No defered update managger");
     }
 
     public DocumentMessageService getMessageHelper() {
-    	throw new UnsupportedOperationException("No MessageHelper");
+        throw new UnsupportedOperationException("No MessageHelper");
     }
 }

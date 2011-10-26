@@ -18,7 +18,7 @@ package org.nuxeo.ecm.automation.client.jaxrs.model;
 
 /**
  * Marker interface for objects that can be set as input on operations
- *
+ * 
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  */
 public interface OperationInput {

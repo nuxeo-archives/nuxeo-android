@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2006-2008 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -22,7 +22,7 @@ import java.util.Date;
  * Parse and encode W3c dates. Only UTC dates are supported (ending in Z):
  * YYYY-MM-DDThh:mm:ssZ (without milliseconds) We use a custom parser since it
  * should work on GWT too.
- *
+ * 
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  */
 @SuppressWarnings("deprecation")
@@ -106,7 +106,7 @@ public class DateUtils {
         }
         String m = text.substring(p + 1, q);
         String s = text.substring(q + 1, text.length() - 1); // remove the
-                                                                // trailing Z
+                                                             // trailing Z
         int hour = Integer.parseInt(h);
         int minute = Integer.parseInt(m);
         int second = Integer.parseInt(s);

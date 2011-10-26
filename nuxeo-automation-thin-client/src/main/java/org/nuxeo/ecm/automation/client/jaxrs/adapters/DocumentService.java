@@ -345,7 +345,7 @@ public class DocumentService {
     /**
      * Increment is one of "None", "Major", "Minor". If null the server default
      * will be used.
-     *
+     * 
      * See {@link VersionIncrement}
      */
     public Document createVersion(DocRef doc, String increment)

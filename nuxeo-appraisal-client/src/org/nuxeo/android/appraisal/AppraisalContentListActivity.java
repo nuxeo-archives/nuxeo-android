@@ -1,3 +1,19 @@
+/*
+ * (C) Copyright 2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Lesser General Public License
+ * (LGPL) version 2.1 which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/lgpl.html
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * Contributors:
+ *     Nuxeo - initial API and implementation
+ */
 package org.nuxeo.android.appraisal;
 
 import java.util.HashMap;
@@ -29,7 +45,8 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
         mapping.put(R.id.title_entry, "dc:title");
         mapping.put(R.id.description, "dc:description");
         mapping.put(R.id.status_entry, "status");
-        mapping.put(R.id.thumb, DocumentAttributeResolver.PICTUREURI+":Medium");
+        mapping.put(R.id.thumb, DocumentAttributeResolver.PICTUREURI
+                + ":Medium");
         return mapping;
     }
 
@@ -43,10 +60,13 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
     }
 
     @Override
-    protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam) throws Exception {
+    protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam)
+            throws Exception {
         Documents docs = getNuxeoContext().getDocumentManager().query(
-                "select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:isCheckedInVersion = 0 AND ecm:parentId=? order by dc:modified desc", new String[]{getInitParam(ROOT_DOC_PARAM, Document.class).getId()}, null, null, 0, 10,cacheParam);
-        if (docs!=null) {
+                "select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:isCheckedInVersion = 0 AND ecm:parentId=? order by dc:modified desc",
+                new String[] { getInitParam(ROOT_DOC_PARAM, Document.class).getId() },
+                null, null, 0, 10, cacheParam);
+        if (docs != null) {
             return docs.asUpdatableDocumentsList();
         }
         throw new RuntimeException("fetch Operation did return null");
@@ -59,27 +79,31 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
 
     @Override
     protected Document initNewDocument(String type) {
-        if (documentsList==null) {
+        if (documentsList == null) {
             return null;
         } else {
-            return new Document(getInitParam(ROOT_DOC_PARAM, Document.class).getPath(),"appraisalPicture-" + documentsList.getCurrentSize(),"File");
+            return new Document(
+                    getInitParam(ROOT_DOC_PARAM, Document.class).getPath(),
+                    "appraisalPicture-" + documentsList.getCurrentSize(),
+                    "File");
         }
     }
 
     @Override
     protected void onDocumentCreate(Document newDocument) {
-        OperationRequest createOperation = getNuxeoSession().newRequest("Picture.Create");
+        OperationRequest createOperation = getNuxeoSession().newRequest(
+                "Picture.Create");
 
         PropertyMap dirty = newDocument.getDirtyProperties();
-        if (dirty.get("file:content")!=null) {
+        if (dirty.get("file:content") != null) {
             dirty.map().put("originalPicture", dirty.get("file:content"));
             dirty.map().remove("file:content");
         }
-        String dirtyString =  PropertiesHelper.toStringProperties(dirty);
+        String dirtyString = PropertiesHelper.toStringProperties(dirty);
 
         PathRef parent = new PathRef(newDocument.getParentPath());
         createOperation.setInput(parent).set("properties", dirtyString);
-        if (newDocument.getName()!=null) {
+        if (newDocument.getName() != null) {
             createOperation.set("name", newDocument.getName());
         }
         documentsList.createDocument(newDocument, createOperation);
