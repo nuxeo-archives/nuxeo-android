@@ -36,7 +36,7 @@ public class DummyInMemoryCache implements InputStreamCacheManager {
         }
 
         @Override
-        protected boolean removeEldestEntry(Entry<K, V> eldest) {
+        protected boolean removeEldestEntry(java.util.Map.Entry<K, V> eldest) {
             return size() > max;
         }
     }
