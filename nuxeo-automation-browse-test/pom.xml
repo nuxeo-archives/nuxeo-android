@@ -10,8 +10,8 @@
   </parent>
 
   <artifactId>nuxeo-automation-browse-test</artifactId>
-  <name>Unit test browsing of nuxeo-automation-sample</name>
-  <description></description>
+  <name>AutomationNonRegTests</name>
+  <description>Unit test browsing of nuxeo-automation-sample</description>
   <packaging>apk</packaging>
 
   <properties>

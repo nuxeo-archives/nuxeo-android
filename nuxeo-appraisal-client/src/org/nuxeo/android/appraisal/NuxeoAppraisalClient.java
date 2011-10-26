@@ -19,7 +19,7 @@ package org.nuxeo.android.appraisal;
 
 import org.nuxeo.android.context.SimpleNuxeoApplication;
 
-public class AppraisalApp extends SimpleNuxeoApplication  {
+public class NuxeoAppraisalClient extends SimpleNuxeoApplication  {
 
 
 }

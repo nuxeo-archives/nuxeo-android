@@ -10,8 +10,8 @@
   </parent>
 
   <artifactId>nuxeo-automation-sample</artifactId>
-  <name>HomeSampleActivity</name>
-  <description></description>
+  <name>NuxeoSampleApplication</name>
+  <description>Nuxeo Android sample client for Nuxeo automation.</description>
   <packaging>apk</packaging>
 
   <dependencies>

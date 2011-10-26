@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>nuxeo-android-simpleclient</artifactId>
-  <name>Nuxeo Android simple client</name>
+  <name>NuxeoAndroidApplication</name>
   <description>Nuxeo Android simple client for browsing a Nuxeo server.</description>
   <packaging>apk</packaging>
   <dependencies>

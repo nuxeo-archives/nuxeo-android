@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-  <classpathentry kind="src" path="/nuxeo-android-connector"/>
-  <classpathentry kind="var" path="M2_REPO/commons-codec/commons-codec/1.3/commons-codec-1.3.jar" sourcepath="M2_REPO/commons-codec/commons-codec/1.3/commons-codec-1.3-sources.jar" />
-  <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" sourcepath="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-codec/commons-codec/1.3/commons-codec-1.3.jar" sourcepath="M2_REPO/commons-codec/commons-codec/1.3/commons-codec-1.3-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/httpcomponents/httpclient/4.0.1/httpclient-4.0.1.jar" sourcepath="M2_REPO/org/apache/httpcomponents/httpclient/4.0.1/httpclient-4.0.1-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/httpcomponents/httpcore/4.0.1/httpcore-4.0.1.jar" sourcepath="M2_REPO/org/apache/httpcomponents/httpcore/4.0.1/httpcore-4.0.1-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/json/json/20080701/json-20080701.jar" sourcepath="M2_REPO/org/json/json/20080701/json-20080701-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/khronos/opengl-api/gl1.1-android-2.1_r1/opengl-api-gl1.1-android-2.1_r1.jar" sourcepath="M2_REPO/org/khronos/opengl-api/gl1.1-android-2.1_r1/opengl-api-gl1.1-android-2.1_r1-sources.jar"/>
   <classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
   <classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="src" path="nuxeo-android-connector-ui_src"/>
-  <classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+  <classpathentry kind="src" path="gen"/>
+  <classpathentry combineaccessrules="false" kind="src" path="/nuxeo-android-connector"/>
+  <classpathentry kind="output" path="bin/classes"/>
 </classpath>
