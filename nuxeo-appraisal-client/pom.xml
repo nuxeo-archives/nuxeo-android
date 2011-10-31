@@ -30,29 +30,6 @@
     </dependency>
   </dependencies>
 
-  <profiles>
-    <profile>
-      <id>release</id>
-      <properties>
-        <keystore.type>JKS</keystore.type>
-        <keystore.alias>nuxeocom</keystore.alias>
-      </properties>
-    </profile>
-    <profile>
-      <!-- development profile - do not use it in production mode -->
-      <id>dev</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <keystore.path>../nuxeo-dev.jks</keystore.path>
-        <keystore.type>JKS</keystore.type>
-        <keystore.alias>nuxeo-shell-dev</keystore.alias>
-        <keystore.password>nuxeodev</keystore.password>
-      </properties>
-    </profile>
-  </profiles>
-
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>

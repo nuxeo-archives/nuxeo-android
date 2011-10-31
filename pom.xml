@@ -17,6 +17,11 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <nuxeo.distribution.version>5.4.3-SNAPSHOT</nuxeo.distribution.version>
+    <!-- Default signing values for development purpose only -->
+    <keystore.path>../nuxeo-dev.jks</keystore.path>
+    <keystore.type>JKS</keystore.type>
+    <keystore.alias>nuxeo-shell-dev</keystore.alias>
+    <keystore.password>nuxeodev</keystore.password>
   </properties>
 
   <modules>
@@ -28,6 +33,16 @@
     <module>nuxeo-android-connector-ui</module>
     <module>nuxeo-automation-browse-test</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <properties>
+        <keystore.type>JKS</keystore.type>
+        <keystore.alias>nuxeocom</keystore.alias>
+      </properties>
+    </profile>
+  </profiles>
 
   <dependencyManagement>
     <dependencies>
