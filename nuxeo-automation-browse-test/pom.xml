@@ -16,6 +16,7 @@
 
   <properties>
     <avd.dir>${basedir}/avd/virtual_2.2.avd</avd.dir>
+    <manage.nuxeo.server>yes</manage.nuxeo.server>
   </properties>
 
   <dependencies>
@@ -72,45 +73,106 @@
         <keystore.password>nuxeodev</keystore.password>
       </properties>
     </profile>
+    <profile>
+      <id>manage-emulator</id>
+      <!-- Won't stop an already existing emulator -->
+      <activation>
+        <file>
+          <missing>${java.io.tmpdir}/maven-android-plugin-emulator.pid</missing>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+            <artifactId>maven-android-plugin</artifactId>
+            <configuration>
+              <emulator>
+                <avd>virtual_2.2</avd>
+                <options>-wipe-data -initdata ${avd.dir}/userdata.img -data ${avd.dir}/userdata-qemu.img -sdcard ${avd.dir}/sdcard.img -cache ${avd.dir}/cache.img</options>
+                <wait>20000</wait>
+              </emulator>
+            </configuration>
+            <executions>
+              <execution>
+                <id>startemulator</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>emulator-start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>alignApk</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>zipalign</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>stopemulator</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>emulator-stop</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>manage-server</id>
+      <!-- set manage.nuxeo.server=no to manage yourself the Nuxeo server -->
+      <activation>
+        <property>
+          <name>manage.nuxeo.server</name>
+          <value>yes</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.nuxeo.build</groupId>
+            <artifactId>nuxeo-distribution-tools</artifactId>
+            <executions>
+              <execution>
+                <id>start-tomcat</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>build</goal>
+                </goals>
+                <configuration>
+                  <buildFile>${basedir}/itests.xml</buildFile>
+                  <targets>
+                    <target>prepare-environment</target>
+                    <target>start</target>
+                  </targets>
+                </configuration>
+              </execution>
+              <execution>
+                <id>stop-tomcat</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>build</goal>
+                </goals>
+                <configuration>
+                  <buildFile>${basedir}/itests.xml</buildFile>
+                  <targets>
+                    <target>stop</target>
+                    <target>cleanup-environment</target>
+                  </targets>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
-      <plugin>
-        <groupId>org.nuxeo.build</groupId>
-        <artifactId>nuxeo-distribution-tools</artifactId>
-        <executions>
-          <execution>
-            <id>start-tomcat</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>build</goal>
-            </goals>
-            <configuration>
-              <buildFile>${basedir}/itests.xml</buildFile>
-              <targets>
-                <target>prepare-environment</target>
-                <target>start</target>
-              </targets>
-            </configuration>
-          </execution>
-          <execution>
-            <id>stop-tomcat</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>build</goal>
-            </goals>
-            <configuration>
-              <buildFile>${basedir}/itests.xml</buildFile>
-              <targets>
-                <target>stop</target>
-                <target>cleanup-environment</target>
-              </targets>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jarsigner-plugin</artifactId>
@@ -139,11 +201,6 @@
         <groupId>com.jayway.maven.plugins.android.generation2</groupId>
         <artifactId>maven-android-plugin</artifactId>
         <configuration>
-          <emulator>
-            <avd>virtual_2.2</avd>
-            <options>-wipe-data -initdata ${avd.dir}/userdata.img -data ${avd.dir}/userdata-qemu.img -sdcard ${avd.dir}/sdcard.img -cache ${avd.dir}/cache.img</options>
-            <wait>20000</wait>
-          </emulator>
           <test>
             <skip>auto</skip>
             <debug>false</debug>
@@ -161,24 +218,10 @@
         </configuration>
         <executions>
           <execution>
-            <id>startemulator</id>
-            <phase>package</phase>
-            <goals>
-              <goal>emulator-start</goal>
-            </goals>
-          </execution>
-          <execution>
             <id>alignApk</id>
             <phase>package</phase>
             <goals>
               <goal>zipalign</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>stopemulator</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>emulator-stop</goal>
             </goals>
           </execution>
         </executions>
