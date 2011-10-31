@@ -16,7 +16,6 @@
 
   <properties>
     <avd.dir>${basedir}/avd/virtual_2.2.avd</avd.dir>
-    <manage.nuxeo.server>yes</manage.nuxeo.server>
   </properties>
 
   <dependencies>
@@ -126,7 +125,7 @@
       <activation>
         <property>
           <name>manage.nuxeo.server</name>
-          <value>yes</value>
+          <value>!no</value>
         </property>
       </activation>
       <build>
