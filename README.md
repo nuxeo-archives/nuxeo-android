@@ -21,6 +21,8 @@ Copy `.project.ok` to `.project` and `.classpath.ok` to `.classpath`, then impor
 
 You can still use maven-eclipse-plugin for the `nuxeo-automation-thin-client` and `nuxeo-android-connector` modules.
 
+    $ mvn eclipse:eclipse -pl nuxeo-automation-thin-client,nuxeo-android-connector
+
 The Maven build uses [maven-android-plugin](http://code.google.com/p/maven-android-plugin/).
 
 Here's an overview of its main targets:
