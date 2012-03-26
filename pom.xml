@@ -31,7 +31,7 @@
     <module>nuxeo-appraisal-client</module>
     <module>nuxeo-android</module>
     <module>nuxeo-android-connector-ui</module>
-    <module>nuxeo-automation-browse-test</module>
+    <!--<module>nuxeo-automation-browse-test</module>-->
   </modules>
 
   <profiles>

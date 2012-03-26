@@ -65,6 +65,7 @@ Here's an overview of its main targets:
  * Nuxeo Android simple client (`nuxeo-android`)
 
     The Nuxeo Android application based on Nuxeo Automation Thin Client and Droid4Me library.
+    This module is deprecated since it relies on the deprecated automation-client.
 
  * Nuxeo Android connector (`nuxeo-android-connector`)
 
