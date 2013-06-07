@@ -39,14 +39,12 @@ public class SessionCache {
 
     public CachedSession getCachedSession(AndroidAutomationClient client,
             String url, String username, String password) {
-
         File rootDir = BlobStoreManager.getRootCacheDir(client.androidContext);
         String fileName = getCacheKey(url, username, password);
         File cache = new File(rootDir, fileName);
         if (cache.exists()) {
             String automationDefKey = CacheKeyHelper.getOperationDefinitionsCacheKey(url);
             ResponseCacheEntry response = client.responseCacheManager.getResponseFromCache(automationDefKey);
-
             if (response == null) {
                 return null;
             }

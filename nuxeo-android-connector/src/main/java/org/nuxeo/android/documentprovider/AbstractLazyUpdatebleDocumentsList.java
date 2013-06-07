@@ -64,13 +64,13 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends
                 break;
             }
             Documents docs = pages.get(pageIdx);
-            for (int i = 0; i < docs.size(); i++) {
+            for (int i = 0; i <docs.size(); i++) {
                 if (docs.get(i).getId().equals(updatedDocument.getId())) {
                     updatedIdx = i;
                     beforeUpdateDocument = docs.get(i);
                     docs.set(i, updatedDocument);
                     updatedPage = pageIdx;
-                    updated = true;
+                    updated=true;
                     break;
                 }
             }
@@ -83,47 +83,42 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends
             final int page = updatedPage;
             final Document originalDocument = beforeUpdateDocument;
             final int docIdx = updatedIdx;
-            if (updateOperation == null) {
+            if (updateOperation==null) {
                 updateOperation = buildUpdateOperation(session, updatedDocument);
             }
             markDependencies(updateOperation, updatedDocument);
             String requestId = session.execDeferredUpdate(updateOperation,
                     new AsyncCallback<Object>() {
 
-                        @Override
-                        public void onSuccess(String executionId, Object data) {
-                            Log.i(AbstractLazyUpdatebleDocumentsList.class.getSimpleName(),
-                                    "Deferred update successful");
-                            // be sure to remove the transient state before we
-                            // redisplay !
-                            getClient().getTransientStateManager().flushTransientState(
-                                    updatedUUID);
-                            fetchPageAsync(page, true);
+                @Override
+                public void onSuccess(String executionId, Object data) {
+                    Log.i(AbstractLazyUpdatebleDocumentsList.class.getSimpleName(), "Deferred update successful");
+                    // be sure to remove the transient state before we redisplay !
+                    getClient().getTransientStateManager().flushTransientState(updatedUUID);
+                    fetchPageAsync(page, true);
                             Log.i(AbstractLazyUpdatebleDocumentsList.class.getSimpleName(),
                                     "Refreshing updated page " + page);
-                            // start refreshing
-                            refreshAll();
-                        }
+                    // start refreshing
+                    refreshAll();
+                }
 
-                        @Override
-                        public void onError(String executionId, Throwable e) {
-                            Log.i(AbstractLazyUpdatebleDocumentsList.class.getSimpleName(),
-                                    "Deferred update failed "
-                                            + e.getClass().getSimpleName());
+                @Override
+                public void onError(String executionId, Throwable e) {
+                    Log.i(AbstractLazyUpdatebleDocumentsList.class.getSimpleName(), "Deferred update failed " + e.getClass().getSimpleName());
 
-                            if (e instanceof ConflictException) {
+                    if (e instanceof ConflictException) {
                                 Log.i(AbstractLazyUpdatebleDocumentsList.class.getSimpleName(),
                                         "Marking document as conflicted : "
                                                 + updatedUUID);
                                 getClient().getTransientStateManager().markAsConflict(
                                         updatedUUID);
-                            } else {
-                                // revert to previous
-                                pages.get(page).set(docIdx, originalDocument);
-                            }
-                            notifyContentChanged(page);
-                        }
-                    }, OperationType.UPDATE);
+                    } else {
+                        // revert to previous
+                        pages.get(page).set(docIdx, originalDocument);
+                    }
+                    notifyContentChanged(page);
+                }
+            }, OperationType.UPDATE);
             // notify UI
             notifyContentChanged(updatedPage);
         }
@@ -150,7 +145,7 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends
 
     protected void removePendingCreatedDocument(String uuid) {
         Documents docs = pages.get(0);
-        for (int idx = 0; idx < docs.size(); idx++) {
+        for (int idx = 0 ; idx < docs.size(); idx++) {
             if (docs.get(idx).getId().equals(uuid)) {
                 docs.remove(idx);
                 break;
@@ -165,7 +160,7 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends
 
         final String key = addPendingCreatedDocument(newDocument);
 
-        if (createOperation == null) {
+        if (createOperation==null) {
             createOperation = buildCreateOperation(session, newDocument);
         }
 
@@ -174,23 +169,22 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends
         String requestId = session.execDeferredUpdate(createOperation,
                 new AsyncCallback<Object>() {
 
-                    @Override
-                    public void onSuccess(String executionId, Object data) {
-                        Log.i(AbstractLazyUpdatebleDocumentsList.class.getSimpleName(),
-                                "Deferred creation executed successfully");
-                        removePendingCreatedDocument(key);
-                        // start refreshing
-                        refreshAll();
-                    }
+            @Override
+            public void onSuccess(String executionId, Object data) {
+                Log.i(AbstractLazyUpdatebleDocumentsList.class.getSimpleName(), "Deferred creation executed successfully");
+                removePendingCreatedDocument(key);
+                // start refreshing
+                refreshAll();
+            }
 
-                    @Override
-                    public void onError(String executionId, Throwable e) {
-                        // revert to previous
-                        removePendingCreatedDocument(key);
+            @Override
+            public void onError(String executionId, Throwable e) {
+                // revert to previous
+                removePendingCreatedDocument(key);
                         Log.e(LazyUpdatableDocumentsListImpl.class.getSimpleName(),
                                 "Deferred Creation failed", e);
-                    }
-                }, OperationType.CREATE);
+            }
+        }, OperationType.CREATE);
 
         Bundle extra = new Bundle();
         extra.putString(NuxeoBroadcastMessages.EXTRA_REQUESTID_PAYLOAD_KEY,
@@ -211,13 +205,13 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends
         if (position < pages.get(0).size()) {
             return 0;
         } else {
-            return 1 + ((position - pages.get(0).size()) / pageSize);
+            return 1 + ( (position - pages.get(0).size()) / pageSize);
         }
     }
 
     @Override
     protected int getRelativePositionOnPage(int globalPosition, int pageIndex) {
-        if (pageIndex == 0) {
+        if (pageIndex==0) {
             return globalPosition;
         } else {
             return globalPosition - pages.get(0).size() - (pageIndex - 1)
@@ -228,7 +222,7 @@ public abstract class AbstractLazyUpdatebleDocumentsList extends
     @Override
     protected Documents afterPageFetch(int pageIdx, Documents docs) {
         TransientStateManager tsm = ((AndroidAutomationClient) session.getClient()).getTransientStateManager();
-        docs = tsm.mergeTransientState(docs, pageIdx == 0, getName());
+        docs = tsm.mergeTransientState(docs, pageIdx==0, getName());
         return docs;
     }
 

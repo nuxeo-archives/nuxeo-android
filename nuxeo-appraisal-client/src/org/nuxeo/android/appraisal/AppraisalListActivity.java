@@ -81,7 +81,7 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
     @Override
     protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam)
             throws Exception {
-        String user = getNuxeoContext().getSession().getLogin().getUsername();
+        String user = getNuxeoSession().getLogin().getUsername();
         Documents docs = getNuxeoContext().getDocumentManager().query(
                 "select * from Appraisal where appraisal:assignee=? AND ecm:currentLifeCycleState=? order by dc:modified desc",
                 new String[] { user, "assigned" }, null,

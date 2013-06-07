@@ -186,7 +186,6 @@ public class AndroidAutomationClient extends HttpAutomationClient {
     }
 
     public <T> T getAdapter(Object objToAdapt, Class<T> adapterType) {
-
         if (adapterType.getName().equals(NuxeoLayoutService.class.getName())) {
             return adapterType.cast(layoutService);
         } else if (adapterType.getName().equals(FileDownloader.class.getName())) {
@@ -214,13 +213,11 @@ public class AndroidAutomationClient extends HttpAutomationClient {
         } else if (adapterType.getName().equals(DocumentManager.class.getName())) {
             return adapterType.cast(new DocumentManager((Session) objToAdapt));
         }
-
         return super.getAdapter(objToAdapt, adapterType);
     }
 
     @Override
     public Session getSession(final String username, final String password) {
-
         // use the current live session if available
         if (currentSession != null) {
             LoginInfo li = currentSession.getLogin();
@@ -241,8 +238,7 @@ public class AndroidAutomationClient extends HttpAutomationClient {
                 @Override
                 public void run() {
                     if (networkStatus.isNuxeoServerReachable()) {
-                        Session liveSession = AndroidAutomationClient.this.createSession(
-                                username, password);
+                        Session liveSession = createSession(username, password);
                         if (liveSession != null) {
                             currentSession = liveSession;
                         }
@@ -254,11 +250,9 @@ public class AndroidAutomationClient extends HttpAutomationClient {
 
         // create a real session (require sync call to the server)
         currentSession = createSession(username, password);
-
         if (currentSession != null) {
             sessionCache.storeSession(this, url, username, password);
         }
-
         return currentSession;
     }
 
