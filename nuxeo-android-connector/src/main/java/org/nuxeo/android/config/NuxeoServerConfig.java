@@ -1,10 +1,10 @@
 /*
- * (C) Copyright 2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2011-2013 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
  * (LGPL) version 2.1 which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/lgpl.html
+ * http://www.gnu.org/licenses/lgpl-2.1.html
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 
 public class NuxeoServerConfig implements OnSharedPreferenceChangeListener {
@@ -37,6 +38,8 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener {
     public static final String PREF_SERVER_LOGIN = "nuxeo.login";
 
     public static final String PREF_SERVER_PASSWORD = "nuxeo.password";
+
+    public static final String PREF_SERVER_TOKEN = "nuxeo.auth.token";
 
     protected Context androidContext;
 
@@ -48,6 +51,8 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener {
     protected String login = "Administrator";
 
     protected String password = "Administrator";
+
+    protected String token = null;
 
     public NuxeoServerConfig(Context androidContext) {
         this.androidContext = androidContext;
@@ -79,6 +84,13 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener {
             serverBaseUrl = serverBaseUrl + "/";
         }
         this.serverBaseUrl = serverBaseUrl;
+    }
+
+    /**
+     * @since 2.0
+     */
+    public void setServerBaseUrl(Uri serverBaseUrl) {
+        this.serverBaseUrl = serverBaseUrl.toString();
     }
 
     public String getAutomationUrl() {
@@ -131,7 +143,7 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener {
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         if (PREF_SERVER_LOGIN.equals(key) || PREF_SERVER_PASSWORD.equals(key)
-                || PREF_SERVER_URL.equals(key)) {
+                || PREF_SERVER_URL.equals(key) || PREF_SERVER_TOKEN.equals(key)) {
             initFromPrefs(prefs);
             androidContext.sendBroadcast(new Intent(
                     NuxeoBroadcastMessages.NUXEO_SETTINGS_CHANGED));
@@ -142,7 +154,15 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener {
         serverBaseUrl = prefs.getString(PREF_SERVER_URL, serverBaseUrl);
         login = prefs.getString(PREF_SERVER_LOGIN, login);
         password = prefs.getString(PREF_SERVER_PASSWORD, password);
+        token = prefs.getString(PREF_SERVER_TOKEN, token);
+    }
 
+    /**
+     * @param authentication token
+     * @since 2.0
+     */
+    public void setToken(String token) {
+        this.token = token;
     }
 
 }

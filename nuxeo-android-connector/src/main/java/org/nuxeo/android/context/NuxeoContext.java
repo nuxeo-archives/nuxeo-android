@@ -34,9 +34,9 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 
 /**
- * 
+ *
  * @author tiry
- * 
+ *
  */
 public class NuxeoContext extends BroadcastReceiver {
 
@@ -54,9 +54,16 @@ public class NuxeoContext extends BroadcastReceiver {
 
     protected final BlobStoreManager blobStore;
 
-    public static NuxeoContext get(Context context) {
-        if (context instanceof NuxeoContextProvider) {
-            NuxeoContextProvider nxApp = (NuxeoContextProvider) context;
+    /**
+     * @param nxContextProvider the application context. Must implement
+     *            {@link NuxeoContextProvider}
+     * @return the nuxeoContext associated with the application
+     * @see android.app.Application#getApplicationContext()
+     * @see SimpleNuxeoApplication
+     */
+    public static NuxeoContext get(Context nxContextProvider) {
+        if (nxContextProvider instanceof NuxeoContextProvider) {
+            NuxeoContextProvider nxApp = (NuxeoContextProvider) nxContextProvider;
             return nxApp.getNuxeoContext();
         } else {
             throw new UnsupportedOperationException(
