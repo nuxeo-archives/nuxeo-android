@@ -31,11 +31,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -114,6 +114,7 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
         documentsList.updateDocument(editedDocument);
     }
 
+    @Override
     protected void doRefresh() {
         if (documentsList != null) {
             documentsList.refreshAll();
@@ -149,6 +150,7 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
         }
     }
 
+    @Override
     protected void populateMenu(Menu menu) {
     	if (Build.VERSION.SDK_INT >= 11)
     	{

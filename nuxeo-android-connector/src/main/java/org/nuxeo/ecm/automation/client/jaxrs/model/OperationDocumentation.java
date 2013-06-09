@@ -61,6 +61,7 @@ public class OperationDocumentation implements
         this.url = id;
     }
 
+    @Override
     public int compareTo(OperationDocumentation o) {
         String s1 = label == null ? id : label;
         String s2 = o.label == null ? o.id : o.label;
@@ -145,6 +146,7 @@ public class OperationDocumentation implements
                     + (isRequired ? "required" : "optional");
         }
 
+        @Override
         public int compareTo(Param o) {
             if (isRequired && !o.isRequired) {
                 return -1;

@@ -60,13 +60,15 @@ public class DocumentsListAdapter extends AbstractDocumentListAdapter implements
 		this.binder = binder;
 	}
 
-	protected View createNewView(int position, Document doc,
-			LayoutInflater inflater, ViewGroup parent) {
-		return binder.createNewView(position, doc, inflater, parent);
-	}
+    @Override
+    protected View createNewView(int position, Document doc,
+            LayoutInflater inflater, ViewGroup parent) {
+        return binder.createNewView(position, doc, inflater, parent);
+    }
 
-	protected void bindViewToDocument(int position, Document doc, View view) {
-		binder.bindViewToDocument(position, doc, view);
-	}
+    @Override
+    protected void bindViewToDocument(int position, Document doc, View view) {
+        binder.bindViewToDocument(position, doc, view);
+    }
 
 }

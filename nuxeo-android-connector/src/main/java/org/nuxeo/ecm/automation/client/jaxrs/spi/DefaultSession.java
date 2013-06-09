@@ -54,6 +54,7 @@ public class DefaultSession implements Session {
         this.login = login;
     }
 
+    @Override
     public AutomationClient getClient() {
         return client;
     }
@@ -62,14 +63,17 @@ public class DefaultSession implements Session {
         return connector;
     }
 
+    @Override
     public LoginInfo getLogin() {
         return login;
     }
 
+    @Override
     public <T> T getAdapter(Class<T> type) {
         return client.getAdapter(this, type);
     }
 
+    @Override
     public Object execute(OperationRequest request) throws Exception {
         Request req;
         String content = JsonMarshalling.writeRequest(request);
@@ -111,25 +115,30 @@ public class DefaultSession implements Session {
         return result;
     }
 
+    @Override
     public String execute(final OperationRequest request,
             final AsyncCallback<Object> cb) {
         return client.asyncExec(this, request, cb);
     }
 
+    @Override
     public Blob getFile(String path) throws Exception {
         Request req = new Request(Request.GET, client.getBaseUrl() + path);
         return (Blob) connector.execute(req);
     }
 
+    @Override
     public Blobs getFiles(String path) throws Exception {
         Request req = new Request(Request.GET, client.getBaseUrl() + path);
         return (Blobs) connector.execute(req);
     }
 
+    @Override
     public String getFile(final String path, final AsyncCallback<Blob> cb)
             throws Exception {
         final String requestKey = "file:" + path;
         client.asyncExec(new Runnable() {
+            @Override
             public void run() {
                 try {
                     cb.onSuccess(requestKey, getFile(path));
@@ -141,10 +150,12 @@ public class DefaultSession implements Session {
         return requestKey;
     }
 
+    @Override
     public String getFiles(final String path, final AsyncCallback<Blobs> cb)
             throws Exception {
         final String requestKey = "files:" + path;
         client.asyncExec(new Runnable() {
+            @Override
             public void run() {
                 try {
                     cb.onSuccess(requestKey, getFiles(path));
@@ -156,10 +167,12 @@ public class DefaultSession implements Session {
         return requestKey;
     }
 
+    @Override
     public OperationRequest newRequest(String id) {
         return newRequest(id, new HashMap<String, String>());
     }
 
+    @Override
     public OperationRequest newRequest(String id, Map<String, String> ctx) {
         OperationDocumentation op = getOperation(id);
         if (op == null) {
@@ -168,10 +181,12 @@ public class DefaultSession implements Session {
         return new DefaultOperationRequest(this, op, ctx);
     }
 
+    @Override
     public OperationDocumentation getOperation(String id) {
         return client.getRegistry().getOperation(id);
     }
 
+    @Override
     public Map<String, OperationDocumentation> getOperations() {
         return client.getRegistry().getOperations();
     }

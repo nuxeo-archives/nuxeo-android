@@ -24,6 +24,7 @@ public class SimpleNuxeoApplication extends Application implements
 
     protected NuxeoContext nuxeoContext = null;
 
+    @Override
     public NuxeoContext getNuxeoContext() {
         if (nuxeoContext == null) {
             nuxeoContext = new NuxeoContext(this);

@@ -73,6 +73,7 @@ public class AndroidDocumentProvider implements DocumentProvider {
         }
     }
 
+    @Override
     public void registerNamedProvider(Session session, String name,
             String nxql, int pageSize, boolean readOnly, boolean persistent,
             String exposedMimeType) {
@@ -91,6 +92,7 @@ public class AndroidDocumentProvider implements DocumentProvider {
         registerNamedProvider(docList, persistent);
     }
 
+    @Override
     public void registerNamedProvider(String name,
             OperationRequest fetchOperation, String pageParametrerName,
             boolean readOnly, boolean persistent, String exposedMimeType) {
@@ -127,11 +129,13 @@ public class AndroidDocumentProvider implements DocumentProvider {
         getTableWrapper().storeProvider(name, docList);
     }
 
+    @Override
     public List<String> listProviderNames() {
         List<String> names = new ArrayList<String>(documentLists.keySet());
         return names;
     }
 
+    @Override
     public boolean isRegistred(String name) {
         return documentLists.containsKey(name); // XXX check DB too
     }

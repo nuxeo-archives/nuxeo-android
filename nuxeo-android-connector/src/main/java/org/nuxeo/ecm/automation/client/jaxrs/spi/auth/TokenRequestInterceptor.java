@@ -25,9 +25,9 @@ import org.nuxeo.ecm.automation.client.jaxrs.spi.Request;
 import android.util.Log;
 
 /**
- *
+ * 
  * For use with nuxeo-platform-login-token
- *
+ * 
  * @since 2.0
  */
 public class TokenRequestInterceptor implements RequestInterceptor {

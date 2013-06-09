@@ -117,14 +117,17 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
         return getClient().getMessageHelper();
     }
 
+    @Override
     public Documents getFirstPage() {
         return pages.get(0);
     }
 
+    @Override
     public Documents getCurrentPage() {
         return pages.get(currentPage);
     }
 
+    @Override
     public Documents fetchAndChangeCurrentPage(int targetPage) {
         if (!getCurrentPage().isBatched()) {
             return null;
@@ -217,6 +220,7 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
         }
     }
 
+    @Override
     public void refreshAll() {
         for (Integer idx : pages.keySet()) {
             fetchPageAsync(idx, true);
@@ -262,10 +266,12 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
         return position / pageSize;
     }
 
+    @Override
     public int getCurrentPosition() {
         return currentPosition;
     }
 
+    @Override
     public int setCurrentPosition(int position) {
 
         int targetPageIndex = computeTargetPage(position);
@@ -301,6 +307,7 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
         }
     }
 
+    @Override
     public Document getCurrentDocument() {
         int pos = getRelativePositionOnPage();
         Documents currentDocs = getCurrentPage();
@@ -316,7 +323,8 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
                     return currentDocs.get(pos);
                 } else {
                     try {
-                        Thread.currentThread().sleep(100);
+                        Thread.currentThread();
+                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -335,18 +343,22 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
         }
     }
 
+    @Override
     public int getPageCount() {
         return pageCount;
     }
 
+    @Override
     public int getLoadedPageCount() {
         return pages.size();
     }
 
+    @Override
     public Integer getLoadingPagesCount() {
         return loadingInProgress.size();
     }
 
+    @Override
     public Iterator<Document> getIterator() {
         return new Iterator<Document>() {
 
@@ -369,14 +381,17 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
         };
     }
 
+    @Override
     public Collection<Documents> getLoadedPages() {
         return pages.values();
     }
 
+    @Override
     public boolean isFullyLoaded() {
         return pages.size() == pageCount;
     }
 
+    @Override
     public int getCurrentSize() {
         if (getCurrentPage() == null) {
             return 0;
@@ -392,14 +407,17 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
         }
     }
 
+    @Override
     public void registerListener(DocumentsListChangeListener listener) {
         listeners.add(listener);
     }
 
+    @Override
     public void unregisterListener(DocumentsListChangeListener listener) {
         listeners.remove(listener);
     }
 
+    @Override
     public Document getDocument(int index) {
 
         int targetPage = computeTargetPage(index);
@@ -411,6 +429,7 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
         return null;
     }
 
+    @Override
     public String getName() {
         if (name == null) {
             OperationRequest rq = fetchOperation.clone();
@@ -422,18 +441,22 @@ public class LazyDocumentsListImpl implements LazyDocumentsList {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public boolean isReadOnly() {
         return true;
     }
 
+    @Override
     public OperationRequest getFetchOperation() {
         return fetchOperation;
     }
 
+    @Override
     public String getPageParameterName() {
         return pageParameterName;
     }

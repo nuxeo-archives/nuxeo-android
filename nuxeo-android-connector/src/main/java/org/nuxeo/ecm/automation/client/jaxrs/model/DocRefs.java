@@ -36,10 +36,12 @@ public class DocRefs extends ArrayList<DocRef> implements OperationInput {
         super(docs);
     }
 
+    @Override
     public String getInputType() {
         return "documents";
     }
 
+    @Override
     public String getInputRef() {
         StringBuilder buf = new StringBuilder("docs:");
         int size = size();
@@ -53,10 +55,12 @@ public class DocRefs extends ArrayList<DocRef> implements OperationInput {
         return buf.toString();
     }
 
+    @Override
     public boolean isBinary() {
         return false;
     }
 
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
         int size = size();

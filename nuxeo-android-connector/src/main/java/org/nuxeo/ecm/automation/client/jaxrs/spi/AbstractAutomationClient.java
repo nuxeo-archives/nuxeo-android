@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2006-2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2013 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -114,12 +114,14 @@ public abstract class AbstractAutomationClient implements AutomationClient {
         return (OperationRegistry) connector.execute(req);
     }
 
+    @Override
     public synchronized void shutdown() {
         url = null;
         registry = null;
         adapters = null;
     }
 
+    @Override
     public Session getSession() {
         Connector connector = getConnector();
         if (registry == null) { // not yet connected
@@ -140,6 +142,7 @@ public abstract class AbstractAutomationClient implements AutomationClient {
         return connector;
     }
 
+    @Override
     public Session getSession(final String username, final String password) {
         setBasicAuth(username, password);
         Session session = null;
@@ -152,14 +155,17 @@ public abstract class AbstractAutomationClient implements AutomationClient {
         return session;
     }
 
+    @Override
     public void getSession(final String username, final String password,
             final AsyncCallback<Session> cb) {
         setBasicAuth(username, password);
         getSession(cb);
     }
 
+    @Override
     public void getSession(final AsyncCallback<Session> cb) {
         asyncExec(new Runnable() {
+            @Override
             public void run() {
                 try {
                     Session session = getSession();
@@ -197,13 +203,14 @@ public abstract class AbstractAutomationClient implements AutomationClient {
 
     protected abstract Connector newConnector();
 
+    @Override
     public boolean isOffline() {
         return false;
     }
 
     public String execDeferredUpdate(OperationRequest request,
             AsyncCallback<Object> cb, OperationType opType) {
-        throw new UnsupportedOperationException("No defered update managger");
+        throw new UnsupportedOperationException("No deferred update manager");
     }
 
     public DocumentMessageService getMessageHelper() {

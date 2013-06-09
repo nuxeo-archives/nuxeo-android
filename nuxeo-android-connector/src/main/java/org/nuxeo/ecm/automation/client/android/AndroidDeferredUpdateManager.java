@@ -33,10 +33,10 @@ import org.nuxeo.ecm.automation.client.cache.DeferredUpdateManager;
 import org.nuxeo.ecm.automation.client.cache.OperationType;
 import org.nuxeo.ecm.automation.client.jaxrs.AsyncCallback;
 import org.nuxeo.ecm.automation.client.jaxrs.Dependency;
+import org.nuxeo.ecm.automation.client.jaxrs.Dependency.DependencyType;
 import org.nuxeo.ecm.automation.client.jaxrs.ExecutionDependencies;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
-import org.nuxeo.ecm.automation.client.jaxrs.Dependency.DependencyType;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.CacheKeyHelper;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
@@ -198,10 +198,12 @@ public class AndroidDeferredUpdateManager implements DeferredUpdateManager {
         return getTableWrapper().getPendingRequests(session);
     }
 
+    @Override
     public void executePendingRequests(Session session) {
         executePendingRequests(session, null);
     }
 
+    @Override
     public void executePendingRequests(Session session, final Handler uiNotifier) {
         List<CachedOperationRequest> cachedRequests = getPendingRequest(session);
         executePendingRequests(session, cachedRequests, uiNotifier);
@@ -274,6 +276,7 @@ public class AndroidDeferredUpdateManager implements DeferredUpdateManager {
         }
     }
 
+    @Override
     public long getPendingRequestCount() {
         return getTableWrapper().getCount();
     }

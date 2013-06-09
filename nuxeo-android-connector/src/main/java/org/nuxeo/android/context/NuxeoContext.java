@@ -34,9 +34,9 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 
 /**
- *
+ * 
  * @author tiry
- *
+ * 
  */
 public class NuxeoContext extends BroadcastReceiver {
 

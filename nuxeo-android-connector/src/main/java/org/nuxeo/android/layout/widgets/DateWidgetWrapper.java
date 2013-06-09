@@ -71,6 +71,7 @@ public class DateWidgetWrapper extends BaseAndroidWidgetWrapper<Calendar>
         applyBinding();
     }
 
+    @Override
     protected void initCurrentValueFromDocument(Document doc) {
         Date date = DocumentAttributeResolver.getDate(doc, getAttributeName());
         if (date != null) {

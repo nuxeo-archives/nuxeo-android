@@ -40,7 +40,7 @@ import android.util.Log;
  * <li>Number
  * <li>Date
  * <ul>
- *
+ * 
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  * @author tiry
  */
@@ -132,6 +132,7 @@ public class Document extends DocRef implements Serializable {
         return ref;
     }
 
+    @Override
     public String getInputType() {
         return "document";
     }

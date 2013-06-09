@@ -44,6 +44,7 @@ public class FileBlob extends Blob implements HasFile {
         return new FileInputStream(file);
     }
 
+    @Override
     public File getFile() {
         return file;
     }
@@ -52,6 +53,7 @@ public class FileBlob extends Blob implements HasFile {
         return "application/octet-stream";
     }
 
+    @Override
     public int getLength() {
         return new Long(file.length()).intValue();
     }

@@ -63,10 +63,12 @@ public class AndroidTransientStateManager extends BroadcastReceiver implements
         getTableWrapper().storeDeltaSet(delta);
     }
 
+    @Override
     public void storeDocumentState(Document doc, OperationType opType) {
         storeDocumentState(doc, opType, null, null);
     }
 
+    @Override
     public List<DocumentDeltaSet> getDeltaSets(List<String> ids,
             String targetListName) {
         List<DocumentDeltaSet> deltas = getTableWrapper().getDeltaSets(ids,
@@ -75,6 +77,7 @@ public class AndroidTransientStateManager extends BroadcastReceiver implements
         return deltas;
     }
 
+    @Override
     public Documents mergeTransientState(Documents docs, boolean add,
             String listName) {
 
@@ -97,10 +100,12 @@ public class AndroidTransientStateManager extends BroadcastReceiver implements
         return docs;
     }
 
+    @Override
     public void flushTransientState(String uid) {
         getTableWrapper().deleteEntry(uid);
     }
 
+    @Override
     public void flushTransientState() {
         getTableWrapper().clearTable();
     }

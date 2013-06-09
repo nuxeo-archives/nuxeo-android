@@ -41,7 +41,9 @@ import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpAutomationClient;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpConnector;
+import org.nuxeo.ecm.automation.client.jaxrs.impl.NotAvailableOffline;
 import org.nuxeo.ecm.automation.client.jaxrs.spi.Connector;
+import org.nuxeo.ecm.automation.client.jaxrs.spi.DefaultSession;
 
 import android.content.Context;
 import android.net.http.AndroidHttpClient;
@@ -117,10 +119,12 @@ public class AndroidAutomationClient extends HttpAutomationClient {
         return con;
     }
 
+    @Override
     public boolean isOffline() {
         return !networkStatus.canUseNetwork();
     }
 
+    @Override
     public String execDeferredUpdate(OperationRequest request,
             AsyncCallback<Object> cb, OperationType opType) {
         if (deferredUpdatetManager != null) {
@@ -145,6 +149,7 @@ public class AndroidAutomationClient extends HttpAutomationClient {
         return networkStatus;
     }
 
+    @Override
     public DocumentMessageService getMessageHelper() {
         return messageHelper;
     }
@@ -185,6 +190,7 @@ public class AndroidAutomationClient extends HttpAutomationClient {
         return layoutService;
     }
 
+    @Override
     public <T> T getAdapter(Object objToAdapt, Class<T> adapterType) {
         if (adapterType.getName().equals(NuxeoLayoutService.class.getName())) {
             return adapterType.cast(layoutService);
@@ -216,6 +222,12 @@ public class AndroidAutomationClient extends HttpAutomationClient {
         return super.getAdapter(objToAdapt, adapterType);
     }
 
+    /**
+     * @return A {@link CachedSession} if available, else a
+     *         {@link DefaultSession}
+     * @throws NotAvailableOffline If no data in cache and the required online
+     *             session fails
+     */
     @Override
     public Session getSession(final String username, final String password) {
         // use the current live session if available

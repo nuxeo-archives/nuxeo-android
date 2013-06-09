@@ -18,8 +18,8 @@
 package org.nuxeo.ecm.automation.client.android;
 
 import org.nuxeo.android.broadcast.NuxeoBroadcastMessages;
-import org.nuxeo.ecm.automation.client.broadcast.EventLifeCycle;
 import org.nuxeo.ecm.automation.client.broadcast.DocumentMessageService;
+import org.nuxeo.ecm.automation.client.broadcast.EventLifeCycle;
 import org.nuxeo.ecm.automation.client.cache.OperationType;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
@@ -36,6 +36,7 @@ public class AndroidMessageHelper implements DocumentMessageService {
         this.ctx = androidContext;
     }
 
+    @Override
     public void notifyDocumentOperation(Document doc, OperationType opType,
             EventLifeCycle state, Bundle extra) {
         if (opType == OperationType.CREATE) {
@@ -47,6 +48,7 @@ public class AndroidMessageHelper implements DocumentMessageService {
         }
     }
 
+    @Override
     public void notifyDocumentCreated(Document doc, EventLifeCycle state,
             Bundle extra) {
         if (state == EventLifeCycle.SERVER) {
@@ -61,6 +63,7 @@ public class AndroidMessageHelper implements DocumentMessageService {
         }
     }
 
+    @Override
     public void notifyDocumentUpdated(Document doc, EventLifeCycle state,
             Bundle extra) {
         if (state == EventLifeCycle.SERVER) {
@@ -75,6 +78,7 @@ public class AndroidMessageHelper implements DocumentMessageService {
         }
     }
 
+    @Override
     public void notifyDocumentDeleted(Document doc, EventLifeCycle state,
             Bundle extra) {
         if (state == EventLifeCycle.SERVER) {
@@ -90,6 +94,7 @@ public class AndroidMessageHelper implements DocumentMessageService {
 
     }
 
+    @Override
     public void notifyDocumentEvent(Document doc, String event, Bundle extra) {
 
         Intent intent = new Intent();

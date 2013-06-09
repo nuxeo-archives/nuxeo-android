@@ -37,6 +37,7 @@ public class LazyUpdatableDocumentsListImpl extends
         super(fetchOperation, pageParametrerName);
     }
 
+    @Override
     protected OperationRequest buildUpdateOperation(Session session,
             Document updatedDocument) {
         OperationRequest updateOperation = session.newRequest(
@@ -53,6 +54,7 @@ public class LazyUpdatableDocumentsListImpl extends
         return updateOperation;
     }
 
+    @Override
     protected OperationRequest buildCreateOperation(Session session,
             Document newDocument) {
         PathRef parent = new PathRef(newDocument.getParentPath());

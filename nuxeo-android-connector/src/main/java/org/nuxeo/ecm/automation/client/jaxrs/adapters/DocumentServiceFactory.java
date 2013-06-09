@@ -24,14 +24,17 @@ import org.nuxeo.ecm.automation.client.jaxrs.Session;
  */
 public class DocumentServiceFactory implements AdapterFactory<DocumentService> {
 
+    @Override
     public Class<?> getAcceptType() {
         return Session.class;
     }
 
+    @Override
     public Class<DocumentService> getAdapterType() {
         return DocumentService.class;
     }
 
+    @Override
     public DocumentService getAdapter(Object toAdapt) {
         return new DocumentService((Session) toAdapt);
     }

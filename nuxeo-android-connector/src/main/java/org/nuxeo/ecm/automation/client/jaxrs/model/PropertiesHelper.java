@@ -17,6 +17,7 @@
 package org.nuxeo.ecm.automation.client.jaxrs.model;
 
 import java.util.Date;
+
 import org.json.JSONObject;
 
 import android.util.Log;
@@ -115,37 +116,37 @@ public class PropertiesHelper {
     }
 
     public static String toStringProperties(PropertyMap props) {
-    	StringBuffer sb = new StringBuffer();
-    	for (String propName : props.getKeys()) {
-    		Object value = props.map().get(propName);
-    		if (value!=null) {
-	    		sb.append(propName);
-	    		sb.append("=");
-	    		sb.append(encodePropertyAsString(value));
-	    		sb.append("\n");
-    		} else {
+        StringBuffer sb = new StringBuffer();
+        for (String propName : props.getKeys()) {
+            Object value = props.map().get(propName);
+            if (value != null) {
+                sb.append(propName);
+                sb.append("=");
+                sb.append(encodePropertyAsString(value));
+                sb.append("\n");
+            } else {
                 Log.w(PropertiesHelper.class.getSimpleName(), "No value for "
                         + propName);
-    		}
-    	}
-    	return sb.toString();
+            }
+        }
+        return sb.toString();
     }
 
     public static String encodePropertyAsString(Object prop) {
-    	if (prop instanceof PropertyList) {
-    		PropertyList list = (PropertyList) prop;
-    		StringBuffer sb = new StringBuffer();
-    		for (Object item : list.list()) {
-    			sb.append(encodePropertyAsString(item));
-    			sb.append(";");
-    		}
-    		return sb.toString();
-    	} else if (prop instanceof PropertyMap) {
-    		PropertyMap map = (PropertyMap) prop;
-    		return new JSONObject(map.map()).toString();
+        if (prop instanceof PropertyList) {
+            PropertyList list = (PropertyList) prop;
+            StringBuffer sb = new StringBuffer();
+            for (Object item : list.list()) {
+                sb.append(encodePropertyAsString(item));
+                sb.append(";");
+            }
+            return sb.toString();
+        } else if (prop instanceof PropertyMap) {
+            PropertyMap map = (PropertyMap) prop;
+            return new JSONObject(map.map()).toString();
         } else {
             String value = prop.toString();
             return value.replace("\n", " \\\n");
-    	}
-    	}
+        }
     }
+}

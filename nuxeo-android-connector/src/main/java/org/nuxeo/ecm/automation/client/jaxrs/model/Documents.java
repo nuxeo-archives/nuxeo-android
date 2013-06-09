@@ -77,14 +77,17 @@ public class Documents extends ArrayList<Document> implements OperationInput {
         super(docs);
     }
 
+    @Override
     public String getInputType() {
         return "documents";
     }
 
+    @Override
     public boolean isBinary() {
         return false;
     }
 
+    @Override
     public String getInputRef() {
         StringBuilder buf = new StringBuilder();
         int size = size();
@@ -98,6 +101,7 @@ public class Documents extends ArrayList<Document> implements OperationInput {
         return buf.toString();
     }
 
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder("docs:");
         int size = size();

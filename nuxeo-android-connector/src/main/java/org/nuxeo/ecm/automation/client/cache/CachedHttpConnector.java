@@ -120,6 +120,7 @@ public class CachedHttpConnector extends HttpConnector implements Connector {
         }
     }
 
+    @Override
     protected boolean isNetworkError(Throwable t) {
         String className = t.getClass().getName();
 

@@ -39,6 +39,7 @@ public class NuxeoLayout implements ActivityResultHandler {
         this.doc = doc;
     }
 
+    @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
 
         for (NuxeoWidget widget : widgets) {

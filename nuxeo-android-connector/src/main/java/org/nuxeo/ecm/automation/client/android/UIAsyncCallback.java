@@ -74,6 +74,7 @@ public abstract class UIAsyncCallback<T extends Serializable> extends Handler
         }
     }
 
+    @Override
     public void notifyStart() {
         Message msg = new Message();
         msg.what = START;
@@ -89,6 +90,7 @@ public abstract class UIAsyncCallback<T extends Serializable> extends Handler
         this.sendMessage(msg);
     }
 
+    @Override
     public void onError(String executionId, Throwable e) {
         Message msg = new Message();
         msg.what = ERROR;
@@ -100,6 +102,7 @@ public abstract class UIAsyncCallback<T extends Serializable> extends Handler
         this.sendMessage(msg);
     }
 
+    @Override
     public void onSuccess(String executionId, T data) {
         Message msg = new Message();
         msg.what = END;

@@ -82,16 +82,19 @@ public class DefaultOperationRequest implements OperationRequest {
         this.input = input;
     }
 
+    @Override
     public OperationRequest clone() {
         return clone(session);
     }
 
+    @Override
     public OperationRequest clone(Session session) {
         DefaultOperationRequest clone = new DefaultOperationRequest(
                 (DefaultSession) session, op, params, headers, ctx, input);
         return clone;
     }
 
+    @Override
     public DefaultSession getSession() {
         return session;
     }
@@ -122,6 +125,7 @@ public class DefaultOperationRequest implements OperationRequest {
         return result;
     }
 
+    @Override
     public Param getParam(String key) {
         for (Param param : op.params) {
             if (key.equals(param.name)) {
@@ -131,6 +135,7 @@ public class DefaultOperationRequest implements OperationRequest {
         return null;
     }
 
+    @Override
     public OperationRequest setInput(OperationInput input) {
         if (input == null) {
             checkInput("void");
@@ -141,14 +146,17 @@ public class DefaultOperationRequest implements OperationRequest {
         return this;
     }
 
+    @Override
     public OperationInput getInput() {
         return input;
     }
 
+    @Override
     public String getUrl() {
         return session.getClient().getBaseUrl() + op.url;
     }
 
+    @Override
     public OperationRequest set(String key, Object value) {
         Param param = getParam(key);
         if (param == null) {
@@ -180,15 +188,18 @@ public class DefaultOperationRequest implements OperationRequest {
         return this;
     }
 
+    @Override
     public OperationRequest setContextProperty(String key, String value) {
         ctx.put(key, value);
         return this;
     }
 
+    @Override
     public Map<String, String> getContextParameters() {
         return ctx;
     }
 
+    @Override
     public Map<String, String> getParameters() {
         return params;
     }
@@ -198,50 +209,61 @@ public class DefaultOperationRequest implements OperationRequest {
         this.cachable = (cacheFlags & CacheBehavior.STORE) == CacheBehavior.STORE;
     }
 
+    @Override
     public Object execute(byte cacheFlags) throws Exception {
         setCacheFlags(cacheFlags);
         return session.execute(this);
     }
 
+    @Override
     public Object execute() throws Exception {
         return session.execute(this);
     }
 
+    @Override
     public String execute(AsyncCallback<Object> cb) {
         return session.execute(this, cb);
     }
 
+    @Override
     public String execute(AsyncCallback<Object> cb, byte cacheFlags) {
         setCacheFlags(cacheFlags);
         return session.execute(this, cb);
     }
 
+    @Override
     public OperationRequest setHeader(String key, String value) {
         headers.put(key, value);
         return this;
     }
 
+    @Override
     public Map<String, String> getHeaders() {
         return headers;
     }
 
+    @Override
     public boolean isCachable() {
         return cachable;
     }
 
+    @Override
     public boolean isForceRefresh() {
         return refresh;
     }
 
+    @Override
     public void forceCache() {
         cachable = false;
         refresh = false;
     }
 
+    @Override
     public OperationDocumentation getDocumentation() {
         return op;
     }
 
+    @Override
     public ExecutionDependencies getDependencies() {
         if (dependencies == null) {
             dependencies = new ExecutionDependencies();
@@ -249,6 +271,7 @@ public class DefaultOperationRequest implements OperationRequest {
         return dependencies;
     }
 
+    @Override
     public boolean hasDependencies() {
         return dependencies != null && !dependencies.resolved();
     }
