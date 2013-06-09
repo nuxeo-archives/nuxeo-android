@@ -1,10 +1,10 @@
 /*
- * (C) Copyright 2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2011-2013 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
  * (LGPL) version 2.1 which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/lgpl.html
+ * http://www.gnu.org/licenses/lgpl-2.1.html
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -77,15 +77,15 @@ public class AndroidDeferredUpdateManager implements DeferredUpdateManager {
 
         boolean depOk = !request.hasDependencies();
         Log.i(this.getClass().getSimpleName(),
-                "Request has depedencies ... checking resolution ");
+                "Request has dependencies ... checking resolution ");
         if (!depOk) {
             depOk = checkDependencies(request);
         }
         if (depOk) {
-            Log.i(this.getClass().getSimpleName(), "Depedencies resolved");
+            Log.i(this.getClass().getSimpleName(), "Dependencies resolved");
         } else {
             Log.i(this.getClass().getSimpleName(),
-                    "There are still pending depedencies, update will have to wait. ");
+                    "There are still pending dependencies, update will have to wait. ");
         }
 
         if (exeuteNow && depOk) {
@@ -94,7 +94,7 @@ public class AndroidDeferredUpdateManager implements DeferredUpdateManager {
                 @Override
                 public void onError(String executionId, Throwable e) {
                     Log.e(AndroidDeferredUpdateManager.class.getSimpleName(),
-                            "Failed to execute defered op", e);
+                            "Failed to execute deferred op", e);
                     AsyncCallback<Object> clientCB = pendingCallbacks.remove(requestKey);
                     if (clientCB != null) {
                         clientCB.onError(requestKey, e);
@@ -111,7 +111,7 @@ public class AndroidDeferredUpdateManager implements DeferredUpdateManager {
                 @Override
                 public void onSuccess(String executionId, Object data) {
                     Log.i(AndroidDeferredUpdateManager.class.getSimpleName(),
-                            "Execute defered op " + executionId);
+                            "Execute deferred op " + executionId);
                     deleteDeferredUpdate(requestKey);
                     AsyncCallback<Object> clientCB = pendingCallbacks.remove(requestKey);
                     // Send Create/Update/Delete after event
@@ -175,11 +175,11 @@ public class AndroidDeferredUpdateManager implements DeferredUpdateManager {
                         + dep.getToken());
                 if (client.getFileUploader().isUploadDone(dep.getToken())) {
                     Log.i(this.getClass().getSimpleName(),
-                            "Depedency resolved : " + dep.getToken());
+                            "Dependency resolved : " + dep.getToken());
                     dependencies.markAsResolved(dep.getToken());
                 } else {
                     Log.i(this.getClass().getSimpleName(),
-                            "Depedency NOT resolved : " + dep.getToken());
+                            "Dependency NOT resolved : " + dep.getToken());
                     if (!client.isOffline() && cb != null) {
                         client.getFileUploader().startUpload(dep.getToken(), cb);
                     }

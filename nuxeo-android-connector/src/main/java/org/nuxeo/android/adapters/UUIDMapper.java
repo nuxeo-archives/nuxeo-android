@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2011-2013 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -32,11 +32,11 @@ public class UUIDMapper {
     public Long getIdentifier(Document doc) {
         if (doc == null) {
             throw new UnsupportedOperationException(
-                    "Can not not map a null Document");
+                    "Cannot map a null Document");
         }
         if (doc.getId() == null) {
             throw new UnsupportedOperationException(
-                    "Can not not map a Document with null UUID");
+                    "Cannot map a Document with null UUID");
         }
         return getIdentifier(doc.getId());
     }

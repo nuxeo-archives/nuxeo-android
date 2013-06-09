@@ -1,10 +1,10 @@
 /*
- * (C) Copyright 2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2011-2013 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
  * (LGPL) version 2.1 which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/lgpl.html
+ * http://www.gnu.org/licenses/lgpl-2.1.html
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -42,33 +42,33 @@ import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
 /**
- * 
+ *
  * For {@link NuxeoDocumentCursor}
- * 
+ *
  * content://nuxeo/documents : access to all documents
  * content://nuxeo/documents/<UUID> : access to document with given UUID
- * 
+ *
  * content://nuxeo/<providername> : access to documents in the given provider
  * content://nuxeo/<providername>/UUID : access to document with UUID in the
  * given provider
- * 
+ *
  * For {@link NuxeoAssetCursor}
- * 
+ *
  * content://nuxeo/icons/<subPath> : access to small Nuxeo icon of the given
  * path
- * 
- * content://nuxeo/blobs/<UUID> : access to main blog of the doc with the given
+ *
+ * content://nuxeo/blobs/<UUID> : access to main blob of the doc with the given
  * UUID
  * content://nuxeo/blobs/<UUID>/<idx> : access to blob [idx] of the doc with the
  * given UUID
  * content://nuxeo/blobs/<UUID>/<subPath> : access to blob in the field
  * <subpath> of the doc with the given UUID
- * 
+ *
  * content://nuxeo/uploads/<REQUESTID> : access to tmp blob matching uploadId
  * REQUESTID
- * 
+ *
  * @author tiry
- * 
+ *
  */
 
 public abstract class AbstractNuxeoReadOnlyContentProvider extends
