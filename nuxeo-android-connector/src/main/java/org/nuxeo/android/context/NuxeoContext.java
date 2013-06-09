@@ -34,9 +34,9 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 
 /**
- * 
+ *
  * @author tiry
- * 
+ *
  */
 public class NuxeoContext extends BroadcastReceiver {
 
@@ -104,8 +104,7 @@ public class NuxeoContext extends BroadcastReceiver {
     }
 
     public synchronized Session getSession() {
-        return getNuxeoClient().getSession(serverConfig.getLogin(),
-                serverConfig.getPassword());
+        return getNuxeoClient().getSession();
     }
 
     public DocumentManager getDocumentManager() {

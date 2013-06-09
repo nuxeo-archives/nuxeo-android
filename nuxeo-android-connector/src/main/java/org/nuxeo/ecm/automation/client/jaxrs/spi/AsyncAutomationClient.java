@@ -131,8 +131,7 @@ public abstract class AsyncAutomationClient extends AbstractAutomationClient {
         try {
             async.awaitTermination(2, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            System.err.println(e.getMessage());
-            // log.error(e.getMessage(), e);
+            Log.e(getClass().getName(), e.getMessage(), e);
         }
         super.shutdown();
         async = null;

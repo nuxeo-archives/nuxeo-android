@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2011-2013 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -31,16 +31,16 @@ import android.util.Log;
 
 public class SessionCache {
 
-    protected String getCacheKey(String url, String username, String password) {
-        String key = url + ":" + username + ":" + password;
+    protected String getCacheKey(String url, String username, String cacheKey) {
+        String key = url + ":" + username + ":" + cacheKey;
         String sessionHash = CacheKeyHelper.getHash(key);
         return "session-" + sessionHash;
     }
 
     public CachedSession getCachedSession(AndroidAutomationClient client,
-            String url, String username, String password) {
+            String url, String username, String cacheKey) {
         File rootDir = BlobStoreManager.getRootCacheDir(client.androidContext);
-        String fileName = getCacheKey(url, username, password);
+        String fileName = getCacheKey(url, username, cacheKey);
         File cache = new File(rootDir, fileName);
         if (cache.exists()) {
             String automationDefKey = CacheKeyHelper.getOperationDefinitionsCacheKey(url);
@@ -61,9 +61,9 @@ public class SessionCache {
     }
 
     public void storeSession(AndroidAutomationClient client, String url,
-            String username, String password) {
+            String username, String cacheKey) {
         File rootDir = BlobStoreManager.getRootCacheDir(client.androidContext);
-        String fileName = getCacheKey(url, username, password);
+        String fileName = getCacheKey(url, username, cacheKey);
         File cache = new File(rootDir, fileName);
         try {
             cache.createNewFile();

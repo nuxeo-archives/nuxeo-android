@@ -23,10 +23,12 @@ import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 
 import org.nuxeo.android.broadcast.NuxeoBroadcastMessages;
+import org.nuxeo.ecm.automation.client.android.SessionCache;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.net.Uri;
 import android.preference.PreferenceManager;
@@ -40,6 +42,8 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener {
     public static final String PREF_SERVER_PASSWORD = "nuxeo.password";
 
     public static final String PREF_SERVER_TOKEN = "nuxeo.auth.token";
+
+    private static final String PREF_CACHEKEY = null;
 
     protected Context androidContext;
 
@@ -137,24 +141,24 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener {
     protected void setSharedPrefs(SharedPreferences sharedPrefs) {
         this.sharedPrefs = sharedPrefs;
         sharedPrefs.registerOnSharedPreferenceChangeListener(this);
-        initFromPrefs(sharedPrefs);
+        initFromPrefs();
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         if (PREF_SERVER_LOGIN.equals(key) || PREF_SERVER_PASSWORD.equals(key)
                 || PREF_SERVER_URL.equals(key) || PREF_SERVER_TOKEN.equals(key)) {
-            initFromPrefs(prefs);
+            initFromPrefs();
             androidContext.sendBroadcast(new Intent(
                     NuxeoBroadcastMessages.NUXEO_SETTINGS_CHANGED));
         }
     }
 
-    protected void initFromPrefs(SharedPreferences prefs) {
-        serverBaseUrl = prefs.getString(PREF_SERVER_URL, serverBaseUrl);
-        login = prefs.getString(PREF_SERVER_LOGIN, login);
-        password = prefs.getString(PREF_SERVER_PASSWORD, password);
-        token = prefs.getString(PREF_SERVER_TOKEN, token);
+    protected void initFromPrefs() {
+        serverBaseUrl = sharedPrefs.getString(PREF_SERVER_URL, serverBaseUrl);
+        login = sharedPrefs.getString(PREF_SERVER_LOGIN, login);
+        password = sharedPrefs.getString(PREF_SERVER_PASSWORD, password);
+        token = sharedPrefs.getString(PREF_SERVER_TOKEN, token);
     }
 
     /**
@@ -163,6 +167,33 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener {
      */
     public void setToken(String token) {
         this.token = token;
+    }
+
+    /**
+     * Default is the password. Change
+     *
+     * @return a key used for the {@link SessionCache}
+     * @since 2.0
+     */
+    public String getCacheKey() {
+        String key = sharedPrefs.getString(PREF_CACHEKEY, PREF_SERVER_PASSWORD);
+        return sharedPrefs.getString(key, password);
+    }
+
+    /**
+     * Set the {@link SharedPreferences} key to use for the {@link SessionCache}
+     * . Default is {@link #PREF_SERVER_PASSWORD}. Change it if you want to use
+     * the same session cache for a user with various authentication methods.
+     *
+     * @since 2.0
+     * @param key This is not the cacheKey value used by the cache itself, but
+     *            the preference key to use for retrieving the value. Default is
+     *            the {@link #PREF_SERVER_PASSWORD}.
+     */
+    public void setCacheKey(String sharedPrefsKey) {
+        Editor edit = sharedPrefs.edit();
+        edit.putString(PREF_CACHEKEY, sharedPrefsKey);
+        edit.commit();
     }
 
 }

@@ -29,7 +29,7 @@ package org.nuxeo.ecm.automation.client.jaxrs;
  * <p>
  * Note for implementors: the implementation should provide a constructor that
  * initialize the base URL
- * 
+ *
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  */
 public interface AutomationClient {
@@ -64,13 +64,27 @@ public interface AutomationClient {
 
     /**
      * Creates a new session using the given login.
+     *
+     * @see #getSession()
+     * @see #setBasicAuth()
+     * @deprecated Since 2.0. Prefer use of
+     *             {@link #setBasicAuth(String, String)} then call to
+     *             {@link #getSession()}.
      */
+    @Deprecated
     Session getSession(String username, String password);
 
     /**
      * Creates asynchronously a new session using the given login. The given
      * callback will be notified after the session is created.
+     *
+     * @see #getSession(AsyncCallback)
+     * @see #setBasicAuth()
+     * @deprecated Since 2.0. Prefer use of
+     *             {@link #setBasicAuth(String, String)} then call to
+     *             {@link #getSession(AsyncCallback)}.
      */
+    @Deprecated
     void getSession(String username, String password, AsyncCallback<Session> cb);
 
     /**
@@ -86,7 +100,7 @@ public interface AutomationClient {
      * Register an adapter for a given type. Registration is not thread safe.
      * You should register adapters at initialization time. An adapter type can
      * be bound to a single adaptable type.
-     * 
+     *
      */
     void registerAdapter(AdapterFactory<?> factory);
 
@@ -97,5 +111,18 @@ public interface AutomationClient {
     void shutdown();
 
     boolean isOffline();
+
+    /**
+     * After that method is called, next calls to {@link #getSession()} will use
+     * a basic authentication with the given parameters, until another
+     * authentication method is set (using a {@link RequestInterceptor} for
+     * instance).
+     *
+     * @param username
+     * @param password
+     * @since 2.0
+     * @see #setRequestInterceptor(RequestInterceptor)
+     */
+    void setBasicAuth(String username, String password);
 
 }

@@ -71,6 +71,7 @@ public abstract class AbstractAutomationClient implements AutomationClient {
         return url;
     }
 
+    @Override
     public void setBasicAuth(String username, String password) {
         setRequestInterceptor(new BasicAuthInterceptor(username, password));
     }
@@ -143,6 +144,7 @@ public abstract class AbstractAutomationClient implements AutomationClient {
     }
 
     @Override
+    @Deprecated
     public Session getSession(final String username, final String password) {
         setBasicAuth(username, password);
         Session session = null;
@@ -155,6 +157,7 @@ public abstract class AbstractAutomationClient implements AutomationClient {
         return session;
     }
 
+    @Deprecated
     @Override
     public void getSession(final String username, final String password,
             final AsyncCallback<Session> cb) {
