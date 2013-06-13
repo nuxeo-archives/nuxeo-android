@@ -88,7 +88,10 @@ public class PropertiesHelper {
             return defValue;
         }
         if (v.getClass() == String.class) {
-            return DateUtils.parseDate(v.toString());
+        	// XXX 
+        	System.out.println("debugN : " + v.toString());
+        	String dateString = v.toString().substring(0, 10);
+            return DateUtils.parseDate(dateString);
         }
         throw new IllegalArgumentException("Property is not a scalar: " + v);
     }

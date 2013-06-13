@@ -19,6 +19,7 @@ package org.nuxeo.android.appraisal;
 
 import org.nuxeo.android.activities.BaseDocumentLayoutActivity;
 import org.nuxeo.android.layout.LayoutMode;
+import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -48,16 +49,18 @@ public class AppraisalLayoutActivity extends BaseDocumentLayoutActivity
 
         setContentView(R.layout.createeditlayout);
         title = (TextView) findViewById(R.id.currentDocTitle);
-
+        Document currentDocument = getCurrentDocument();
+        		
+        					
         if (isEditMode()) {
-            title.setText("Edit " + getCurrentDocument().getTitle() + " ("
-                    + getCurrentDocument().getType() + ")");
-        } else if (isCreateMode()) {
-            title.setText("Create new " + getCurrentDocument().getType());
-        } else {
-            title.setText("View " + getCurrentDocument().getTitle() + " ("
-                    + getCurrentDocument().getType() + ")");
+			setTitle("Edit " + currentDocument.getTitle() + " ("
+					+ currentDocument.getType() + ")");
+		} else if (isCreateMode()) {
+			setTitle("Create new " + currentDocument.getType());
+		} else {
+			setTitle("View " + currentDocument.getTitle() + " (" + currentDocument.getType() + ")");
         }
+        title.setText(currentDocument.getName());
 
         saveBtn = (Button) findViewById(R.id.updateDocument);
         saveBtn.setOnClickListener(this);

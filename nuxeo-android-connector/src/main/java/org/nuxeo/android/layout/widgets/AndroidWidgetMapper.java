@@ -55,6 +55,7 @@ public class AndroidWidgetMapper {
         registerWidgetWrapper("selectManyDirectory",
                 SpinnerMultiWidgetWrapper.class);
         registerWidgetWrapper("blob", BlobWidgetWrapper.class);
+        registerWidgetWrapper("image", BlobWidgetWrapper.class);
         registerWidgetWrapper("textarea", TextAreaWidgetWrapper.class);
         registerWidgetWrapper("richtext_with_mimetype",
                 RichTextWidgetWrapper.class);
@@ -85,6 +86,7 @@ public class AndroidWidgetMapper {
         }
         return null;
     }
+        
 
     public AndroidWidgetWrapper getWidgetWrapper(WidgetDefinition wDef) {
         try {

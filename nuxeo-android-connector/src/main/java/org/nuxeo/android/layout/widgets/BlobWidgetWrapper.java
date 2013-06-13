@@ -228,7 +228,14 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap>
                             "org.openintents.action.PICK_FILE");
                     intent.putExtra("org.openintents.extra.TITLE",
                             "Select a file to attach");
-                    getHomeActivity().startActivityForResult(intent, PICK_ANY);
+                    
+                    try{
+                    	getHomeActivity().startActivityForResult(intent, PICK_ANY);
+                    } catch (android.content.ActivityNotFoundException e) {
+                    	Log.e(BlobWidgetWrapper.class.getSimpleName(),
+                    			"Unable to find any application to pick files", e);
+                    	Toast.makeText(getRootContext(), "Unable to find any application to pick files", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 
