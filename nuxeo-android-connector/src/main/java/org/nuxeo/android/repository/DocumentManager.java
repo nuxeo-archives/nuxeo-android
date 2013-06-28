@@ -56,6 +56,7 @@ public class DocumentManager extends DocumentService {
             String[] sortInfo, String schemaList, int page, int pageSize,
             byte cacheFlags) throws Exception {
 
+    	nxql = nxql.replaceAll("'", "\"");
         OperationRequest fetchOperation = session.newRequest(
                 "Document.PageProvider").set("query", nxql).set("pageSize",
                 pageSize).set("page", 0);

@@ -28,6 +28,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -146,23 +147,46 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
     }
 
     protected void populateMenu(Menu menu) {
-        LinkedHashMap<String, String> types = getDocTypesForCreation();
-        if (types.size() > 0) {
-            if (types.size() == 1) {
-                menu.add(Menu.NONE, MNU_NEW_LISTITEM, 0, "New Item");
-            } else {
-                SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_NEW_LISTITEM,
-                        0, "New item");
-                int idx = 1;
-                for (String key : types.keySet()) {
-                    subMenu.add(Menu.NONE, MNU_NEW_LISTITEM + idx, idx,
-                            types.get(key));
-                    idx++;
+    	if (Build.VERSION.SDK_INT >= 11)
+    	{
+    		LinkedHashMap<String, String> types = getDocTypesForCreation();
+            if (types.size() > 0) {
+                if (types.size() == 1) {
+                    menu.add(Menu.NONE, MNU_NEW_LISTITEM, 0, "New Item").
+            		setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                } else {
+                    SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_NEW_LISTITEM,
+                            0, "New item");
+                    int idx = 1;
+                    for (String key : types.keySet()) {
+                        subMenu.add(Menu.NONE, MNU_NEW_LISTITEM + idx, idx,
+                                types.get(key));
+                        idx++;
+                    }
                 }
             }
-        }
-        // menu.add(Menu.NONE, MNU_VIEW_LIST_EXTERNAL, 1, "External View");
-        menu.add(Menu.NONE, MNU_REFRESH, 2, "Refresh");
+            // menu.add(Menu.NONE, MNU_VIEW_LIST_EXTERNAL, 1, "External View");
+            menu.add(Menu.NONE, MNU_REFRESH, 2, "Refresh").
+    		setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+    	} else {
+    		LinkedHashMap<String, String> types = getDocTypesForCreation();
+            if (types.size() > 0) {
+                if (types.size() == 1) {
+                    menu.add(Menu.NONE, MNU_NEW_LISTITEM, 0, "New Item");
+                } else {
+                    SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_NEW_LISTITEM,
+                            0, "New item");
+                    int idx = 1;
+                    for (String key : types.keySet()) {
+                        subMenu.add(Menu.NONE, MNU_NEW_LISTITEM + idx, idx,
+                                types.get(key));
+                        idx++;
+                    }
+                }
+            }
+            // menu.add(Menu.NONE, MNU_VIEW_LIST_EXTERNAL, 1, "External View");
+            menu.add(Menu.NONE, MNU_REFRESH, 2, "Refresh");
+    	}
     }
 
     // Activity menu handling

@@ -166,12 +166,11 @@ public abstract class AbstractDocumentListAdapter extends BaseAdapter {
         }
 
         Document doc = getDocument(position);
-        View currentView = recycledView;
-        if (currentView == null || currentView == getLoadingView(parent)) {
-            currentView = createNewView(position, doc, inflater, parent);
+        if (recycledView == null || recycledView == getLoadingView(parent)) {
+        	recycledView = createNewView(position, doc, inflater, parent);
         }
-        bindViewToDocument(position, doc, currentView);
-        return currentView;
+        bindViewToDocument(position, doc, recycledView);
+        return recycledView;
     }
 
     protected abstract View createNewView(int position, Document doc,

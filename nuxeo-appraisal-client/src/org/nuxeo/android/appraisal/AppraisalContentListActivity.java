@@ -33,6 +33,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.PathRef;
 import org.nuxeo.ecm.automation.client.jaxrs.model.PropertiesHelper;
 import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyMap;
 
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,13 +43,14 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
     public static final String ROOT_DOC_PARAM = "rootDoc";
     boolean emptyList = false;
 
+
     protected Map<Integer, String> getMapping() {
         Map<Integer, String> mapping = new HashMap<Integer, String>();
         mapping.put(R.id.title_entry, "dc:title");
         mapping.put(R.id.description, "dc:description");
         mapping.put(R.id.status_entry, "status");
         mapping.put(R.id.thumb, DocumentAttributeResolver.PICTUREURI
-                + ":Medium");
+                + ":Small");
         return mapping;
     }
 
