@@ -81,7 +81,7 @@ public class FileDownloader {
 
     public FileBlob getPicture(String uid, String format) {
         String pattern = "nxpicsfile/default/" + uid + "/" + format
-                + ":content/Android";
+                + ":content/Android?" /*+ "ts=" + System.currentTimeMillis() */;
         String url = client.getServerConfig().getServerBaseUrl() + pattern;
         return getBlob(PICTURE_KEY, url, null, null);
     }

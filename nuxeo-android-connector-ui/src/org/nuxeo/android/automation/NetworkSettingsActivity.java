@@ -78,6 +78,10 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity
 
     private Button clearLayoutCache;
 
+    private TextView PictureCacheSize;
+
+    private Button clearPictureCache;
+
     private TextView allCacheSize;
 
     private Button clearAllCache;
@@ -124,6 +128,10 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity
         layoutCacheSize = (TextView) findViewById(R.id.layoutCacheSize);
         clearLayoutCache = (Button) findViewById(R.id.clearLayoutCache);
         clearLayoutCache.setOnClickListener(this);
+
+        PictureCacheSize = (TextView)findViewById(R.id.pictureCacheSize);
+        clearPictureCache = (Button)findViewById(R.id.clearPictureCache);
+        clearPictureCache.setOnClickListener(this);
         
         allCacheSize = (TextView)findViewById(R.id.AllCacheSize);
         clearAllCache = (Button)findViewById(R.id.clearAllCache);
@@ -171,7 +179,12 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity
         transientstateCount.setText("Transient objects :  "
                 + stateManager.getEntryCount());
         
-        long allCashSize = cacheManager.getSize() + iconStore.getSize() + blobStore.getSize() + layoutStore.getSize();
+
+        BlobStore pictureStore = blobStoreManager.getBlobStore("pictures");
+        PictureCacheSize.setText("Pictures cache size : " + pictureStore.getSize()
+                + "(b)");
+        
+        long allCashSize = cacheManager.getSize() + iconStore.getSize() + blobStore.getSize() + layoutStore.getSize() + pictureStore.getSize();
         allCacheSize.setText("All caches : " + allCashSize + "(b)");
 
     }
@@ -203,11 +216,14 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity
             flushBlobStore("layouts");
         } else if (view == cleartransientStateButton) {
             flushTransientState();
+        } else if (view == clearPictureCache) {
+            flushBlobStore("pictures");
         } else if (view == clearAllCache) {
         	flushResponseCache();
             flushBlobStore("icons");
             flushBlobStore("blobs");
             flushBlobStore("layouts");
+            flushBlobStore("pictures");
         }
     }
 

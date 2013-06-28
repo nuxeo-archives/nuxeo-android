@@ -325,9 +325,10 @@ public class Document extends DocRef implements Serializable {
                     + NuxeoContentProviderConfig.getAuthority() + "/pictures/"
                     + getId() + "/");
         } else {
-            return Uri.parse("content://"
+        	String uri = "content://"
                     + NuxeoContentProviderConfig.getAuthority() + "/pictures/"
-                    + getId() + "/" + format);
+                    + getId() + "/" + format /*+ "?" + this.getProperties().getDate("dc:modified").getTime()*/;
+            return Uri.parse(uri);
         }
     }
 

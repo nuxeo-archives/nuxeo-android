@@ -335,7 +335,7 @@ public abstract class AbstractNuxeoReadOnlyContentProvider extends
         } else if (resourceType.equals("pictures")) {
             String uid = uri.getPathSegments().get(1);
             FileBlob blob = null;
-            String format = "Medium";
+            String format = "Small";
             Integer idx = null;
             if (uri.getPathSegments().size() > 2) {
                 format = uri.getPathSegments().get(2);
