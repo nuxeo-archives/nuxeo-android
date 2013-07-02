@@ -1,27 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="2dip"
-    >
-<TextView
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:text="@string/hello"
-    />
-<Button android:text="Connect on test server" android:id="@+id/connect" android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
+    android:orientation="vertical"
+    android:padding="2dip" >
 
-<Button android:text="Fetch document and associated resources" android:id="@+id/contentUriBtn" android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/hello" />
 
-<Button android:text="Simple Document Lists" android:id="@+id/docListBtn" android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
+    <Button
+        android:id="@+id/connect"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Connect on test server" >
+    </Button>
 
-<Button android:text="Browse repository" android:id="@+id/browsetBtn" android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
+    <Button
+        android:id="@+id/contentUriBtn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Fetch document and associated resources" >
+    </Button>
 
-<Button android:text="Using DocumentProvider" android:id="@+id/docProviderBtn" android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
+    <Button
+        android:id="@+id/docListBtn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Simple Document Lists" >
+    </Button>
 
-<Button android:text="Using Content Provider" android:id="@+id/contentProviderBtn" android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
+    <Button
+        android:id="@+id/browsetBtn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Browse repository" >
+    </Button>
 
-<Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/opList"></Spinner>
+    <Button
+        android:id="@+id/docProviderBtn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Using DocumentProvider" >
+    </Button>
+
+    <Button
+        android:id="@+id/contentProviderBtn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Using Content Provider" >
+    </Button>
+
+    <Spinner
+        android:id="@+id/opList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </Spinner>
 
 </LinearLayout>
