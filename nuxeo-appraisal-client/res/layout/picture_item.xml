@@ -1,48 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
- <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent"
-      android:layout_height="wrap_content" android:padding="8dip" android:layout_gravity="top|left">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="top|left"
+    android:padding="8dip" >
 
-   <ImageView
-	android:id="@+id/thumb"
-	android:layout_width="100dip"
-	android:layout_height="100dip"
-	android:layout_gravity="top|left"
-     android:paddingLeft="2dip"
-     android:paddingRight="2dip"
-	/>
+    <ImageView
+        android:id="@+id/thumb"
+        android:layout_width="100dip"
+        android:layout_height="100dip"
+        android:layout_gravity="top|left"
+        android:paddingLeft="2dip"
+        android:paddingRight="2dip" />
 
-	   <TextView
-		android:id="@+id/title_entry"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="Title loading"
-		android:textSize="16dip"
-		android:textStyle="bold"
-		android:padding="3dip"
-		android:layout_gravity="top|left"
-	    android:layout_toRightOf="@id/thumb"/>
+    <TextView
+        android:id="@+id/title_entry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|left"
+        android:layout_toRightOf="@id/thumb"
+        android:padding="3dip"
+        android:text="Title loading"
+        android:textSize="16dip"
+        android:textStyle="bold" />
 
-	   <TextView
-		android:id="@+id/description"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="description loading"
-		android:textSize="12dip"
-		android:padding="3dip"
-		android:layout_gravity="top|left"
-		android:layout_toRightOf="@id/thumb"
-		android:layout_below ="@id/title_entry"
-		/>
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_entry"
+        android:layout_gravity="top|left"
+        android:layout_toRightOf="@id/thumb"
+        android:padding="3dip"
+        android:text="description loading"
+        android:textSize="12dip" />
 
-	   <TextView
-			android:id="@+id/status_entry"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_toRightOf="@id/thumb"
-			android:layout_below ="@id/description"
-			android:textSize="8dip"
-			android:textColor="#FF0000"
-			android:padding="2dip" />
+    <TextView
+        android:id="@+id/status_entry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/description"
+        android:layout_toRightOf="@id/thumb"
+        android:padding="2dip"
+        android:textColor="#FF0000"
+        android:textSize="8dip" />
 
- </RelativeLayout>
-
+</RelativeLayout>

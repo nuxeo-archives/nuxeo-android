@@ -1,95 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
- <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent"
-      android:layout_height="fill_parent" android:padding="8dip">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="8dip" >
 
-   <ImageView android:src="@drawable/appraisal"
-   android:id="@+id/icon"
-     android:layout_width="32dip"
-     android:layout_height="32dip"
-     android:layout_centerVertical="true"
-     android:scaleType="fitCenter"
-     android:paddingRight="5dip"
-    />
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="32dip"
+        android:layout_height="32dip"
+        android:layout_centerVertical="true"
+        android:paddingRight="5dip"
+        android:scaleType="fitCenter"
+        android:src="@drawable/appraisal" />
 
-   <TextView
-	android:id="@+id/title_entry"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:textSize="16dip"
-	android:textStyle="bold"
-	android:layout_toRightOf="@id/icon"
-	android:padding="3dip" />
+    <TextView
+        android:id="@+id/title_entry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/icon"
+        android:padding="3dip"
+        android:textSize="16dip"
+        android:textStyle="bold" />
 
+    <ImageView
+        android:id="@+id/clientLogo"
+        android:layout_width="20dip"
+        android:layout_height="20dip"
+        android:layout_centerVertical="false"
+        android:layout_toRightOf="@id/title_entry"
+        android:padding="2dip"
+        android:scaleType="fitCenter"
+        android:src="@drawable/client" />
 
-   <ImageView android:src="@drawable/client"
-   android:id="@+id/clientLogo"
-     android:layout_width="20dip"
-     android:layout_height="20dip"
-     android:layout_centerVertical="false"
-     android:scaleType="fitCenter"
-     android:layout_toRightOf="@id/title_entry"
-     android:padding="2dip"
-    />
+    <TextView
+        android:id="@+id/client"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/clientLogo"
+        android:padding="2dip"
+        android:textSize="14dip"
+        android:textStyle="italic" />
 
-   <TextView
-	android:id="@+id/client"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:layout_toRightOf="@id/clientLogo"
-	android:textStyle="italic"
-	android:textSize="14dip"
-	android:padding="2dip"/>
+    <TextView
+        android:id="@+id/declaration_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_entry"
+        android:layout_toRightOf="@id/icon"
+        android:padding="2dip"
+        android:text="declaration : "
+        android:textSize="12dip"
+        android:textStyle="italic" />
 
-   <TextView
-    android:id="@+id/declaration_label"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:textSize="12dip"
-	android:textStyle="italic"
-	android:layout_below="@id/title_entry"
-	android:layout_toRightOf="@id/icon"
-	android:text="declaration : "
-	android:padding="2dip"/>
+    <TextView
+        android:id="@+id/declaration_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_entry"
+        android:layout_toRightOf="@id/declaration_label"
+        android:padding="2dip"
+        android:textSize="12dip"
+        android:textStyle="italic" />
 
-   <TextView
-    android:id="@+id/declaration_date"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:textSize="12dip"
-	android:textStyle="italic"
-	android:layout_below="@id/title_entry"
-	android:layout_toRightOf="@id/declaration_label"
-	android:padding="2dip"/>
+    <TextView
+        android:id="@+id/visite_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/declaration_label"
+        android:layout_toRightOf="@id/icon"
+        android:padding="2dip"
+        android:text="visite : "
+        android:textSize="12dip"
+        android:textStyle="italic" />
 
-   <TextView
-    android:id="@+id/visite_label"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:textSize="12dip"
-	android:textStyle="italic"
-	android:layout_below="@id/declaration_label"
-	android:layout_toRightOf="@id/icon"
-	android:text="visite : "
-	android:padding="2dip"/>
+    <TextView
+        android:id="@+id/visite_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/declaration_label"
+        android:layout_toRightOf="@id/visite_label"
+        android:padding="2dip"
+        android:textSize="12dip"
+        android:textStyle="italic" />
 
-   <TextView
-    android:id="@+id/visite_date"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:textSize="12dip"
-	android:textStyle="italic"
-	android:layout_below="@id/declaration_label"
-	android:layout_toRightOf="@id/visite_label"
-	android:padding="2dip"/>
+    <TextView
+        android:id="@+id/status_entry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/client"
+        android:padding="4dip"
+        android:textColor="#FF0000"
+        android:textSize="8dip" />
 
-   <TextView
-	android:id="@+id/status_entry"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:layout_toRightOf="@id/client"
-	android:textSize="8dip"
-	android:textColor="#FF0000"
-	android:padding="4dip" />
-
- </RelativeLayout>
-
+</RelativeLayout>
