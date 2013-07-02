@@ -184,8 +184,8 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity
         PictureCacheSize.setText("Pictures cache size : " + pictureStore.getSize()
                 + "(b)");
         
-        long allCashSize = cacheManager.getSize() + iconStore.getSize() + blobStore.getSize() + layoutStore.getSize() + pictureStore.getSize();
-        allCacheSize.setText("All caches : " + allCashSize + "(b)");
+        long allCashSize = iconStore.getSize() + blobStore.getSize() + layoutStore.getSize() + pictureStore.getSize();
+        allCacheSize.setText("All blobs caches : " + allCashSize + "(b)");
 
     }
 
