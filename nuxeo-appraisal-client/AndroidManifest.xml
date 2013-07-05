@@ -11,28 +11,28 @@
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <application android:icon="@drawable/appraisal" android:label="@string/app_name" android:name="org.nuxeo.android.appraisal.NuxeoAppraisalClient">
+    <application android:icon="@drawable/appraisal" android:label="@string/app_name" android:name="org.nuxeo.android.appraisal.NuxeoAppraisalClient" android:theme="@style/AppBaseTheme" android:uiOptions="splitActionBarWhenNarrow">
         <activity android:name="AppraisalListActivity"
-                  android:label="Pending Appraisals assigned to me" android:theme="@style/Theme.NuxeoAndroid">
+                  android:label="Pending Appraisals assigned to me">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name="AppraisalContentListActivity"
-                  android:label="Appraisal pictures" android:theme="@style/Theme.NuxeoAndroid">
+                  android:label="Appraisal pictures">
         </activity>
         <activity android:name="AppraisalLayoutActivity"
-                  android:label="Appraisal view" android:theme="@style/Theme.NuxeoAndroid">
+                  android:label="Appraisal view">
         </activity>
         <!-- <activity android:name="DocumentLayoutActivity"
                   android:label="CreateEditActivity" android:theme="@style/Theme.NuxeoAndroid">
         </activity> -->
         <activity android:name="org.nuxeo.android.automation.NetworkSettingsActivity"
-                  android:label="Nuxeo Offline Settings" android:theme="@style/Theme.NuxeoAndroid">
+                  android:label="Nuxeo Offline Settings">
         </activity>
         <activity android:name="org.nuxeo.android.automation.ServerSettingsActivity"
-                  android:label="Settings" android:theme="@style/Theme.NuxeoAndroid">
+                  android:label="Settings">
         </activity>
     <provider android:name="org.nuxeo.android.appraisal.contentprovider.NuxeoDocumentContentProvider"
               android:authorities="nxapraisal">

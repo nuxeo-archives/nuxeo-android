@@ -32,10 +32,10 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
 import android.content.Intent;
+import android.os.Build;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -110,9 +110,19 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
 //        SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_CONFIG, 0, "Config");
 //        subMenu.add(Menu.NONE, MNU_NETWORK_CONFIG, 0, "Network");
 //        subMenu.add(Menu.NONE, MNU_SERVER_CONFIG, 1, "Settings");
+
+		if (Build.VERSION.SDK_INT >= 11) {
+    	menu.add(Menu.NONE, MNU_NETWORK_CONFIG, 0, "Network").
+    		setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        menu.add(Menu.NONE, MNU_SERVER_CONFIG, 1, "Settings").
+        	setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        menu.add(Menu.NONE, MNU_REFRESH, 2, "Refresh").
+        	setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		} else {
         menu.add(Menu.NONE, MNU_NETWORK_CONFIG, 0, "Network");
         menu.add(Menu.NONE, MNU_SERVER_CONFIG, 1, "Settings");
         menu.add(Menu.NONE, MNU_REFRESH, 2, "Refresh");
+		}
     }
 
     protected void populateContextMenu(Document doc, ContextMenu menu) {

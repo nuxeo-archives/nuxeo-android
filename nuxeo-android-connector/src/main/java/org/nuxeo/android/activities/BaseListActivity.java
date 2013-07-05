@@ -17,6 +17,7 @@
 
 package org.nuxeo.android.activities;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -54,8 +55,13 @@ public abstract class BaseListActivity extends BaseNuxeoActivity implements
             registerForContextMenu(listView);
             listView.setOnItemClickListener(this);
         }
-        if (refreshBtn != null) {
-            refreshBtn.setOnClickListener(this);
+        if(Build.VERSION.SDK_INT >= 11) {
+        	refreshBtn.setVisibility(View.GONE);
+        } else
+        {
+	        if (refreshBtn != null) {
+	            refreshBtn.setOnClickListener(this);
+	        }
         }
     }
 
@@ -73,7 +79,7 @@ public abstract class BaseListActivity extends BaseNuxeoActivity implements
 
     protected void setupViewsOnDataLoaded() {
         if (waitingMessage != null) {
-            waitingMessage.setVisibility(View.INVISIBLE);
+            waitingMessage.setVisibility(View.GONE);
         }
         if (refreshBtn != null) {
             refreshBtn.setEnabled(true);
