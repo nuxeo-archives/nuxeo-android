@@ -1,6 +1,6 @@
 <projectDescription>
-  <name>nuxeo-automation-thin-client</name>
-  <comment>Automation Thin Client for automation REST API. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <name>nuxeo-android-connector</name>
+  <comment>Connector to use Nuxeo Platform services from Android. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
   <projects/>
   <buildSpec>
     <buildCommand>
