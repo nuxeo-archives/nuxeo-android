@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
  <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent"
-      android:layout_height="wrap_content" android:padding="2dip" android:layout_gravity="top|left">
+      android:layout_height="wrap_content" android:padding="8dip" android:layout_gravity="top|left">
 
    <ImageView
 	android:id="@+id/thumb"
 	android:layout_width="100dip"
 	android:layout_height="100dip"
 	android:layout_gravity="top|left"
-	android:padding="2dip"
+     android:paddingLeft="2dip"
+     android:paddingRight="2dip"
 	/>
 
 	   <TextView
 		android:id="@+id/title_entry"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:text="Title loading"
 		android:textSize="16dip"
 		android:textStyle="bold"
 		android:padding="3dip"
@@ -24,9 +26,9 @@
 		android:id="@+id/description"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:text="description loading"
 		android:textSize="12dip"
 		android:padding="3dip"
-		android:text="This is the description"
 		android:layout_gravity="top|left"
 		android:layout_toRightOf="@id/thumb"
 		android:layout_below ="@id/title_entry"
