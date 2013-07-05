@@ -224,8 +224,10 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap>
                     progressBar.invalidate();
                     registerActivityResultHandler(PICK_ANY,
                             getHandler(getLayoutContext().getLayoutId()));
-                    Intent intent = new Intent(
-                            "org.openintents.action.PICK_FILE");
+//                    Intent intent = new Intent(
+//                            "org.openintents.action.PICK_FILE");
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("file/*");
                     intent.putExtra("org.openintents.extra.TITLE",
                             "Select a file to attach");
                     
