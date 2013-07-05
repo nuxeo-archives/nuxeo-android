@@ -40,16 +40,21 @@ public class ServerSettingsActivity extends AbstractNuxeoSettingsActivity
 
     protected Button saveButton;
 
+    CharSequence initPasswordStr, initLoginStr, initUrlStr;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         setContentView(R.layout.settings);
 
         login = (TextView) findViewById(R.id.editLogin);
+        initLoginStr = login.getText();
         password = (TextView) findViewById(R.id.editPassword);
+        initPasswordStr = password.getText();
         serverUrl = (TextView) findViewById(R.id.editServerUrl);
+        initUrlStr = serverUrl.getText();
         saveButton = (Button) findViewById(R.id.saveSettingsButton);
-
         saveButton.setOnClickListener(this);
         super.onCreate(savedInstanceState);
         refreshDisplay();
@@ -73,14 +78,19 @@ public class ServerSettingsActivity extends AbstractNuxeoSettingsActivity
         if (view == saveButton) {
             Map<String, Object> prefs = new HashMap<String, Object>();
 
-            prefs.put(NuxeoServerConfig.PREF_SERVER_URL,
-                    serverUrl.getText().toString());
-            prefs.put(NuxeoServerConfig.PREF_SERVER_LOGIN,
-                    login.getText().toString());
-            prefs.put(NuxeoServerConfig.PREF_SERVER_PASSWORD,
-                    password.getText().toString());
+            if (!initUrlStr.equals(serverUrl.getText()) || !initLoginStr.equals(login.getText())
+            		|| !initPasswordStr.equals(password.getText()))
+            {
+	            prefs.put(NuxeoServerConfig.PREF_SERVER_URL,
+	                    serverUrl.getText().toString());
+	            prefs.put(NuxeoServerConfig.PREF_SERVER_LOGIN,
+	                    login.getText().toString());
+	            prefs.put(NuxeoServerConfig.PREF_SERVER_PASSWORD,
+	                    password.getText().toString());
+	            setResult(RESULT_OK);
+	            saveNuxeoPreferences(prefs);
+            }
 
-            saveNuxeoPreferences(prefs);
             finish();
         }
     }
