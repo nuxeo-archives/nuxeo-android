@@ -24,6 +24,7 @@ import org.nuxeo.android.documentprovider.LazyDocumentsList;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
+import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.content.Intent;
@@ -56,6 +57,8 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
     protected static final int CTXMNU_EDIT_DOCUMENT = 1;
 
     protected static final int CTXMNU_VIEW_ATTACHEMENT = 2;
+
+    protected static final int CTXMNU_DELETE = 3;
 
     protected boolean refresh = false;
 
@@ -319,9 +322,21 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
                 startViewerFromBlob(blobUri);
             }
             return true;
+        } else if (item.getItemId() == CTXMNU_DELETE) {
+        	deleteDocument(doc);
+        	doRefresh();
+        	return true;
         } else {
             return super.onContextItemSelected(item);
         }
+    }
+    
+    protected void deleteDocument(Document doc) {
+        OperationRequest request = getNuxeoSession().newRequest(
+                "Document.SetLifeCycle");
+        request.setInput(doc);
+        request.set("value", "delete");
+        documentsList.updateDocument(doc, request);
     }
 
     @Override
@@ -350,6 +365,7 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
         menu.add(Menu.NONE, CTXMNU_VIEW_DOCUMENT, 0, "View");
         menu.add(Menu.NONE, CTXMNU_EDIT_DOCUMENT, 1, "Edit");
         menu.add(Menu.NONE, CTXMNU_VIEW_ATTACHEMENT, 2, "View attachment");
+        menu.add(Menu.NONE, CTXMNU_DELETE, 2, "Delete");
     }
 
     @Override

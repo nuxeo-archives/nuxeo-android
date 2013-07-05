@@ -52,6 +52,7 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
 
     protected static final int CTXMNU_VALIDATE = 20;
 
+    protected static final int CTXMNU_DELETE = 30;
     @Override
     protected void displayDocumentList(ListView listView,
             LazyDocumentsList documentsList) {
@@ -130,6 +131,7 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
         menu.add(Menu.NONE, CTXMNU_EDIT_DOCUMENT, 1, "Edit Appraisal");
         menu.add(Menu.NONE, CTXMNU_VIEW_PICTURES, 2, "View pictures");
         menu.add(Menu.NONE, CTXMNU_VALIDATE, 3, "Validate");
+        menu.add(Menu.NONE, CTXMNU_DELETE, 3, "Delete");
     }
 
     @Override
@@ -162,6 +164,10 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
         case CTXMNU_VALIDATE:
             validateDocument(doc);
             return true;
+        case CTXMNU_DELETE:
+            deleteDocument(doc);
+            doRefresh();
+            return true;
         default:
             return super.onContextItemSelected(item);
         }
@@ -172,6 +178,12 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
                 "Document.SetLifeCycle");
         request.setInput(doc);
         request.set("value", "to_expert_visit_done");
+        documentsList.updateDocument(doc, request);
+    }
+    protected void deleteDocument(Document doc) {
+        OperationRequest request = getNuxeoSession().newRequest(
+                "Document.Delete");
+        request.setInput(doc);
         documentsList.updateDocument(doc, request);
     }
 
