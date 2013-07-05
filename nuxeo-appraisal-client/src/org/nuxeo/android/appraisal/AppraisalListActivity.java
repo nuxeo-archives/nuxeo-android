@@ -107,9 +107,11 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
     }
 
     protected void populateMenu(Menu menu) {
-        SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_CONFIG, 0, "Config");
-        subMenu.add(Menu.NONE, MNU_NETWORK_CONFIG, 0, "Network");
-        subMenu.add(Menu.NONE, MNU_SERVER_CONFIG, 1, "Settings");
+//        SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_CONFIG, 0, "Config");
+//        subMenu.add(Menu.NONE, MNU_NETWORK_CONFIG, 0, "Network");
+//        subMenu.add(Menu.NONE, MNU_SERVER_CONFIG, 1, "Settings");
+        menu.add(Menu.NONE, MNU_NETWORK_CONFIG, 0, "Network");
+        menu.add(Menu.NONE, MNU_SERVER_CONFIG, 1, "Settings");
         menu.add(Menu.NONE, MNU_REFRESH, 2, "Refresh");
     }
 

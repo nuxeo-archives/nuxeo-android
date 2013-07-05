@@ -78,6 +78,10 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity
 
     private Button clearLayoutCache;
 
+    private TextView allCacheSize;
+
+    private Button clearAllCache;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -120,6 +124,12 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity
         layoutCacheSize = (TextView) findViewById(R.id.layoutCacheSize);
         clearLayoutCache = (Button) findViewById(R.id.clearLayoutCache);
         clearLayoutCache.setOnClickListener(this);
+        
+        allCacheSize = (TextView)findViewById(R.id.AllCacheSize);
+        clearAllCache = (Button)findViewById(R.id.clearAllCache);
+        clearAllCache.setOnClickListener(this);
+        
+        
 
         super.onCreate(savedInstanceState);
     }
@@ -160,6 +170,9 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity
 
         transientstateCount.setText("Transient objects :  "
                 + stateManager.getEntryCount());
+        
+        long allCashSize = cacheManager.getSize() + iconStore.getSize() + blobStore.getSize() + layoutStore.getSize();
+        allCacheSize.setText("All caches : " + allCashSize + "(b)");
 
     }
 
@@ -190,6 +203,11 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity
             flushBlobStore("layouts");
         } else if (view == cleartransientStateButton) {
             flushTransientState();
+        } else if (view == clearAllCache) {
+        	flushResponseCache();
+            flushBlobStore("icons");
+            flushBlobStore("blobs");
+            flushBlobStore("layouts");
         }
     }
 

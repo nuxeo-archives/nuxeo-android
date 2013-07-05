@@ -10,10 +10,12 @@
     android:id="@+id/currentDocTitle"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+   android:gravity="center_horizontal"
     />
 
   <LinearLayout  android:layout_width="fill_parent"
    android:layout_height="30dip"
+   android:gravity="center_horizontal"
    android:orientation="horizontal">
     <Button android:text="Save" android:id="@+id/updateDocument" android:layout_width="100dip" android:layout_height="wrap_content" android:padding="1dip" android:background="@drawable/android:btn_default_small"></Button>
     <Button android:text="Cancel" android:id="@+id/cancelDocument" android:layout_width="100dip" android:layout_height="wrap_content" android:padding="1dip" android:background="@drawable/android:btn_default_small"></Button>

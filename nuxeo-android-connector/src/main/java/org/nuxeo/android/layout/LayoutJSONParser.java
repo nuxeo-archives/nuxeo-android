@@ -104,7 +104,7 @@ public class LayoutJSONParser {
             JSONArray w = rowObject.getJSONArray("widgets");
             List<String> widgetNames = new ArrayList<String>();
             for (int j = 0; j < w.length(); j++) {
-                widgetNames.add(w.getString(j));
+                widgetNames.add(w.getJSONObject(j).getString("name"));
             }
             rowDefs.add(new LayoutRow(widgetNames));
         }

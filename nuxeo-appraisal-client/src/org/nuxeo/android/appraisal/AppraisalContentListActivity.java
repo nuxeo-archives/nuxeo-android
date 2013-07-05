@@ -35,10 +35,12 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyMap;
 
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class AppraisalContentListActivity extends BaseDocumentsListActivity {
 
     public static final String ROOT_DOC_PARAM = "rootDoc";
+    boolean emptyList = false;
 
     protected Map<Integer, String> getMapping() {
         Map<Integer, String> mapping = new HashMap<Integer, String>();
@@ -56,6 +58,11 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
         AbstractDocumentListAdapter adapter = new DocumentsListAdapter(this,
                 documentsList, R.layout.picture_item, getMapping(),
                 R.layout.list_item_loading);
+        setTitle(getInitParam(ROOT_DOC_PARAM, Document.class).getName() + " pictures");
+        if(emptyList)
+        {
+        	Toast.makeText(getBaseContext(), "No pictures to display", Toast.LENGTH_LONG).show();
+        }
         listView.setAdapter(adapter);
     }
 
@@ -63,10 +70,15 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
     protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam)
             throws Exception {
         Documents docs = getNuxeoContext().getDocumentManager().query(
-                "select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:isCheckedInVersion = 0 AND ecm:parentId=? order by dc:modified desc",
+                "select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:currentLifeCycleState!='deleted' AND ecm:isCheckedInVersion = 0 AND ecm:parentId=? order by dc:modified desc",
+             // XXX to add : AND ecm:currentLifeCycleState!='deleted'
                 new String[] { getInitParam(ROOT_DOC_PARAM, Document.class).getId() },
                 null, null, 0, 10, cacheParam);
         if (docs != null) {
+        	if (docs.size()==0)
+        	{
+        		emptyList = true;
+        	}
             return docs.asUpdatableDocumentsList();
         }
         throw new RuntimeException("fetch Operation did return null");
