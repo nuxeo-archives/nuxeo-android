@@ -53,6 +53,11 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
     protected static final int CTXMNU_VALIDATE = 20;
 
     protected static final int CTXMNU_DELETE = 30;
+
+    protected static final int REQUEST_NETWORK = 1;
+
+    protected static final int REQUEST_SERVER = 1;
+
     @Override
     protected void displayDocumentList(ListView listView,
             LazyDocumentsList documentsList) {
@@ -108,10 +113,6 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
     }
 
     protected void populateMenu(Menu menu) {
-//        SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_CONFIG, 0, "Config");
-//        subMenu.add(Menu.NONE, MNU_NETWORK_CONFIG, 0, "Network");
-//        subMenu.add(Menu.NONE, MNU_SERVER_CONFIG, 1, "Settings");
-
 		if (Build.VERSION.SDK_INT >= 11) {
     	menu.add(Menu.NONE, MNU_NETWORK_CONFIG, 0, "Network").
     		setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
@@ -138,16 +139,25 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case MNU_NETWORK_CONFIG:
-            startActivity(new Intent(getApplicationContext(),
-                    NetworkSettingsActivity.class));
+            startActivityForResult(new Intent(getApplicationContext(),
+                    NetworkSettingsActivity.class), REQUEST_NETWORK);
             return true;
         case MNU_SERVER_CONFIG:
-            startActivity(new Intent(getApplicationContext(),
-                    ServerSettingsActivity.class));
+            startActivityForResult(new Intent(getApplicationContext(),
+                    ServerSettingsActivity.class), REQUEST_SERVER);
             return true;
         default:
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    	if (requestCode == REQUEST_NETWORK || requestCode == REQUEST_SERVER){
+    		if(resultCode == RESULT_OK){
+    			listView.setAdapter(null);
+    		}
+    	}
     }
 
     @Override

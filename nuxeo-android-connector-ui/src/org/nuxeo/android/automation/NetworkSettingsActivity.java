@@ -200,6 +200,7 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity
     public void onClick(View view) {
         if (view == clearCacheButton) {
             flushResponseCache();
+            setResult(RESULT_OK);
         } else if (view == refreshButton) {
             resetNetworkStatusAndRefresh();
         } else if (view == execPendingButton) {
@@ -210,6 +211,7 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity
             flushPendingUploads();
         } else if (view == clearIconCache) {
             flushBlobStore("icons");
+            setResult(RESULT_OK);
         } else if (view == clearBlobCache) {
             flushBlobStore("blobs");
         } else if (view == clearLayoutCache) {
@@ -224,6 +226,7 @@ public class NetworkSettingsActivity extends AbstractNetworkSettingsActivity
             flushBlobStore("blobs");
             flushBlobStore("layouts");
             flushBlobStore("pictures");
+            setResult(RESULT_OK);
         }
     }
 
