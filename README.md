@@ -1,5 +1,10 @@
 # Nuxeo Android projects
 
+## Initialize Maven repository with Android artifacts (with Maven 3)
+
+  git clone https://github.com/mosabua/maven-android-sdk-deployer.git
+  mvn install -P4.1
+
 ## How to build
 
   export ANDROID_HOME=/path/to/your/AndroidSDK/containing/platforms/
