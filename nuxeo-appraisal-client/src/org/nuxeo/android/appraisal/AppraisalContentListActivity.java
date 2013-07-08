@@ -58,8 +58,7 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
     protected void displayDocumentList(ListView listView,
             LazyDocumentsList documentsList) {
         AbstractDocumentListAdapter adapter = new DocumentsListAdapter(this,
-                documentsList, R.layout.picture_item, getMapping(),
-                R.layout.list_item_loading);
+                documentsList, R.layout.picture_item, getMapping());
         setTitle(getInitParam(ROOT_DOC_PARAM, Document.class).getName() + " pictures");
         if(emptyList)
         {
