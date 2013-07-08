@@ -272,6 +272,8 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
                 Document editedDocument = (Document) data.getExtras().get(
                         BaseDocumentLayoutActivity.DOCUMENT);
                 onDocumentUpdate(editedDocument);
+            	doRefresh();
+                
             }
         } else if (requestCode == ACTION_CREATE_DOCUMENT
                 && resultCode == RESULT_OK) {
@@ -279,6 +281,7 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
                 Document newDocument = (Document) data.getExtras().get(
                         BaseDocumentLayoutActivity.DOCUMENT);
                 onDocumentCreate(newDocument);
+            	doRefresh();
             }
         }
     }

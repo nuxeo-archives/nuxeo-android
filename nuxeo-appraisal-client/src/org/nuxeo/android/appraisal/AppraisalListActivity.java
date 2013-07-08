@@ -62,8 +62,7 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
     protected void displayDocumentList(ListView listView,
             LazyDocumentsList documentsList) {
         AbstractDocumentListAdapter adapter = new DocumentsListAdapter(this,
-                documentsList, R.layout.list_item, getMapping(),
-                R.layout.list_item_loading);
+                documentsList, R.layout.list_item, getMapping());
         listView.setAdapter(adapter);
     }
 
