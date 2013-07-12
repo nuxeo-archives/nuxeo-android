@@ -21,19 +21,19 @@ import org.nuxeo.android.activities.BaseDocumentLayoutActivity;
 import org.nuxeo.android.layout.LayoutMode;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class DocumentLayoutActivity extends BaseDocumentLayoutActivity
         implements View.OnClickListener {
-
-    protected TextView title;
 
     protected Button saveBtn;
 
@@ -49,18 +49,6 @@ public class DocumentLayoutActivity extends BaseDocumentLayoutActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.createeditlayout);
-        title = (TextView) findViewById(R.id.currentDocTitle);
-
-        if (isEditMode()) {
-            title.setText("Edit " + getCurrentDocument().getTitle() + " ("
-                    + getCurrentDocument().getType() + ")");
-        } else if (isCreateMode()) {
-            title.setText("Create new " + getCurrentDocument().getType());
-        } else {
-            title.setText("View " + getCurrentDocument().getTitle() + " ("
-                    + getCurrentDocument().getType() + ")");
-        }
-
         saveBtn = (Button) findViewById(R.id.updateDocument);
         saveBtn.setOnClickListener(this);
 
@@ -104,6 +92,23 @@ public class DocumentLayoutActivity extends BaseDocumentLayoutActivity
             break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onNuxeoDataRetrieved(Object data) {
+    	super.onNuxeoDataRetrieved(data);
+
+    	if(!isEditMode() && !isCreateMode()) {
+    		if (currentDocument.getType().equals("Picture"))
+    		{
+            	ImageView imageView = (ImageView)findViewById(R.id.thumb);
+            	imageView.setVisibility(View.VISIBLE);
+            	imageView.setImageURI(currentDocument.getBlob());
+            	TextView title = ((TextView) findViewById(R.id.currentDocTitle));
+            	title.setText(getCurrentDocument().getType() + " " + getCurrentDocument().getTitle());
+            	title.setVisibility(View.VISIBLE);
+    		}
+    	}
     }
 
 }

@@ -16,6 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/iconView"
+        android:text="Title loading"
         android:layout_toRightOf="@id/iconView"
         android:padding="3dip"
         android:textSize="16dip"
@@ -37,12 +38,13 @@
         android:layout_below="@id/title_entry"
         android:layout_toRightOf="@id/id_entry"
         android:padding="4dip"
-        android:textColor="#FF0000"
+        android:textColor="@color/red"
         android:textSize="10dip" />
 
     <TextView
         android:id="@+id/description"
         android:layout_width="fill_parent"
+        android:text="description loading"
         android:layout_height="wrap_content"
         android:layout_below="@id/id_entry"
         android:textSize="12dip"

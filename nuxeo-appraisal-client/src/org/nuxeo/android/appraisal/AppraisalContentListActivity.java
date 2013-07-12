@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.nuxeo.android.activities.BaseDocumentLayoutActivity;
 import org.nuxeo.android.activities.BaseDocumentsListActivity;
-import org.nuxeo.android.adapters.AbstractDocumentListAdapter;
 import org.nuxeo.android.adapters.DocumentAttributeResolver;
 import org.nuxeo.android.adapters.DocumentsListAdapter;
 import org.nuxeo.android.documentprovider.LazyDocumentsList;
@@ -33,7 +32,6 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.PathRef;
 import org.nuxeo.ecm.automation.client.jaxrs.model.PropertiesHelper;
 import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyMap;
 
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,7 +55,7 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
     @Override
     protected void displayDocumentList(ListView listView,
             LazyDocumentsList documentsList) {
-        AbstractDocumentListAdapter adapter = new DocumentsListAdapter(this,
+    	DocumentsListAdapter adapter = new DocumentsListAdapter(this,
                 documentsList, R.layout.picture_item, getMapping());
         setTitle(getInitParam(ROOT_DOC_PARAM, Document.class).getName() + " pictures");
         if(emptyList)
@@ -110,7 +108,7 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
         PropertyMap dirty = newDocument.getDirtyProperties();
         if (dirty.get("file:content") != null) {
             dirty.map().put("originalPicture", dirty.get("file:content"));
-            dirty.map().remove("file:content");
+//            dirty.map().remove("file:content");
         }
         String dirtyString = PropertiesHelper.toStringProperties(dirty);
 
