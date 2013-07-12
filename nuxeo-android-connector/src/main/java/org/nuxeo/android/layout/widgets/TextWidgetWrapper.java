@@ -47,7 +47,7 @@ public class TextWidgetWrapper extends BaseAndroidWidgetWrapper<String>
         if (editWidget != null
                 && !editWidget.getText().toString().equals(getCurrentValue())) {
             DocumentAttributeResolver.put(doc, getAttributeName(),
-                    editWidget.getText().toString());
+                    editWidget.getText().toString().replaceAll("'", "\""));
         }
     }
 
