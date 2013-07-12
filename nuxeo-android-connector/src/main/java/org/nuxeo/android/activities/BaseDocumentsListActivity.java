@@ -160,6 +160,7 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
                 } else {
                     SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_NEW_LISTITEM,
                             0, "New item");
+                    subMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                     int idx = 1;
                     for (String key : types.keySet()) {
                         subMenu.add(Menu.NONE, MNU_NEW_LISTITEM + idx, idx,
@@ -346,9 +347,11 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
     protected void onListItemClicked(int listItemPosition) {
         if (getEditActivityClass() != null) {
             Document doc = documentsList.getDocument(listItemPosition);
-            startActivity(new Intent(this, getEditActivityClass()).putExtra(
-                    BaseDocumentLayoutActivity.DOCUMENT, doc).putExtra(
-                    BaseDocumentLayoutActivity.MODE, LayoutMode.VIEW));
+            Intent intent = new Intent(new Intent(this, getEditActivityClass())
+            	.putExtra(BaseDocumentLayoutActivity.DOCUMENT, doc)
+            	.putExtra(BaseDocumentLayoutActivity.MODE, LayoutMode.VIEW)
+            	.putExtra(BaseDocumentLayoutActivity.FIRST_CALL, true));
+            startActivityForResult(intent, ACTION_EDIT_DOCUMENT);
         }
     }
 

@@ -24,6 +24,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.DocumentStatus;
 import org.nuxeo.ecm.automation.client.jaxrs.model.IdRef;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,7 +37,11 @@ public abstract class BaseDocumentLayoutActivity extends BaseNuxeoActivity {
 
     public static final String MODE = "mode";
 
+    public static final String FIRST_CALL = "first call";
+
     protected Document currentDocument;
+    
+    protected Intent callingIntent;
 
     protected boolean requireAsyncFetch = true;
 
@@ -54,14 +59,25 @@ public abstract class BaseDocumentLayoutActivity extends BaseNuxeoActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        callingIntent = getIntent();
+        Document currentDoc = getCurrentDocument();
+
         if (isCreateMode()) {
             // can not refresh from the server a not yet existing document
             requireAsyncFetch = false;
         } else {
-            if (getCurrentDocument().getStatusFlag() != DocumentStatus.SYNCHRONIZED) {
+            if (currentDoc.getStatusFlag() != DocumentStatus.SYNCHRONIZED) {
                 // do not refresh if local update
                 requireAsyncFetch = false;
             }
+        }
+
+        if (isEditMode()) {
+            setTitle("Edit " + currentDoc.getType() + " " + getCurrentDocument().getTitle());
+        } else if (isCreateMode()) {
+        	setTitle("Create new " + currentDoc.getType());
+        } else {
+        	setTitle("View " + currentDoc.getType() + " " + getCurrentDocument().getTitle());
         }
     }
 
@@ -127,10 +143,16 @@ public abstract class BaseDocumentLayoutActivity extends BaseNuxeoActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    	if (requestCode == BaseDocumentsListActivity.ACTION_EDIT_DOCUMENT && resultCode == RESULT_OK)
+    	{
+            Document doc = (Document) data.getExtras().get(DOCUMENT);
+            getLayout().applyChanges(doc);
+            setResult(RESULT_OK, new Intent().putExtra(DOCUMENT, doc));
+            this.finish();
+    	}
         if (getLayout() != null) {
             layout.onActivityResult(requestCode, resultCode, data);
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     protected void saveDocument() {
@@ -149,11 +171,22 @@ public abstract class BaseDocumentLayoutActivity extends BaseNuxeoActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         populateMenu(menu);
-        if (LayoutMode.VIEW == getMode()) {
-            menu.add(Menu.NONE, MNU_SWITCH_EDIT, 0, "Switch to Edit");
-        }
-        if (LayoutMode.EDIT == getMode()) {
-            menu.add(Menu.NONE, MNU_SWITCH_VIEW, 0, "Switch to View");
+        if(Build.VERSION.SDK_INT >= 11) {
+        	if (LayoutMode.VIEW == getMode()) {
+                menu.add(Menu.NONE, MNU_SWITCH_EDIT, 0, "Switch to Edit").
+                	setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            }
+            if (LayoutMode.EDIT == getMode()) {
+                menu.add(Menu.NONE, MNU_SWITCH_VIEW, 0, "Switch to View").
+            	setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            }
+        } else {
+        	if (LayoutMode.VIEW == getMode()) {
+                menu.add(Menu.NONE, MNU_SWITCH_EDIT, 0, "Switch to Edit");
+            }
+            if (LayoutMode.EDIT == getMode()) {
+                menu.add(Menu.NONE, MNU_SWITCH_VIEW, 0, "Switch to View");
+            }
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -162,15 +195,30 @@ public abstract class BaseDocumentLayoutActivity extends BaseNuxeoActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case MNU_SWITCH_EDIT:
-            restart(MODE, LayoutMode.EDIT);
-            return true;
-        case MNU_SWITCH_VIEW:
-            restart(MODE, LayoutMode.VIEW);
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
-        }
+    	if (callingIntent.getBooleanExtra(BaseDocumentLayoutActivity.FIRST_CALL, true) == false)
+    	{
+    		finish();
+    	} else {
+    	
+	        switch (item.getItemId()) {
+	        case MNU_SWITCH_EDIT:
+//	            restart(MODE, LayoutMode.EDIT);
+	            Intent editIntent = new Intent(new Intent(this, this.getClass())
+	        	.putExtra(BaseDocumentLayoutActivity.DOCUMENT, currentDocument)
+	        	.putExtra(BaseDocumentLayoutActivity.MODE, LayoutMode.EDIT)
+	        	.putExtra(BaseDocumentLayoutActivity.FIRST_CALL, false));
+	        startActivityForResult(editIntent, BaseDocumentsListActivity.ACTION_EDIT_DOCUMENT);
+	            return true;
+	        case MNU_SWITCH_VIEW:
+	//            restart(MODE, LayoutMode.VIEW);
+	        	Intent viewIntent = new Intent(new Intent(this, this.getClass())
+	        	.putExtra(BaseDocumentLayoutActivity.DOCUMENT, getCurrentDocument())
+	        	.putExtra(BaseDocumentLayoutActivity.MODE, LayoutMode.VIEW)
+	        	.putExtra(BaseDocumentLayoutActivity.FIRST_CALL, false));
+	        startActivityForResult(viewIntent, BaseDocumentsListActivity.ACTION_EDIT_DOCUMENT);
+	            return true;
+	        }
+    	}
+    	return super.onOptionsItemSelected(item);
     }
 }
