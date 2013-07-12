@@ -2,16 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/itemServerSettings"
-        android:enabled="true"
-        android:title="Server settings"
-        android:titleCondensed="Settings">
-    </item>
-    <item
         android:id="@+id/itemNetworkConfig"
         android:enabled="true"
         android:title="Network and Cache"
+        android:showAsAction="ifRoom"
         android:titleCondensed="Network">
+    </item>
+    <item
+        android:id="@+id/itemServerSettings"
+        android:enabled="true"
+        android:title="Server settings"
+        android:showAsAction="ifRoom"
+        android:titleCondensed="Settings">
     </item>
 
 </menu>

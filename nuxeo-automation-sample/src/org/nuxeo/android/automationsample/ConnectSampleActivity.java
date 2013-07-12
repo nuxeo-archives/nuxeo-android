@@ -24,14 +24,14 @@ import org.nuxeo.android.activities.BaseNuxeoActivity;
 
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class ConnectSampleActivity extends BaseNuxeoActivity {
 
     protected TextView statusText;
 
-    protected Spinner spinner;
+    protected ListView listView;
 
     protected List<String> opList = new ArrayList<String>();
 
@@ -42,9 +42,7 @@ public class ConnectSampleActivity extends BaseNuxeoActivity {
 
         statusText = (TextView) findViewById(R.id.statusText);
         statusText.setText("Connecting ...");
-
-        spinner = (Spinner) findViewById(R.id.opList);
-        spinner.setVisibility(Spinner.INVISIBLE);
+        listView = (ListView)findViewById(R.id.listView);
     }
 
     @Override
@@ -56,18 +54,16 @@ public class ConnectSampleActivity extends BaseNuxeoActivity {
     protected Object retrieveNuxeoData() throws Exception {
         opList = new ArrayList<String>();
         opList.addAll(getNuxeoSession().getOperations().keySet());
-        return true; // warn : returning null will disable the callback !!!
+        return true; // warn : returning null will disable the callba	ck !!!
     }
 
     @Override
     protected void onNuxeoDataRetrieved(Object data) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, opList);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setVisibility(0);
-        statusText.setText("Connected : " + opList.size()
-                + "operations available");
+    	ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, opList);
+    	listView.setAdapter(adapter);
+      statusText.setText("Connected : " + opList.size()
+      + "operations available");
     }
 
 }
