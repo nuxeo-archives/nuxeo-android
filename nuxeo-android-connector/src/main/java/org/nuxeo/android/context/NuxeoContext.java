@@ -111,7 +111,7 @@ public class NuxeoContext extends BroadcastReceiver {
         return getSession().getAdapter(DocumentManager.class);
     }
 
-    protected void onConfigChanged() {
+    public void onConfigChanged() {
         getNuxeoClient().dropCurrentSession();
         nuxeoClient = null;
     }
