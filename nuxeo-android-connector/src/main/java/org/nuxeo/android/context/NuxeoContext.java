@@ -113,6 +113,7 @@ public class NuxeoContext extends BroadcastReceiver {
 
     public void onConfigChanged() {
         getNuxeoClient().dropCurrentSession();
+        nuxeoClient.shutdown();
         nuxeoClient = null;
     }
 
