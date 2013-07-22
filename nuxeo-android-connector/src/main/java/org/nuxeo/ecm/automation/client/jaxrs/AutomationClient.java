@@ -125,4 +125,10 @@ public interface AutomationClient {
      */
     void setBasicAuth(String username, String password);
 
+    /**
+     * @since 2.0
+     * @return true if {@link #shutdown()} has been called
+     */
+    boolean isShutdown();
+
 }

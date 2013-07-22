@@ -32,6 +32,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.util.Log;
 
 /**
  *
@@ -39,6 +40,8 @@ import android.net.ConnectivityManager;
  *
  */
 public class NuxeoContext extends BroadcastReceiver {
+
+    private static final String TAG = "NuxeoContext";
 
     protected static NuxeoContext instance = null;
 
@@ -53,6 +56,8 @@ public class NuxeoContext extends BroadcastReceiver {
     protected final Context androidContext;
 
     protected final BlobStoreManager blobStore;
+
+    private boolean shuttingDown;
 
     /**
      * @param nxContextProvider the application context. Must implement
@@ -111,10 +116,16 @@ public class NuxeoContext extends BroadcastReceiver {
         return getSession().getAdapter(DocumentManager.class);
     }
 
-    public void onConfigChanged() {
-        getNuxeoClient().dropCurrentSession();
-        nuxeoClient.shutdown();
-        nuxeoClient = null;
+    public synchronized void onConfigChanged() {
+        Log.d(TAG, "onConfigChanged");
+        if (nuxeoClient != null) {
+            Log.d(TAG, "shutdown " + nuxeoClient);
+            shuttingDown = true;
+            nuxeoClient.dropCurrentSession();
+            nuxeoClient.shutdown();
+            nuxeoClient = null;
+            notify();
+        }
     }
 
     protected void onConnectivityChanged() {
@@ -132,11 +143,20 @@ public class NuxeoContext extends BroadcastReceiver {
         }
     }
 
-    public AndroidAutomationClient getNuxeoClient() {
-        if (nuxeoClient == null) {
+    public synchronized AndroidAutomationClient getNuxeoClient() {
+        while (nuxeoClient != null && shuttingDown) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                // Do nothing
+            }
+        }
+        if (nuxeoClient == null || nuxeoClient.isShutdown()) {
+            shuttingDown = false;
             nuxeoClient = new AndroidAutomationClient(
                     serverConfig.getAutomationUrl(), androidContext,
                     sqlStateManager, blobStore, networkStatus, serverConfig);
+            Log.d(TAG, "new " + nuxeoClient);
         }
         return nuxeoClient;
     }

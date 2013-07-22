@@ -63,4 +63,9 @@ public class HttpAutomationClient extends AsyncAutomationClient {
     protected Connector newConnector() {
         return new HttpConnector(http);
     }
+
+    @Override
+    public boolean isShutdown() {
+        return http == null || super.isShutdown();
+    }
 }

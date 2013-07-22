@@ -247,11 +247,13 @@ public class AndroidAutomationClient extends HttpAutomationClient {
     }
 
     /**
+     * Given username and password are not used!
+     *
      * @return A {@link CachedSession} if available, else a
      *         {@link DefaultSession}
      * @throws NotAvailableOffline If no data in cache and the required online
      *             session fails
-     * @deprecated
+     * @deprecated Since 2.0.
      */
     @Deprecated
     @Override
@@ -319,5 +321,11 @@ public class AndroidAutomationClient extends HttpAutomationClient {
      */
     protected Session createSession() {
         return super.getSession();
+    }
+
+    @Override
+    public String toString() {
+        return "URL=" + url + " network usable="
+                + networkStatus.canUseNetwork();
     }
 }

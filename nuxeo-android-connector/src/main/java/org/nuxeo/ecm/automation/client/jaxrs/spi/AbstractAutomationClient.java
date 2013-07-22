@@ -123,6 +123,11 @@ public abstract class AbstractAutomationClient implements AutomationClient {
     }
 
     @Override
+    public boolean isShutdown() {
+        return url == null;
+    }
+
+    @Override
     public Session getSession() {
         Connector connector = getConnector();
         if (registry == null) { // not yet connected

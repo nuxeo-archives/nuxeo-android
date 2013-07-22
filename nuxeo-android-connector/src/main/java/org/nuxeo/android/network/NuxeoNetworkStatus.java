@@ -30,8 +30,11 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
+import android.util.Log;
 
 public class NuxeoNetworkStatus extends BroadcastReceiver {
+
+    private static final String TAG = "NuxeoNetworkStatus";
 
     protected final NuxeoServerConfig serverConfig;
 
@@ -80,6 +83,8 @@ public class NuxeoNetworkStatus extends BroadcastReceiver {
         if (hasNetwork) {
             networkReachable = true;
             testNuxeoServerReachable();
+        } else {
+            Log.d(TAG, "No network");
         }
     }
 
@@ -100,11 +105,14 @@ public class NuxeoNetworkStatus extends BroadcastReceiver {
     }
 
     public void setNetworkReachable(boolean networkReachable) {
-        this.networkReachable = networkReachable;
-        if (!networkReachable) {
-            setNuxeoServerReachable(false);
-        } else {
+        if (this.networkReachable != networkReachable) {
+            this.networkReachable = networkReachable;
+            if (!networkReachable) {
+                setNuxeoServerReachable(false);
+            }
             notifyChanged();
+            Log.d(TAG, "Connectivity changed: networkReachable="
+                    + networkReachable);
         }
     }
 
@@ -117,8 +125,12 @@ public class NuxeoNetworkStatus extends BroadcastReceiver {
     }
 
     public void setNuxeoServerReachable(boolean nuxeoServerReachable) {
-        this.nuxeoServerReachable = nuxeoServerReachable;
-        notifyChanged();
+        if (this.nuxeoServerReachable != nuxeoServerReachable) {
+            this.nuxeoServerReachable = nuxeoServerReachable;
+            Log.d(TAG, "Connectivity changed: nuxeoServerReachable="
+                    + nuxeoServerReachable);
+            notifyChanged();
+        }
     }
 
     public NuxeoServerConfig getServerConfig() {
@@ -145,6 +157,7 @@ public class NuxeoNetworkStatus extends BroadcastReceiver {
                 return false;
             }
         } catch (Exception e) {
+            Log.e(TAG, "Connection to Nuxeo server failed: " + e.getMessage());
             return false;
         }
     }

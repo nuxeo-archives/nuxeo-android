@@ -137,4 +137,8 @@ public abstract class AsyncAutomationClient extends AbstractAutomationClient {
         async = null;
     }
 
+    @Override
+    public boolean isShutdown() {
+        return async == null || async.isShutdown() || super.isShutdown();
+    }
 }

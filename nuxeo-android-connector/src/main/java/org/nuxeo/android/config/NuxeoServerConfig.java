@@ -32,6 +32,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 public class NuxeoServerConfig implements OnSharedPreferenceChangeListener {
 
@@ -44,6 +45,8 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener {
     public static final String PREF_SERVER_TOKEN = "nuxeo.auth.token";
 
     private static final String PREF_CACHEKEY = null;
+
+    private static final String TAG = "NuxeoServerConfig";
 
     protected Context androidContext;
 
@@ -138,7 +141,7 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener {
         return sharedPrefs;
     }
 
-    protected void setSharedPrefs(SharedPreferences sharedPrefs) {
+    public void setSharedPrefs(SharedPreferences sharedPrefs) {
         this.sharedPrefs = sharedPrefs;
         sharedPrefs.registerOnSharedPreferenceChangeListener(this);
         initFromPrefs();
@@ -159,6 +162,7 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener {
         login = sharedPrefs.getString(PREF_SERVER_LOGIN, login);
         password = sharedPrefs.getString(PREF_SERVER_PASSWORD, password);
         token = sharedPrefs.getString(PREF_SERVER_TOKEN, token);
+        Log.d(TAG, "init url=" + serverBaseUrl);
     }
 
     /**
