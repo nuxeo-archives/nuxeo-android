@@ -43,6 +43,8 @@ import android.util.Log;
  */
 public abstract class AbstractAutomationClient implements AutomationClient {
 
+    private static final String TAG = "AbstractAutomationClient";
+
     protected String url;
 
     protected volatile OperationRegistry registry;
@@ -107,8 +109,9 @@ public abstract class AbstractAutomationClient implements AutomationClient {
     }
 
     protected OperationRegistry connect(Connector connector) {
-        Log.w(this.getClass().getSimpleName(),
+        Log.w(TAG,
                 "Using Synch request to init the automation session");
+        Log.d(TAG, url);
         Request req = new Request(Request.GET, url);
         req.put("Accept", CTYPE_AUTOMATION);
         // TODO handle authorization failure
