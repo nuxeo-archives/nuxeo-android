@@ -59,6 +59,8 @@ public class NuxeoContext extends BroadcastReceiver {
 
     private boolean shuttingDown;
 
+    private NetworkStatusBroadCastReceiver networkStatusBroadCastReceiver;
+
     /**
      * @param nxContextProvider the application context. Must implement
      *            {@link NuxeoContextProvider}
@@ -88,9 +90,10 @@ public class NuxeoContext extends BroadcastReceiver {
                 androidContext,
                 serverConfig,
                 (ConnectivityManager) androidContext.getSystemService(Context.CONNECTIVITY_SERVICE));
-        androidContext.registerReceiver(new NetworkStatusBroadCastReceiver(
-                networkStatus), new IntentFilter(
-                ConnectivityManager.CONNECTIVITY_ACTION));
+        networkStatusBroadCastReceiver = new NetworkStatusBroadCastReceiver(
+                networkStatus);
+        androidContext.registerReceiver(networkStatusBroadCastReceiver,
+                new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         // register this as listener for global config changes
         IntentFilter filter = new IntentFilter();
@@ -146,7 +149,7 @@ public class NuxeoContext extends BroadcastReceiver {
     public synchronized AndroidAutomationClient getNuxeoClient() {
         while (nuxeoClient != null && shuttingDown) {
             try {
-                wait();
+                wait(1000);
             } catch (InterruptedException e) {
                 // Do nothing
             }
@@ -156,8 +159,21 @@ public class NuxeoContext extends BroadcastReceiver {
             nuxeoClient = new AndroidAutomationClient(
                     serverConfig.getAutomationUrl(), androidContext,
                     sqlStateManager, blobStore, networkStatus, serverConfig);
-            Log.d(TAG, "new " + nuxeoClient);
+            Log.i(TAG, "new Nuxeo client " + nuxeoClient);
+            Log.d(TAG, "Call stack: ", new Exception());
         }
         return nuxeoClient;
+    }
+
+    /**
+     * @since 2.0
+     */
+    public void shutdown() {
+        onConfigChanged();
+        try {
+            androidContext.unregisterReceiver(networkStatusBroadCastReceiver);
+        } catch (IllegalArgumentException e) {
+            // Ignore
+        }
     }
 }
