@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 public class NetworkStatusBroadCastReceiver extends BroadcastReceiver {
@@ -57,14 +58,20 @@ public class NetworkStatusBroadCastReceiver extends BroadcastReceiver {
                     networkStatus.setNetworkReachable(false);
                 } else {
                     networkStatus.setNetworkReachable(true);
-                    networkStatus.testNuxeoServerReachable();
+                    new AsyncTask<Void, Void, Void>() {
+
+                        @Override
+                        protected Void doInBackground(Void... params) {
+                            networkStatus.testNuxeoServerReachable();
+                            return null;
+                        }
+                    };
                 }
             }
         }
     }
 
     protected boolean isNetworkUsable(NetworkInfo networkInfo) {
-
         int type = networkInfo.getType();
         if (type == ConnectivityManager.TYPE_MOBILE_MMS)
             return false;

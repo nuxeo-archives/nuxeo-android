@@ -158,6 +158,7 @@ public class NuxeoNetworkStatus extends BroadcastReceiver {
             }
         } catch (Exception e) {
             Log.e(TAG, "Connection to Nuxeo server failed: " + e.getMessage());
+            Log.d(TAG, e.getMessage(), e);
             return false;
         }
     }
