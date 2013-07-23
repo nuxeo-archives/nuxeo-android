@@ -152,8 +152,6 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener {
         if (PREF_SERVER_LOGIN.equals(key) || PREF_SERVER_PASSWORD.equals(key)
                 || PREF_SERVER_URL.equals(key) || PREF_SERVER_TOKEN.equals(key)) {
             initFromPrefs();
-            androidContext.sendBroadcast(new Intent(
-                    NuxeoBroadcastMessages.NUXEO_SETTINGS_CHANGED));
         }
     }
 
@@ -163,6 +161,8 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener {
         password = sharedPrefs.getString(PREF_SERVER_PASSWORD, password);
         token = sharedPrefs.getString(PREF_SERVER_TOKEN, token);
         Log.d(TAG, "init url=" + serverBaseUrl);
+        androidContext.sendBroadcast(new Intent(
+                NuxeoBroadcastMessages.NUXEO_SETTINGS_CHANGED));
     }
 
     /**
