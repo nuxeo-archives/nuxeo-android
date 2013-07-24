@@ -66,7 +66,7 @@ public class AndroidAutomationClient extends HttpAutomationClient {
 
     protected final DeferredUpdateManager deferredUpdatetManager;
 
-    protected final TransientStateManager transientStateManager;
+    protected final AndroidTransientStateManager transientStateManager;
 
     protected final NuxeoNetworkStatus networkStatus;
 
@@ -327,5 +327,15 @@ public class AndroidAutomationClient extends HttpAutomationClient {
     public String toString() {
         return "URL=" + url + " network usable="
                 + networkStatus.canUseNetwork();
+    }
+
+    @Override
+    public synchronized void shutdown() {
+        super.shutdown();
+        try {
+            androidContext.unregisterReceiver(transientStateManager);
+        } catch (IllegalArgumentException e) {
+            // Ignore
+        }
     }
 }
