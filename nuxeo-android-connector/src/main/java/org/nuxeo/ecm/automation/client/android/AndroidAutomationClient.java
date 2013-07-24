@@ -62,6 +62,8 @@ import android.net.http.AndroidHttpClient;
  */
 public class AndroidAutomationClient extends HttpAutomationClient {
 
+    private static final String TAG = "AndroidAutomationClient";
+
     protected final ResponseCacheManager responseCacheManager;
 
     protected final DeferredUpdateManager deferredUpdatetManager;
@@ -106,9 +108,13 @@ public class AndroidAutomationClient extends HttpAutomationClient {
             SQLStateManager sqlStateManager, BlobStoreManager blobStoreManager,
             NuxeoNetworkStatus offlineSettings, NuxeoServerConfig serverConfig) {
         super(url);
+        // Replace HTTP client from mother class
+        http.getConnectionManager().shutdown();
         // this.http = new DefaultHttpClient(new ThreadSafeClientConnManager(new
         // BasicHttpParams(), new SchemeRegistry()), new BasicHttpParams());
-        this.http = AndroidHttpClient.newInstance("Nuxeo Android Client", null);
+        this.http = AndroidHttpClient.newInstance("Nuxeo Android Client",
+                androidContext);
+
         // avoid problems when sever returns a http code 100 ...
         HttpProtocolParams.setUseExpectContinue(http.getParams(), false);
 
@@ -332,6 +338,9 @@ public class AndroidAutomationClient extends HttpAutomationClient {
     @Override
     public synchronized void shutdown() {
         super.shutdown();
+        if (http != null) {
+            ((AndroidHttpClient) http).close();
+        }
         try {
             androidContext.unregisterReceiver(transientStateManager);
         } catch (IllegalArgumentException e) {
