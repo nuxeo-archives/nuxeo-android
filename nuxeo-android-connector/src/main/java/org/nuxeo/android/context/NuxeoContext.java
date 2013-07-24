@@ -79,13 +79,20 @@ public class NuxeoContext extends BroadcastReceiver {
     }
 
     public NuxeoContext(Context androidContext) {
+        this(androidContext, new NuxeoServerConfig(androidContext));
+    }
+
+    /**
+     * @since 2.0
+     */
+    public NuxeoContext(Context androidContext, NuxeoServerConfig nxConfig) {
         this.androidContext = androidContext;
 
         // persistence managers
         sqlStateManager = new SQLStateManager(androidContext);
         blobStore = new BlobStoreManager(androidContext);
         // config related services
-        serverConfig = new NuxeoServerConfig(androidContext);
+        serverConfig = nxConfig;
         networkStatus = new NuxeoNetworkStatus(
                 androidContext,
                 serverConfig,
@@ -149,7 +156,7 @@ public class NuxeoContext extends BroadcastReceiver {
     public synchronized AndroidAutomationClient getNuxeoClient() {
         while (nuxeoClient != null && shuttingDown) {
             try {
-                wait(1000);
+                wait(100);
             } catch (InterruptedException e) {
                 // Do nothing
             }
@@ -169,8 +176,10 @@ public class NuxeoContext extends BroadcastReceiver {
      * @since 2.0
      */
     public void shutdown() {
-        onConfigChanged();
         try {
+            onConfigChanged();
+            androidContext.unregisterReceiver(this);
+            androidContext.unregisterReceiver(networkStatus);
             androidContext.unregisterReceiver(networkStatusBroadCastReceiver);
         } catch (IllegalArgumentException e) {
             // Ignore

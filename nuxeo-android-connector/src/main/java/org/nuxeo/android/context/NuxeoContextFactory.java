@@ -17,6 +17,8 @@
 
 package org.nuxeo.android.context;
 
+import org.nuxeo.android.config.NuxeoServerConfig;
+
 import android.content.Context;
 
 public class NuxeoContextFactory {
@@ -26,6 +28,17 @@ public class NuxeoContextFactory {
     public static NuxeoContext getNuxeoContext(Context context) {
         if (nuxeoContext == null) {
             nuxeoContext = new NuxeoContext(context);
+        }
+        return nuxeoContext;
+    }
+
+    /**
+     * @since 2.0
+     */
+    public static NuxeoContext getNuxeoContext(Context context,
+            NuxeoServerConfig nxConfig) {
+        if (nuxeoContext == null) {
+            nuxeoContext = new NuxeoContext(context, nxConfig);
         }
         return nuxeoContext;
     }
