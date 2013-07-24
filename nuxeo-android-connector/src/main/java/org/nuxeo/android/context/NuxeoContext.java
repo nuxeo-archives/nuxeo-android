@@ -176,6 +176,7 @@ public class NuxeoContext extends BroadcastReceiver {
      * @since 2.0
      */
     public void shutdown() {
+        Log.d(TAG, "context shutdown", new Exception());
         try {
             onConfigChanged();
             androidContext.unregisterReceiver(this);
