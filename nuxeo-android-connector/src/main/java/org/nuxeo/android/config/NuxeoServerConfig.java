@@ -44,7 +44,7 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener {
 
     public static final String PREF_SERVER_TOKEN = "nuxeo.auth.token";
 
-    private static final String PREF_CACHEKEY = null;
+    private static final String PREF_CACHEKEY = "nuxeo.cache.key";
 
     private static final String TAG = "NuxeoServerConfig";
 
@@ -59,7 +59,7 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener {
 
     protected String password = "Administrator";
 
-    protected String token = null;
+    protected String token = "";
 
     public NuxeoServerConfig(Context androidContext) {
         this.androidContext = androidContext;
