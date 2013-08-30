@@ -51,11 +51,11 @@
         android:layout_height="wrap_content"
         android:text="Using Content Provider" >
     </Button>
-
-    <Spinner
-        android:id="@+id/opList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </Spinner>
-
+    
+    <Button
+        android:id="@+id/nuxFragBtn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Fragments tests" >
+    </Button>
 </LinearLayout>

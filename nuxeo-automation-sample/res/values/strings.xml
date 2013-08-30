@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="hello">Welcome to Automation Sample Application</string>
     <string name="app_name">Nuxeo Automation Samples</string>
+    <string name="title_activity_tests_frag">TestsFrag</string>
+
 </resources>

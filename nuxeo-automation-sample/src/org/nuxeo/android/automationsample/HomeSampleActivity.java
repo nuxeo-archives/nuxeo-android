@@ -23,6 +23,7 @@ import org.nuxeo.android.automation.NetworkSettingsActivity;
 import org.nuxeo.android.automation.ServerSettingsActivity;
 import org.nuxeo.android.config.NuxeoServerConfig;
 import org.nuxeo.android.context.NuxeoContext;
+import org.nuxeo.android.testsfrag.TestsFragActivity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -35,7 +36,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Spinner;
+import android.widget.Toast;
 
 public class HomeSampleActivity extends Activity implements
         View.OnClickListener {
@@ -51,8 +52,8 @@ public class HomeSampleActivity extends Activity implements
     protected Button contentProviderBtn;
 
     protected Button browseBtn;
-
-    protected Spinner spinner;
+    
+    protected Button testFrag;
 
     protected List<String> opList;
 
@@ -78,9 +79,9 @@ public class HomeSampleActivity extends Activity implements
 
         contentProviderBtn = (Button) findViewById(R.id.contentProviderBtn);
         contentProviderBtn.setOnClickListener(this);
-
-        spinner = (Spinner) findViewById(R.id.opList);
-        spinner.setVisibility(4);
+        
+        testFrag = (Button)findViewById(R.id.nuxFragBtn);
+        testFrag.setOnClickListener(this);
     }
 
     @Override
@@ -92,14 +93,18 @@ public class HomeSampleActivity extends Activity implements
             startActivity(new Intent(getApplicationContext(),
                     SimpleFetchSampleActivty.class));
         } else if (view == contentProviderBtn) {
-            startActivity(new Intent(getApplicationContext(),
-                    ContentProviderSampleActivity.class));
+//            startActivity(new Intent(getApplicationContext(),
+//                    ContentProviderSampleActivity.class));
+        	Toast.makeText(this, "not implemented", Toast.LENGTH_LONG).show();
         } else if (view == docListBtn) {
             startActivity(new Intent(getApplicationContext(),
                     SimpleDocumentsListSampleActivity.class));
         } else if (view == browseBtn) {
             startActivity(new Intent(getApplicationContext(),
                     GetChildrenSampleActivity.class));
+        } else if (view == testFrag) {
+            startActivity(new Intent(getApplicationContext(),
+            		TestsFragActivity.class));
         } else if (view == docProviderBtn) {
             startActivity(new Intent(getApplicationContext(),
                     DocumentProviderSampleActivity.class));

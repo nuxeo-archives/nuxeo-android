@@ -18,7 +18,7 @@
         android:theme="@style/AppBaseTheme"
         android:uiOptions="splitActionBarWhenNarrow" >
         <activity
-            android:name="HomeSampleActivity"
+            android:name="org.nuxeo.android.automationsample.HomeSampleActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,35 +27,35 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="ConnectSampleActivity"
+            android:name="org.nuxeo.android.automationsample.ConnectSampleActivity"
             android:label="Connect to Nuxeo Server" >
         </activity>
         <activity
-            android:name="SimpleFetchSampleActivty"
+            android:name="org.nuxeo.android.automationsample.SimpleFetchSampleActivty"
             android:label="Simple Data retrieval" >
         </activity>
         <activity
-            android:name="SimpleDocumentsListSampleActivity"
+            android:name="org.nuxeo.android.automationsample.SimpleDocumentsListSampleActivity"
             android:label="Sample for using Document Lists" >
         </activity>
         <activity
-            android:name="GetChildrenSampleActivity"
+            android:name="org.nuxeo.android.automationsample.GetChildrenSampleActivity"
             android:label="Browse the repository" >
         </activity>
         <activity
-            android:name="DocumentProviderSampleActivity"
+            android:name="org.nuxeo.android.automationsample.DocumentProviderSampleActivity"
             android:label="Sample for DocumentProviders" >
         </activity>
         <activity
-            android:name="DocumentProviderViewActivity"
+            android:name="org.nuxeo.android.automationsample.DocumentProviderViewActivity"
             android:label="Browse a DocumentProvider" >
         </activity>
         <activity
-            android:name="ContentProviderSampleActivity"
+            android:name="org.nuxeo.android.automationsample.ContentProviderSampleActivity"
             android:label="Cursor sample" >
         </activity>
         <activity
-            android:name="DocumentLayoutActivity"
+            android:name="org.nuxeo.android.automationsample.DocumentLayoutActivity"
             android:label="CreateEditActivity" >
         </activity>
         <activity
@@ -67,13 +67,18 @@
             android:label="Settings" >
         </activity>
         <activity
-            android:name="HistorySampleActivity"
+            android:name="org.nuxeo.android.automationsample.HistorySampleActivity"
             android:label="Document History" >
         </activity>
 
     <provider android:name="org.nuxeo.android.contentprovider.NuxeoDocumentContentProvider"
               android:authorities="nxsample">
     </provider>
+
+        <activity
+            android:name="org.nuxeo.android.testsfrag.TestsFragActivity"
+            android:label="@string/title_activity_tests_frag" >
+        </activity>
     </application>
 
 </manifest>
