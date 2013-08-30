@@ -86,9 +86,6 @@ public abstract class BaseDocumentLayoutActivity extends BaseNuxeoActivity {
     protected void buildLayout() {
         layout = getAutomationClient().getLayoutService().getLayout(this,
                 getCurrentDocument(), getLayoutContainer(), getMode());
-        // layout =
-        // getAutomationClient().getLayoutService().parseLayoutDefinition(StaticLayouts.STUDIO_LAYOUT,
-        // this, getCurrentDocument(), getLayoutContainer(), getMode());
     }
 
     protected NuxeoLayout getLayout() {
@@ -153,6 +150,7 @@ public abstract class BaseDocumentLayoutActivity extends BaseNuxeoActivity {
         if (getLayout() != null) {
             layout.onActivityResult(requestCode, resultCode, data);
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     protected void saveDocument() {

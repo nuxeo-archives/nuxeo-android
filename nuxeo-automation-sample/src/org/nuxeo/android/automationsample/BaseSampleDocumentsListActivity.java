@@ -46,9 +46,7 @@ public abstract class BaseSampleDocumentsListActivity extends
 
     @Override
     protected Object retrieveNuxeoData() throws Exception {
-        // fetch User's home
         userHome = getNuxeoContext().getDocumentManager().getUserHome();
-        // let base class fetch the list
         return super.retrieveNuxeoData();
     }
 

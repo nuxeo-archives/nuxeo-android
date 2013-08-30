@@ -37,11 +37,9 @@ public class DocumentLayoutActivity extends BaseDocumentLayoutActivity
 
     protected Button saveBtn;
 
-    protected Button cancelBtn;
-
     @Override
     protected ViewGroup getLayoutContainer() {
-        return (ScrollView) findViewById(R.id.layoutContainer);
+        return (ViewGroup) findViewById(R.id.layoutContainer);
     }
 
     @Override
@@ -51,10 +49,6 @@ public class DocumentLayoutActivity extends BaseDocumentLayoutActivity
         setContentView(R.layout.createeditlayout);
         saveBtn = (Button) findViewById(R.id.updateDocument);
         saveBtn.setOnClickListener(this);
-
-        cancelBtn = (Button) findViewById(R.id.cancelDocument);
-        cancelBtn.setOnClickListener(this);
-
         buildLayout();
     }
 
@@ -72,8 +66,6 @@ public class DocumentLayoutActivity extends BaseDocumentLayoutActivity
     public void onClick(View view) {
         if (view == saveBtn) {
             saveDocument();
-        } else if (view == cancelBtn) {
-            cancelUpdate();
         }
     }
 
@@ -97,7 +89,8 @@ public class DocumentLayoutActivity extends BaseDocumentLayoutActivity
     @Override
     protected void onNuxeoDataRetrieved(Object data) {
     	super.onNuxeoDataRetrieved(data);
-
+    	TextView txtView = (TextView)findViewById(R.id.loading_label);
+    	txtView.setVisibility(View.GONE);
     	if(!isEditMode() && !isCreateMode()) {
     		if (currentDocument.getType().equals("Picture"))
     		{

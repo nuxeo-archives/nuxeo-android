@@ -1,25 +1,9 @@
-/*
- * (C) Copyright 2011 Nuxeo SAS (http://nuxeo.com/) and contributors.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Lesser General Public License
- * (LGPL) version 2.1 which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/lgpl.html
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * Contributors:
- *     Nuxeo - initial API and implementation
- */
-
-package org.nuxeo.android.activities;
+package org.nuxeo.android.fragments;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import org.nuxeo.android.activities.BaseDocumentLayoutActivity;
 import org.nuxeo.android.documentprovider.LazyDocumentsList;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.android.layout.LayoutMode;
@@ -27,9 +11,11 @@ import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,15 +26,15 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public abstract class BaseDocumentsListActivity extends BaseListActivity {
+public abstract class BaseDocumentsListFragment extends BaseListFragment {
 
-    protected static final int ACTION_EDIT_DOCUMENT = 0;
+    public static final int ACTION_EDIT_DOCUMENT = 0;
 
     protected static final int ACTION_CREATE_DOCUMENT = 1;
 
     protected static final int MNU_NEW_LISTITEM = 10;
 
-    protected static final int MNU_VIEW_LIST_EXTERNAL = 1;
+//    protected static final int MNU_VIEW_LIST_EXTERNAL = 1;
 
     protected static final int MNU_REFRESH = 2;
 
@@ -65,11 +51,10 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
     protected LazyUpdatableDocumentsList documentsList;
 
     protected LinkedHashMap<String, String> allowedDocumentTypes;
-
-    public BaseDocumentsListActivity() {
-        super();
+    
+    public BaseDocumentsListFragment() {
     }
-
+    
     // Executed on the background thread to avoid freezing the UI
     @Override
     protected Object retrieveNuxeoData() throws Exception {
@@ -84,6 +69,7 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
     protected void forceRefresh() {
         refresh = true;
     }
+    
 
     // Called on the UIThread when Nuxeo data has been retrieved
     @Override
@@ -95,26 +81,8 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
             displayDocumentList(listView, documentsList);
         }
     }
-
-    protected abstract LazyUpdatableDocumentsList fetchDocumentsList(
-            byte cacheParam) throws Exception;
-
-    protected abstract void displayDocumentList(ListView listView,
-            LazyDocumentsList documentsList);
-
-    protected abstract Document initNewDocument(String type);
-
-    protected abstract Class<? extends BaseDocumentLayoutActivity> getEditActivityClass();
-
-    protected void onDocumentCreate(Document newDocument) {
-        documentsList.createDocument(newDocument);
-    }
-
-    protected void onDocumentUpdate(Document editedDocument) {
-        documentsList.updateDocument(editedDocument);
-    }
-
-    protected void doRefresh() {
+    
+    public void doRefresh() {
         if (documentsList != null) {
             documentsList.refreshAll();
         } else {
@@ -124,6 +92,38 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 
     protected LazyDocumentsList getDocumentsList() {
         return documentsList;
+    }
+
+    @Override
+    public boolean isReady() {
+        if (super.isReady()) {
+            if (documentsList != null) {
+                return documentsList.getLoadingPagesCount() == 0
+                        && documentsList.getLoadedPageCount() > 0;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+    
+    protected abstract LazyUpdatableDocumentsList fetchDocumentsList(
+            byte cacheParam) throws Exception;
+
+    protected abstract void displayDocumentList(ListView listView,
+            LazyDocumentsList documentsList);
+
+    protected abstract Document initNewDocument(String type);
+
+    protected abstract Class<? extends BaseDocLayoutFragAct> getEditActivityClass();
+
+    protected void onDocumentCreate(Document newDocument) {
+        documentsList.createDocument(newDocument);
+    }
+
+    public void onDocumentUpdate(Document editedDocument) {
+        documentsList.updateDocument(editedDocument);
     }
 
     protected Document getContextMenuDocument(int selectedPosition) {
@@ -149,50 +149,6 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
         }
     }
 
-    protected void populateMenu(Menu menu) {
-    	if (Build.VERSION.SDK_INT >= 11)
-    	{
-    		LinkedHashMap<String, String> types = getDocTypesForCreation();
-            if (types.size() > 0) {
-                if (types.size() == 1) {
-                    menu.add(Menu.NONE, MNU_NEW_LISTITEM, 0, "New Item").
-            		setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-                } else {
-                    SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_NEW_LISTITEM,
-                            0, "New item");
-                    subMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-                    int idx = 1;
-                    for (String key : types.keySet()) {
-                        subMenu.add(Menu.NONE, MNU_NEW_LISTITEM + idx, idx,
-                                types.get(key));
-                        idx++;
-                    }
-                }
-            }
-            // menu.add(Menu.NONE, MNU_VIEW_LIST_EXTERNAL, 1, "External View");
-            menu.add(Menu.NONE, MNU_REFRESH, 2, "Refresh").
-    		setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-    	} else {
-    		LinkedHashMap<String, String> types = getDocTypesForCreation();
-            if (types.size() > 0) {
-                if (types.size() == 1) {
-                    menu.add(Menu.NONE, MNU_NEW_LISTITEM, 0, "New Item");
-                } else {
-                    SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_NEW_LISTITEM,
-                            0, "New item");
-                    int idx = 1;
-                    for (String key : types.keySet()) {
-                        subMenu.add(Menu.NONE, MNU_NEW_LISTITEM + idx, idx,
-                                types.get(key));
-                        idx++;
-                    }
-                }
-            }
-            // menu.add(Menu.NONE, MNU_VIEW_LIST_EXTERNAL, 1, "External View");
-            menu.add(Menu.NONE, MNU_REFRESH, 2, "Refresh");
-    	}
-    }
-
     // Activity menu handling
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -200,29 +156,29 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
         case MNU_REFRESH:
             doRefresh();
             break;
-        case MNU_VIEW_LIST_EXTERNAL:
-            if (getDocumentsList() != null) {
-                Uri contentUri = getDocumentsList().getContentUri();
-                if (contentUri != null) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(contentUri);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("windowTitle", "Nuxeo Media Browser");
-                    try {
-                        startActivity(intent);
-                    } catch (android.content.ActivityNotFoundException e) {
-                        Toast.makeText(
-                                this,
-                                "No Application Available to View this uri "
-                                        + contentUri.toString(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(this, "No Uri defined for this list",
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-            break;
+//        case MNU_VIEW_LIST_EXTERNAL:
+//            if (getDocumentsList() != null) {
+//                Uri contentUri = getDocumentsList().getContentUri();
+//                if (contentUri != null) {
+//                    Intent intent = new Intent(Intent.ACTION_VIEW);
+//                    intent.setData(contentUri);
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    intent.putExtra("windowTitle", "Nuxeo Media Browser");
+//                    try {
+//                        startActivity(intent);
+//                    } catch (android.content.ActivityNotFoundException e) {
+//                        Toast.makeText(
+//                        		getActivity().getBaseContext(),
+//                                "No Application Available to View this uri "
+//                                        + contentUri.toString(),
+//                                Toast.LENGTH_SHORT).show();
+//                    }
+//                } else {
+//                    Toast.makeText(getActivity().getBaseContext(), "No Uri defined for this list",
+//                            Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//            break;
         default:
             if (getEditActivityClass() == null) {
                 return true;
@@ -236,7 +192,7 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
                     Document newDoc = initNewDocument(type);
                     if (newDoc != null) {
                         startActivityForResult(
-                                new Intent(this, getEditActivityClass()).putExtra(
+                                new Intent(getActivity().getBaseContext(), getEditActivityClass()).putExtra(
                                         BaseDocumentLayoutActivity.DOCUMENT,
                                         newDoc).putExtra(
                                         BaseDocumentLayoutActivity.MODE,
@@ -251,7 +207,7 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
                     Document newDoc = initNewDocument(getDocTypesForCreation().keySet().iterator().next());
                     if (newDoc != null) {
                         startActivityForResult(
-                                new Intent(this, getEditActivityClass()).putExtra(
+                                new Intent(getActivity().getBaseContext(), getEditActivityClass()).putExtra(
                                         BaseDocumentLayoutActivity.DOCUMENT,
                                         newDoc).putExtra(
                                         BaseDocumentLayoutActivity.MODE,
@@ -266,27 +222,47 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ACTION_EDIT_DOCUMENT && resultCode == RESULT_OK) {
-            if (data.hasExtra(BaseDocumentLayoutActivity.DOCUMENT)) {
-                Document editedDocument = (Document) data.getExtras().get(
-                        BaseDocumentLayoutActivity.DOCUMENT);
-                onDocumentUpdate(editedDocument);
-            	doRefresh();
-                
-            }
-        } else if (requestCode == ACTION_CREATE_DOCUMENT
-                && resultCode == RESULT_OK) {
-            if (data.hasExtra(BaseDocumentLayoutActivity.DOCUMENT)) {
-                Document newDocument = (Document) data.getExtras().get(
-                        BaseDocumentLayoutActivity.DOCUMENT);
-                onDocumentCreate(newDocument);
-            	doRefresh();
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
+//    @Override
+//	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == ACTION_EDIT_DOCUMENT && resultCode == RESULT_OK) {
+//            if (data.hasExtra(BaseDocumentLayoutActivity.DOCUMENT)) {
+//                Document editedDocument = (Document) data.getExtras().get(
+//                        BaseDocumentLayoutActivity.DOCUMENT);
+//                onDocumentUpdate(editedDocument);
+//            	doRefresh();
+//                
+//            }
+//        } else if (requestCode == ACTION_CREATE_DOCUMENT
+//                && resultCode == RESULT_OK) {
+//            if (data.hasExtra(BaseDocumentLayoutActivity.DOCUMENT)) {
+//                Document newDocument = (Document) data.getExtras().get(
+//                        BaseDocumentLayoutActivity.DOCUMENT);
+//                onDocumentCreate(newDocument);
+//            	doRefresh();
+//            }
+//        }
+//    }
+    
+    public interface Callback {
+    	void viewDocument(Document doc);
+    	void editDocument(Document doc);
+		void viewDocument(LazyUpdatableDocumentsList documentsList, int listItemPosition);
     }
+    
+    protected Callback mCallback;
+    
+    @Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+
+		// Activities containing this fragment must implement its callbacks.
+		if (!(activity instanceof Callback)) {
+			throw new IllegalStateException(
+					"Activity must implement fragment's callbacks.");
+		}
+
+		mCallback = (Callback) activity;
+	}
 
     // Content menu handling
     @Override
@@ -298,30 +274,24 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 
         if (item.getItemId() == CTXMNU_VIEW_DOCUMENT) {
             if (getEditActivityClass() == null) {
-                Toast.makeText(this, "No View activity defined ",
+                Toast.makeText(getActivity().getBaseContext(), "No View activity defined ",
                         Toast.LENGTH_SHORT).show();
                 return true;
             }
-            startActivity(new Intent(this, getEditActivityClass()).putExtra(
-                    BaseDocumentLayoutActivity.DOCUMENT, doc).putExtra(
-                    BaseDocumentLayoutActivity.MODE, LayoutMode.VIEW));
+            mCallback.viewDocument(doc);
             return true;
         } else if (item.getItemId() == CTXMNU_EDIT_DOCUMENT) {
             if (getEditActivityClass() == null) {
-                Toast.makeText(this, "No Edit activity defined ",
+                Toast.makeText(getActivity().getBaseContext(), "No Edit activity defined ",
                         Toast.LENGTH_SHORT).show();
                 return true;
             }
-            startActivityForResult(
-                    new Intent(this, getEditActivityClass()).putExtra(
-                            BaseDocumentLayoutActivity.DOCUMENT, doc).putExtra(
-                            BaseDocumentLayoutActivity.MODE, LayoutMode.EDIT),
-                    ACTION_EDIT_DOCUMENT);
+            mCallback.editDocument(doc);
             return true;
         } else if (item.getItemId() == CTXMNU_VIEW_ATTACHEMENT) {
             Uri blobUri = doc.getBlob();
             if (blobUri == null) {
-                Toast.makeText(this, "No Attachement available ",
+                Toast.makeText(getActivity().getBaseContext(), "No Attachement available ",
                         Toast.LENGTH_SHORT).show();
             } else {
                 startViewerFromBlob(blobUri);
@@ -346,14 +316,38 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
 
     @Override
     protected void onListItemClicked(int listItemPosition) {
-        if (getEditActivityClass() != null) {
-            Document doc = documentsList.getDocument(listItemPosition);
-            Intent intent = new Intent(new Intent(this, getEditActivityClass())
-            	.putExtra(BaseDocumentLayoutActivity.DOCUMENT, doc)
-            	.putExtra(BaseDocumentLayoutActivity.MODE, LayoutMode.VIEW)
-            	.putExtra(BaseDocumentLayoutActivity.FIRST_CALL, true));
-            startActivityForResult(intent, ACTION_EDIT_DOCUMENT);
+		mCallback.viewDocument(documentsList, listItemPosition);
+    }
+    
+    @Override
+	public void onCreate(Bundle savedInstanceState) {
+    	super.onCreate(savedInstanceState);
+    	setHasOptionsMenu(true);
+    }
+    
+    @Override
+    public void onPrepareOptionsMenu(Menu menu){
+    	super.onPrepareOptionsMenu(menu);
+    	menu.clear();
+    	LinkedHashMap<String, String> types = getDocTypesForCreation();
+        if (types.size() > 0) {
+            if (types.size() == 1) {
+                menu.add(Menu.NONE, MNU_NEW_LISTITEM, 0, "New Item").
+        		setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            } else {
+                SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_NEW_LISTITEM,
+                        0, "New item");
+                subMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                int idx = 1;
+                for (String key : types.keySet()) {
+                    subMenu.add(Menu.NONE, MNU_NEW_LISTITEM + idx, idx,
+                            types.get(key));
+                    idx++;
+                }
+            }
         }
+        menu.add(Menu.NONE, MNU_REFRESH, 1, "Refresh").
+		setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
     }
 
     @Override
@@ -373,20 +367,6 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
         menu.add(Menu.NONE, CTXMNU_EDIT_DOCUMENT, 1, "Edit");
         menu.add(Menu.NONE, CTXMNU_VIEW_ATTACHEMENT, 2, "View attachment");
         menu.add(Menu.NONE, CTXMNU_DELETE, 2, "Delete");
-    }
-
-    @Override
-    public boolean isReady() {
-        if (super.isReady()) {
-            if (documentsList != null) {
-                return documentsList.getLoadingPagesCount() == 0
-                        && documentsList.getLoadedPageCount() > 0;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
     }
 
 }

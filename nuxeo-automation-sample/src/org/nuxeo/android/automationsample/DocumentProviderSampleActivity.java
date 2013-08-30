@@ -161,12 +161,12 @@ public class DocumentProviderSampleActivity extends BaseNuxeoActivity implements
         super.onCreateContextMenu(menu, v, menuInfo);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.listmenu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.listmenu, menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
 
     @Override
     public void onClick(View arg0) {
@@ -193,14 +193,13 @@ public class DocumentProviderSampleActivity extends BaseNuxeoActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 0 && resultCode == RESULT_OK) {
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     // Content menu handling
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        int selectedPosition = info.position;
         if (item.getItemId() == 0) {
             startActivity(new Intent(this, DocumentLayoutActivity.class));
             return true;

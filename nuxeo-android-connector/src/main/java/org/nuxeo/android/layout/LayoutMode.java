@@ -17,7 +17,9 @@
 
 package org.nuxeo.android.layout;
 
-public enum LayoutMode {
+import java.io.Serializable;
+
+public enum LayoutMode implements Serializable{
 
     CREATE("create"), EDIT("edit"), VIEW("view");
 
