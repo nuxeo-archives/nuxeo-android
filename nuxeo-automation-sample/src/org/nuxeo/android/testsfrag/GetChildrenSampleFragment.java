@@ -1,13 +1,16 @@
 package org.nuxeo.android.testsfrag;
 
 import org.nuxeo.android.activities.BaseDocumentLayoutActivity;
-import org.nuxeo.android.automationsample.BaseSampleDocumentsListActivity;
+import org.nuxeo.android.automationsample.R;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
+import org.nuxeo.android.fragments.BaseDocumentLayoutFragment;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
 
 public class GetChildrenSampleFragment extends BaseSampleDocumentsListFragment {
@@ -29,8 +32,8 @@ public class GetChildrenSampleFragment extends BaseSampleDocumentsListFragment {
     }
 
     protected Document getRoot() {
-        if (getActivity().getIntent().getExtras() != null) {
-            Object param = getActivity().getIntent().getExtras().get(ROOT_DOC_PARAM);
+        if (getArguments() != null) {
+            Object param = getArguments().getSerializable(ROOT_DOC_PARAM);
             if (param != null && param instanceof Document) {
                 root = (Document) param;
             }
@@ -65,17 +68,26 @@ public class GetChildrenSampleFragment extends BaseSampleDocumentsListFragment {
     }
 
     @Override
-    protected void onListItemClicked(int listItemPosition) {
-    	Toast.makeText(getActivity().getBaseContext(), "Doesn't work yet", Toast.LENGTH_SHORT).show();
+    public void onListItemClicked(int listItemPosition) {
         Document selectedDocument = getDocumentsList().getDocument(
                 listItemPosition);
         if (selectedDocument.isFolder()) {
-            startActivity(new Intent(getActivity().getBaseContext(), this.getClass()).putExtra(
-                    ROOT_DOC_PARAM, selectedDocument));
+        	
+        	Bundle args = new Bundle();
+        	args.putSerializable(ROOT_DOC_PARAM, selectedDocument);
+        	GetChildrenSampleFragment childrenSampleFragment = new GetChildrenSampleFragment();
+        	childrenSampleFragment.setArguments(args);
+        	
+        	FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+    		transaction.replace(R.id.list_frag_container, childrenSampleFragment);
+    		transaction.addToBackStack(null);
+    		transaction.commit();
         } else {
-            startActivity(new Intent(getActivity().getBaseContext(), getEditActivityClass()).putExtra(
-                    BaseDocumentLayoutActivity.DOCUMENT, selectedDocument).putExtra(
-                    BaseDocumentLayoutActivity.MODE, LayoutMode.VIEW));
+        	mCallback.onItemSelected(documentsList, listItemPosition);
+//        	Toast.makeText(getActivity().getBaseContext(), "Doesn't work as fragment yet", Toast.LENGTH_SHORT).show();
+//            startActivity(new Intent(getActivity().getBaseContext(), getEditActivityClass()).putExtra(
+//                    BaseDocumentLayoutActivity.DOCUMENT, selectedDocument).putExtra(
+//                    BaseDocumentLayoutActivity.MODE, LayoutMode.VIEW));
         }
     }
 

@@ -23,6 +23,7 @@ import org.nuxeo.android.automation.NetworkSettingsActivity;
 import org.nuxeo.android.automation.ServerSettingsActivity;
 import org.nuxeo.android.config.NuxeoServerConfig;
 import org.nuxeo.android.context.NuxeoContext;
+import org.nuxeo.android.testsfrag.ListFragActivity;
 import org.nuxeo.android.testsfrag.TestsFragActivity;
 
 import android.app.Activity;
@@ -53,7 +54,11 @@ public class HomeSampleActivity extends Activity implements
 
     protected Button browseBtn;
     
-    protected Button testFrag;
+    protected Button testFragBtn;
+    
+    protected Button fragSimpleListBtn;
+    
+    protected Button fragBrowseBtn;
 
     protected List<String> opList;
 
@@ -80,8 +85,14 @@ public class HomeSampleActivity extends Activity implements
         contentProviderBtn = (Button) findViewById(R.id.contentProviderBtn);
         contentProviderBtn.setOnClickListener(this);
         
-        testFrag = (Button)findViewById(R.id.nuxFragBtn);
-        testFrag.setOnClickListener(this);
+        testFragBtn = (Button)findViewById(R.id.nuxFragBtn);
+        testFragBtn.setOnClickListener(this);
+        
+        fragSimpleListBtn = (Button)findViewById(R.id.fragSimpleListBtn);
+        fragSimpleListBtn.setOnClickListener(this);
+        
+        fragBrowseBtn = (Button)findViewById(R.id.fragBrowseBtn);
+        fragBrowseBtn.setOnClickListener(this);
     }
 
     @Override
@@ -102,9 +113,20 @@ public class HomeSampleActivity extends Activity implements
         } else if (view == browseBtn) {
             startActivity(new Intent(getApplicationContext(),
                     GetChildrenSampleActivity.class));
-        } else if (view == testFrag) {
+        } else if (view == testFragBtn) {
             startActivity(new Intent(getApplicationContext(),
             		TestsFragActivity.class));
+            
+        } else if (view == fragSimpleListBtn){
+        	Intent simpleListFragIntent = new Intent(getApplicationContext(),
+        			ListFragActivity.class);
+        	simpleListFragIntent.putExtra("list", ListFragActivity.SIMPLE_LIST);
+        	startActivity(simpleListFragIntent);
+        } else if (view == fragBrowseBtn) {
+        	Intent browseFragIntent = new Intent(getApplicationContext(),
+        			ListFragActivity.class);
+        	browseFragIntent.putExtra("list", ListFragActivity.BROWSE_LIST);
+        	startActivity(browseFragIntent);
         } else if (view == docProviderBtn) {
             startActivity(new Intent(getApplicationContext(),
                     DocumentProviderSampleActivity.class));

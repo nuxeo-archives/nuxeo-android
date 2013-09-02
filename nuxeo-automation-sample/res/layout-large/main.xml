@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/hello" />
+        android:text="@string/hello_large" />
 
     <Button
         android:id="@+id/connect"
@@ -56,7 +56,7 @@
         android:id="@+id/nuxFragBtn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Fragments basic tests" >
+        android:text="Fragments tests" >
     </Button>
     
     <Button

@@ -4,6 +4,7 @@ import org.nuxeo.android.fragments.BaseNuxeoFragment;
 
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -26,9 +27,8 @@ public abstract class BaseListFragment extends BaseNuxeoFragment implements OnIt
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-//        setupViews();
+    public void onViewCreated(View v, Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         if (listView != null) {
             registerForContextMenu(listView);
             listView.setOnItemClickListener(this);
@@ -78,15 +78,7 @@ public abstract class BaseListFragment extends BaseNuxeoFragment implements OnIt
     protected void onNuxeoDataRetrieveFailed() {
         setupViewsOnDataLoaded();
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        populateMenu(menu);
-//        return super.onCreateOptionsMenu(menu);
-//    }
-
-    protected abstract void populateMenu(Menu menu);
-
+    
 //    @Override
 //    public void onClick(View view) {
 //        if (view == refreshBtn) {

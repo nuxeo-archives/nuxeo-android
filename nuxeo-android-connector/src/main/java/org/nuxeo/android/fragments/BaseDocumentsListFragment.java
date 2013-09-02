@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 public abstract class BaseDocumentsListFragment extends BaseListFragment {
 
-    protected static final int ACTION_EDIT_DOCUMENT = 0;
+    public static final int ACTION_EDIT_DOCUMENT = 0;
 
     protected static final int ACTION_CREATE_DOCUMENT = 1;
 
@@ -115,7 +115,7 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
 
     protected abstract Document initNewDocument(String type);
 
-    protected abstract Class<? extends BaseDocumentLayoutActivity> getEditActivityClass();
+    protected abstract Class<? extends BaseDocLayoutFragAct> getEditActivityClass();
 
     protected void onDocumentCreate(Document newDocument) {
         documentsList.createDocument(newDocument);
