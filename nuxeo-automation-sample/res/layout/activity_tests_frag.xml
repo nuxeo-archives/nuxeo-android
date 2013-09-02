@@ -15,13 +15,6 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="BrowseRepo"
-                android:text="Browse repo" >
-            </Button>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:onClick="Connect"
                 android:text="connect" >
             </Button>
@@ -31,13 +24,6 @@
                 android:layout_height="wrap_content"
                 android:onClick="Fetch"
                 android:text="Fetch" >
-            </Button>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="SimpleList"
-                android:text="SimpleList" >
             </Button>
         </LinearLayout>
     </HorizontalScrollView>

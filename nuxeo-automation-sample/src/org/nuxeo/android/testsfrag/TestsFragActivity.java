@@ -29,20 +29,6 @@ public class TestsFragActivity extends FragmentActivity {
 		transaction.commit();
 	}
 	
-	public void SimpleList(View v) {
-		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		transaction.replace(R.id.fragment_container, new SimpleListFragment());
-		transaction.addToBackStack(null);
-		transaction.commit();
-	}
-
-	public void BrowseRepo(View v) {
-		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		transaction.replace(R.id.fragment_container, new GetChildrenSampleFragment());
-		transaction.addToBackStack(null);
-		transaction.commit();
-	}
-	
 //
 //	@Override
 //	public boolean onCreateOptionsMenu(Menu menu) {

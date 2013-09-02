@@ -2,7 +2,12 @@
 <resources>
 
     <string name="hello">Welcome to Automation Sample Application</string>
+    <string name="hello_large">Welcome to Automation Sample Application for large screens</string>
     <string name="app_name">Nuxeo Automation Samples</string>
     <string name="title_activity_tests_frag">TestsFrag</string>
+    <string name="title_activity_document_layout_frag">DocumentLayoutFragActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_list_frag">ListFragActivity</string>
 
 </resources>

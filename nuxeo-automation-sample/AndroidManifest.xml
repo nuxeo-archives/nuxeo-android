@@ -71,13 +71,22 @@
             android:label="Document History" >
         </activity>
 
-    <provider android:name="org.nuxeo.android.contentprovider.NuxeoDocumentContentProvider"
-              android:authorities="nxsample">
-    </provider>
+        <provider
+            android:name="org.nuxeo.android.contentprovider.NuxeoDocumentContentProvider"
+            android:authorities="nxsample" >
+        </provider>
 
         <activity
             android:name="org.nuxeo.android.testsfrag.TestsFragActivity"
             android:label="@string/title_activity_tests_frag" >
+        </activity>
+        <activity
+            android:name="org.nuxeo.android.testsfrag.DocumentLayoutFragActivity"
+            android:label="@string/title_activity_document_layout_frag" >
+        </activity>
+        <activity
+            android:name="org.nuxeo.android.testsfrag.ListFragActivity"
+            android:label="@string/title_activity_list_frag" >
         </activity>
     </application>
 
