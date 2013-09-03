@@ -37,8 +37,6 @@ public class DocumentLayoutActivity extends BaseDocumentLayoutActivity
 
     protected Button saveBtn;
 
-    protected Button cancelBtn;
-
     @Override
     protected ViewGroup getLayoutContainer() {
         return (ScrollView) findViewById(R.id.layoutContainer);
@@ -51,10 +49,6 @@ public class DocumentLayoutActivity extends BaseDocumentLayoutActivity
         setContentView(R.layout.createeditlayout);
         saveBtn = (Button) findViewById(R.id.updateDocument);
         saveBtn.setOnClickListener(this);
-
-        cancelBtn = (Button) findViewById(R.id.cancelDocument);
-        cancelBtn.setOnClickListener(this);
-
         buildLayout();
     }
 
@@ -72,8 +66,6 @@ public class DocumentLayoutActivity extends BaseDocumentLayoutActivity
     public void onClick(View view) {
         if (view == saveBtn) {
             saveDocument();
-        } else if (view == cancelBtn) {
-            cancelUpdate();
         }
     }
 

@@ -25,6 +25,20 @@
                 android:onClick="Fetch"
                 android:text="Fetch" >
             </Button>
+            
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="HideLast"
+                android:text="Hide last" >
+            </Button>
+            
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="SwitchFrag"
+                android:text="switch fragment" >
+            </Button>
         </LinearLayout>
     </HorizontalScrollView>
 

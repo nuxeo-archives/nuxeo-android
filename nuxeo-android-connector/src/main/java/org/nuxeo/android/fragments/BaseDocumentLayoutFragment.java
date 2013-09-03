@@ -8,6 +8,8 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.IdRef;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
@@ -32,7 +34,6 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
     protected NuxeoLayout layout;
     
     public BaseDocumentLayoutFragment() {
-    	
     }
 
     @Override
@@ -48,6 +49,7 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
                 requireAsyncFetch = false;
             }
         }
+        setHasOptionsMenu(true);
         
 //        if (isEditMode()) {
 //            setTitle("Edit " + currentDoc.getType() + " " + getCurrentDocument().getTitle());
@@ -133,31 +135,30 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
 ////        }
 ////    }
 //
-//    protected void saveDocument() {
-//        Document doc = getCurrentDocument();
-//        getLayout().applyChanges(doc);
+    protected void saveDocument() {
+        Document doc = getCurrentDocument();
+        getLayout().applyChanges(doc);
 //        setResult(RESULT_OK, new Intent().putExtra(DOCUMENT, doc));
 //        this.finish();
-//    }
-//
-//    protected void cancelUpdate() {
+    }
+
+    protected void cancelUpdate() {
 //        Document doc = getCurrentDocument();
 //        setResult(RESULT_CANCELED, new Intent().putExtra(DOCUMENT, doc));
 //        this.finish();
-//    }
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        populateMenu(menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
 //        if(Build.VERSION.SDK_INT >= 11) {
-//        	if (LayoutMode.VIEW == getMode()) {
-//                menu.add(Menu.NONE, MNU_SWITCH_EDIT, 0, "Switch to Edit").
-//                	setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-//            }
-//            if (LayoutMode.EDIT == getMode()) {
-//                menu.add(Menu.NONE, MNU_SWITCH_VIEW, 0, "Switch to View").
-//            	setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-//            }
+        	if (LayoutMode.VIEW == getMode()) {
+                menu.add(Menu.NONE, MNU_SWITCH_EDIT, 2, "Switch to Edit").
+                	setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            }
+            if (LayoutMode.EDIT == getMode()) {
+            	menu.add(Menu.NONE, MNU_SWITCH_VIEW, 2, "Switch to View").
+            	setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            }
 //        } else {
 //        	if (LayoutMode.VIEW == getMode()) {
 //                menu.add(Menu.NONE, MNU_SWITCH_EDIT, 0, "Switch to Edit");
@@ -166,9 +167,24 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
 //                menu.add(Menu.NONE, MNU_SWITCH_VIEW, 0, "Switch to View");
 //            }
 //        }
-//        return super.onCreateOptionsMenu(menu);
+        super.onPrepareOptionsMenu(menu);
+    }
+    
+    public boolean isFirstCall() {
+    	return getArguments().getBoolean(FIRST_CALL);
+    }
+    
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//    	Bundle args = getArguments();
+//    	boolean firstCall = args.getBoolean(FIRST_CALL);
+//    	if (!firstCall) {
+//    		
+//    	}
+//    	
+//    	return super.onOptionsItemSelected(item);
 //    }
-//
+
 //    protected abstract void populateMenu(Menu menu);
 //
 //    @Override

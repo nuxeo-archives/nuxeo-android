@@ -83,11 +83,7 @@ public class GetChildrenSampleFragment extends BaseSampleDocumentsListFragment {
     		transaction.addToBackStack(null);
     		transaction.commit();
         } else {
-        	mCallback.onItemSelected(documentsList, listItemPosition);
-//        	Toast.makeText(getActivity().getBaseContext(), "Doesn't work as fragment yet", Toast.LENGTH_SHORT).show();
-//            startActivity(new Intent(getActivity().getBaseContext(), getEditActivityClass()).putExtra(
-//                    BaseDocumentLayoutActivity.DOCUMENT, selectedDocument).putExtra(
-//                    BaseDocumentLayoutActivity.MODE, LayoutMode.VIEW));
+        	mCallback.viewDocument(documentsList, listItemPosition);
         }
     }
 

@@ -14,6 +14,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,7 +33,7 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
 
     protected static final int MNU_NEW_LISTITEM = 10;
 
-    protected static final int MNU_VIEW_LIST_EXTERNAL = 1;
+//    protected static final int MNU_VIEW_LIST_EXTERNAL = 1;
 
     protected static final int MNU_REFRESH = 2;
 
@@ -50,6 +51,8 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
 
     protected LinkedHashMap<String, String> allowedDocumentTypes;
     
+    public BaseDocumentsListFragment() {
+    }
     
     // Executed on the background thread to avoid freezing the UI
     @Override
@@ -78,7 +81,6 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
         }
     }
     
-    //BaseDocumentsListActivity
     protected void doRefresh() {
         if (documentsList != null) {
             documentsList.refreshAll();
@@ -87,12 +89,10 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
         }
     }
 
-    //BaseDocumentsListActivity
     protected LazyDocumentsList getDocumentsList() {
         return documentsList;
     }
 
-    //BaseDocumentsListActivity
     @Override
     public boolean isReady() {
         if (super.isReady()) {
@@ -148,50 +148,6 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
         }
     }
 
-    protected void populateMenu(Menu menu) {
-    	if (Build.VERSION.SDK_INT >= 11)
-    	{
-    		LinkedHashMap<String, String> types = getDocTypesForCreation();
-            if (types.size() > 0) {
-                if (types.size() == 1) {
-                    menu.add(Menu.NONE, MNU_NEW_LISTITEM, 0, "New Item").
-            		setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-                } else {
-                    SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_NEW_LISTITEM,
-                            0, "New item");
-                    subMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-                    int idx = 1;
-                    for (String key : types.keySet()) {
-                        subMenu.add(Menu.NONE, MNU_NEW_LISTITEM + idx, idx,
-                                types.get(key));
-                        idx++;
-                    }
-                }
-            }
-            // menu.add(Menu.NONE, MNU_VIEW_LIST_EXTERNAL, 1, "External View");
-            menu.add(Menu.NONE, MNU_REFRESH, 2, "Refresh").
-    		setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-    	} else {
-    		LinkedHashMap<String, String> types = getDocTypesForCreation();
-            if (types.size() > 0) {
-                if (types.size() == 1) {
-                    menu.add(Menu.NONE, MNU_NEW_LISTITEM, 0, "New Item");
-                } else {
-                    SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_NEW_LISTITEM,
-                            0, "New item");
-                    int idx = 1;
-                    for (String key : types.keySet()) {
-                        subMenu.add(Menu.NONE, MNU_NEW_LISTITEM + idx, idx,
-                                types.get(key));
-                        idx++;
-                    }
-                }
-            }
-            // menu.add(Menu.NONE, MNU_VIEW_LIST_EXTERNAL, 1, "External View");
-            menu.add(Menu.NONE, MNU_REFRESH, 2, "Refresh");
-    	}
-    }
-
     // Activity menu handling
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -199,29 +155,29 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
         case MNU_REFRESH:
             doRefresh();
             break;
-        case MNU_VIEW_LIST_EXTERNAL:
-            if (getDocumentsList() != null) {
-                Uri contentUri = getDocumentsList().getContentUri();
-                if (contentUri != null) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(contentUri);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("windowTitle", "Nuxeo Media Browser");
-                    try {
-                        startActivity(intent);
-                    } catch (android.content.ActivityNotFoundException e) {
-                        Toast.makeText(
-                        		getActivity().getBaseContext(),
-                                "No Application Available to View this uri "
-                                        + contentUri.toString(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(getActivity().getBaseContext(), "No Uri defined for this list",
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-            break;
+//        case MNU_VIEW_LIST_EXTERNAL:
+//            if (getDocumentsList() != null) {
+//                Uri contentUri = getDocumentsList().getContentUri();
+//                if (contentUri != null) {
+//                    Intent intent = new Intent(Intent.ACTION_VIEW);
+//                    intent.setData(contentUri);
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    intent.putExtra("windowTitle", "Nuxeo Media Browser");
+//                    try {
+//                        startActivity(intent);
+//                    } catch (android.content.ActivityNotFoundException e) {
+//                        Toast.makeText(
+//                        		getActivity().getBaseContext(),
+//                                "No Application Available to View this uri "
+//                                        + contentUri.toString(),
+//                                Toast.LENGTH_SHORT).show();
+//                    }
+//                } else {
+//                    Toast.makeText(getActivity().getBaseContext(), "No Uri defined for this list",
+//                            Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//            break;
         default:
             if (getEditActivityClass() == null) {
                 return true;
@@ -352,6 +308,37 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
             	.putExtra(BaseDocumentLayoutActivity.FIRST_CALL, true));
             startActivityForResult(intent, ACTION_EDIT_DOCUMENT);
         }
+    }
+    
+    @Override
+	public void onCreate(Bundle savedInstanceState) {
+    	super.onCreate(savedInstanceState);
+    	setHasOptionsMenu(true);
+    }
+    
+    @Override
+    public void onPrepareOptionsMenu(Menu menu){
+    	super.onPrepareOptionsMenu(menu);
+    	menu.clear();
+    	LinkedHashMap<String, String> types = getDocTypesForCreation();
+        if (types.size() > 0) {
+            if (types.size() == 1) {
+                menu.add(Menu.NONE, MNU_NEW_LISTITEM, 0, "New Item").
+        		setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            } else {
+                SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_NEW_LISTITEM,
+                        0, "New item");
+                subMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                int idx = 1;
+                for (String key : types.keySet()) {
+                    subMenu.add(Menu.NONE, MNU_NEW_LISTITEM + idx, idx,
+                            types.get(key));
+                    idx++;
+                }
+            }
+        }
+        menu.add(Menu.NONE, MNU_REFRESH, 1, "Refresh").
+		setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
     }
 
     @Override

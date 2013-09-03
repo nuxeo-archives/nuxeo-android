@@ -96,7 +96,7 @@ public class BaseSampleDocumentsListFragment extends BaseDocumentsListFragment {
 		/**
 		 * Callback for when an item has been selected.
 		 */
-		public void onItemSelected(LazyUpdatableDocumentsList documentsList, int id);
+		public void viewDocument(LazyUpdatableDocumentsList documentsList, int id);
 	}
 	
 	@Override
@@ -114,7 +114,7 @@ public class BaseSampleDocumentsListFragment extends BaseDocumentsListFragment {
 	
 	@Override
 	public void onListItemClicked(int position) {
-		mCallback.onItemSelected(documentsList, position);
+		mCallback.viewDocument(documentsList, position);
 	}
 
 	@Override
@@ -133,16 +133,16 @@ public class BaseSampleDocumentsListFragment extends BaseDocumentsListFragment {
 //	public void setActivateOnItemClick(boolean activateOnItemClick) {
 //		// When setting CHOICE_MODE_SINGLE, ListView will automatically
 //		// give items the 'activated' state when touched.
-//		getListView().setChoiceMode(
+//		listView.setChoiceMode(
 //				activateOnItemClick ? ListView.CHOICE_MODE_SINGLE
 //						: ListView.CHOICE_MODE_NONE);
 //	}
 //
 //	private void setActivatedPosition(int position) {
 //		if (position == ListView.INVALID_POSITION) {
-//			getListView().setItemChecked(mActivatedPosition, false);
+//			listView.setItemChecked(mActivatedPosition, false);
 //		} else {
-//			getListView().setItemChecked(position, true);
+//			listView.setItemChecked(position, true);
 //		}
 //
 //		mActivatedPosition = position;
