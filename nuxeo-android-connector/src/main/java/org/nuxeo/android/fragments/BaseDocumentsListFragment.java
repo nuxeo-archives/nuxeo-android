@@ -11,6 +11,7 @@ import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -81,7 +82,7 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
         }
     }
     
-    protected void doRefresh() {
+    public void doRefresh() {
         if (documentsList != null) {
             documentsList.refreshAll();
         } else {
@@ -121,7 +122,7 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
         documentsList.createDocument(newDocument);
     }
 
-    protected void onDocumentUpdate(Document editedDocument) {
+    public void onDocumentUpdate(Document editedDocument) {
         documentsList.updateDocument(editedDocument);
     }
 
@@ -241,6 +242,26 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
 //            }
 //        }
 //    }
+    
+    public interface Callback {
+    	void viewDocument(Document doc);
+    	void editDocument(Document doc);
+    }
+    
+    protected Callback mCallback;
+    
+    @Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+
+		// Activities containing this fragment must implement its callbacks.
+		if (!(activity instanceof Callback)) {
+			throw new IllegalStateException(
+					"Activity must implement fragment's callbacks.");
+		}
+
+		mCallback = (Callback) activity;
+	}
 
     // Content menu handling
     @Override
@@ -256,9 +277,7 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
                         Toast.LENGTH_SHORT).show();
                 return true;
             }
-            startActivity(new Intent(getActivity().getBaseContext(), getEditActivityClass()).putExtra(
-                    BaseDocumentLayoutActivity.DOCUMENT, doc).putExtra(
-                    BaseDocumentLayoutActivity.MODE, LayoutMode.VIEW));
+            mCallback.viewDocument(doc);
             return true;
         } else if (item.getItemId() == CTXMNU_EDIT_DOCUMENT) {
             if (getEditActivityClass() == null) {
@@ -266,11 +285,7 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
                         Toast.LENGTH_SHORT).show();
                 return true;
             }
-            startActivityForResult(
-                    new Intent(getActivity().getBaseContext(), getEditActivityClass()).putExtra(
-                            BaseDocumentLayoutActivity.DOCUMENT, doc).putExtra(
-                            BaseDocumentLayoutActivity.MODE, LayoutMode.EDIT),
-                    ACTION_EDIT_DOCUMENT);
+            mCallback.editDocument(doc);
             return true;
         } else if (item.getItemId() == CTXMNU_VIEW_ATTACHEMENT) {
             Uri blobUri = doc.getBlob();

@@ -3,10 +3,12 @@ package org.nuxeo.android.testsfrag;
 import org.nuxeo.android.automationsample.R;
 import org.nuxeo.android.fragments.BaseDocumentLayoutFragment;
 import org.nuxeo.android.layout.LayoutMode;
-import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.Paint;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,7 +16,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 public class DocumentLayoutFragment extends BaseDocumentLayoutFragment implements OnClickListener {
 
@@ -75,6 +77,8 @@ public class DocumentLayoutFragment extends BaseDocumentLayoutFragment implement
     protected void onNuxeoDataRetrieved(Object data) {
     	super.onNuxeoDataRetrieved(data);
     	View v = getView();
+    	TextView txtView = (TextView)v.findViewById(R.id.loading_label);
+    	txtView.setVisibility(View.GONE);
     	if(!isEditMode() && !isCreateMode()) {
     		if (currentDocument.getType().equals("Picture"))
     		{
@@ -82,56 +86,27 @@ public class DocumentLayoutFragment extends BaseDocumentLayoutFragment implement
             	imageView.setVisibility(View.VISIBLE);
             	imageView.setImageURI(currentDocument.getBlob());
     		}
+    		txtView = (TextView)v.findViewById(R.id.currentDocTitle);
+    		txtView.setText("View " + getCurrentDocument().getType() + " " + getCurrentDocument().getTitle());
+    		txtView.setVisibility(View.VISIBLE);
     	}
-    }
+    }    
     
-    public interface Callback{
-    	
-//    	public void exchangeFragments();
-    	public void switchToEdit();
-    	public void switchToView();
-    }
-    
-    protected Callback mCallback;
-    
-    @Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-
-		// Activities containing this fragment must implement its callbacks.
-		if (!(activity instanceof Callback)) {
-			throw new IllegalStateException(
-					"Activity must implement fragment's callbacks.");
-		}
-
-		mCallback = (Callback) activity;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		super.onOptionsItemSelected(item);
-//		if (isFirstCall() == false) {
-//			mCallback.exchangeFragments();
-//		} else {
-			switch (item.getItemId()) {
-			case MNU_SWITCH_EDIT:
-				mCallback.switchToEdit();
-				break;
-			case MNU_SWITCH_VIEW:
-				mCallback.switchToView();
-				break;
-			}
-//		}
-		return true;
-	}
 
     @Override
     public void onClick(View view) {
         if (view == saveBtn) {
             saveDocument();
-            mCallback.switchToView();
         }
     }
+
+	@Override
+	public BaseDocumentLayoutFragment getDocumentLayoutFragment() {
+		if (documentLayoutFragment == null) {
+			documentLayoutFragment = new DocumentLayoutFragment();
+		}
+		return documentLayoutFragment;
+	}
 
 //  @Override
 //  public boolean onOptionsItemSelected(MenuItem item) {

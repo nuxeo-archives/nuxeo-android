@@ -6,6 +6,8 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.DocumentStatus;
 import org.nuxeo.ecm.automation.client.jaxrs.model.IdRef;
 
+import android.app.Activity;
+import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -20,6 +22,8 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
     public static final String MODE = "mode";
 
     public static final String FIRST_CALL = "first call";
+    
+    public static final String FRAGMENT_CONTAINER_ID = "fragContainerId";
 
     protected Document currentDocument;
     
@@ -33,8 +37,12 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
 
     protected NuxeoLayout layout;
     
+    protected BaseDocumentLayoutFragment documentLayoutFragment = null;
+    
     public BaseDocumentLayoutFragment() {
     }
+    
+    Integer containerId = null;
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -138,13 +146,8 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
     protected void saveDocument() {
         Document doc = getCurrentDocument();
         getLayout().applyChanges(doc);
+        mCallback.saveDocument(doc);
 //        setResult(RESULT_OK, new Intent().putExtra(DOCUMENT, doc));
-//        this.finish();
-    }
-
-    protected void cancelUpdate() {
-//        Document doc = getCurrentDocument();
-//        setResult(RESULT_CANCELED, new Intent().putExtra(DOCUMENT, doc));
 //        this.finish();
     }
 
@@ -174,16 +177,7 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
     	return getArguments().getBoolean(FIRST_CALL);
     }
     
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//    	Bundle args = getArguments();
-//    	boolean firstCall = args.getBoolean(FIRST_CALL);
-//    	if (!firstCall) {
-//    		
-//    	}
-//    	
-//    	return super.onOptionsItemSelected(item);
-//    }
+
 
 //    protected abstract void populateMenu(Menu menu);
 //
@@ -215,4 +209,122 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
 //    	}
 //    	return super.onOptionsItemSelected(item);
 //    }
+    
+	public interface Callback {
+
+		// public void exchangeFragments();
+
+		public int getFragmentContainerId();
+		
+		public void saveDocument(Document doc);
+	}
+
+	protected Callback mCallback;
+
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+
+		// Activities containing this fragment must implement its callbacks.
+		if (!(activity instanceof Callback)) {
+			throw new IllegalStateException(
+					"Activity must implement fragment's callbacks.");
+		}
+
+		mCallback = (Callback) activity;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		super.onOptionsItemSelected(item);
+//		if (isFirstCall() == false) {
+//			exchangeFragments();
+//		} else {
+			switch (item.getItemId()) {
+			case MNU_SWITCH_EDIT:
+				switchToEdit();
+				break;
+			case MNU_SWITCH_VIEW:
+//				mCallback.switchToView();
+				switchToView();
+				break;
+			}
+//		}
+		return true;
+	}
+
+	private void exchangeFragments() {
+		
+		Bundle args = getArguments();
+		//should be removed
+		args.putSerializable(DOCUMENT, currentDocument);
+		if (isEditMode()) {
+			args.putSerializable(MODE, LayoutMode.VIEW);
+		} else{
+			args.putSerializable(MODE, LayoutMode.EDIT);
+		}
+    	args.putBoolean(FIRST_CALL, false);
+    	getDocumentLayoutFragment().setArguments(args);
+//    	secondFrag = documentLayoutFrag;
+
+		
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+//    	contentTransaction.detach(firstFragment);
+//		transaction.detach(this);
+    	transaction.replace(getContainerId(), getDocumentLayoutFragment());
+    	
+		transaction.commit();
+	}
+
+	public void switchToView() {
+		FragmentTransaction contentTransaction = getFragmentManager()
+				.beginTransaction();
+
+		Bundle args = getArguments();
+		args.putSerializable(BaseDocumentLayoutFragment.DOCUMENT,
+				currentDocument);
+		args.putSerializable(BaseDocumentLayoutFragment.MODE, LayoutMode.VIEW);
+		args.putBoolean(BaseDocumentLayoutFragment.FIRST_CALL, false);
+		args.putInt(BaseDocumentLayoutFragment.FRAGMENT_CONTAINER_ID,
+				getContainerId());
+		getDocumentLayoutFragment().setArguments(args);
+		// secondFrag = documentLayoutFrag;
+
+		// contentTransaction.detach(firstFragment);
+		contentTransaction
+				.replace(containerId, getDocumentLayoutFragment());
+		contentTransaction.commit();
+	}
+	
+	public abstract BaseDocumentLayoutFragment getDocumentLayoutFragment();
+	
+	protected int getContainerId() {
+		if (containerId == null) {
+			containerId = mCallback.getFragmentContainerId();
+		}
+		return containerId;
+	}
+	
+	public void switchToEdit() {
+		FragmentTransaction contentTransaction = getFragmentManager()
+				.beginTransaction();
+
+		Bundle args = getArguments();
+		args.putSerializable(BaseDocumentLayoutFragment.DOCUMENT,
+				currentDocument);
+		args.putSerializable(BaseDocumentLayoutFragment.MODE, LayoutMode.EDIT);
+		args.putBoolean(BaseDocumentLayoutFragment.FIRST_CALL, false);
+		args.putInt(BaseDocumentLayoutFragment.FRAGMENT_CONTAINER_ID,
+				getContainerId());
+		getDocumentLayoutFragment().setArguments(args);
+		// secondFrag = documentLayoutFrag;
+
+		// contentTransaction.detach(firstFragment);
+		contentTransaction
+				.replace(containerId, getDocumentLayoutFragment());
+		contentTransaction.commit();
+	}
+	
 }
+
