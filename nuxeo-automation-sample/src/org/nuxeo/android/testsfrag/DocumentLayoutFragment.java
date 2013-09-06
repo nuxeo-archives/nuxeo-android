@@ -29,15 +29,6 @@ public class DocumentLayoutFragment extends BaseDocumentLayoutFragment implement
 		
 		saveBtn = (Button) v.findViewById(R.id.updateDocument);
 		saveBtn.setOnClickListener(this);
-
-//        if (isEditMode()) {
-//            setTitle("Edit " + currentDoc.getType() + " " + getCurrentDocument().getTitle());
-//        } else if (isCreateMode()) {
-//        	setTitle("Create new " + currentDoc.getType());
-//        } else {
-//        	setTitle("View " + currentDoc.getType() + " " + getCurrentDocument().getTitle());
-//        }
-		
         return v;
 	}
 	

@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class BaseSampleDocumentsListFragment extends BaseDocumentsListFragment {
+public abstract class BaseSampleDocumentsListFragment extends BaseDocumentsListFragment {
 
 	protected Document userHome;
 	
@@ -36,9 +36,7 @@ public class BaseSampleDocumentsListFragment extends BaseDocumentsListFragment {
 	 * activated item position. Only used on tablets.
 	 */
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
-	
-	protected Callback mCallback;
-	
+		
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
@@ -84,39 +82,7 @@ public class BaseSampleDocumentsListFragment extends BaseDocumentsListFragment {
     protected Document initNewDocument(String type) {
         return new Document(userHome.getPath(), "newAndroidDoc", type);
     }
-
-	@Override
-	protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public interface Callback {
-		/**
-		 * Callback for when an item has been selected.
-		 */
-		public void viewDocument(LazyUpdatableDocumentsList documentsList, int id);
-	}
-	
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-
-		// Activities containing this fragment must implement its callbacks.
-		if (!(activity instanceof Callback)) {
-			throw new IllegalStateException(
-					"Activity must implement fragment's callbacks.");
-		}
-
-		mCallback = (Callback) activity;
-	}
-	
-	@Override
-	public void onListItemClicked(int position) {
-		mCallback.viewDocument(documentsList, position);
-	}
-
+    
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);

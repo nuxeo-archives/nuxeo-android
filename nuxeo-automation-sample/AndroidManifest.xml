@@ -88,6 +88,10 @@
             android:name="org.nuxeo.android.testsfrag.ListFragActivity"
             android:label="@string/title_activity_list_frag" >
         </activity>
+        <activity
+            android:name="org.nuxeo.android.testsfrag.BasicFragActivity"
+            android:label="@string/title_activity_basic_frag" >
+        </activity>
     </application>
 
 </manifest>

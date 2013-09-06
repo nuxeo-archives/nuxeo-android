@@ -246,6 +246,7 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
     public interface Callback {
     	void viewDocument(Document doc);
     	void editDocument(Document doc);
+		void viewDocument(LazyUpdatableDocumentsList documentsList, int listItemPosition);
     }
     
     protected Callback mCallback;
@@ -315,14 +316,7 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
 
     @Override
     protected void onListItemClicked(int listItemPosition) {
-        if (getEditActivityClass() != null) {
-            Document doc = documentsList.getDocument(listItemPosition);
-            Intent intent = new Intent(new Intent(getActivity().getBaseContext(), getEditActivityClass())
-            	.putExtra(BaseDocumentLayoutActivity.DOCUMENT, doc)
-            	.putExtra(BaseDocumentLayoutActivity.MODE, LayoutMode.VIEW)
-            	.putExtra(BaseDocumentLayoutActivity.FIRST_CALL, true));
-            startActivityForResult(intent, ACTION_EDIT_DOCUMENT);
-        }
+		mCallback.viewDocument(documentsList, listItemPosition);
     }
     
     @Override

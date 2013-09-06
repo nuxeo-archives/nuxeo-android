@@ -23,6 +23,7 @@ import org.nuxeo.android.automation.NetworkSettingsActivity;
 import org.nuxeo.android.automation.ServerSettingsActivity;
 import org.nuxeo.android.config.NuxeoServerConfig;
 import org.nuxeo.android.context.NuxeoContext;
+import org.nuxeo.android.testsfrag.BasicFragActivity;
 import org.nuxeo.android.testsfrag.ListFragActivity;
 import org.nuxeo.android.testsfrag.TestsFragActivity;
 
@@ -37,31 +38,43 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class HomeSampleActivity extends Activity implements
         View.OnClickListener {
 
+    protected LinearLayout activitiesLayout;
+    
+    
+    protected Button showActivitesButton;
+    protected boolean activitiesShown = false;
+    //Activities
     protected Button connectBtn;
 
-    protected Button contentUriBtn;
+    protected Button fetchDocBtn;
 
-    protected Button docListBtn;
+    protected Button simpleListBtn;
 
+    protected Button browseBtn;
+    
     protected Button docProviderBtn;
 
     protected Button contentProviderBtn;
 
-    protected Button browseBtn;
-    
+    //fragments
     protected Button testFragBtn;
     
-    protected Button fragSimpleListBtn;
+    protected Button connectFragButton;
     
-    protected Button fragBrowseBtn;
-
-    protected List<String> opList;
-
+    protected Button fetchDocFragBtn;
+    
+    protected Button simpleListFragBtn;
+    
+    protected Button browseFragBtn;
+    
+    protected Button docProviderFragBtn;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,13 +83,13 @@ public class HomeSampleActivity extends Activity implements
         connectBtn = (Button) findViewById(R.id.connect);
         connectBtn.setOnClickListener(this);
 
-        contentUriBtn = (Button) findViewById(R.id.contentUriBtn);
-        contentUriBtn.setOnClickListener(this);
+        fetchDocBtn = (Button) findViewById(R.id.fetch_doc);
+        fetchDocBtn.setOnClickListener(this);
 
-        docListBtn = (Button) findViewById(R.id.docListBtn);
-        docListBtn.setOnClickListener(this);
+        simpleListBtn = (Button) findViewById(R.id.simple_list);
+        simpleListBtn.setOnClickListener(this);
 
-        browseBtn = (Button) findViewById(R.id.browsetBtn);
+        browseBtn = (Button) findViewById(R.id.browse);
         browseBtn.setOnClickListener(this);
 
         docProviderBtn = (Button) findViewById(R.id.docProviderBtn);
@@ -85,56 +98,87 @@ public class HomeSampleActivity extends Activity implements
         contentProviderBtn = (Button) findViewById(R.id.contentProviderBtn);
         contentProviderBtn.setOnClickListener(this);
         
+        activitiesLayout = (LinearLayout)findViewById(R.id.activities_layout);
+        showActivitesButton = (Button)findViewById(R.id.activites_button);
+        showActivitesButton.setOnClickListener(this);
+        
+        
         testFragBtn = (Button)findViewById(R.id.nuxFragBtn);
         testFragBtn.setOnClickListener(this);
         
-        fragSimpleListBtn = (Button)findViewById(R.id.fragSimpleListBtn);
-        fragSimpleListBtn.setOnClickListener(this);
+        connectFragButton = (Button)findViewById(R.id.connect_frag);
+        connectFragButton.setOnClickListener(this);
         
-        fragBrowseBtn = (Button)findViewById(R.id.fragBrowseBtn);
-        fragBrowseBtn.setOnClickListener(this);
+        fetchDocFragBtn = (Button)findViewById(R.id.fetch_doc_frag);
+        fetchDocFragBtn.setOnClickListener(this);
+
+        simpleListFragBtn = (Button)findViewById(R.id.simple_list_frag);
+        simpleListFragBtn.setOnClickListener(this);
+        
+        browseFragBtn = (Button)findViewById(R.id.browse_frag);
+        browseFragBtn.setOnClickListener(this);
+        
+        docProviderFragBtn = (Button)findViewById(R.id.docProvider_frag_btn);
+        docProviderFragBtn.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
-        if (view == connectBtn) {
+    	if (view == showActivitesButton) {
+    		if (!activitiesShown) {
+    			activitiesLayout.setVisibility(View.VISIBLE);
+    			activitiesShown = true;
+    		} else {
+    			activitiesLayout.setVisibility(View.GONE);
+    			activitiesShown = false;
+    		}
+    	} else if (view == connectBtn) {
             startActivity(new Intent(getApplicationContext(),
                     ConnectSampleActivity.class));
-        } else if (view == contentUriBtn) {
+        } else if (view == fetchDocBtn) {
             startActivity(new Intent(getApplicationContext(),
                     SimpleFetchSampleActivty.class));
-        } else if (view == contentProviderBtn) {
-//            startActivity(new Intent(getApplicationContext(),
-//                    ContentProviderSampleActivity.class));
-        	Toast.makeText(this, "not implemented", Toast.LENGTH_LONG).show();
-        } else if (view == docListBtn) {
+        } else if (view == simpleListBtn) {
             startActivity(new Intent(getApplicationContext(),
                     SimpleDocumentsListSampleActivity.class));
         } else if (view == browseBtn) {
             startActivity(new Intent(getApplicationContext(),
                     GetChildrenSampleActivity.class));
+        } else if (view == docProviderBtn) {
+            startActivity(new Intent(getApplicationContext(),
+                    DocumentProviderSampleActivity.class));
+        } else if (view == contentProviderBtn) {
+//          startActivity(new Intent(getApplicationContext(),
+//                  ContentProviderSampleActivity.class));
+      	Toast.makeText(this, "not implemented", Toast.LENGTH_LONG).show();
+      	
+      	//Fragment activities
         } else if (view == testFragBtn) {
             startActivity(new Intent(getApplicationContext(),
             		TestsFragActivity.class));
-            
-        } else if (view == fragSimpleListBtn){
+        } else if (view == simpleListFragBtn){
         	Intent simpleListFragIntent = new Intent(getApplicationContext(),
         			ListFragActivity.class);
         	simpleListFragIntent.putExtra("list", ListFragActivity.SIMPLE_LIST);
         	startActivity(simpleListFragIntent);
-        } else if (view == fragBrowseBtn) {
+        } else if (view == browseFragBtn) {
         	Intent browseFragIntent = new Intent(getApplicationContext(),
         			ListFragActivity.class);
         	browseFragIntent.putExtra("list", ListFragActivity.BROWSE_LIST);
         	startActivity(browseFragIntent);
-        } else if (view == docProviderBtn) {
-            startActivity(new Intent(getApplicationContext(),
-                    DocumentProviderSampleActivity.class));
+        } else if (view == docProviderFragBtn) {
+        	Intent docProviderIntent = new Intent(getApplicationContext(),
+        			ListFragActivity.class);
+        	docProviderIntent.putExtra("list", ListFragActivity.DOCUMENT_PROVIDER);
+        	startActivity(docProviderIntent);
         } else {
-            // start activity
-            // See openIntend
-            startActivityForResult(
-                    new Intent(Intent.ACTION_PICK).setType("image/*"), 0);
+            Intent intent = new Intent(getApplicationContext(), BasicFragActivity.class);
+            if (view == connectFragButton) {
+            	intent.putExtra("frag", BasicFragActivity.CONNECT);
+            } else if (view == fetchDocFragBtn) {
+            	intent.putExtra("frag", BasicFragActivity.FETCH_DOCUMENT);
+            }
+            startActivity(intent);
         }
     }
 
@@ -165,10 +209,6 @@ public class HomeSampleActivity extends Activity implements
     // to make testing easier
     protected NuxeoContext getNuxeoContext() {
         return NuxeoContext.get(getApplicationContext());
-    }
-
-    public void setOffline(boolean offline) {
-        getNuxeoContext().getNetworkStatus().setForceOffline(offline);
     }
 
     public void setSettings(String url, String login, String password) {

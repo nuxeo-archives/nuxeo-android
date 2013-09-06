@@ -2,21 +2,24 @@ package org.nuxeo.android.testsfrag;
 
 import org.nuxeo.android.activities.BaseDocumentLayoutActivity;
 import org.nuxeo.android.automationsample.R;
+import org.nuxeo.android.documentprovider.DocumentProviderSampleFragment;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.android.fragments.BaseDocumentLayoutFragment;
 import org.nuxeo.android.fragments.BaseDocumentsListFragment;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
 public class ListFragActivity extends FragmentActivity 
-	implements BaseSampleDocumentsListFragment.Callback, DocumentLayoutFragment.Callback, BaseDocumentsListFragment.Callback {
+	implements BaseDocumentsListFragment.Callback, DocumentLayoutFragment.Callback {
 
 	public static final int SIMPLE_LIST = 0;
 	public static final int BROWSE_LIST = 1;
+	public static final int DOCUMENT_PROVIDER = 2;
 	
 	Document currentDocument = null;
 	
@@ -34,6 +37,8 @@ public class ListFragActivity extends FragmentActivity
 		if(callingIntent.getIntExtra("list", 0)==SIMPLE_LIST) {
 			listFragment = new SimpleListFragment();
 			listTransaction.replace(R.id.list_frag_container, listFragment);
+		} else if(callingIntent.getIntExtra("list", 0) == DOCUMENT_PROVIDER) {
+			listTransaction.replace(R.id.list_frag_container, new DocumentProviderSampleFragment());
 		} else if(callingIntent.getIntExtra("list", 0) == BROWSE_LIST) {
 			listTransaction.replace(R.id.list_frag_container, new GetChildrenSampleFragment());
 		}

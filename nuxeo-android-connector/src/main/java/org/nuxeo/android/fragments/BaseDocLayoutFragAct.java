@@ -1,6 +1,5 @@
 package org.nuxeo.android.fragments;
 
-import org.nuxeo.android.activities.BaseDocumentLayoutActivity;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
@@ -25,7 +24,6 @@ public abstract class BaseDocLayoutFragAct extends FragmentActivity  implements 
 		
 	protected Document currentDocument;
 	
-	protected Fragment firstFragment = null, secondFrag = null, temp = null;
 	
 	protected BaseDocumentLayoutFragment getDocumentLayoutFrag() {
 		if (documentLayoutFrag==null) {
@@ -54,7 +52,6 @@ public abstract class BaseDocLayoutFragAct extends FragmentActivity  implements 
     	args.putBoolean(BaseDocumentLayoutFragment.FIRST_CALL, firstCall);
     	args.putInt(BaseDocumentLayoutFragment.FRAGMENT_CONTAINER_ID, getFragmentContainerId());
     	documentLayoutFrag.setArguments(args);
-    	firstFragment = documentLayoutFrag;
     	
 		contentTransaction.replace(getFragmentContainerId(), documentLayoutFrag);
 		contentTransaction.commit();

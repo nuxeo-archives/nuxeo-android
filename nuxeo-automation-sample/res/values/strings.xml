@@ -9,5 +9,6 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_list_frag">ListFragActivity</string>
+    <string name="title_activity_basic_frag">BasicFragActivity</string>
 
 </resources>

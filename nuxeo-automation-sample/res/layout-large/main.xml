@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+<LinearLayout
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="2dip" >
 
@@ -11,65 +15,117 @@
         android:text="@string/hello_large" />
 
     <Button
-        android:id="@+id/connect"
+        android:id="@+id/activites_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show/hide activities" />
+
+    <LinearLayout
+        android:id="@+id/activities_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:visibility="gone" >
+
+        <Button
+            android:id="@+id/connect"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Connect on test server" >
+        </Button>
+
+        <Button
+            android:id="@+id/fetch_doc"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Fetch document and associated resources" >
+        </Button>
+
+        <Button
+            android:id="@+id/simple_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Simple Document Lists" >
+        </Button>
+
+        <Button
+            android:id="@+id/browse"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Browse repository" >
+        </Button>
+
+        <Button
+            android:id="@+id/docProviderBtn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Using DocumentProvider" >
+        </Button>
+
+        <Button
+            android:id="@+id/contentProviderBtn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Using Content Provider" >
+        </Button>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/holo_blue_dark"
+            android:layout_marginTop="@dimen/activity_vertical_margin" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/nuxFragBtn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Connect on test server" >
+        android:text="Fragments basic tests" >
     </Button>
 
     <Button
-        android:id="@+id/contentUriBtn"
+        android:id="@+id/connect_frag"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Fetch document and associated resources" >
+        android:text="Connect on test server fragment" >
     </Button>
 
     <Button
-        android:id="@+id/docListBtn"
+        android:id="@+id/fetch_doc_frag"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Simple Document Lists" >
+        android:text="Fetch document and associated resources fragment" >
+    </Button>
+
+	<Button
+	    android:id="@+id/simple_list_frag"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:text="Simple document list fragment" >
+	</Button>
+
+    <Button
+        android:id="@+id/browse_frag"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Browse repository fragment" >
     </Button>
 
     <Button
-        android:id="@+id/browsetBtn"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Browse repository" >
-    </Button>
-
-    <Button
-        android:id="@+id/docProviderBtn"
+        android:id="@+id/docProvider_frag_btn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Using DocumentProvider" >
     </Button>
-
+    
     <Button
         android:id="@+id/contentProviderBtn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Using Content Provider" >
     </Button>
-    
-    <Button
-        android:id="@+id/nuxFragBtn"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Fragments tests" >
-    </Button>
-    
-    <Button
-        android:id="@+id/fragSimpleListBtn"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Fragments simple list" >
-    </Button>
-    
-    <Button
-        android:id="@+id/fragBrowseBtn"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Fragments browse" >
-    </Button>
+
 </LinearLayout>
+</ScrollView>

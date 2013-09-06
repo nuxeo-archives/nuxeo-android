@@ -39,7 +39,7 @@ public class DocumentLayoutActivity extends BaseDocumentLayoutActivity
 
     @Override
     protected ViewGroup getLayoutContainer() {
-        return (ScrollView) findViewById(R.id.layoutContainer);
+        return (ViewGroup) findViewById(R.id.layoutContainer);
     }
 
     @Override
@@ -89,7 +89,8 @@ public class DocumentLayoutActivity extends BaseDocumentLayoutActivity
     @Override
     protected void onNuxeoDataRetrieved(Object data) {
     	super.onNuxeoDataRetrieved(data);
-
+    	TextView txtView = (TextView)findViewById(R.id.loading_label);
+    	txtView.setVisibility(View.GONE);
     	if(!isEditMode() && !isCreateMode()) {
     		if (currentDocument.getType().equals("Picture"))
     		{
