@@ -3,9 +3,11 @@ package org.nuxeo.android.testsfrag;
 import org.nuxeo.android.automationsample.R;
 import org.nuxeo.android.fragments.BaseDocumentLayoutFragment;
 import org.nuxeo.android.layout.LayoutMode;
+import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -17,8 +19,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class DocumentLayoutFragment extends BaseDocumentLayoutFragment implements OnClickListener {
+
+    protected static final int ACTION_CREATE_DOCUMENT = 1;
 
 	protected Button saveBtn;
 	
@@ -41,20 +46,6 @@ public class DocumentLayoutFragment extends BaseDocumentLayoutFragment implement
             saveBtn.setVisibility(View.VISIBLE);
         }
     }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//    	if (requestCode == BaseDocumentsListActivity.ACTION_EDIT_DOCUMENT && resultCode == RESULT_OK)
-//    	{
-//            Document doc = (Document) data.getExtras().get(DOCUMENT);
-//            getLayout().applyChanges(doc);
-//            setResult(RESULT_OK, new Intent().putExtra(DOCUMENT, doc));
-//            this.finish();
-//    	}
-//        if (getLayout() != null) {
-//            layout.onActivityResult(requestCode, resultCode, data);
-//        }
-//    }
 
 	public DocumentLayoutFragment() {
 	}
@@ -98,33 +89,4 @@ public class DocumentLayoutFragment extends BaseDocumentLayoutFragment implement
 		}
 		return documentLayoutFragment;
 	}
-
-//  @Override
-//  public boolean onOptionsItemSelected(MenuItem item) {
-//  	if (isFirstCall() == false)
-//  	{
-//  		finish();
-//  	} else {
-//  	
-//	        switch (item.getItemId()) {
-//	        case MNU_SWITCH_EDIT:
-////	            restart(MODE, LayoutMode.EDIT);
-//	            Intent editIntent = new Intent(new Intent(this, this.getClass())
-//	        	.putExtra(BaseDocumentLayoutActivity.DOCUMENT, currentDocument)
-//	        	.putExtra(BaseDocumentLayoutActivity.MODE, LayoutMode.EDIT)
-//	        	.putExtra(BaseDocumentLayoutActivity.FIRST_CALL, false));
-//	        startActivityForResult(editIntent, BaseDocumentsListActivity.ACTION_EDIT_DOCUMENT);
-//	            return true;
-//	        case MNU_SWITCH_VIEW:
-//	//            restart(MODE, LayoutMode.VIEW);
-//	        	Intent viewIntent = new Intent(new Intent(this, this.getClass())
-//	        	.putExtra(BaseDocumentLayoutActivity.DOCUMENT, getCurrentDocument())
-//	        	.putExtra(BaseDocumentLayoutActivity.MODE, LayoutMode.VIEW)
-//	        	.putExtra(BaseDocumentLayoutActivity.FIRST_CALL, false));
-//	        startActivityForResult(viewIntent, BaseDocumentsListActivity.ACTION_EDIT_DOCUMENT);
-//	            return true;
-//	        }
-//  	}
-//  	return super.onOptionsItemSelected(item);
-//  }
 }

@@ -10,7 +10,7 @@ public class SimpleListFragment extends BaseSampleDocumentsListFragment {
 			throws Exception {
 		Documents docs = getNuxeoContext()
 				.getDocumentManager()
-				.query("select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:isCheckedInVersion = 0 order by dc:modified desc",
+				.query("select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:currentLifeCycleState!='deleted' AND ecm:isCheckedInVersion = 0 order by dc:modified desc",
 						null, null, null, 0, 10, cacheParam);
 		if (docs != null) {
 			return docs.asUpdatableDocumentsList();
