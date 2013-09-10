@@ -46,8 +46,10 @@ public class TextWidgetWrapper extends BaseAndroidWidgetWrapper<String>
     public void updateModel(Document doc) {
         if (editWidget != null
                 && !editWidget.getText().toString().equals(getCurrentValue())) {
+        	
+        	String value = editWidget.getText().toString();
             DocumentAttributeResolver.put(doc, getAttributeName(),
-                    editWidget.getText().toString().replaceAll("'", "\""));
+                    value);
         }
     }
 

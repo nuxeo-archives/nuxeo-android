@@ -71,6 +71,14 @@ public class DocumentAttributeResolver {
     }
 
     public static void put(Document doc, String attributeName, Object value) {
+    	
+    	if (value!=null && value instanceof String) {
+    		String strValue = (String)value;
+    		if (strValue !=null && strValue.contains("'")) {
+        		value = strValue.replaceAll("'", "\"");
+        	}
+    	}
+    	
         doc.getProperties().map().put(attributeName, value);
         doc.getDirtyFields().add(attributeName);
     }
