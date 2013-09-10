@@ -200,18 +200,6 @@ public abstract class BaseNuxeoFragment extends Fragment {
         return null;
     }
 
-    public void restart(String paramName, Serializable paramValue) {
-        Intent intent = getActivity().getIntent();
-        getActivity().overridePendingTransition(0, 0);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        if (paramName != null) {
-            intent.putExtra(paramName, paramValue);
-        }
-        getActivity().finish();
-        getActivity().overridePendingTransition(0, 0);
-        startActivity(intent);
-    }
-
     public boolean isReady() {
         return !loadingInProgress;
     }

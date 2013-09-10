@@ -142,6 +142,7 @@ public class ListFragActivity extends FragmentActivity
 //				doRefresh();
 //			}
 		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override

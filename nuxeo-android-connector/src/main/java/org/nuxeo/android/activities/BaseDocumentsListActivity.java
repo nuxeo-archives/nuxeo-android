@@ -285,6 +285,7 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
             	doRefresh();
             }
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     // Content menu handling
