@@ -3,12 +3,8 @@ package org.nuxeo.android.testsfrag;
 import org.nuxeo.android.automationsample.R;
 import org.nuxeo.android.fragments.BaseDocLayoutFragAct;
 import org.nuxeo.android.fragments.BaseDocumentLayoutFragment;
-import org.nuxeo.android.layout.LayoutMode;
-import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
-
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
+import android.widget.Toast;
 
 public class DocumentLayoutFragActivity extends BaseDocLayoutFragAct {
 
@@ -22,14 +18,15 @@ public class DocumentLayoutFragActivity extends BaseDocLayoutFragAct {
 	}
 
 	@Override
-	public void saveDocument(Document doc) {
-        setResult(RESULT_OK, new Intent().putExtra(BaseDocumentLayoutFragment.DOCUMENT, doc));
-        this.finish();
-	}
-
-	@Override
 	public int getFragmentContainerId() {
 		return R.id.edit_frag_container;
 	}
+	
+//	@Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//		//should be called anyway, but isn't...
+//		getDocumentLayoutFrag().onActivityResult(requestCode, resultCode, data);
+//        super.onActivityResult(requestCode, resultCode, data);
+//    }
 
 }

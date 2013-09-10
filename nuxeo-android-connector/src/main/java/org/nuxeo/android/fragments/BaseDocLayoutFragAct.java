@@ -3,6 +3,7 @@ package org.nuxeo.android.fragments;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -55,6 +56,12 @@ public abstract class BaseDocLayoutFragAct extends FragmentActivity  implements 
     	
 		contentTransaction.replace(getFragmentContainerId(), documentLayoutFrag);
 		contentTransaction.commit();
+	}
+
+	@Override
+	public void saveDocument(Document doc) {
+        setResult(RESULT_OK, new Intent().putExtra(BaseDocumentLayoutFragment.DOCUMENT, doc));
+        this.finish();
 	}
 	
 }

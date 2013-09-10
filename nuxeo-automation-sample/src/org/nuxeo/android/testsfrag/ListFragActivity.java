@@ -55,40 +55,17 @@ public class ListFragActivity extends FragmentActivity
 
 	@Override
 	public void viewDocument(LazyUpdatableDocumentsList documentsList, int id) {
-
 		currentDocument = documentsList.getDocument(id);
-		if (mTwoPane) {
-			DocumentLayoutFragment documentLayoutFrag = new DocumentLayoutFragment();
-			FragmentTransaction contentTransaction1 = getSupportFragmentManager()
-					.beginTransaction();
-
-			Bundle args = new Bundle();
-			args.putSerializable(DocumentLayoutFragment.DOCUMENT,
-					currentDocument);
-			args.putSerializable(DocumentLayoutFragment.MODE, LayoutMode.VIEW);
-			args.putBoolean(DocumentLayoutFragment.FIRST_CALL, true);
-			args.putInt(BaseDocumentLayoutFragment.FRAGMENT_CONTAINER_ID,
-					R.id.content_frag_container);
-			documentLayoutFrag.setArguments(args);
-
-			contentTransaction1.replace(R.id.content_frag_container,
-					documentLayoutFrag);
-			contentTransaction1.commit();
-		} else {
-			Intent intent = new Intent(new Intent(getBaseContext(),
-					DocumentLayoutFragActivity.class)
-					.putExtra(DocumentLayoutFragment.DOCUMENT, currentDocument)
-					.putExtra(DocumentLayoutFragment.MODE, LayoutMode.VIEW)
-					.putExtra(DocumentLayoutFragment.FIRST_CALL, true));
-			startActivityForResult(intent,
-					BaseDocumentsListFragment.ACTION_EDIT_DOCUMENT);
-		}
+		viewCurrentDoc();
 	}
-
+	
 	@Override
 	public void viewDocument(Document doc) {
-
 		currentDocument = doc;
+		viewCurrentDoc();
+	}
+	
+	public void viewCurrentDoc() {
 		if (mTwoPane) {
 			DocumentLayoutFragment documentLayoutFrag = new DocumentLayoutFragment();
 			FragmentTransaction contentTransaction1 = getSupportFragmentManager()

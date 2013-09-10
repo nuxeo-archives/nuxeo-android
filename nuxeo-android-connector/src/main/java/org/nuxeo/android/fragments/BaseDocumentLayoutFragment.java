@@ -39,6 +39,9 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
     
     protected BaseDocumentLayoutFragment documentLayoutFragment = null;
     
+    protected static final int ACTION_EDIT_DOCUMENT = 0;
+    public static final int RESULT_OK           = -1;
+    
     public BaseDocumentLayoutFragment() {
     }
     
@@ -127,28 +130,25 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
         }
         return layout;
     }
-
-//
-////    @Override
-////    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-////    	if (requestCode == BaseDocumentsListActivity.ACTION_EDIT_DOCUMENT && resultCode == RESULT_OK)
-////    	{
-////            Document doc = (Document) data.getExtras().get(DOCUMENT);
-////            getLayout().applyChanges(doc);
-////            setResult(RESULT_OK, new Intent().putExtra(DOCUMENT, doc));
-////            this.finish();
-////    	}
-////        if (getLayout() != null) {
-////            layout.onActivityResult(requestCode, resultCode, data);
-////        }
-////    }
-//
+    
+    @Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    	if (requestCode == ACTION_EDIT_DOCUMENT && resultCode == RESULT_OK)
+    	{
+            Document doc = (Document) data.getExtras().get(DOCUMENT);
+            getLayout().applyChanges(doc);
+            saveDocument();
+    	}
+        if (getLayout() != null) {
+            layout.onActivityResult(requestCode, resultCode, data);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    
     protected void saveDocument() {
         Document doc = getCurrentDocument();
         getLayout().applyChanges(doc);
         mCallback.saveDocument(doc);
-//        setResult(RESULT_OK, new Intent().putExtra(DOCUMENT, doc));
-//        this.finish();
     }
 
     @Override
