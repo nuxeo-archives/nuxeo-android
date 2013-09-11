@@ -10,5 +10,11 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_list_frag">ListFragActivity</string>
     <string name="title_activity_basic_frag">BasicFragActivity</string>
+    <string name="title_browse_repo">Browse repository</string>
+    <string name="title_connect">Connect to Nuxeo Server</string>
+    <string name="title_fetch">Simple data Fetch</string>
+    <string name="title_simple_list">Simple Document List</string>
+    <string name="title_doc_provider">Browse using document provider</string>
+    <string name="title_activity_settings">SettingsActivity</string>
 
 </resources>

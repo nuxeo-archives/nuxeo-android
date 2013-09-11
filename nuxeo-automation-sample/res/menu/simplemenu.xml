@@ -15,5 +15,12 @@
         android:showAsAction="ifRoom"
         android:titleCondensed="Settings">
     </item>
+    <item
+        android:id="@+id/itemNetworkConfigFrag"
+        android:enabled="true"
+        android:title="Settings"
+        android:showAsAction="ifRoom"
+        android:titleCondensed="FRSettings">
+    </item>
 
 </menu>

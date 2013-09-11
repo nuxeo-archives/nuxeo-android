@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.nuxeo.android.automation.NetworkSettingsActivity;
 import org.nuxeo.android.automation.ServerSettingsActivity;
+import org.nuxeo.android.automation.fragments.SettingsActivity;
 import org.nuxeo.android.config.NuxeoServerConfig;
 import org.nuxeo.android.context.NuxeoContext;
 import org.nuxeo.android.testsfrag.BasicFragActivity;
@@ -202,6 +203,9 @@ public class HomeSampleActivity extends Activity implements
             startActivity(new Intent(getApplicationContext(),
                     ServerSettingsActivity.class));
             break;
+        case R.id.itemNetworkConfigFrag:
+        	startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+        	break;
         }
         return super.onOptionsItemSelected(item);
     }

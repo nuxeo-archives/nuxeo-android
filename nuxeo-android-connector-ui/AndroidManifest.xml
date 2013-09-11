@@ -19,6 +19,11 @@
             android:label="Settings"
             android:theme="@style/Theme.NuxeoAndroid" >
         </activity>
+        <activity
+            android:name="org.nuxeo.android.automation.fragments.SettingsActivity"
+            android:label="Settings"
+            android:theme="@style/Theme.NuxeoAndroid" >
+        </activity>
     </application>
 
 </manifest>
