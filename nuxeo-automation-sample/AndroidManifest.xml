@@ -28,23 +28,23 @@
         </activity>
         <activity
             android:name="org.nuxeo.android.automationsample.ConnectSampleActivity"
-            android:label="Connect to Nuxeo Server" >
+            android:label="@string/title_connect" >
         </activity>
         <activity
             android:name="org.nuxeo.android.automationsample.SimpleFetchSampleActivty"
-            android:label="Simple Data retrieval" >
+            android:label="@string/title_fetch" >
         </activity>
         <activity
             android:name="org.nuxeo.android.automationsample.SimpleDocumentsListSampleActivity"
-            android:label="Sample for using Document Lists" >
+            android:label="@string/title_simple_list" >
         </activity>
         <activity
             android:name="org.nuxeo.android.automationsample.GetChildrenSampleActivity"
-            android:label="Browse the repository" >
+            android:label="@string/title_browse_repo" >
         </activity>
         <activity
             android:name="org.nuxeo.android.automationsample.DocumentProviderSampleActivity"
-            android:label="Sample for DocumentProviders" >
+            android:label="@string/title_doc_provider" >
         </activity>
         <activity
             android:name="org.nuxeo.android.automationsample.DocumentProviderViewActivity"
@@ -64,6 +64,10 @@
         </activity>
         <activity
             android:name="org.nuxeo.android.automation.ServerSettingsActivity"
+            android:label="Settings" >
+        </activity>
+        <activity
+            android:name="org.nuxeo.android.automation.fragments.SettingsActivity"
             android:label="Settings" >
         </activity>
         <activity
