@@ -9,6 +9,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.IdRef;
 import android.app.Activity;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,25 +51,23 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
     @Override
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Document currentDoc = getCurrentDocument();
         if (isCreateMode()) {
             // can not refresh from the server a not yet existing document
             requireAsyncFetch = false;
         } else {
-            if (currentDoc.getStatusFlag() != DocumentStatus.SYNCHRONIZED) {
+            if (getCurrentDocument().getStatusFlag() != DocumentStatus.SYNCHRONIZED) {
                 // do not refresh if local update
                 requireAsyncFetch = false;
             }
         }
-        setHasOptionsMenu(true);
-        
-//        if (isEditMode()) {
-//            setTitle("Edit " + currentDoc.getType() + " " + getCurrentDocument().getTitle());
-//        } else if (isCreateMode()) {
-//        	setTitle("Create new " + currentDoc.getType());
-//        } else {
-//        	setTitle("View " + currentDoc.getType() + " " + getCurrentDocument().getTitle());
-//        }
+        //TODO remove "fr", just here to help recognizing this from the activity
+        if (isEditMode()) {
+            getActivity().setTitle("Edit ");
+        } else if (isCreateMode()) {
+        	getActivity().setTitle("Create");
+        } else {
+        	getActivity().setTitle("View ");
+        }
     }
 
     protected abstract ViewGroup getLayoutContainer();
@@ -110,6 +109,15 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
             Toast.makeText(getActivity().getBaseContext(), "Refreshed document", Toast.LENGTH_SHORT).show();
         }
         requireAsyncFetch = false;
+        //TODO remove "fr", just here to help recognizing this from the activity
+        if (isEditMode()) {
+            getActivity().setTitle("fr - Edit " + getCurrentDocument().getType() + " " + getCurrentDocument().getTitle());
+        } else if (isCreateMode()) {
+        	getActivity().setTitle("fr - Create new " + getCurrentDocument().getType());
+        } else {
+        	getActivity().setTitle("fr - View " + getCurrentDocument().getType() + " " + getCurrentDocument().getTitle());
+        }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -153,7 +161,7 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-//        if(Build.VERSION.SDK_INT >= 11) {
+        if(Build.VERSION.SDK_INT >= 11) {
         	if (LayoutMode.VIEW == getMode()) {
                 menu.add(Menu.NONE, MNU_SWITCH_EDIT, 2, "Switch to Edit").
                 	setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
@@ -162,14 +170,14 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
             	menu.add(Menu.NONE, MNU_SWITCH_VIEW, 2, "Switch to View").
             	setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
-//        } else {
-//        	if (LayoutMode.VIEW == getMode()) {
-//                menu.add(Menu.NONE, MNU_SWITCH_EDIT, 0, "Switch to Edit");
-//            }
-//            if (LayoutMode.EDIT == getMode()) {
-//                menu.add(Menu.NONE, MNU_SWITCH_VIEW, 0, "Switch to View");
-//            }
-//        }
+        } else {
+        	if (LayoutMode.VIEW == getMode()) {
+                menu.add(Menu.NONE, MNU_SWITCH_EDIT, 0, "Switch to Edit");
+            }
+            if (LayoutMode.EDIT == getMode()) {
+                menu.add(Menu.NONE, MNU_SWITCH_VIEW, 0, "Switch to View");
+            }
+        }
         super.onPrepareOptionsMenu(menu);
     }
     
