@@ -54,23 +54,24 @@ public class GetChildrenSampleFragment extends BaseSampleDocumentsListFragment {
         // let base class fetch the list
         return super.retrieveNuxeoData();
     }
-
-    @Override
-    protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam)
-            throws Exception {
-        Documents docs = getNuxeoContext().getDocumentManager().query(
-                "select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:isCheckedInVersion = 0 AND ecm:parentId=? order by dc:modified desc",
+    
+    protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam,
+			String order) throws Exception {
+		if (order.equals("")) {
+			order = " order by dc:modified desc";
+		}
+		Documents docs = getNuxeoContext().getDocumentManager().query(
+                getBaseQuery() + order,
                 new String[] { getRootUUID() }, null, null, 0, 10, cacheParam);
         if (docs != null) {
             return docs.asUpdatableDocumentsList();
         }
         throw new RuntimeException("fetch Operation did return null");
-    }
+	}
 
     @Override
     public void onListItemClicked(int listItemPosition) {
-        Document selectedDocument = getDocumentsList().getDocument(
-                listItemPosition);
+        Document selectedDocument = documentsList.getDocument(listItemPosition);
         if (selectedDocument.isFolder()) {
         	
         	Bundle args = new Bundle();
@@ -91,5 +92,10 @@ public class GetChildrenSampleFragment extends BaseSampleDocumentsListFragment {
     protected Document initNewDocument(String type) {
         return new Document(getRoot().getPath(), "newAndroidDoc", type);
     }
+
+	@Override
+	protected String getBaseQuery() {
+		return "select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:isCheckedInVersion = 0 AND ecm:parentId=?";
+	}
 
 }

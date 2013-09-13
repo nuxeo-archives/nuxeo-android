@@ -17,10 +17,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -34,6 +36,8 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
 
     protected static final int MNU_NEW_LISTITEM = 10;
 
+    protected static final int MNU_SORT = 100;
+
     protected static final int MNU_REFRESH = 2;
 
     protected static final int CTXMNU_VIEW_DOCUMENT = 0;
@@ -45,7 +49,7 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
     protected static final int CTXMNU_DELETE = 3;
 
     protected boolean refresh = false;
-
+    
     protected LazyUpdatableDocumentsList documentsList;
 
     protected LinkedHashMap<String, String> allowedDocumentTypes;
@@ -61,7 +65,7 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
             cacheParam = (byte) (cacheParam | CacheBehavior.FORCE_REFRESH);
             refresh = false;
         }
-        return fetchDocumentsList(cacheParam);
+        return fetchDocumentsList(cacheParam, "");
     }
 
     protected void forceRefresh() {
@@ -107,8 +111,17 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
     }
     
     protected abstract LazyUpdatableDocumentsList fetchDocumentsList(
-            byte cacheParam) throws Exception;
+            byte cacheParam, String order) throws Exception;
 
+    @Deprecated
+	/**
+	 * @deprecated Since 2.0. prefer @fetchDocumentsList(byte cacheParam, String order)
+	 */
+    protected LazyUpdatableDocumentsList fetchDocumentsList(
+            byte cacheParam) throws Exception{
+    	return fetchDocumentsList(cacheParam, "");
+    }
+    
     protected abstract void displayDocumentList(ListView listView,
             LazyDocumentsList documentsList);
 
@@ -147,7 +160,6 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
         }
     }
 
-    // Activity menu handling
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -155,9 +167,6 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
             doRefresh();
             break;
         default:
-            if (getEditActivityClass() == null) {
-                return true;
-            }
             if (item.getItemId() > MNU_NEW_LISTITEM) {
                 int idx = item.getItemId() - MNU_NEW_LISTITEM - 1;
                 if (idx < getDocTypesForCreation().size()) {
@@ -221,25 +230,14 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
     // Content menu handling
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int selectedPosition = info.position;
         Document doc = getContextMenuDocument(selectedPosition);
 
         if (item.getItemId() == CTXMNU_VIEW_DOCUMENT) {
-            if (getEditActivityClass() == null) {
-                Toast.makeText(getActivity().getBaseContext(), "No View activity defined ",
-                        Toast.LENGTH_SHORT).show();
-                return true;
-            }
             mCallback.viewDocument(doc);
             return true;
         } else if (item.getItemId() == CTXMNU_EDIT_DOCUMENT) {
-            if (getEditActivityClass() == null) {
-                Toast.makeText(getActivity().getBaseContext(), "No Edit activity defined ",
-                        Toast.LENGTH_SHORT).show();
-                return true;
-            }
             mCallback.editDocument(doc);
             return true;
         } else if (item.getItemId() == CTXMNU_VIEW_ATTACHEMENT) {

@@ -177,18 +177,6 @@ public class DocumentProviderSampleActivity extends BaseNuxeoActivity implements
         runAsyncDataRetrieval();
     }
 
-    // Activity menu handling
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.itemNew:
-            startActivityForResult(new Intent(this,
-                    DocumentProviderCreateActivity.class), 0);
-            break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 0 && resultCode == RESULT_OK) {
