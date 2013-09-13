@@ -37,10 +37,13 @@ public class ListFragActivity extends FragmentActivity
 		if(callingIntent.getIntExtra("list", 0)==SIMPLE_LIST) {
 			listFragment = new SimpleListFragment();
 			listTransaction.replace(R.id.list_frag_container, listFragment);
+			setTitle(R.string.title_simple_list);
 		} else if(callingIntent.getIntExtra("list", 0) == DOCUMENT_PROVIDER) {
 			listTransaction.replace(R.id.list_frag_container, new DocumentProviderSampleFragment());
+			setTitle(R.string.title_doc_provider);
 		} else if(callingIntent.getIntExtra("list", 0) == BROWSE_LIST) {
 			listTransaction.replace(R.id.list_frag_container, new GetChildrenSampleFragment());
+			setTitle(R.string.title_browse_repo);
 		}
 		listTransaction.commit();
 		
@@ -86,9 +89,9 @@ public class ListFragActivity extends FragmentActivity
 		} else {
 			Intent intent = new Intent(new Intent(getBaseContext(),
 					DocumentLayoutFragActivity.class)
-					.putExtra(DocumentLayoutFragment.DOCUMENT, currentDocument)
-					.putExtra(DocumentLayoutFragment.MODE, LayoutMode.VIEW)
-					.putExtra(DocumentLayoutFragment.FIRST_CALL, true));
+					.putExtra(BaseDocumentLayoutFragment.DOCUMENT, currentDocument)
+					.putExtra(BaseDocumentLayoutFragment.MODE, LayoutMode.VIEW)
+					.putExtra(BaseDocumentLayoutFragment.FIRST_CALL, true));
 			startActivityForResult(intent,
 					BaseDocumentsListFragment.ACTION_EDIT_DOCUMENT);
 		}
@@ -107,17 +110,13 @@ public class ListFragActivity extends FragmentActivity
 				&& resultCode == RESULT_OK) {
 			if (data.hasExtra(BaseDocumentLayoutActivity.DOCUMENT)) {
 				Document editedDocument = (Document) data.getExtras().get(
-						BaseDocumentLayoutActivity.DOCUMENT);
+						BaseDocumentLayoutFragment.DOCUMENT);
 				saveDocument(editedDocument);
 			}
-//		} else if (requestCode == ACTION_CREATE_DOCUMENT
-//				&& resultCode == RESULT_OK) {
-//			if (data.hasExtra(BaseDocumentLayoutActivity.DOCUMENT)) {
-//				Document newDocument = (Document) data.getExtras().get(
-//						BaseDocumentLayoutActivity.DOCUMENT);
-//				onDocumentCreate(newDocument);
-//				doRefresh();
-//			}
+		} else if (mTwoPane) {
+			DocumentLayoutFragment currentContentFrag = (DocumentLayoutFragment) getSupportFragmentManager()
+					.findFragmentById(R.id.content_frag_container);
+			currentContentFrag.onActivityResult(requestCode, resultCode, data);
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
