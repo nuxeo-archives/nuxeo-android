@@ -198,9 +198,9 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
     
 	public interface Callback {
 
-		// public void exchangeFragments();
+//		 public void exchangeFragments();
 
-		public int getFragmentContainerId();
+		public int getLayoutFragmentContainerId();
 		
 		public void saveDocument(Document doc);
 	}
@@ -288,7 +288,7 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
 	
 	protected int getContainerId() {
 		if (containerId == null) {
-			containerId = mCallback.getFragmentContainerId();
+			containerId = mCallback.getLayoutFragmentContainerId();
 		}
 		return containerId;
 	}

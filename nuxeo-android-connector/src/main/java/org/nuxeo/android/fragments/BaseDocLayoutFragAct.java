@@ -19,7 +19,7 @@ public abstract class BaseDocLayoutFragAct extends FragmentActivity  implements 
 	
 	protected abstract int getActivityLayout();
 	
-	public abstract int getFragmentContainerId();
+	public abstract int getLayoutFragmentContainerId();
 	
 	protected BaseDocumentLayoutFragment documentLayoutFrag;
 		
@@ -51,10 +51,10 @@ public abstract class BaseDocLayoutFragAct extends FragmentActivity  implements 
 		args.putSerializable(BaseDocumentLayoutFragment.DOCUMENT, currentDocument);
     	args.putSerializable(BaseDocumentLayoutFragment.MODE, mode);
     	args.putBoolean(BaseDocumentLayoutFragment.FIRST_CALL, firstCall);
-    	args.putInt(BaseDocumentLayoutFragment.FRAGMENT_CONTAINER_ID, getFragmentContainerId());
+    	args.putInt(BaseDocumentLayoutFragment.FRAGMENT_CONTAINER_ID, getLayoutFragmentContainerId());
     	documentLayoutFrag.setArguments(args);
     	
-		contentTransaction.replace(getFragmentContainerId(), documentLayoutFrag);
+		contentTransaction.replace(getLayoutFragmentContainerId(), documentLayoutFrag);
 		contentTransaction.commit();
 	}
 
