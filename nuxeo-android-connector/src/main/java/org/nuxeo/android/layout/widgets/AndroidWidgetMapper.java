@@ -71,6 +71,9 @@ public class AndroidWidgetMapper {
         if ("template".equals(wDef.getType())) {
             String templateName = wDef.getProperties().optString("template");
             if (templateName != null) {
+            	if (templateName.contains("contributors")) {
+            		return "text";
+            	}
                 if (templateName.contains("extended_file_widget")) {
                     return "blob";
                 } else if (templateName.contains("single_user_widget_template")) {

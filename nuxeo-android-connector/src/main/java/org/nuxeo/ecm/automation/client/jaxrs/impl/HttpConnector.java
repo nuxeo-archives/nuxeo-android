@@ -122,9 +122,16 @@ public class HttpConnector implements Connector {
         for (Map.Entry<String, String> entry : request.entrySet()) {
             httpReq.setHeader(entry.getKey(), entry.getValue());
         }
+   
         HttpResponse resp = http.execute(httpReq, ctx);
         HttpEntity entity = resp.getEntity();
         int status = resp.getStatusLine().getStatusCode();
+
+    	Request debug = request;
+        //XXX
+        if (status == 401) {
+        	String debugS = debug.toString();
+        }
         if (entity == null) {
             if (status < 400) {
                 return null;

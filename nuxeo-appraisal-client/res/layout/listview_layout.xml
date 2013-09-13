@@ -19,6 +19,7 @@
         <ImageButton
             android:id="@+id/refreshBtn"
             android:layout_width="wrap_content"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:background="@drawable/android:btn_default_small"
             android:src="@drawable/android:stat_notify_sync"

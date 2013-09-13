@@ -199,6 +199,16 @@ public abstract class BaseNuxeoFragment extends Fragment {
         }
         return null;
     }
+    
+    protected <T> T getInitFragmentParam(String name, Class<T> type) {
+    	if (getArguments() != null) {
+    		Object value = getArguments().get(name);
+    		if (value != null){
+                return type.cast(value);
+            }
+        }
+        return null;
+    }
 
     public boolean isReady() {
         return !loadingInProgress;
