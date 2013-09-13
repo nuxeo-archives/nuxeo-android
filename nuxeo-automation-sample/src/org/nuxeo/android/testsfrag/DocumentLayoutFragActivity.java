@@ -22,11 +22,14 @@ public class DocumentLayoutFragActivity extends BaseDocLayoutFragAct {
 		return R.id.edit_frag_container;
 	}
 	
-//	@Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//		//should be called anyway, but isn't...
-//		getDocumentLayoutFrag().onActivityResult(requestCode, resultCode, data);
-//        super.onActivityResult(requestCode, resultCode, data);
-//    }
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		//we have to call DocumentLayoutFrag().onActivityResult because activities in wrappers are called from this activity context
+
+		DocumentLayoutFragment currentContentFrag = (DocumentLayoutFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.edit_frag_container);
+		currentContentFrag.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
 }

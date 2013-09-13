@@ -60,7 +60,6 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
                 requireAsyncFetch = false;
             }
         }
-        //TODO remove "fr", just here to help recognizing this from the activity
         if (isEditMode()) {
             getActivity().setTitle("Edit ");
         } else if (isCreateMode()) {
@@ -109,13 +108,12 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
             Toast.makeText(getActivity().getBaseContext(), "Refreshed document", Toast.LENGTH_SHORT).show();
         }
         requireAsyncFetch = false;
-        //TODO remove "fr", just here to help recognizing this from the activity
         if (isEditMode()) {
-            getActivity().setTitle("fr - Edit " + getCurrentDocument().getType() + " " + getCurrentDocument().getTitle());
+            getActivity().setTitle("Edit " + getCurrentDocument().getType() + " " + getCurrentDocument().getTitle());
         } else if (isCreateMode()) {
-        	getActivity().setTitle("fr - Create new " + getCurrentDocument().getType());
+        	getActivity().setTitle("Create new " + getCurrentDocument().getType());
         } else {
-        	getActivity().setTitle("fr - View " + getCurrentDocument().getType() + " " + getCurrentDocument().getTitle());
+        	getActivity().setTitle("View " + getCurrentDocument().getType() + " " + getCurrentDocument().getTitle());
         }
         setHasOptionsMenu(true);
     }
@@ -225,8 +223,10 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
+		if (item.getItemId() == MNU_SWITCH_EDIT || item.getItemId() == MNU_SWITCH_VIEW) {
+			exchangeFragments();
+		}
 		
-		exchangeFragments();
 //		if (isFirstCall() == false) {
 //			exchangeFragments();
 //		} else {
