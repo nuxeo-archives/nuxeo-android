@@ -12,13 +12,6 @@
         android:gravity="center"
         android:text="...loading..." />
 
-    <TextView
-        android:id="@+id/currentDocTitle"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:visibility="gone" />
-
     <Button
         android:id="@+id/updateDocument"
         android:layout_width="100dp"

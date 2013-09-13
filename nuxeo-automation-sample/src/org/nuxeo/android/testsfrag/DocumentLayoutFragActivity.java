@@ -18,7 +18,7 @@ public class DocumentLayoutFragActivity extends BaseDocLayoutFragAct {
 	}
 
 	@Override
-	public int getFragmentContainerId() {
+	public int getLayoutFragmentContainerId() {
 		return R.id.edit_frag_container;
 	}
 	

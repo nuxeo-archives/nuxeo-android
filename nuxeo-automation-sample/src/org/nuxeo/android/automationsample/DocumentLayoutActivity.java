@@ -97,9 +97,6 @@ public class DocumentLayoutActivity extends BaseDocumentLayoutActivity
             	ImageView imageView = (ImageView)findViewById(R.id.thumb);
             	imageView.setVisibility(View.VISIBLE);
             	imageView.setImageURI(currentDocument.getBlob());
-            	TextView title = ((TextView) findViewById(R.id.currentDocTitle));
-            	title.setText(getCurrentDocument().getType() + " " + getCurrentDocument().getTitle());
-            	title.setVisibility(View.VISIBLE);
     		}
     	}
     }

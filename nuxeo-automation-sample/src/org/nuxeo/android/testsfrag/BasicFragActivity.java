@@ -26,8 +26,10 @@ public class BasicFragActivity extends FragmentActivity {
 		Intent callingIntent = getIntent();
 		if(callingIntent.getIntExtra("frag", 0) == CONNECT) {
 			listTransaction.replace(R.id.basic_fragment_container, new ConnnectSampleFragment());
+			setTitle(R.string.title_connect);
 		} else if(callingIntent.getIntExtra("frag", 0) == FETCH_DOCUMENT) {
 			listTransaction.replace(R.id.basic_fragment_container, new SimpleFetchSampleFragment());
+			setTitle(R.string.title_fetch);
 		}
 		listTransaction.commit();
 		

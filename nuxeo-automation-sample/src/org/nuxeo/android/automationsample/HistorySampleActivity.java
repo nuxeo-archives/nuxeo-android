@@ -55,7 +55,7 @@ public class HistorySampleActivity extends BaseNuxeoActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.history);
-        title = (TextView) findViewById(R.id.currentDocTitle);
+        title = (TextView) findViewById(R.id.currentDocTitleH);
         title.setText("History for " + getCurrentDocument().getTitle());
         auditList = (TextView) findViewById(R.id.historyContent);
     }
