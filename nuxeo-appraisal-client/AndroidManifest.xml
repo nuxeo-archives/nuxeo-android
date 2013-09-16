@@ -56,6 +56,10 @@
             android:name="org.nuxeo.android.appraisal.fragments.LayoutFragActivity"
             android:label="@string/title_activity_document_layout_frag" >
         </activity>
+        <activity
+            android:name="org.nuxeo.android.automation.fragments.SettingsActivity"
+            android:label="@string/title_activity_document_layout_frag" >
+        </activity>
     </application>
 
 </manifest>

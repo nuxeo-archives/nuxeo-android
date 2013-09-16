@@ -11,7 +11,6 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.support.v4.app.FragmentTransaction;
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -57,7 +56,6 @@ public class MainActivity extends BaseListFragmentActivity implements
 	
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
-		menu.clear();
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			menu.add(Menu.NONE, SHOW_ACTIVITIES, 3, "Show activities").setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 		} else {
@@ -105,10 +103,17 @@ public class MainActivity extends BaseListFragmentActivity implements
 	public Class<? extends BaseDocLayoutFragAct> getLayoutFragmentActivity() {
 		return LayoutFragActivity.class;
 	}
-
+	
 	@Override
 	public void saveDocument(Document doc) {
 		listFragment = (BaseDocumentsListFragment) getSupportFragmentManager().findFragmentById(R.id.list_frag_container);
 		super.saveDocument(doc);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == RESULT_CANCELED) {
+			((AppraisalListFragment)getSupportFragmentManager().findFragmentById(R.id.list_frag_container)).doRefresh();
+		} else super.onActivityResult(requestCode, resultCode, data);
 	}
 }
