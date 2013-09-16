@@ -18,8 +18,6 @@
 package org.nuxeo.android.fragments;
 
 import java.io.File;
-import java.io.Serializable;
-
 import org.nuxeo.android.context.NuxeoContext;
 import org.nuxeo.ecm.automation.client.android.AndroidAutomationClient;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;

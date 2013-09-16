@@ -64,4 +64,15 @@ public abstract class BaseDocLayoutFragAct extends FragmentActivity  implements 
         this.finish();
 	}
 	
+
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		//we have to call DocumentLayoutFrag().onActivityResult because activities in wrappers are called from this activity context
+
+		BaseDocumentLayoutFragment currentContentFrag = (BaseDocumentLayoutFragment) getSupportFragmentManager()
+				.findFragmentById(getLayoutFragmentContainerId());
+		currentContentFrag.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+	
 }

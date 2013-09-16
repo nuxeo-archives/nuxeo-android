@@ -1,15 +1,11 @@
 package org.nuxeo.android.testsfrag;
 
-import org.nuxeo.android.activities.BaseDocumentLayoutActivity;
 import org.nuxeo.android.automationsample.R;
 import org.nuxeo.android.documentprovider.DocumentProviderSampleFragment;
-import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.android.fragments.BaseDocLayoutFragAct;
 import org.nuxeo.android.fragments.BaseDocumentLayoutFragment;
 import org.nuxeo.android.fragments.BaseDocumentsListFragment;
 import org.nuxeo.android.fragments.BaseListFragmentActivity;
-import org.nuxeo.android.layout.LayoutMode;
-import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +19,9 @@ public class ListFragActivity extends BaseListFragmentActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_list_frag);
 
+		if(savedInstanceState != null) {
+			return;
+		}
 		FragmentTransaction listTransaction = getSupportFragmentManager().beginTransaction();
 		Intent callingIntent = getIntent();
 		if(callingIntent.getIntExtra("list", 0)==SIMPLE_LIST) {
@@ -39,7 +38,6 @@ public class ListFragActivity extends BaseListFragmentActivity
 		listTransaction.commit();
 		
 		if (findViewById(R.id.content_frag_container) != null) {
-			mTwoPane = true;
 			//we can preload a document here :
 //			FragmentTransaction contentTransaction = getSupportFragmentManager().beginTransaction();
 //			contentTransaction.replace(R.id.content_frag_container, new SimpleFetchSampleFragment());
@@ -67,6 +65,11 @@ public class ListFragActivity extends BaseListFragmentActivity
 	@Override
 	public Class<? extends BaseDocLayoutFragAct> getLayoutFragmentActivity() {
 		return DocumentLayoutFragActivity.class;
+	}
+
+	@Override
+	public int getListFragmentContainerId() {
+		return R.id.list_frag_container;
 	}
 	
 }

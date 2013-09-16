@@ -15,6 +15,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -54,11 +55,9 @@ public class AppraisalContentListFragment extends BaseDocumentsListFragment {
 		if(order == ""){
 			order = " order by dc:modified desc";
 		}
-		Bundle args = getArguments();
-		Document doc = (Document) args.getSerializable(ROOT_DOC_PARAM);
         Documents docs = getNuxeoContext().getDocumentManager().query(
                 "select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:currentLifeCycleState!='deleted' AND ecm:isCheckedInVersion = 0 AND ecm:parentId=?" + order,
-                new String[] { doc.getId() },
+                new String[] { getInitFragmentParam(ROOT_DOC_PARAM, Document.class).getId() },
                 null, null, 0, 10, cacheParam);
         if (docs != null) {
         	if (docs.size()==0)
@@ -75,7 +74,7 @@ public class AppraisalContentListFragment extends BaseDocumentsListFragment {
 			LazyDocumentsList documentsList) {
     	DocumentsListAdapter adapter = new DocumentsListAdapter(getActivity(),
                 documentsList, R.layout.picture_item, getMapping());
-//        getActivity().setTitle(getInitParamFromActivity(ROOT_DOC_PARAM, Document.class).getName() + " pictures");
+        getActivity().setTitle(getInitFragmentParam(ROOT_DOC_PARAM, Document.class).getName() + " pictures");
         if(emptyList)
         {
         	Toast.makeText(getActivity().getBaseContext(), "No pictures to display", Toast.LENGTH_LONG).show();
@@ -100,5 +99,16 @@ public class AppraisalContentListFragment extends BaseDocumentsListFragment {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case MNU_REFRESH:
+            doRefresh();
+            break;
+        }
+        return false;
+    }
 
 }

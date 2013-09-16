@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
@@ -278,9 +279,8 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
     }
     
     @Override
-	public void onPrepareOptionsMenu(Menu menu) {
-		super.onPrepareOptionsMenu(menu);
-		menu.clear();
+    public void onCreateOptionsMenu (Menu menu, MenuInflater inflater){
+    	super.onCreateOptionsMenu(menu, inflater);
 		LinkedHashMap<String, String> types = getDocTypesForCreation();
 		if (Build.VERSION.SDK_INT >= 11) {
 			if (types.size() > 0) {
