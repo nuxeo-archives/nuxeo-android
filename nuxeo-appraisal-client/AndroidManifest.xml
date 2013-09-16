@@ -29,11 +29,6 @@
             android:name="org.nuxeo.android.appraisal.AppraisalLayoutActivity"
             android:label="Appraisal view" >
         </activity>
-        <!--
-        <activity android:name="DocumentLayoutActivity"
-                  android:label="CreateEditActivity" android:theme="@style/Theme.NuxeoAndroid">
-        </activity>
-        -->
         <activity
             android:name="org.nuxeo.android.automation.NetworkSettingsActivity"
             android:label="Nuxeo Offline Settings" >
@@ -44,7 +39,7 @@
         </activity>
         <activity
             android:name="org.nuxeo.android.appraisal.fragments.MainActivity"
-            android:label="Main" >
+            android:label="Pending appraisal assigned to me" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -58,7 +53,11 @@
         </provider>
 
         <activity
-            android:name="org.nuxeo.android.appraisal.fragments.DocumentLayoutFragAct"
+            android:name="org.nuxeo.android.appraisal.fragments.LayoutFragActivity"
+            android:label="@string/title_activity_document_layout_frag" >
+        </activity>
+        <activity
+            android:name="org.nuxeo.android.automation.fragments.SettingsActivity"
             android:label="@string/title_activity_document_layout_frag" >
         </activity>
     </application>

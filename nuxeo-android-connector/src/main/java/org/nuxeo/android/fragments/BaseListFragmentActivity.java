@@ -27,14 +27,23 @@ public abstract class BaseListFragmentActivity extends FragmentActivity implemen
 
 	public BaseListFragmentActivity() {
 	}
-	
+
 	@Override
+	protected void onStart() {
+		super.onStart();
+		if (findViewById(getLayoutFragmentContainerId()) != null) {
+			mTwoPane = true;
+		}
+	}
+	
 	public abstract int getLayoutFragmentContainerId();
+	public abstract int getListFragmentContainerId();
 	
 	public abstract BaseDocumentLayoutFragment getLayoutFragment();
 
 	@Override
 	public void saveDocument(Document doc) {
+		listFragment = (BaseDocumentsListFragment) getSupportFragmentManager().findFragmentById(getListFragmentContainerId());
 		listFragment.onDocumentUpdate(doc);
 		listFragment.doRefresh();
 	}

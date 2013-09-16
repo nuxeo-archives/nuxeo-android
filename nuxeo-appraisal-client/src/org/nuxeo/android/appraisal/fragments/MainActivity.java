@@ -4,15 +4,14 @@ import org.nuxeo.android.appraisal.AppraisalListActivity;
 import org.nuxeo.android.appraisal.R;
 import org.nuxeo.android.fragments.BaseDocLayoutFragAct;
 import org.nuxeo.android.fragments.BaseDocumentLayoutFragment;
+import org.nuxeo.android.fragments.BaseDocumentsListFragment;
 import org.nuxeo.android.fragments.BaseListFragmentActivity;
+import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NavUtils;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
@@ -21,12 +20,17 @@ public class MainActivity extends BaseListFragmentActivity implements
 		AppraisalListFragment.Callback {
 	
 	public static String FIRST_CALL = "first_call";
+	
+	protected final int SHOW_ACTIVITIES = 1010101;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_list_frag);
 
+		if(savedInstanceState != null) {
+			return;
+		}
 		FragmentTransaction listTransaction = getSupportFragmentManager()
 				.beginTransaction();
 		listFragment = new AppraisalListFragment();
@@ -49,6 +53,16 @@ public class MainActivity extends BaseListFragmentActivity implements
 			getActionBar().setDisplayHomeAsUpEnabled(false);
 		}
 	}
+	
+	@Override
+	public boolean onCreateOptionsMenu (Menu menu) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			menu.add(Menu.NONE, SHOW_ACTIVITIES, 3, "Show activities").setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+		} else {
+			menu.add(Menu.NONE, SHOW_ACTIVITIES, 3, "Show activities");
+		}
+		return super.onCreateOptionsMenu(menu);
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -63,6 +77,9 @@ public class MainActivity extends BaseListFragmentActivity implements
 			//
 //			NavUtils.navigateUpFromSameTask(this);
 			return true;
+		case SHOW_ACTIVITIES :
+			startActivity(new Intent(this, AppraisalListActivity.class));
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -71,21 +88,32 @@ public class MainActivity extends BaseListFragmentActivity implements
 	public int getLayoutFragmentContainerId() {
 		return R.id.content_frag_container;
 	}
+	
+	@Override
+	public int getListFragmentContainerId() {
+		return R.id.list_frag_container;
+	}
 
 	@Override
 	public BaseDocumentLayoutFragment getLayoutFragment() {
-		// TODO Auto-generated method stub
-		return null;
+		return new LayoutFragment();
 	}
 
 	@Override
 	public Class<? extends BaseDocLayoutFragAct> getLayoutFragmentActivity() {
-		// TODO Auto-generated method stub
-		return null;
+		return LayoutFragActivity.class;
 	}
 	
-	public void ShowAct(View v) {
-		startActivity(new Intent(this, AppraisalListActivity.class));
+	@Override
+	public void saveDocument(Document doc) {
+		listFragment = (BaseDocumentsListFragment) getSupportFragmentManager().findFragmentById(R.id.list_frag_container);
+		super.saveDocument(doc);
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode != 0 && resultCode == RESULT_CANCELED) {
+			((AppraisalListFragment)getSupportFragmentManager().findFragmentById(R.id.list_frag_container)).doRefresh();
+		} else super.onActivityResult(requestCode, resultCode, data);
+	}
 }

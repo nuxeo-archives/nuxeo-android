@@ -8,15 +8,7 @@
     <FrameLayout
         android:id="@+id/list_frag_container"
         android:layout_width="wrap_content"
-        android:layout_height="0dip"
-        android:layout_weight="1" >
+        android:layout_height="match_parent" >
     </FrameLayout>
-
-    <Button
-        android:id="@+id/show_act_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="ShowAct"
-        android:text="Show activities" />
 
 </LinearLayout>

@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -156,9 +157,10 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
         getLayout().applyChanges(doc);
         mCallback.saveDocument(doc);
     }
-
+    
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
+    public void onCreateOptionsMenu (Menu menu, MenuInflater inflater){
+    	super.onCreateOptionsMenu(menu, inflater);
         if(Build.VERSION.SDK_INT >= 11) {
         	if (LayoutMode.VIEW == getMode()) {
                 menu.add(Menu.NONE, MNU_SWITCH_EDIT, 2, "Switch to Edit").
@@ -176,7 +178,7 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
                 menu.add(Menu.NONE, MNU_SWITCH_VIEW, 0, "Switch to View");
             }
         }
-        super.onPrepareOptionsMenu(menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
     
     public boolean isFirstCall() {

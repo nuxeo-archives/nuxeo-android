@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.nuxeo.android.adapters.AbstractDocumentListAdapter;
 import org.nuxeo.android.adapters.DocumentsListAdapter;
-import org.nuxeo.android.appraisal.AppraisalContentListActivity;
 import org.nuxeo.android.appraisal.R;
+import org.nuxeo.android.automation.fragments.SettingsActivity;
 import org.nuxeo.android.documentprovider.LazyDocumentsList;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.android.fragments.BaseDocLayoutFragAct;
@@ -16,8 +16,12 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
 import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -27,8 +31,6 @@ public class AppraisalListFragment extends BaseDocumentsListFragment {
 
 	protected static final int MNU_CONFIG = 20;
 
-	protected static final int MNU_NETWORK_CONFIG = 21;
-
 	protected static final int MNU_SERVER_CONFIG = 22;
 
 	protected static final int CTXMNU_VIEW_PICTURES = 10;
@@ -36,8 +38,6 @@ public class AppraisalListFragment extends BaseDocumentsListFragment {
 	protected static final int CTXMNU_VALIDATE = 20;
 
 	protected static final int CTXMNU_DELETE = 30;
-
-	protected static final int REQUEST_NETWORK = 1;
 
 	protected static final int REQUEST_SERVER = 1;
 
@@ -119,5 +119,30 @@ public class AppraisalListFragment extends BaseDocumentsListFragment {
 		transaction.addToBackStack(null);
 		transaction.commit();
 	}
+	
+	@Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflate) {
+		if (Build.VERSION.SDK_INT >= 11) {
+	        menu.add(Menu.NONE, MNU_SERVER_CONFIG, 0, "Settings").
+	        	setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+	        menu.add(Menu.NONE, MNU_REFRESH, 1, "Refresh").
+	        	setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+			} else {
+	        menu.add(Menu.NONE, MNU_SERVER_CONFIG, 0, "Settings");
+	        menu.add(Menu.NONE, MNU_REFRESH, 1, "Refresh");
+			}
+    }
+	
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+        case MNU_SERVER_CONFIG:
+            startActivityForResult(new Intent(getActivity().getApplicationContext(),
+                    SettingsActivity.class), REQUEST_SERVER);
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
 
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" 
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="2dip" >
 
@@ -11,47 +11,40 @@
         android:text="@string/hello" />
 
     <Button
-        android:id="@+id/nuxFragBtn"
+        android:id="@+id/connect"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Fragments basic tests" >
+        android:text="Connect on test server" >
     </Button>
 
     <Button
-        android:id="@+id/connect_frag"
+        android:id="@+id/fetch_doc"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Connect on test server fragment" >
+        android:text="Fetch document and associated resources" >
     </Button>
 
     <Button
-        android:id="@+id/fetch_doc_frag"
+        android:id="@+id/simple_list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Fetch document and associated resources fragment" >
-    </Button>
-
-	<Button
-	    android:id="@+id/simple_list_frag"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:text="Simple document list fragment" >
-	</Button>
-
-    <Button
-        android:id="@+id/browse_frag"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Browse repository fragment" >
+        android:text="Simple Document Lists" >
     </Button>
 
     <Button
-        android:id="@+id/docProvider_frag_btn"
+        android:id="@+id/browse"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Browse repository" >
+    </Button>
+
+    <Button
+        android:id="@+id/docProviderBtn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Using DocumentProvider" >
     </Button>
-    
+
     <Button
         android:id="@+id/contentProviderBtn"
         android:layout_width="fill_parent"
