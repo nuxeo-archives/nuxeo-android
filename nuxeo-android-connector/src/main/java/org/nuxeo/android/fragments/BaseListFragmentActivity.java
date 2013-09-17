@@ -49,73 +49,40 @@ public abstract class BaseListFragmentActivity extends FragmentActivity implemen
 	}
 
 	@Override
-	public void viewDocument(LazyUpdatableDocumentsList documentsList, int id) {
-		currentDocument = documentsList.getDocument(id);
-		viewCurrentDoc();
-	}
-
-	@Override
-	public void viewDocument(Document doc) {
+	public void openDocument(Document doc, LayoutMode mode) {
 		currentDocument = doc;
-		viewCurrentDoc();
-	}
-
-	public void viewCurrentDoc() {
 		if (mTwoPane) {
 			BaseDocumentLayoutFragment documentLayoutFrag = getLayoutFragment();
-			FragmentTransaction contentTransaction1 = getSupportFragmentManager()
+			FragmentTransaction transaction = getSupportFragmentManager()
 					.beginTransaction();
 
 			Bundle args = new Bundle();
 			args.putSerializable(BaseDocumentLayoutFragment.DOCUMENT,
 					currentDocument);
-			args.putSerializable(BaseDocumentLayoutFragment.MODE, LayoutMode.VIEW);
+			args.putSerializable(BaseDocumentLayoutFragment.MODE, mode);
 			args.putBoolean(BaseDocumentLayoutFragment.FIRST_CALL, true);
 			args.putInt(BaseDocumentLayoutFragment.FRAGMENT_CONTAINER_ID,
 					getLayoutFragmentContainerId());
 			documentLayoutFrag.setArguments(args);
 
-			contentTransaction1.replace(getLayoutFragmentContainerId(),
+			transaction.replace(getLayoutFragmentContainerId(),
 					documentLayoutFrag);
-			contentTransaction1.commit();
+			transaction.commit();
 		} else {
 			Intent intent = new Intent(new Intent(getBaseContext(),
 					getLayoutFragmentActivity())
 					.putExtra(BaseDocumentLayoutFragment.DOCUMENT, currentDocument)
-					.putExtra(BaseDocumentLayoutFragment.MODE, LayoutMode.VIEW)
+					.putExtra(BaseDocumentLayoutFragment.MODE, mode)
 					.putExtra(BaseDocumentLayoutFragment.FIRST_CALL, true));
-			startActivityForResult(intent,
-					BaseDocumentsListFragment.ACTION_EDIT_DOCUMENT);
+			if (mode == LayoutMode.CREATE) {
+				startActivityForResult(intent, BaseDocumentsListFragment.ACTION_CREATE_DOCUMENT);
+			} else {
+				startActivityForResult(intent, BaseDocumentsListFragment.ACTION_EDIT_DOCUMENT);
+			}					
 		}
 	}
-	
+
 	public abstract Class <? extends BaseDocLayoutFragAct> getLayoutFragmentActivity();
-
-	@Override
-	public void editDocument(Document doc) {
-
-    	currentDocument = doc;
-		if (mTwoPane) {
-			BaseDocumentLayoutFragment documentLayoutFrag = getLayoutFragment();
-			FragmentTransaction contentTransaction1 = getSupportFragmentManager().beginTransaction();
-			
-			Bundle args = new Bundle();
-			args.putSerializable(BaseDocumentLayoutFragment.DOCUMENT, currentDocument);
-        	args.putSerializable(BaseDocumentLayoutFragment.MODE, LayoutMode.EDIT);
-        	args.putBoolean(BaseDocumentLayoutFragment.FIRST_CALL, true);
-        	args.putInt(BaseDocumentLayoutFragment.FRAGMENT_CONTAINER_ID, getLayoutFragmentContainerId());
-        	documentLayoutFrag.setArguments(args);
-        	
-			contentTransaction1.replace(getLayoutFragmentContainerId(), documentLayoutFrag);
-			contentTransaction1.commit();
-        } else {
-            Intent intent = new Intent(new Intent(getBaseContext(), getLayoutFragmentActivity())
-            	.putExtra(BaseDocumentLayoutFragment.DOCUMENT, currentDocument)
-            	.putExtra(BaseDocumentLayoutFragment.MODE, LayoutMode.EDIT)
-            	.putExtra(BaseDocumentLayoutFragment.FIRST_CALL, true));
-            startActivityForResult(intent, BaseDocumentsListFragment.ACTION_EDIT_DOCUMENT);
-        }
-	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
