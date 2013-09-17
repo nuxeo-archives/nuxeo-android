@@ -176,13 +176,7 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
                     forceRefresh();
                     Document newDoc = initNewDocument(type);
                     if (newDoc != null) {
-                        startActivityForResult(
-                                new Intent(getActivity().getBaseContext(), getEditActivityClass()).putExtra(
-                                        BaseDocumentLayoutActivity.DOCUMENT,
-                                        newDoc).putExtra(
-                                        BaseDocumentLayoutActivity.MODE,
-                                        LayoutMode.CREATE),
-                                ACTION_CREATE_DOCUMENT);
+                    	mCallback.openDocument(newDoc, LayoutMode.CREATE);
                     }
                 }
 
@@ -191,13 +185,7 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
                     forceRefresh();
                     Document newDoc = initNewDocument(getDocTypesForCreation().keySet().iterator().next());
                     if (newDoc != null) {
-                        startActivityForResult(
-                                new Intent(getActivity().getBaseContext(), getEditActivityClass()).putExtra(
-                                        BaseDocumentLayoutActivity.DOCUMENT,
-                                        newDoc).putExtra(
-                                        BaseDocumentLayoutActivity.MODE,
-                                        LayoutMode.CREATE),
-                                ACTION_CREATE_DOCUMENT);
+                    	mCallback.openDocument(newDoc, LayoutMode.CREATE);
                     }
                 }
             }
@@ -208,9 +196,7 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
     }
 
     public interface Callback {
-    	void viewDocument(Document doc);
-    	void editDocument(Document doc);
-		void viewDocument(LazyUpdatableDocumentsList documentsList, int listItemPosition);
+    	void openDocument(Document newDoc, LayoutMode create);
     }
     
     protected Callback mCallback;
@@ -236,10 +222,10 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
         Document doc = getContextMenuDocument(selectedPosition);
 
         if (item.getItemId() == CTXMNU_VIEW_DOCUMENT) {
-            mCallback.viewDocument(doc);
+            mCallback.openDocument(doc, LayoutMode.VIEW);
             return true;
         } else if (item.getItemId() == CTXMNU_EDIT_DOCUMENT) {
-            mCallback.editDocument(doc);
+            mCallback.openDocument(doc, LayoutMode.EDIT);
             return true;
         } else if (item.getItemId() == CTXMNU_VIEW_ATTACHEMENT) {
             Uri blobUri = doc.getBlob();
@@ -269,7 +255,7 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
 
     @Override
     protected void onListItemClicked(int listItemPosition) {
-		mCallback.viewDocument(documentsList, listItemPosition);
+		mCallback.openDocument(documentsList.getDocument(listItemPosition), LayoutMode.VIEW);
     }
     
     @Override
