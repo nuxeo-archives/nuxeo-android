@@ -36,19 +36,6 @@ public abstract class BaseListFragmentActivity extends FragmentActivity implemen
 	public abstract BaseDocumentLayoutFragment getLayoutFragment();
 
 	@Override
-	public void saveDocument(Document doc) {
-		listFragment = (BaseDocumentsListFragment) getSupportFragmentManager().findFragmentById(getListFragmentContainerId());
-		listFragment.onDocumentUpdate(doc);
-		listFragment.doRefresh();
-		if(mTwoPane){
-			FragmentManager fragManager = getSupportFragmentManager();
-			FragmentTransaction transaction = fragManager.beginTransaction();
-			transaction.detach(fragManager.findFragmentById(getLayoutFragmentContainerId()));
-			transaction.commit();
-		}
-	}
-
-	@Override
 	public void saveNewDocument(Document doc) {
 		listFragment = (BaseDocumentsListFragment) getSupportFragmentManager()
 				.findFragmentById(getListFragmentContainerId());
@@ -79,14 +66,7 @@ public abstract class BaseListFragmentActivity extends FragmentActivity implemen
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == BaseDocumentsListFragment.ACTION_EDIT_DOCUMENT
-				&& resultCode == RESULT_OK) {
-			if (data.hasExtra(BaseDocumentLayoutActivity.DOCUMENT)) {
-				Document editedDocument = (Document) data.getExtras().get(
-						BaseDocumentLayoutFragment.DOCUMENT);
-				saveDocument(editedDocument);
-			}
-		} else if (requestCode == BaseDocumentsListFragment.ACTION_CREATE_DOCUMENT
+		if (requestCode == BaseDocumentsListFragment.ACTION_CREATE_DOCUMENT
 				&& resultCode == RESULT_OK) {
 			if (data.hasExtra(BaseDocumentLayoutActivity.DOCUMENT)) {
 				Document newDocument = (Document) data.getExtras().get(

@@ -156,18 +156,50 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-    
-    protected void saveDocument() {
-        Document doc = getCurrentDocument();
-        getLayout().applyChanges(doc);
-        LayoutMode mode = (LayoutMode) getArguments().getSerializable(MODE);
-        if(mode == LayoutMode.EDIT) {
-        	mCallback.saveDocument(doc);
-        } else {
-        	mCallback.saveNewDocument(doc);
-        }
-    }
-    
+
+	protected void saveDocument() {
+		Document doc = getCurrentDocument();
+		getLayout().applyChanges(doc);
+		LayoutMode mode = (LayoutMode) getArguments().getSerializable(MODE);
+		if (mode == LayoutMode.EDIT) {
+			if (mCallback.isTwoPane()) {
+				BaseDocumentsListFragment listFragment = (BaseDocumentsListFragment) getFragmentManager()
+						.findFragmentById(
+								mCallback.getListFragmentContainerId());
+				listFragment.saveDocument(doc);
+			} else {
+				getActivity().setResult(
+						Activity.RESULT_OK,
+						new Intent().putExtra(
+								BaseDocumentLayoutFragment.DOCUMENT, doc));
+				getActivity().finish();
+			}
+		} else {
+			mCallback.saveNewDocument(doc);
+		}
+	}
+
+//	public void saveDocument(Document doc) {
+//		if (mCallback.isTwoPane()) {
+//			BaseDocumentsListFragment listFragment = (BaseDocumentsListFragment) getFragmentManager()
+//					.findFragmentById(mCallback.getListFragmentContainerId());
+//			listFragment.onDocumentUpdate(doc);
+//			listFragment.doRefresh();
+//			if (mCallback.isTwoPane()) {
+//				FragmentManager fragManager = getFragmentManager();
+//				FragmentTransaction transaction = fragManager
+//						.beginTransaction();
+//				transaction.detach(fragManager
+//						.findFragmentById(mCallback.getLayoutFragmentContainerId()));
+//				transaction.commit();
+//			} else {
+//				getActivity().setResult(Activity.RESULT_OK, new Intent().putExtra(
+//						BaseDocumentLayoutFragment.DOCUMENT, doc));
+//				getActivity().finish();
+//			}
+//		}
+//	}
+
     @Override
     public void onCreateOptionsMenu (Menu menu, MenuInflater inflater){
     	super.onCreateOptionsMenu(menu, inflater);
@@ -214,9 +246,11 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
 
 		public int getLayoutFragmentContainerId();
 		
-		public void saveNewDocument(Document doc);
+		public boolean isTwoPane();
 
-		public void saveDocument(Document doc);
+		public int getListFragmentContainerId();
+
+		public void saveNewDocument(Document doc);
 	}
 
 	protected Callback mCallback;

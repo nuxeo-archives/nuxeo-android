@@ -60,14 +60,9 @@ public abstract class BaseDocLayoutFragAct extends FragmentActivity  implements 
 
 	@Override
 	public void saveNewDocument(Document doc) {
-		saveDocument(doc);
+//		saveDocument(doc);
 	}
 	
-	@Override
-	public void saveDocument(Document doc) {
-        setResult(RESULT_OK, new Intent().putExtra(BaseDocumentLayoutFragment.DOCUMENT, doc));
-        this.finish();
-	}
 
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -78,5 +73,15 @@ public abstract class BaseDocLayoutFragAct extends FragmentActivity  implements 
 		currentContentFrag.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
-	
+
+	@Override
+	public int getListFragmentContainerId() {
+		// No listContainer here
+		return 0;
+	}
+
+	@Override
+	public boolean isTwoPane() {
+		return false;
+	}
 }

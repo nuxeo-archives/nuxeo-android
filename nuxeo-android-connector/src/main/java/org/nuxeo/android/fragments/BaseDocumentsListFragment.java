@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -219,6 +220,8 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
 		Class<? extends Activity> getLayoutFragmentActivity();
 
 		BaseDocumentLayoutFragment getLayoutFragment();
+
+		int getListFragmentContainerId();
 
 //		Document getCurrentDoc();
     }
@@ -458,9 +461,34 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
 			if (mode == LayoutMode.CREATE) {
 				getActivity().startActivityForResult(intent, BaseDocumentsListFragment.ACTION_CREATE_DOCUMENT);
 			} else {
-				getActivity().startActivityForResult(intent, BaseDocumentsListFragment.ACTION_EDIT_DOCUMENT);
+				startActivityForResult(intent, ACTION_EDIT_DOCUMENT);
 			}					
 		}
 	}
+	
+	public void saveDocument(Document doc) {
+		onDocumentUpdate(doc);
+		doRefresh();
+		if(mCallback.isTwoPane()){
+			FragmentManager fragManager = getFragmentManager();
+			FragmentTransaction transaction = fragManager.beginTransaction();
+			transaction.detach(fragManager.findFragmentById(mCallback.getLayoutFragmentContainerId()));
+			transaction.commit();
+		}
+	}
 
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == ACTION_EDIT_DOCUMENT
+				&& resultCode == Activity.RESULT_OK) {
+			if (data.hasExtra(BaseDocumentLayoutActivity.DOCUMENT)) {
+				Document editedDocument = (Document) data.getExtras().get(
+						BaseDocumentLayoutFragment.DOCUMENT);
+				BaseDocumentsListFragment listFragment = (BaseDocumentsListFragment) getFragmentManager()
+						.findFragmentById(
+								mCallback.getListFragmentContainerId());
+				listFragment.saveDocument(editedDocument);
+			}
+		}
+	}
 }
