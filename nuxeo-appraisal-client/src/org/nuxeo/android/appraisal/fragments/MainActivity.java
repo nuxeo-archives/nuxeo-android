@@ -50,7 +50,7 @@ public class MainActivity extends BaseListFragmentActivity implements
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			getActionBar().setDisplayHomeAsUpEnabled(false);
+			getActionBar().setHomeButtonEnabled(false);
 		}
 	}
 	
@@ -103,17 +103,12 @@ public class MainActivity extends BaseListFragmentActivity implements
 	public Class<? extends BaseDocLayoutFragAct> getLayoutFragmentActivity() {
 		return LayoutFragActivity.class;
 	}
-	
-	@Override
-	public void saveDocument(Document doc) {
-		listFragment = (BaseDocumentsListFragment) getSupportFragmentManager().findFragmentById(R.id.list_frag_container);
-		super.saveDocument(doc);
-	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode != 0 && resultCode == RESULT_CANCELED) {
+		if (requestCode == AppraisalListFragment.REQUEST_SERVER) {
 			((AppraisalListFragment)getSupportFragmentManager().findFragmentById(R.id.list_frag_container)).doRefresh();
 		} else super.onActivityResult(requestCode, resultCode, data);
 	}
+
 }

@@ -36,8 +36,6 @@ public class AppraisalLayoutActivity extends BaseDocumentLayoutActivity
 
     protected Button saveBtn;
 
-    protected Button cancelBtn;
-
     @Override
     protected ViewGroup getLayoutContainer() {
         return (ScrollView) findViewById(R.id.layoutContainer);
@@ -65,9 +63,6 @@ public class AppraisalLayoutActivity extends BaseDocumentLayoutActivity
         saveBtn = (Button) findViewById(R.id.updateDocument);
         saveBtn.setOnClickListener(this);
 
-        cancelBtn = (Button) findViewById(R.id.cancelDocument);
-        cancelBtn.setOnClickListener(this);
-
         buildLayout();
     }
 
@@ -85,8 +80,6 @@ public class AppraisalLayoutActivity extends BaseDocumentLayoutActivity
     public void onClick(View view) {
         if (view == saveBtn) {
             saveDocument();
-        } else if (view == cancelBtn) {
-            cancelUpdate();
         }
     }
 
