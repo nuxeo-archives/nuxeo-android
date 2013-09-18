@@ -17,8 +17,6 @@ public abstract class BaseListFragment extends BaseNuxeoFragment implements OnIt
 
     protected TextView waitingMessage;
 
-//  protected View refreshBtn;
-
     protected boolean refresh = false;
 
     @Override

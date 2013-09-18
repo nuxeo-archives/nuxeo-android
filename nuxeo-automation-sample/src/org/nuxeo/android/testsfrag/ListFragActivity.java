@@ -5,6 +5,7 @@ import org.nuxeo.android.documentprovider.DocumentProviderSampleFragment;
 import org.nuxeo.android.fragments.BaseDocLayoutFragAct;
 import org.nuxeo.android.fragments.BaseDocumentLayoutFragment;
 import org.nuxeo.android.fragments.BaseDocumentsListFragment;
+import org.nuxeo.android.fragments.BaseListFragment;
 import org.nuxeo.android.fragments.BaseListFragmentActivity;
 
 import android.content.Intent;
@@ -13,6 +14,10 @@ import android.support.v4.app.FragmentTransaction;
 
 public class ListFragActivity extends BaseListFragmentActivity 
 	implements BaseDocumentsListFragment.Callback, DocumentLayoutFragment.Callback {
+
+	public static final int SIMPLE_LIST = 0;
+	public static final int BROWSE_LIST = 1;
+	public static final int DOCUMENT_PROVIDER = 2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +29,7 @@ public class ListFragActivity extends BaseListFragmentActivity
 		}
 		FragmentTransaction listTransaction = getSupportFragmentManager().beginTransaction();
 		Intent callingIntent = getIntent();
+		BaseListFragment listFragment = null;
 		if(callingIntent.getIntExtra("list", 0)==SIMPLE_LIST) {
 			listFragment = new SimpleListFragment();
 			listTransaction.replace(R.id.list_frag_container, listFragment);
@@ -70,6 +76,11 @@ public class ListFragActivity extends BaseListFragmentActivity
 	@Override
 	public int getListFragmentContainerId() {
 		return R.id.list_frag_container;
+	}
+
+	@Override
+	public boolean isTwoPane() {
+		return mTwoPane;
 	}
 	
 }

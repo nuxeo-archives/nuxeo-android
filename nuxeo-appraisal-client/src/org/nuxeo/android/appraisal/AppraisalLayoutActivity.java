@@ -59,6 +59,7 @@ public class AppraisalLayoutActivity extends BaseDocumentLayoutActivity
 			setTitle("View " + currentDocument.getTitle() + " (" + currentDocument.getType() + ")");
         }
         title.setText(currentDocument.getName());
+        title.setVisibility(View.VISIBLE);
 
         saveBtn = (Button) findViewById(R.id.updateDocument);
         saveBtn.setOnClickListener(this);

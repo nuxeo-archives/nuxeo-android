@@ -32,6 +32,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.view.View;
 
 public abstract class BaseAndroidWidgetWrapper<T> implements
@@ -113,6 +114,10 @@ public abstract class BaseAndroidWidgetWrapper<T> implements
 
     protected Activity getHomeActivity() {
         return layoutContext.getActivity();
+    }
+    
+    protected Fragment getFragment() {
+    	return layoutContext.getFragment();
     }
 
     protected LayoutContext getLayoutContext() {

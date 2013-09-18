@@ -78,7 +78,7 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
     protected abstract ViewGroup getLayoutContainer();
 
     protected void buildLayout() {
-        layout = getAutomationClient().getLayoutService().getLayout(getActivity(),
+        layout = getAutomationClient().getLayoutService().getLayout(this,
                 getCurrentDocument(), getLayoutContainer(), getMode());
     }
 
@@ -156,18 +156,61 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-    
-    protected void saveDocument() {
-        Document doc = getCurrentDocument();
-        getLayout().applyChanges(doc);
-        LayoutMode mode = (LayoutMode) getArguments().getSerializable(MODE);
-        if(mode == LayoutMode.EDIT) {
-        	mCallback.saveDocument(doc);
-        } else {
-        	mCallback.saveNewDocument(doc);
-        }
-    }
-    
+
+	protected void saveDocument() {
+		Document doc = getCurrentDocument();
+		getLayout().applyChanges(doc);
+		LayoutMode mode = (LayoutMode) getArguments().getSerializable(MODE);
+		if (mode == LayoutMode.EDIT) {
+			if (mCallback.isTwoPane()) {
+				BaseDocumentsListFragment listFragment = (BaseDocumentsListFragment) getFragmentManager()
+						.findFragmentById(
+								mCallback.getListFragmentContainerId());
+				listFragment.saveDocument(doc);
+			} else {
+				getActivity().setResult(
+						Activity.RESULT_OK,
+						new Intent().putExtra(
+								BaseDocumentLayoutFragment.DOCUMENT, doc));
+				getActivity().finish();
+			}
+		} else {
+			if (mCallback.isTwoPane()) {
+				BaseDocumentsListFragment listFragment = (BaseDocumentsListFragment) getFragmentManager()
+						.findFragmentById(
+								mCallback.getListFragmentContainerId());
+				listFragment.saveNewDocument(doc);
+			} else {
+				getActivity().setResult(
+						Activity.RESULT_OK,
+						new Intent().putExtra(
+								BaseDocumentLayoutFragment.DOCUMENT, doc));
+				getActivity().finish();
+			}
+		}
+	}
+
+//	public void saveDocument(Document doc) {
+//		if (mCallback.isTwoPane()) {
+//			BaseDocumentsListFragment listFragment = (BaseDocumentsListFragment) getFragmentManager()
+//					.findFragmentById(mCallback.getListFragmentContainerId());
+//			listFragment.onDocumentUpdate(doc);
+//			listFragment.doRefresh();
+//			if (mCallback.isTwoPane()) {
+//				FragmentManager fragManager = getFragmentManager();
+//				FragmentTransaction transaction = fragManager
+//						.beginTransaction();
+//				transaction.detach(fragManager
+//						.findFragmentById(mCallback.getLayoutFragmentContainerId()));
+//				transaction.commit();
+//			} else {
+//				getActivity().setResult(Activity.RESULT_OK, new Intent().putExtra(
+//						BaseDocumentLayoutFragment.DOCUMENT, doc));
+//				getActivity().finish();
+//			}
+//		}
+//	}
+
     @Override
     public void onCreateOptionsMenu (Menu menu, MenuInflater inflater){
     	super.onCreateOptionsMenu(menu, inflater);
@@ -214,9 +257,9 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
 
 		public int getLayoutFragmentContainerId();
 		
-		public void saveNewDocument(Document doc);
+		public boolean isTwoPane();
 
-		public void saveDocument(Document doc);
+		public int getListFragmentContainerId();
 	}
 
 	protected Callback mCallback;
@@ -278,26 +321,6 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
 		transaction.commit();
 	}
 
-//	public void switchToView() {
-//		FragmentTransaction contentTransaction = getFragmentManager()
-//				.beginTransaction();
-//
-//		Bundle args = getArguments();
-//		args.putSerializable(BaseDocumentLayoutFragment.DOCUMENT,
-//				currentDocument);
-//		args.putSerializable(BaseDocumentLayoutFragment.MODE, LayoutMode.VIEW);
-//		args.putBoolean(BaseDocumentLayoutFragment.FIRST_CALL, false);
-//		args.putInt(BaseDocumentLayoutFragment.FRAGMENT_CONTAINER_ID,
-//				getContainerId());
-//		getDocumentLayoutFragment().setArguments(args);
-//		// secondFrag = documentLayoutFrag;
-//
-//		// contentTransaction.detach(firstFragment);
-//		contentTransaction
-//				.replace(containerId, getDocumentLayoutFragment());
-//		contentTransaction.commit();
-//	}
-	
 	public abstract BaseDocumentLayoutFragment getDocumentLayoutFragment();
 	
 	protected int getContainerId() {
@@ -306,26 +329,5 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
 		}
 		return containerId;
 	}
-	
-//	public void switchToEdit() {
-//		FragmentTransaction contentTransaction = getFragmentManager()
-//				.beginTransaction();
-//
-//		Bundle args = getArguments();
-//		args.putSerializable(BaseDocumentLayoutFragment.DOCUMENT,
-//				currentDocument);
-//		args.putSerializable(BaseDocumentLayoutFragment.MODE, LayoutMode.EDIT);
-//		args.putBoolean(BaseDocumentLayoutFragment.FIRST_CALL, false);
-//		args.putInt(BaseDocumentLayoutFragment.FRAGMENT_CONTAINER_ID,
-//				getContainerId());
-//		getDocumentLayoutFragment().setArguments(args);
-//		// secondFrag = documentLayoutFrag;
-//
-//		// contentTransaction.detach(firstFragment);
-//		contentTransaction
-//				.replace(containerId, getDocumentLayoutFragment());
-//		contentTransaction.commit();
-//	}
-	
 }
 
