@@ -10,31 +10,15 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal" />
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="30dip"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal" >
-
         <Button
             android:id="@+id/updateDocument"
             android:layout_width="100dip"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:background="@drawable/android:btn_default_small"
             android:padding="1dip"
             android:text="Save" >
         </Button>
-
-        <Button
-            android:id="@+id/cancelDocument"
-            android:layout_width="100dip"
-            android:layout_height="wrap_content"
-            android:background="@drawable/android:btn_default_small"
-            android:padding="1dip"
-            android:text="Cancel" >
-        </Button>
-    </LinearLayout>
 
     <ScrollView
         android:id="@+id/layoutContainer"

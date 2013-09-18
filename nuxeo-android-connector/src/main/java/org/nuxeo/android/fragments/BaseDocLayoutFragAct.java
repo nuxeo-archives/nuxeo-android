@@ -59,11 +59,15 @@ public abstract class BaseDocLayoutFragAct extends FragmentActivity  implements 
 	}
 
 	@Override
+	public void saveNewDocument(Document doc) {
+		saveDocument(doc);
+	}
+	
+	@Override
 	public void saveDocument(Document doc) {
         setResult(RESULT_OK, new Intent().putExtra(BaseDocumentLayoutFragment.DOCUMENT, doc));
         this.finish();
 	}
-	
 
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -1,14 +1,16 @@
 package org.nuxeo.android.fragments;
 
 import org.nuxeo.android.activities.BaseDocumentLayoutActivity;
-import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
+import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.KeyEvent;
 
 public abstract class BaseListFragmentActivity extends FragmentActivity implements
 		BaseDocumentsListFragment.Callback, BaseDocumentLayoutFragment.Callback {
@@ -46,6 +48,26 @@ public abstract class BaseListFragmentActivity extends FragmentActivity implemen
 		listFragment = (BaseDocumentsListFragment) getSupportFragmentManager().findFragmentById(getListFragmentContainerId());
 		listFragment.onDocumentUpdate(doc);
 		listFragment.doRefresh();
+		if(mTwoPane){
+			FragmentManager fragManager = getSupportFragmentManager();
+			FragmentTransaction transaction = fragManager.beginTransaction();
+			transaction.detach(fragManager.findFragmentById(getLayoutFragmentContainerId()));
+			transaction.commit();
+		}
+	}
+
+	@Override
+	public void saveNewDocument(Document doc) {
+		listFragment = (BaseDocumentsListFragment) getSupportFragmentManager()
+				.findFragmentById(getListFragmentContainerId());
+		listFragment.onDocumentCreate(doc);
+		listFragment.doRefresh();
+		if(mTwoPane){
+			FragmentManager fragManager = getSupportFragmentManager();
+			FragmentTransaction transaction = fragManager.beginTransaction();
+			transaction.remove(fragManager.findFragmentById(getLayoutFragmentContainerId()));
+			transaction.commit();
+		}
 	}
 
 	@Override
@@ -81,6 +103,19 @@ public abstract class BaseListFragmentActivity extends FragmentActivity implemen
 			}					
 		}
 	}
+	
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+	    	FragmentManager fragManager = getSupportFragmentManager();
+	    	FragmentTransaction backTransaction = fragManager.beginTransaction();
+	    	Fragment frag = fragManager.findFragmentById(getLayoutFragmentContainerId());
+	    	if(frag != null) {
+	    		backTransaction.detach(frag);
+	    		backTransaction.commit();
+	    	}
+	    }
+	    return super.onKeyDown(keyCode, event);
+	}
 
 	public abstract Class <? extends BaseDocLayoutFragAct> getLayoutFragmentActivity();
 
@@ -92,6 +127,13 @@ public abstract class BaseListFragmentActivity extends FragmentActivity implemen
 				Document editedDocument = (Document) data.getExtras().get(
 						BaseDocumentLayoutFragment.DOCUMENT);
 				saveDocument(editedDocument);
+			}
+		} else if (requestCode == BaseDocumentsListFragment.ACTION_CREATE_DOCUMENT
+				&& resultCode == RESULT_OK) {
+			if (data.hasExtra(BaseDocumentLayoutActivity.DOCUMENT)) {
+				Document newDocument = (Document) data.getExtras().get(
+						BaseDocumentLayoutActivity.DOCUMENT);
+				saveNewDocument(newDocument);
 			}
 		} else if (mTwoPane) {
 			BaseDocumentLayoutFragment currentContentFrag = (BaseDocumentLayoutFragment) getSupportFragmentManager()

@@ -9,13 +9,16 @@ import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
+import org.nuxeo.ecm.automation.client.jaxrs.impl.NotAvailableOffline;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -116,7 +119,7 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
 
     @Deprecated
 	/**
-	 * @deprecated Since 2.0. prefer @fetchDocumentsList(byte cacheParam, String order)
+	 * @deprecated prefer @fetchDocumentsList(byte cacheParam, String order)
 	 */
     protected LazyUpdatableDocumentsList fetchDocumentsList(
             byte cacheParam) throws Exception{
@@ -167,6 +170,18 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
         case MNU_REFRESH:
             doRefresh();
             break;
+		case MNU_SORT + 1:
+			new NuxeoListAsyncTask().execute(" order by dc:title asc");
+			break;
+		case MNU_SORT + 2:
+			new NuxeoListAsyncTask().execute(" order by dc:title desc");
+			break;
+		case MNU_SORT + 3:
+			new NuxeoListAsyncTask().execute(" order by dc:modified desc");
+			break;
+		case MNU_SORT + 4:
+			new NuxeoListAsyncTask().execute(" order by dc:modified");
+			break;
         default:
             if (item.getItemId() > MNU_NEW_LISTITEM) {
                 int idx = item.getItemId() - MNU_NEW_LISTITEM - 1;
@@ -213,6 +228,11 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
 
 		mCallback = (Callback) activity;
 	}
+    
+    public void onResume(){
+    	listView.setAdapter(null);
+    	super.onResume();
+    }
 
     // Content menu handling
     @Override
@@ -269,12 +289,19 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
     	super.onCreateOptionsMenu(menu, inflater);
 		LinkedHashMap<String, String> types = getDocTypesForCreation();
 		if (Build.VERSION.SDK_INT >= 11) {
+			SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_SORT, 0,
+					"sort");
+			subMenu.add(Menu.NONE, MNU_SORT + 1, 0, "A - z");
+			subMenu.add(Menu.NONE, MNU_SORT + 2, 1, "z - A");
+			subMenu.add(Menu.NONE, MNU_SORT + 3, 2, "last modification up");
+			subMenu.add(Menu.NONE, MNU_SORT + 4, 3, "last modification down");
+			subMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 			if (types.size() > 0) {
 				if (types.size() == 1) {
 					menu.add(Menu.NONE, MNU_NEW_LISTITEM, 0, "New Item")
 							.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 				} else {
-					SubMenu subMenu = menu.addSubMenu(Menu.NONE,
+					subMenu = menu.addSubMenu(Menu.NONE,
 							MNU_NEW_LISTITEM, 0, "New item");
 					subMenu.getItem().setShowAsAction(
 							MenuItem.SHOW_AS_ACTION_IF_ROOM);
@@ -289,11 +316,18 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
 			menu.add(Menu.NONE, MNU_REFRESH, 1, "Refresh").setShowAsAction(
 					MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		} else {
+			SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_SORT, 0,
+					"New item");
+			menu.add(Menu.NONE, MNU_SORT, 0, "Sort");
+			subMenu.add(Menu.NONE, MNU_SORT + 1, 0, "A - Z");
+			subMenu.add(Menu.NONE, MNU_SORT + 2, 1, "Z - A");
+			subMenu.add(Menu.NONE, MNU_SORT + 3, 2, "last modification up");
+			subMenu.add(Menu.NONE, MNU_SORT + 4, 3, "last modification down");
 			if (types.size() > 0) {
 				if (types.size() == 1) {
 					menu.add(Menu.NONE, MNU_NEW_LISTITEM, 0, "New Item");
 				} else {
-					SubMenu subMenu = menu.addSubMenu(Menu.NONE,
+					subMenu = menu.addSubMenu(Menu.NONE,
 							MNU_NEW_LISTITEM, 0, "New item");
 					subMenu.getItem();
 					int idx = 1;
@@ -326,5 +360,65 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
         menu.add(Menu.NONE, CTXMNU_VIEW_ATTACHEMENT, 2, "View attachment");
         menu.add(Menu.NONE, CTXMNU_DELETE, 2, "Delete");
     }
+    
+
+	protected class NuxeoListAsyncTask extends
+			AsyncTask<String, Integer, Object> {
+
+		@Override
+		protected void onPreExecute() {
+			loadingInProgress = true;
+			onNuxeoDataRetrievalStarted();
+			super.onPreExecute();
+		}
+
+		protected Object retrieveNuxeoData(String order) throws Exception {
+			byte cacheParam = CacheBehavior.STORE;
+			if (refresh) {
+				cacheParam = (byte) (cacheParam | CacheBehavior.FORCE_REFRESH);
+				refresh = false;
+			}
+			return fetchDocumentsList(cacheParam, order);
+		}
+		
+		@Override
+		protected Object doInBackground(String... arg0) {
+			try {
+				Object result = retrieveNuxeoData(arg0[0]);
+				return result;
+			} catch (NotAvailableOffline naoe) {
+				BaseDocumentsListFragment.this.getActivity().runOnUiThread(
+						new Runnable() {
+							@Override
+							public void run() {
+								Toast.makeText(
+										getActivity().getBaseContext(),
+										"This screen can bot be displayed offline",
+										Toast.LENGTH_LONG).show();
+							}
+						});
+				return null;
+			} catch (Exception e) {
+				Log.e("NuxeoAsyncTask",
+						"Error while executing async Nuxeo task in activity", e);
+				try {
+					cancel(true);
+				} catch (Throwable t) {
+					// NOP
+				}
+				return null;
+			}
+		}
+
+		@Override
+		protected void onPostExecute(Object result) {
+			loadingInProgress = false;
+			if (result != null) {
+				onNuxeoDataRetrieved(result);
+			} else {
+				onNuxeoDataRetrieveFailed();
+			}
+		}
+	}
 
 }

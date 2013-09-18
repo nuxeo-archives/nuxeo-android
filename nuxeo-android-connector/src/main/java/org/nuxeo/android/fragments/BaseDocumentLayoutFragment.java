@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
@@ -42,12 +43,16 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
     protected BaseDocumentLayoutFragment documentLayoutFragment = null;
     
     protected static final int ACTION_EDIT_DOCUMENT = 0;
-    public static final int RESULT_OK           = -1;
     
     public BaseDocumentLayoutFragment() {
     }
     
     Integer containerId = null;
+    
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+    	buildLayout();
+    }
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -101,7 +106,6 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
     @Override
     protected void onNuxeoDataRetrieved(Object data) {
         currentDocument = (Document) data;
-        buildLayout();
         if (layout == null) {
             Toast.makeText(getActivity().getBaseContext(), "Unable to get Layout", Toast.LENGTH_SHORT).show();
         } else {
@@ -140,8 +144,9 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
     
     @Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	if (requestCode == ACTION_EDIT_DOCUMENT && resultCode == RESULT_OK)
+    	if (requestCode == ACTION_EDIT_DOCUMENT && resultCode == Activity.RESULT_OK)
     	{
+    		//XXX never called, to be deleted
             Document doc = (Document) data.getExtras().get(DOCUMENT);
             getLayout().applyChanges(doc);
             saveDocument();
@@ -155,7 +160,12 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
     protected void saveDocument() {
         Document doc = getCurrentDocument();
         getLayout().applyChanges(doc);
-        mCallback.saveDocument(doc);
+        LayoutMode mode = (LayoutMode) getArguments().getSerializable(MODE);
+        if(mode == LayoutMode.EDIT) {
+        	mCallback.saveDocument(doc);
+        } else {
+        	mCallback.saveNewDocument(doc);
+        }
     }
     
     @Override
@@ -163,11 +173,11 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
     	super.onCreateOptionsMenu(menu, inflater);
         if(Build.VERSION.SDK_INT >= 11) {
         	if (LayoutMode.VIEW == getMode()) {
-                menu.add(Menu.NONE, MNU_SWITCH_EDIT, 2, "Switch to Edit").
+                menu.add(Menu.NONE, MNU_SWITCH_EDIT, 2, "Edit").
                 	setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
             if (LayoutMode.EDIT == getMode()) {
-            	menu.add(Menu.NONE, MNU_SWITCH_VIEW, 2, "Switch to View").
+            	menu.add(Menu.NONE, MNU_SWITCH_VIEW, 2, "View").
             	setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
         } else {
@@ -204,6 +214,8 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
 
 		public int getLayoutFragmentContainerId();
 		
+		public void saveNewDocument(Document doc);
+
 		public void saveDocument(Document doc);
 	}
 

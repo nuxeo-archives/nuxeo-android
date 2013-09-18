@@ -15,6 +15,7 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
 import android.support.v4.app.FragmentTransaction;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -39,7 +41,7 @@ public class AppraisalListFragment extends BaseDocumentsListFragment {
 
 	protected static final int CTXMNU_DELETE = 30;
 
-	protected static final int REQUEST_SERVER = 1;
+	protected static final int REQUEST_SERVER = 3232;
 
 	public AppraisalListFragment() {
 	}
@@ -127,9 +129,23 @@ public class AppraisalListFragment extends BaseDocumentsListFragment {
 	        	setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 	        menu.add(Menu.NONE, MNU_REFRESH, 1, "Refresh").
 	        	setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+	        SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_SORT, 0,
+					"sort");
+			subMenu.add(Menu.NONE, MNU_SORT + 1, 0, "A - z");
+			subMenu.add(Menu.NONE, MNU_SORT + 2, 1, "z - A");
+			subMenu.add(Menu.NONE, MNU_SORT + 3, 2, "last modification up");
+			subMenu.add(Menu.NONE, MNU_SORT + 4, 3, "last modification down");
+			subMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 			} else {
 	        menu.add(Menu.NONE, MNU_SERVER_CONFIG, 0, "Settings");
 	        menu.add(Menu.NONE, MNU_REFRESH, 1, "Refresh");
+			SubMenu subMenu = menu.addSubMenu(Menu.NONE, MNU_SORT, 0,
+					"New item");
+			menu.add(Menu.NONE, MNU_SORT, 0, "Sort");
+			subMenu.add(Menu.NONE, MNU_SORT + 1, 0, "A - Z");
+			subMenu.add(Menu.NONE, MNU_SORT + 2, 1, "Z - A");
+			subMenu.add(Menu.NONE, MNU_SORT + 3, 2, "last modification up");
+			subMenu.add(Menu.NONE, MNU_SORT + 4, 3, "last modification down");
 			}
     }
 	
@@ -137,7 +153,7 @@ public class AppraisalListFragment extends BaseDocumentsListFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
         case MNU_SERVER_CONFIG:
-            startActivityForResult(new Intent(getActivity().getApplicationContext(),
+            getActivity().startActivityForResult(new Intent(getActivity().getApplicationContext(),
                     SettingsActivity.class), REQUEST_SERVER);
             return true;
         default:

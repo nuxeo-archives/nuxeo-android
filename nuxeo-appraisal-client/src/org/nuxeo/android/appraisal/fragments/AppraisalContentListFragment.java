@@ -36,6 +36,7 @@ public class AppraisalContentListFragment extends BaseDocumentsListFragment {
 
         waitingMessage = (TextView)v.findViewById(R.id.waitingMessage);
         listView = (ListView) v.findViewById(R.id.myList);
+        registerDocTypesForCreation("Picture", "Picture");
         return v;
     }
 
@@ -88,7 +89,7 @@ public class AppraisalContentListFragment extends BaseDocumentsListFragment {
             return null;
         } else {
             return new Document(
-                    getInitParam(ROOT_DOC_PARAM, Document.class).getPath(),
+            		getInitFragmentParam(ROOT_DOC_PARAM, Document.class).getPath(),
                     "appraisalPicture-" + documentsList.getCurrentSize(),
                     "File");
         }
@@ -96,19 +97,7 @@ public class AppraisalContentListFragment extends BaseDocumentsListFragment {
 
 	@Override
 	protected Class<? extends BaseDocLayoutFragAct> getEditActivityClass() {
-		// TODO Auto-generated method stub
-		return null;
+		return LayoutFragActivity.class;
 	}
 	
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case MNU_REFRESH:
-            doRefresh();
-            break;
-        }
-        return false;
-    }
-
 }
