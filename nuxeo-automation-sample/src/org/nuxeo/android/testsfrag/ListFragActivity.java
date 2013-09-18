@@ -14,6 +14,10 @@ import android.support.v4.app.FragmentTransaction;
 public class ListFragActivity extends BaseListFragmentActivity 
 	implements BaseDocumentsListFragment.Callback, DocumentLayoutFragment.Callback {
 
+	public static final int SIMPLE_LIST = 0;
+	public static final int BROWSE_LIST = 1;
+	public static final int DOCUMENT_PROVIDER = 2;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,6 +74,11 @@ public class ListFragActivity extends BaseListFragmentActivity
 	@Override
 	public int getListFragmentContainerId() {
 		return R.id.list_frag_container;
+	}
+
+	@Override
+	public boolean isTwoPane() {
+		return mTwoPane;
 	}
 	
 }

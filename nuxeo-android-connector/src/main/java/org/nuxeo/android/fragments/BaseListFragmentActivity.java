@@ -1,12 +1,10 @@
 package org.nuxeo.android.fragments;
 
 import org.nuxeo.android.activities.BaseDocumentLayoutActivity;
-import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.support.v4.app.Fragment;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -15,13 +13,7 @@ import android.view.KeyEvent;
 public abstract class BaseListFragmentActivity extends FragmentActivity implements
 		BaseDocumentsListFragment.Callback, BaseDocumentLayoutFragment.Callback {
 
-	public static final int SIMPLE_LIST = 0;
-	public static final int BROWSE_LIST = 1;
-	public static final int DOCUMENT_PROVIDER = 2;
-
 	protected BaseDocumentLayoutFragment viewFrag = null, editFrag = null;
-
-	protected Document currentDocument = null;
 
 	protected BaseDocumentsListFragment listFragment = null;
 
@@ -70,40 +62,6 @@ public abstract class BaseListFragmentActivity extends FragmentActivity implemen
 		}
 	}
 
-	@Override
-	public void openDocument(Document doc, LayoutMode mode) {
-		currentDocument = doc;
-		if (mTwoPane) {
-			BaseDocumentLayoutFragment documentLayoutFrag = getLayoutFragment();
-			FragmentTransaction transaction = getSupportFragmentManager()
-					.beginTransaction();
-
-			Bundle args = new Bundle();
-			args.putSerializable(BaseDocumentLayoutFragment.DOCUMENT,
-					currentDocument);
-			args.putSerializable(BaseDocumentLayoutFragment.MODE, mode);
-			args.putBoolean(BaseDocumentLayoutFragment.FIRST_CALL, true);
-			args.putInt(BaseDocumentLayoutFragment.FRAGMENT_CONTAINER_ID,
-					getLayoutFragmentContainerId());
-			documentLayoutFrag.setArguments(args);
-
-			transaction.replace(getLayoutFragmentContainerId(),
-					documentLayoutFrag);
-			transaction.commit();
-		} else {
-			Intent intent = new Intent(new Intent(getBaseContext(),
-					getLayoutFragmentActivity())
-					.putExtra(BaseDocumentLayoutFragment.DOCUMENT, currentDocument)
-					.putExtra(BaseDocumentLayoutFragment.MODE, mode)
-					.putExtra(BaseDocumentLayoutFragment.FIRST_CALL, true));
-			if (mode == LayoutMode.CREATE) {
-				startActivityForResult(intent, BaseDocumentsListFragment.ACTION_CREATE_DOCUMENT);
-			} else {
-				startActivityForResult(intent, BaseDocumentsListFragment.ACTION_EDIT_DOCUMENT);
-			}					
-		}
-	}
-	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 	    if ((keyCode == KeyEvent.KEYCODE_BACK)) {
 	    	FragmentManager fragManager = getSupportFragmentManager();

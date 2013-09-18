@@ -10,7 +10,9 @@ import org.nuxeo.android.automation.fragments.SettingsActivity;
 import org.nuxeo.android.documentprovider.LazyDocumentsList;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.android.fragments.BaseDocLayoutFragAct;
+import org.nuxeo.android.fragments.BaseDocumentLayoutFragment;
 import org.nuxeo.android.fragments.BaseDocumentsListFragment;
+import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 

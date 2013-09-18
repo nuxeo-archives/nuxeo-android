@@ -111,4 +111,8 @@ public class MainActivity extends BaseListFragmentActivity implements
 		} else super.onActivityResult(requestCode, resultCode, data);
 	}
 
+	@Override
+	public boolean isTwoPane() {
+		return mTwoPane;
+	}
 }

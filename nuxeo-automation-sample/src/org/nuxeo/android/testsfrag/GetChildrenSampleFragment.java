@@ -84,7 +84,7 @@ public class GetChildrenSampleFragment extends BaseSampleDocumentsListFragment {
     		transaction.addToBackStack(null);
     		transaction.commit();
         } else {
-        	mCallback.openDocument(documentsList.getDocument(listItemPosition), LayoutMode.VIEW);
+        	openDocument(documentsList.getDocument(listItemPosition), LayoutMode.VIEW);
         }
     }
 

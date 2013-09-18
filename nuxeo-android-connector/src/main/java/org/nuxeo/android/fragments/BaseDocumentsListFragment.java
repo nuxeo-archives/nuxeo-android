@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -191,7 +192,7 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
                     forceRefresh();
                     Document newDoc = initNewDocument(type);
                     if (newDoc != null) {
-                    	mCallback.openDocument(newDoc, LayoutMode.CREATE);
+                    	openDocument(newDoc, LayoutMode.CREATE);
                     }
                 }
 
@@ -200,7 +201,7 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
                     forceRefresh();
                     Document newDoc = initNewDocument(getDocTypesForCreation().keySet().iterator().next());
                     if (newDoc != null) {
-                    	mCallback.openDocument(newDoc, LayoutMode.CREATE);
+                    	openDocument(newDoc, LayoutMode.CREATE);
                     }
                 }
             }
@@ -211,7 +212,15 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
     }
 
     public interface Callback {
-    	void openDocument(Document newDoc, LayoutMode create);
+		boolean isTwoPane();
+
+		int getLayoutFragmentContainerId();
+
+		Class<? extends Activity> getLayoutFragmentActivity();
+
+		BaseDocumentLayoutFragment getLayoutFragment();
+
+//		Document getCurrentDoc();
     }
     
     protected Callback mCallback;
@@ -242,10 +251,10 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
         Document doc = getContextMenuDocument(selectedPosition);
 
         if (item.getItemId() == CTXMNU_VIEW_DOCUMENT) {
-            mCallback.openDocument(doc, LayoutMode.VIEW);
+            openDocument(doc, LayoutMode.VIEW);
             return true;
         } else if (item.getItemId() == CTXMNU_EDIT_DOCUMENT) {
-            mCallback.openDocument(doc, LayoutMode.EDIT);
+            openDocument(doc, LayoutMode.EDIT);
             return true;
         } else if (item.getItemId() == CTXMNU_VIEW_ATTACHEMENT) {
             Uri blobUri = doc.getBlob();
@@ -275,7 +284,7 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
 
     @Override
     protected void onListItemClicked(int listItemPosition) {
-		mCallback.openDocument(documentsList.getDocument(listItemPosition), LayoutMode.VIEW);
+		openDocument(documentsList.getDocument(listItemPosition), LayoutMode.VIEW);
     }
     
     @Override
@@ -418,6 +427,39 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
 			} else {
 				onNuxeoDataRetrieveFailed();
 			}
+		}
+	}
+	
+
+	public void openDocument(Document doc, LayoutMode mode) {
+		if (mCallback.isTwoPane()) {
+			BaseDocumentLayoutFragment documentLayoutFrag = mCallback.getLayoutFragment();
+			FragmentTransaction transaction = getFragmentManager()
+					.beginTransaction();
+
+			Bundle args = new Bundle();
+			args.putSerializable(BaseDocumentLayoutFragment.DOCUMENT,
+					doc);
+			args.putSerializable(BaseDocumentLayoutFragment.MODE, mode);
+			args.putBoolean(BaseDocumentLayoutFragment.FIRST_CALL, true);
+			args.putInt(BaseDocumentLayoutFragment.FRAGMENT_CONTAINER_ID,
+					mCallback.getLayoutFragmentContainerId());
+			documentLayoutFrag.setArguments(args);
+
+			transaction.replace(mCallback.getLayoutFragmentContainerId(),
+					documentLayoutFrag);
+			transaction.commit();
+		} else {
+			Intent intent = new Intent(new Intent(getActivity().getBaseContext(),
+					mCallback.getLayoutFragmentActivity())
+					.putExtra(BaseDocumentLayoutFragment.DOCUMENT, doc)
+					.putExtra(BaseDocumentLayoutFragment.MODE, mode)
+					.putExtra(BaseDocumentLayoutFragment.FIRST_CALL, true));
+			if (mode == LayoutMode.CREATE) {
+				getActivity().startActivityForResult(intent, BaseDocumentsListFragment.ACTION_CREATE_DOCUMENT);
+			} else {
+				getActivity().startActivityForResult(intent, BaseDocumentsListFragment.ACTION_EDIT_DOCUMENT);
+			}					
 		}
 	}
 
