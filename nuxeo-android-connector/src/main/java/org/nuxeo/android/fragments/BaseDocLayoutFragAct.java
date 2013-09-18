@@ -59,12 +59,6 @@ public abstract class BaseDocLayoutFragAct extends FragmentActivity  implements 
 	}
 
 	@Override
-	public void saveNewDocument(Document doc) {
-//		saveDocument(doc);
-	}
-	
-
-	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		//we have to call DocumentLayoutFrag().onActivityResult because activities in wrappers are called from this activity context
 

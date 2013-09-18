@@ -459,7 +459,7 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
 					.putExtra(BaseDocumentLayoutFragment.MODE, mode)
 					.putExtra(BaseDocumentLayoutFragment.FIRST_CALL, true));
 			if (mode == LayoutMode.CREATE) {
-				getActivity().startActivityForResult(intent, BaseDocumentsListFragment.ACTION_CREATE_DOCUMENT);
+				startActivityForResult(intent, ACTION_CREATE_DOCUMENT);
 			} else {
 				startActivityForResult(intent, ACTION_EDIT_DOCUMENT);
 			}					
@@ -477,17 +477,35 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
 		}
 	}
 
+	public void saveNewDocument(Document doc) {
+		onDocumentCreate(doc);
+		doRefresh();
+		if(mCallback.isTwoPane()){
+			FragmentManager fragManager = getFragmentManager();
+			FragmentTransaction transaction = fragManager.beginTransaction();
+			transaction.remove(fragManager.findFragmentById(mCallback.getLayoutFragmentContainerId()));
+			transaction.commit();
+		}
+	}
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == ACTION_EDIT_DOCUMENT
 				&& resultCode == Activity.RESULT_OK) {
-			if (data.hasExtra(BaseDocumentLayoutActivity.DOCUMENT)) {
+			if (data.hasExtra(BaseDocumentLayoutFragment.DOCUMENT)) {
 				Document editedDocument = (Document) data.getExtras().get(
 						BaseDocumentLayoutFragment.DOCUMENT);
 				BaseDocumentsListFragment listFragment = (BaseDocumentsListFragment) getFragmentManager()
 						.findFragmentById(
 								mCallback.getListFragmentContainerId());
 				listFragment.saveDocument(editedDocument);
+			}
+		} else if (requestCode == ACTION_CREATE_DOCUMENT
+				&& resultCode == Activity.RESULT_OK) {
+			if (data.hasExtra(BaseDocumentLayoutFragment.DOCUMENT)) {
+				Document newDocument = (Document) data.getExtras().get(
+						BaseDocumentLayoutFragment.DOCUMENT);
+				saveNewDocument(newDocument);
 			}
 		}
 	}

@@ -4,10 +4,7 @@ import org.nuxeo.android.appraisal.AppraisalListActivity;
 import org.nuxeo.android.appraisal.R;
 import org.nuxeo.android.fragments.BaseDocLayoutFragAct;
 import org.nuxeo.android.fragments.BaseDocumentLayoutFragment;
-import org.nuxeo.android.fragments.BaseDocumentsListFragment;
 import org.nuxeo.android.fragments.BaseListFragmentActivity;
-import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
-
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;

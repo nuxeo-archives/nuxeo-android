@@ -175,7 +175,18 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
 				getActivity().finish();
 			}
 		} else {
-			mCallback.saveNewDocument(doc);
+			if (mCallback.isTwoPane()) {
+				BaseDocumentsListFragment listFragment = (BaseDocumentsListFragment) getFragmentManager()
+						.findFragmentById(
+								mCallback.getListFragmentContainerId());
+				listFragment.saveNewDocument(doc);
+			} else {
+				getActivity().setResult(
+						Activity.RESULT_OK,
+						new Intent().putExtra(
+								BaseDocumentLayoutFragment.DOCUMENT, doc));
+				getActivity().finish();
+			}
 		}
 	}
 
@@ -249,8 +260,6 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
 		public boolean isTwoPane();
 
 		public int getListFragmentContainerId();
-
-		public void saveNewDocument(Document doc);
 	}
 
 	protected Callback mCallback;
