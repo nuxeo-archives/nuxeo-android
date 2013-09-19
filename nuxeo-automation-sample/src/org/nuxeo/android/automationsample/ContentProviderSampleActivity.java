@@ -28,6 +28,11 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+/**
+ * @deprecated since 2.0
+ * 
+ */
+@Deprecated
 public class ContentProviderSampleActivity extends BaseListActivity {
 
     protected Cursor cursor;

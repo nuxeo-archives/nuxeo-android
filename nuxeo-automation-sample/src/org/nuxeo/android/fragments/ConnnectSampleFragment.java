@@ -1,4 +1,4 @@
-package org.nuxeo.android.testsfrag;
+package org.nuxeo.android.fragments;
 
 import java.util.ArrayList;
 import java.util.List;

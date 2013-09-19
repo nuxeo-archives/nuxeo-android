@@ -25,6 +25,11 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
 import android.content.Intent;
 
+/**
+ * @deprecated since 2.0
+ * @see org.nuxeo.android.fragments.GetChildrenSampleFragment
+ */
+@Deprecated
 public class GetChildrenSampleActivity extends BaseSampleDocumentsListActivity {
 
     public static final String ROOT_UUID_PARAM = "rootDocId";

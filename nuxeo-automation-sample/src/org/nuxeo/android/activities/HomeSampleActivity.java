@@ -15,7 +15,7 @@
  *     Nuxeo - initial API and implementation
  */
 
-package org.nuxeo.android.testsfrag;
+package org.nuxeo.android.activities;
 
 import org.nuxeo.android.automation.NetworkSettingsActivity;
 import org.nuxeo.android.automation.ServerSettingsActivity;
@@ -43,8 +43,6 @@ public class HomeSampleActivity extends Activity implements
 	protected final int SHOW_ACTIVITIES = 10010101;
     
     //fragments
-    protected Button testFragBtn;
-    
     protected Button connectFragButton;
     
     protected Button fetchDocFragBtn;
@@ -59,9 +57,6 @@ public class HomeSampleActivity extends Activity implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
-        testFragBtn = (Button)findViewById(R.id.nuxFragBtn);
-        testFragBtn.setOnClickListener(this);
         
         connectFragButton = (Button)findViewById(R.id.connect_frag);
         connectFragButton.setOnClickListener(this);
@@ -81,10 +76,7 @@ public class HomeSampleActivity extends Activity implements
 
     @Override
     public void onClick(View view) {
-    	if (view == testFragBtn) {
-            startActivity(new Intent(getApplicationContext(),
-            		TestsFragActivity.class));
-        } else if (view == simpleListFragBtn){
+        if (view == simpleListFragBtn){
         	Intent simpleListFragIntent = new Intent(getApplicationContext(),
         			ListFragActivity.class);
         	simpleListFragIntent.putExtra("list", ListFragActivity.SIMPLE_LIST);

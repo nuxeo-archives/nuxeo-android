@@ -30,6 +30,11 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import android.widget.ListView;
 import android.widget.TextView;
 
+/**
+ * @deprecated since 2.0
+ * @see org.nuxeo.android.fragments.BaseSampleDocumentsListFragment
+ */
+@Deprecated
 public abstract class BaseSampleDocumentsListActivity extends
         BaseDocumentsListActivity {
 

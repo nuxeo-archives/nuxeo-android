@@ -32,6 +32,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * @deprecated since 2.0
+ * @see org.nuxeo.android.fragments.SimpleListFragment
+ */
+@Deprecated
 public class SimpleFetchSampleActivty extends BaseNuxeoActivity implements
         View.OnClickListener {
 
