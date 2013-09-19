@@ -5,6 +5,7 @@ import org.nuxeo.android.documentprovider.DocumentProviderSampleFragment;
 import org.nuxeo.android.fragments.BaseDocLayoutFragAct;
 import org.nuxeo.android.fragments.BaseDocumentLayoutFragment;
 import org.nuxeo.android.fragments.BaseDocumentsListFragment;
+import org.nuxeo.android.fragments.BaseListFragment;
 import org.nuxeo.android.fragments.BaseListFragmentActivity;
 
 import android.content.Intent;
@@ -28,6 +29,7 @@ public class ListFragActivity extends BaseListFragmentActivity
 		}
 		FragmentTransaction listTransaction = getSupportFragmentManager().beginTransaction();
 		Intent callingIntent = getIntent();
+		BaseListFragment listFragment = null;
 		if(callingIntent.getIntExtra("list", 0)==SIMPLE_LIST) {
 			listFragment = new SimpleListFragment();
 			listTransaction.replace(R.id.list_frag_container, listFragment);

@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
-
+import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.view.ViewGroup;
 
@@ -33,7 +33,7 @@ public class NuxeoLayout implements ActivityResultHandler {
     protected Document doc;
 
     protected final LayoutContext context;
-
+    
     public NuxeoLayout(LayoutContext context, Document doc) {
         this.context = context;
         this.doc = doc;

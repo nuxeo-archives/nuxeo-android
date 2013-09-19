@@ -8,6 +8,7 @@
     <TextView
         android:id="@+id/currentDocTitle"
         android:layout_width="fill_parent"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal" />
         <Button

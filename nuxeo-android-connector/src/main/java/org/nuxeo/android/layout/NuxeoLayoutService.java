@@ -20,9 +20,19 @@ package org.nuxeo.android.layout;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
 import android.view.ViewGroup;
 
 public interface NuxeoLayoutService {
+
+    NuxeoLayout getLayout(Fragment fragment, Document doc, ViewGroup parent,
+            LayoutMode mode);
+
+    NuxeoLayout parseLayoutDefinition(String definition, Fragment fragment,
+            Document doc, ViewGroup parent, LayoutMode mode);
+
+	NuxeoLayout getLayout(Fragment fragment, Document doc, ViewGroup parent,
+			LayoutMode mode, String layoutName);
 
     NuxeoLayout parseLayoutDefinition(String definition, Activity ctx,
             Document doc, ViewGroup parent, LayoutMode mode);

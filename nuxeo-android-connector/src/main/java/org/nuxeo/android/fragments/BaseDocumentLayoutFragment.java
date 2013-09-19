@@ -78,7 +78,7 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
     protected abstract ViewGroup getLayoutContainer();
 
     protected void buildLayout() {
-        layout = getAutomationClient().getLayoutService().getLayout(getActivity(),
+        layout = getAutomationClient().getLayoutService().getLayout(this,
                 getCurrentDocument(), getLayoutContainer(), getMode());
     }
 
@@ -321,26 +321,6 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
 		transaction.commit();
 	}
 
-//	public void switchToView() {
-//		FragmentTransaction contentTransaction = getFragmentManager()
-//				.beginTransaction();
-//
-//		Bundle args = getArguments();
-//		args.putSerializable(BaseDocumentLayoutFragment.DOCUMENT,
-//				currentDocument);
-//		args.putSerializable(BaseDocumentLayoutFragment.MODE, LayoutMode.VIEW);
-//		args.putBoolean(BaseDocumentLayoutFragment.FIRST_CALL, false);
-//		args.putInt(BaseDocumentLayoutFragment.FRAGMENT_CONTAINER_ID,
-//				getContainerId());
-//		getDocumentLayoutFragment().setArguments(args);
-//		// secondFrag = documentLayoutFrag;
-//
-//		// contentTransaction.detach(firstFragment);
-//		contentTransaction
-//				.replace(containerId, getDocumentLayoutFragment());
-//		contentTransaction.commit();
-//	}
-	
 	public abstract BaseDocumentLayoutFragment getDocumentLayoutFragment();
 	
 	protected int getContainerId() {
@@ -349,26 +329,5 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
 		}
 		return containerId;
 	}
-	
-//	public void switchToEdit() {
-//		FragmentTransaction contentTransaction = getFragmentManager()
-//				.beginTransaction();
-//
-//		Bundle args = getArguments();
-//		args.putSerializable(BaseDocumentLayoutFragment.DOCUMENT,
-//				currentDocument);
-//		args.putSerializable(BaseDocumentLayoutFragment.MODE, LayoutMode.EDIT);
-//		args.putBoolean(BaseDocumentLayoutFragment.FIRST_CALL, false);
-//		args.putInt(BaseDocumentLayoutFragment.FRAGMENT_CONTAINER_ID,
-//				getContainerId());
-//		getDocumentLayoutFragment().setArguments(args);
-//		// secondFrag = documentLayoutFrag;
-//
-//		// contentTransaction.detach(firstFragment);
-//		contentTransaction
-//				.replace(containerId, getDocumentLayoutFragment());
-//		contentTransaction.commit();
-//	}
-	
 }
 

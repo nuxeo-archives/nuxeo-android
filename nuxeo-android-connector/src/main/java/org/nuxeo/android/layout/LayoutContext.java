@@ -20,6 +20,7 @@ package org.nuxeo.android.layout;
 import java.util.UUID;
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
 import android.view.ViewGroup;
 
 public class LayoutContext {
@@ -29,10 +30,19 @@ public class LayoutContext {
     protected final ViewGroup rootView;
 
     protected String layoutId;
+    
+    protected final Fragment fragment;
 
+    public LayoutContext(Activity act, ViewGroup rootView, Fragment frag) {
+    	this.activity = act;
+    	this.rootView = rootView;
+    	this.fragment = frag;
+    }
+    
     public LayoutContext(Activity activity, ViewGroup rootView) {
         this.activity = activity;
         this.rootView = rootView;
+        this.fragment = null;
     }
 
     public String getLayoutId() {
@@ -48,6 +58,10 @@ public class LayoutContext {
 
     public Activity getActivity() {
         return activity;
+    }
+    
+    public Fragment getFragment() {
+    	return fragment;
     }
 
 }

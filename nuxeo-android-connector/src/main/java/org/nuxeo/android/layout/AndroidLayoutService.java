@@ -26,6 +26,7 @@ import org.nuxeo.android.download.FileDownloader;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
 import android.view.ViewGroup;
 
 public class AndroidLayoutService implements NuxeoLayoutService {
@@ -57,9 +58,16 @@ public class AndroidLayoutService implements NuxeoLayoutService {
     }
 
     @Override
+    public NuxeoLayout getLayout(Fragment fragment, Document doc, ViewGroup parent,
+            LayoutMode mode) {
+        return getLayout(fragment, doc, parent, mode, null);
+    }
+    
+
     public NuxeoLayout getLayout(Activity ctx, Document doc, ViewGroup parent,
             LayoutMode mode) {
-        return getLayout(ctx, doc, parent, mode, null);
+    	String nullString = null;
+        return getLayout(ctx, doc, parent, mode, nullString);
     }
 
     @Override
@@ -82,6 +90,31 @@ public class AndroidLayoutService implements NuxeoLayoutService {
         }
         if (def != null) {
             return def.buildLayout(ctx, doc, parent, mode);
+        } else {
+            return null;
+        }
+    }
+    
+    @Override
+    public NuxeoLayout getLayout(Fragment fragment, Document doc, ViewGroup parent,
+            LayoutMode mode, String layoutName) {
+        boolean useDocType = false;
+        String defMode = null;
+        if (layoutName == null) {
+            useDocType = true;
+            defMode = getLayoutDefinitionModeForType(mode, doc.getType());
+            layoutName = DOCTYPE_PREFIX + doc.getType() + defMode;
+        }
+        LayoutDefinition def = definitions.get(layoutName);
+        if (def == null) {
+            if (useDocType) {
+                def = loadLayout(doc.getType(), true, defMode);
+            } else {
+                def = loadLayout(layoutName, false, null);
+            }
+        }
+        if (def != null) {
+            return def.buildLayout(fragment, doc, parent, mode);
         } else {
             return null;
         }
@@ -111,6 +144,13 @@ public class AndroidLayoutService implements NuxeoLayoutService {
     }
 
     @Override
+    public NuxeoLayout parseLayoutDefinition(String definition, Fragment fragment,
+            Document doc, ViewGroup parent, LayoutMode mode) {
+        LayoutDefinition layoutDefinition = parse(definition);
+        return layoutDefinition.buildLayout(fragment, doc, parent, mode);
+    }
+    
+
     public NuxeoLayout parseLayoutDefinition(String definition, Activity ctx,
             Document doc, ViewGroup parent, LayoutMode mode) {
         LayoutDefinition layoutDefinition = parse(definition);

@@ -207,9 +207,15 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap>
                     progressBar.invalidate();
                     registerActivityResultHandler(PICK_IMG,
                             getHandler(getLayoutContext().getLayoutId()));
-                    getHomeActivity().startActivityForResult(
-                            new Intent(Intent.ACTION_PICK).setType("image/*"),
-                            PICK_IMG);
+					if (getFragment() != null) {
+						getFragment().startActivityForResult(
+								new Intent(Intent.ACTION_PICK)
+										.setType("image/*"), PICK_IMG);
+					} else {
+						getHomeActivity().startActivityForResult(
+								new Intent(Intent.ACTION_PICK)
+										.setType("image/*"), PICK_IMG);
+					}
                 }
             });
 
@@ -230,7 +236,13 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap>
                             "Select a file to attach");
                     
                     try{
-                    	getHomeActivity().startActivityForResult(intent, PICK_ANY);
+						if (getFragment() != null) {
+							getFragment().startActivityForResult(intent,
+									PICK_ANY);
+						} else {
+							getHomeActivity().startActivityForResult(intent,
+									PICK_ANY);
+						}
                     } catch (android.content.ActivityNotFoundException e) {
                     	Log.e(BlobWidgetWrapper.class.getSimpleName(),
                     			"Unable to find any application to pick files", e);
@@ -258,8 +270,13 @@ public class BlobWidgetWrapper extends BaseAndroidWidgetWrapper<PropertyMap>
                                 Uri.fromFile(targetImageFile));
                         registerActivityResultHandler(TAKE_PICTURE,
                                 getHandler(getLayoutContext().getLayoutId()));
-                        getHomeActivity().startActivityForResult(intent,
-                                TAKE_PICTURE);
+						if (getFragment() != null) {
+							getFragment().startActivityForResult(intent,
+									TAKE_PICTURE);
+						} else {
+							getHomeActivity().startActivityForResult(intent,
+									TAKE_PICTURE);
+						}
                     } catch (IOException e) {
                         Log.e(BlobWidgetWrapper.this.getClass().getSimpleName(),
                                 "Unable to get file for image transfert", e);
