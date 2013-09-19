@@ -1,8 +1,11 @@
-package org.nuxeo.android.documentprovider;
+package org.nuxeo.android.fragments;
 
 import java.util.List;
 
 import org.nuxeo.android.automationsample.R;
+import org.nuxeo.android.documentprovider.DocumentProvider;
+import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
+import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsListImpl;
 import org.nuxeo.android.fragments.BaseNuxeoFragment;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 

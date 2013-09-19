@@ -31,7 +31,6 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -40,6 +39,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+/**
+ * @deprecated since 2.0
+ * @see org.nuxeo.android.fragments.DocumentProviderSampleFragment
+ */
+@Deprecated
 public class DocumentProviderSampleActivity extends BaseNuxeoActivity implements
         View.OnClickListener, OnItemClickListener {
 

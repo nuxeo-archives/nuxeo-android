@@ -1,4 +1,4 @@
-package org.nuxeo.android.testsfrag;
+package org.nuxeo.android.fragments;
 
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;

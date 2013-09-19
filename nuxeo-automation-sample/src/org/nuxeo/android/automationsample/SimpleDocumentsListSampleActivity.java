@@ -20,6 +20,11 @@ package org.nuxeo.android.automationsample;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
+/**
+ * @deprecated since 2.0
+ * @see org.nuxeo.android.fragments.SimpleFetchSampleFragment
+ */
+@Deprecated
 public class SimpleDocumentsListSampleActivity extends
         BaseSampleDocumentsListActivity {
 

@@ -20,6 +20,11 @@ package org.nuxeo.android.automationsample;
 import org.nuxeo.android.documentprovider.DocumentProvider;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 
+/**
+ * @deprecated since 2.0
+ * @see org.nuxeo.android.fragments.DocumentProviderViewFragment
+ */
+@Deprecated
 public class DocumentProviderViewActivity extends
         BaseSampleDocumentsListActivity {
 

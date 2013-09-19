@@ -1,4 +1,4 @@
-package org.nuxeo.android.testsfrag;
+package org.nuxeo.android.fragments;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.nuxeo.android.activities.BaseDocumentLayoutActivity;
+import org.nuxeo.android.activities.DocumentLayoutFragActivity;
 import org.nuxeo.android.adapters.AbstractDocumentListAdapter;
 import org.nuxeo.android.adapters.DocumentsListAdapter;
 import org.nuxeo.android.automationsample.R;

@@ -1,17 +1,13 @@
-package org.nuxeo.android.testsfrag;
+package org.nuxeo.android.fragments;
 
-import org.nuxeo.android.activities.BaseDocumentLayoutActivity;
 import org.nuxeo.android.automationsample.R;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
-import org.nuxeo.android.fragments.BaseDocumentLayoutFragment;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.widget.Toast;
 
 public class GetChildrenSampleFragment extends BaseSampleDocumentsListFragment {
 

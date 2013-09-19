@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:baselineAligned="false"
     android:orientation="horizontal"
-    tools:context="org.nuxeo.android.testsfrag.ListFragActivity" >
+    tools:context="org.nuxeo.android.activities.ListFragActivity" >
 
     <FrameLayout
         android:id="@+id/list_frag_container"

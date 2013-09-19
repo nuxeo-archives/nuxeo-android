@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name="org.nuxeo.android.automationsample.NuxeoSampleApplication"
+        android:name="org.nuxeo.android.context.SimpleNuxeoApplication"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@style/AppBaseTheme"
@@ -80,19 +80,19 @@
             android:label="@string/title_activity_tests_frag" >
         </activity>
         <activity
-            android:name="org.nuxeo.android.testsfrag.DocumentLayoutFragActivity"
+            android:name="org.nuxeo.android.activities.DocumentLayoutFragActivity"
             android:label="@string/title_activity_document_layout_frag" >
         </activity>
         <activity
-            android:name="org.nuxeo.android.testsfrag.ListFragActivity"
+            android:name="org.nuxeo.android.activities.ListFragActivity"
             android:label="@string/title_activity_list_frag" >
         </activity>
         <activity
-            android:name="org.nuxeo.android.testsfrag.BasicFragActivity"
+            android:name="org.nuxeo.android.activities.BasicFragActivity"
             android:label="@string/title_activity_basic_frag" >
         </activity>
         <activity
-            android:name="org.nuxeo.android.testsfrag.HomeSampleActivity"
+            android:name="org.nuxeo.android.activities.HomeSampleActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

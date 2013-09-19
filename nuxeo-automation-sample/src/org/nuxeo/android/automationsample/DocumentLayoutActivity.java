@@ -21,7 +21,6 @@ import org.nuxeo.android.activities.BaseDocumentLayoutActivity;
 import org.nuxeo.android.layout.LayoutMode;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,9 +28,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
+/**
+ * @deprecated since 2.0
+ * @see org.nuxeo.android.fragments.DocumentLayoutFragment
+ */
+@Deprecated
 public class DocumentLayoutActivity extends BaseDocumentLayoutActivity
         implements View.OnClickListener {
 

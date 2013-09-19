@@ -1,4 +1,4 @@
-package org.nuxeo.android.testsfrag;
+package org.nuxeo.android.fragments;
 
 import org.nuxeo.android.automationsample.R;
 import org.nuxeo.android.fragments.BaseDocumentLayoutFragment;

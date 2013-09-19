@@ -29,6 +29,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+/**
+ * @deprecated since 2.0
+ * TODO NXMOB-51 migrate to fragments
+ */
+@Deprecated
 public class HistorySampleActivity extends BaseNuxeoActivity {
 
     protected TextView title = null;

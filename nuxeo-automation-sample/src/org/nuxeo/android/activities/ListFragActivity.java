@@ -1,12 +1,15 @@
-package org.nuxeo.android.testsfrag;
+package org.nuxeo.android.activities;
 
 import org.nuxeo.android.automationsample.R;
-import org.nuxeo.android.documentprovider.DocumentProviderSampleFragment;
 import org.nuxeo.android.fragments.BaseDocLayoutFragAct;
 import org.nuxeo.android.fragments.BaseDocumentLayoutFragment;
 import org.nuxeo.android.fragments.BaseDocumentsListFragment;
 import org.nuxeo.android.fragments.BaseListFragment;
 import org.nuxeo.android.fragments.BaseListFragmentActivity;
+import org.nuxeo.android.fragments.DocumentLayoutFragment;
+import org.nuxeo.android.fragments.DocumentProviderSampleFragment;
+import org.nuxeo.android.fragments.GetChildrenSampleFragment;
+import org.nuxeo.android.fragments.SimpleListFragment;
 
 import android.content.Intent;
 import android.os.Bundle;

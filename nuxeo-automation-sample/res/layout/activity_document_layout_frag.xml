@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.nuxeo.android.testsfrag.DocumentLayoutFragActivity"
+    tools:context="org.nuxeo.android.activities.DocumentLayoutFragActivity"
     android:orientation="vertical" >
 
     <FrameLayout android:id="@+id/edit_frag_container"

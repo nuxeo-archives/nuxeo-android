@@ -11,13 +11,6 @@
         android:text="@string/hello" />
 
     <Button
-        android:id="@+id/nuxFragBtn"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Fragments basic tests" >
-    </Button>
-
-    <Button
         android:id="@+id/connect_frag"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

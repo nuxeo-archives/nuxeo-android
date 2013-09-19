@@ -1,6 +1,7 @@
-package org.nuxeo.android.documentprovider;
+package org.nuxeo.android.fragments;
 
-import org.nuxeo.android.testsfrag.BaseSampleDocumentsListFragment;
+import org.nuxeo.android.documentprovider.DocumentProvider;
+import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 
 import android.os.Bundle;
 

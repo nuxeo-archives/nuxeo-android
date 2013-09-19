@@ -18,12 +18,15 @@
 package org.nuxeo.android.automationsample;
 
 import org.nuxeo.android.activities.BaseNuxeoActivity;
-
+/**
+ * @deprecated since 2.0
+ * 
+ */
+@Deprecated 
 public class DocumentProviderCreateActivity extends BaseNuxeoActivity {
 
     @Override
     protected boolean requireAsyncDataRetrieval() {
-        // TODO Auto-generated method stub
         return false;
     }
 

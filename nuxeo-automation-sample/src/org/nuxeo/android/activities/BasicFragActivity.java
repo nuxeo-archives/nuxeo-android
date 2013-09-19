@@ -1,9 +1,11 @@
-package org.nuxeo.android.testsfrag;
+package org.nuxeo.android.activities;
 
 import org.nuxeo.android.automationsample.R;
 import org.nuxeo.android.automationsample.R.id;
 import org.nuxeo.android.automationsample.R.layout;
-import org.nuxeo.android.documentprovider.DocumentProviderSampleFragment;
+import org.nuxeo.android.fragments.ConnnectSampleFragment;
+import org.nuxeo.android.fragments.DocumentProviderSampleFragment;
+import org.nuxeo.android.fragments.SimpleFetchSampleFragment;
 
 import android.content.Intent;
 import android.os.Bundle;
