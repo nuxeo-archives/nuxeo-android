@@ -10,6 +10,7 @@
 	<classpathentry kind="var" path="M2-REPO/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2.jar"/>
 	<classpathentry kind="var" path="M2-REPO/xpp3/xpp3/1.1.4c/xpp3-1.1.4c.jar" sourcepath="M2_REPO/xpp3/xpp3/1.1.4c/xpp3-1.1.4c-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="/home/nicolas/.m2/repository/com/google/android/android/4.1.1.4/android-4.1.1.4.jar" sourcepath="/home/nicolas/Documents/adt-bundle-linux-x86_64-20130522/sdk/sources/android-17"/>
+	<classpathentry kind="lib" path="M2-REPO/com/google/android/android/4.1.1.4/android-4.1.1.4.jar" />
+	<classpathentry kind="lib" path="/home/nicolas/Documents/adt-bundle-linux-x86_64-20130522/sdk/extras/android/support/v4/android-support-v4.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
