@@ -35,4 +35,10 @@ public abstract class BaseListFragmentActivity extends FragmentActivity implemen
 	    }
 	    return super.onKeyDown(keyCode, event);
 	}
+
+    public boolean isReady() {
+        BaseDocumentsListFragment fragment = (BaseDocumentsListFragment) getSupportFragmentManager().findFragmentById(
+                getListFragmentContainerId());
+        return fragment.isReady();
+    }
 }

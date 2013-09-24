@@ -17,6 +17,7 @@ public class DocumentLayoutFragment extends BaseDocumentLayoutFragment implement
     protected static final int ACTION_CREATE_DOCUMENT = 1;
 
 	protected Button saveBtn;
+	protected TextView loadingLabel;
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -25,6 +26,11 @@ public class DocumentLayoutFragment extends BaseDocumentLayoutFragment implement
 		
 		saveBtn = (Button) v.findViewById(R.id.updateDocument);
 		saveBtn.setOnClickListener(this);
+		
+        loadingLabel = (TextView)v.findViewById(R.id.loading_label);
+        if(getMode() == LayoutMode.CREATE) {
+            loadingLabel.setVisibility(View.GONE);
+        }
         return v;
 	}
 	
@@ -50,8 +56,7 @@ public class DocumentLayoutFragment extends BaseDocumentLayoutFragment implement
     protected void onNuxeoDataRetrieved(Object data) {
     	super.onNuxeoDataRetrieved(data);
     	View v = getView();
-    	TextView txtView = (TextView)v.findViewById(R.id.loading_label);
-    	txtView.setVisibility(View.GONE);
+    	loadingLabel.setVisibility(View.GONE);
     	if(!isEditMode() && !isCreateMode()) {
     		if (currentDocument.getType().equals("Picture"))
     		{

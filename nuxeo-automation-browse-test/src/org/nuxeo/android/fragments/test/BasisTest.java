@@ -15,12 +15,12 @@
  *     Nuxeo - initial API and implementation
  */
 
-package org.nuxeo.android.automationsample.test;
+package org.nuxeo.android.fragments.test;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import org.nuxeo.android.automationsample.HomeSampleActivity;
+import org.nuxeo.android.activities.HomeSampleActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -51,7 +51,7 @@ public abstract class BasisTest extends
     protected Solo solo;
 
     public BasisTest() {
-        super("org.nuxeo.android.automationsample", HomeSampleActivity.class);
+        super(HomeSampleActivity.class);
     }
 
     @Override
@@ -68,7 +68,7 @@ public abstract class BasisTest extends
         } catch (Throwable e) {
             e.printStackTrace();
         }
-//        getActivity().finish();
+        getActivity().finish();
         super.tearDown();
     }
 
@@ -179,7 +179,6 @@ public abstract class BasisTest extends
         if (method != null) {
             return (String) method.invoke(adapter, position);
         } else {
-
             return null;
         }
     }

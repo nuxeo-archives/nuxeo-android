@@ -39,6 +39,7 @@ public class DocumentLayoutActivity extends BaseDocumentLayoutActivity
         implements View.OnClickListener {
 
     protected Button saveBtn;
+    protected TextView loadingLabel;
 
     @Override
     protected ViewGroup getLayoutContainer() {
@@ -52,6 +53,10 @@ public class DocumentLayoutActivity extends BaseDocumentLayoutActivity
         setContentView(R.layout.createeditlayout);
         saveBtn = (Button) findViewById(R.id.updateDocument);
         saveBtn.setOnClickListener(this);
+        loadingLabel = (TextView)findViewById(R.id.loading_label);
+        if(getMode()==LayoutMode.CREATE) {
+            loadingLabel.setVisibility(View.GONE);
+        }
         buildLayout();
     }
 
@@ -92,8 +97,7 @@ public class DocumentLayoutActivity extends BaseDocumentLayoutActivity
     @Override
     protected void onNuxeoDataRetrieved(Object data) {
     	super.onNuxeoDataRetrieved(data);
-    	TextView txtView = (TextView)findViewById(R.id.loading_label);
-    	txtView.setVisibility(View.GONE);
+    	loadingLabel.setVisibility(View.GONE);
     	if(!isEditMode() && !isCreateMode()) {
     		if (currentDocument.getType().equals("Picture"))
     		{

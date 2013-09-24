@@ -25,7 +25,7 @@ public abstract class StartActivityForResultTest extends BasisTest {
 
     public void XXXtestAttachFile() throws Exception {
         waitForNuxeoActivity("org.nuxeo.android.automationsample.HomeSampleActivity");
-        solo.clickOnView(findViewById(org.nuxeo.android.automationsample.R.id.browsetBtn));
+        solo.clickOnView(findViewById(org.nuxeo.android.automationsample.R.id.browse));
         waitForNuxeoActivity("org.nuxeo.android.automationsample.GetChildrenSampleActivity");
         solo.clickInList(1);
         waitForNuxeoActivity("org.nuxeo.android.automationsample.GetChildrenSampleActivity");

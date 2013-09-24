@@ -35,7 +35,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
 public class HomeSampleActivity extends Activity implements
         View.OnClickListener {
@@ -57,7 +56,6 @@ public class HomeSampleActivity extends Activity implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        
         connectFragButton = (Button)findViewById(R.id.connect_frag);
         connectFragButton.setOnClickListener(this);
         
@@ -151,6 +149,10 @@ public class HomeSampleActivity extends Activity implements
         getNuxeoContext().getNuxeoClient().getDeferredUpdatetManager().purgePendingUpdates();
         getNuxeoContext().getNuxeoClient().getResponseCacheManager().clear();
         getNuxeoContext().getNuxeoClient().getFileUploader().purgePendingUploads();
+    }
+
+    public void setOffline(boolean offline) {
+        getNuxeoContext().getNetworkStatus().setForceOffline(offline);
     }
 
     public void fushPending() {

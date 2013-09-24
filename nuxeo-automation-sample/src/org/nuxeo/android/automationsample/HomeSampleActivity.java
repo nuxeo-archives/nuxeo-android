@@ -163,6 +163,10 @@ public class HomeSampleActivity extends Activity implements
 				.purgePendingUploads();
 	}
 
+    public void setOffline(boolean offline) {
+        getNuxeoContext().getNetworkStatus().setForceOffline(offline);
+    }
+
 	public void fushPending() {
 		getNuxeoContext().getNuxeoClient().getDeferredUpdatetManager()
 				.executePendingRequests(getNuxeoContext().getSession());

@@ -91,7 +91,7 @@ public class GetChildrenSampleFragment extends BaseSampleDocumentsListFragment {
 
 	@Override
 	protected String getBaseQuery() {
-		return "select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:isCheckedInVersion = 0 AND ecm:parentId=?";
+		return "select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:currentLifeCycleState != \"deleted\" AND ecm:isCheckedInVersion = 0 AND ecm:parentId=?";
 	}
 
 }

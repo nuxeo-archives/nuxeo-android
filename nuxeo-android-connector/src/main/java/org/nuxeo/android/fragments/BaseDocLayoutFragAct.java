@@ -60,6 +60,12 @@ public abstract class BaseDocLayoutFragAct extends FragmentActivity  implements 
 	public boolean isTwoPane() {
 		// This activity should be used only on small-screen devices,
 		// Only one pane, here
-		return false;
-	}
+        return false;
+    }
+
+    public boolean isReady() {
+        BaseDocumentLayoutFragment fragment = (BaseDocumentLayoutFragment) getSupportFragmentManager().findFragmentById(
+                getLayoutFragmentContainerId());
+        return fragment.isReady();
+    }
 }
