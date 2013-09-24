@@ -105,22 +105,25 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
 
     @Override
     protected void onNuxeoDataRetrieved(Object data) {
-        currentDocument = (Document) data;
-        if (layout == null) {
-            Toast.makeText(getActivity().getBaseContext(), "Unable to get Layout", Toast.LENGTH_SHORT).show();
-        } else {
-            layout.refreshFromDocument(currentDocument);
-            Toast.makeText(getActivity().getBaseContext(), "Refreshed document", Toast.LENGTH_SHORT).show();
+        //Check that the fragment hasn't been hidden before onNuxeoDataRetrieved is called
+        if(getActivity()!=null && getActivity().getBaseContext()!=null) {
+            currentDocument = (Document) data;
+            if (layout == null) {
+                Toast.makeText(getActivity().getBaseContext(), "Unable to get Layout", Toast.LENGTH_SHORT).show();
+            } else {
+                layout.refreshFromDocument(currentDocument);
+                Toast.makeText(getActivity().getBaseContext(), "Refreshed document", Toast.LENGTH_SHORT).show();
+            }
+            requireAsyncFetch = false;
+            if (isEditMode()) {
+                getActivity().setTitle("Edit " + getCurrentDocument().getType() + " " + getCurrentDocument().getTitle());
+            } else if (isCreateMode()) {
+                getActivity().setTitle("Create new " + getCurrentDocument().getType());
+            } else {
+                getActivity().setTitle("View " + getCurrentDocument().getType() + " " + getCurrentDocument().getTitle());
+            }
+            setHasOptionsMenu(true);
         }
-        requireAsyncFetch = false;
-        if (isEditMode()) {
-            getActivity().setTitle("Edit " + getCurrentDocument().getType() + " " + getCurrentDocument().getTitle());
-        } else if (isCreateMode()) {
-        	getActivity().setTitle("Create new " + getCurrentDocument().getType());
-        } else {
-        	getActivity().setTitle("View " + getCurrentDocument().getType() + " " + getCurrentDocument().getTitle());
-        }
-        setHasOptionsMenu(true);
     }
 
     @Override
