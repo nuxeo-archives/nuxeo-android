@@ -24,12 +24,12 @@ import android.widget.Toast;
 import com.jayway.android.robotium.solo.Solo;
 
 public abstract class BaseBrowsingTest extends BasisTest {
-    
-    protected boolean isTwoPane = false;
 
     protected String browseAndCreate(boolean online) throws Exception {
         String tag = online ? "online" : "offline";
 
+        Toast.makeText(solo.getCurrentActivity(), "browse and create " + tag, Toast.LENGTH_SHORT).show();
+        
         assertTrue(waitForNuxeoActivity("org.nuxeo.android.activities.HomeSampleActivity"));
 
         solo.clickOnView(findViewById(org.nuxeo.android.automationsample.R.id.browse_frag));
@@ -44,39 +44,35 @@ public abstract class BaseBrowsingTest extends BasisTest {
         solo.clickInList(3);
         assertTrue(waitForNuxeoActivity("org.nuxeo.android.activities.ListFragActivity"));
 
-        isTwoPane = ((ListFragActivity) solo.getCurrentActivity()).isTwoPane();
-        
         // new item
-        if (!isTwoPane) {
-            solo.sendKey(Solo.MENU);
-        }
+        solo.sendKey(Solo.MENU);
         solo.clickOnText("New item");
         solo.clickInList(3);
         String title = null;
         
-        if (!isTwoPane) {
+        if (!((ListFragActivity) solo.getCurrentActivity()).isTwoPane()) {
             assertTrue(waitForNuxeoActivity("org.nuxeo.android.activities.DocumentLayoutFragActivity"));
-        } else {
+    
+            title = "Folder " + tag + " " + System.currentTimeMillis();
+            solo.clearEditText(0);
+            solo.enterText(0, title);
+            solo.clickOnView(findViewById(org.nuxeo.android.automationsample.R.id.updateDocument));
+    
             assertTrue(waitForNuxeoActivity("org.nuxeo.android.activities.ListFragActivity"));
+    
+            waitForDocumentTitle(0, title);
+    
+            if (online) {
+                waitForDocumentStatus(0, "");
+            } else {
+    //            assertEquals("", getDocumentStatus(0));
+            }
+    
+            solo.goBack();
+            solo.goBack();
+            solo.goBack();
         }
-        title = "Folder " + tag + " " + System.currentTimeMillis();
-        solo.clearEditText(0);
-        solo.enterText(0, title);
-        solo.clickOnView(findViewById(org.nuxeo.android.automationsample.R.id.updateDocument));
-
-        assertTrue(waitForNuxeoActivity("org.nuxeo.android.activities.ListFragActivity"));
-
-        waitForDocumentTitle(0, title);
-
-        if (online) {
-            waitForDocumentStatus(0, "");
-        } else {
-//            assertEquals("", getDocumentStatus(0));
-        }
-
-        solo.goBack();
-        solo.goBack();
-        solo.goBack();
+        
 
         return title;
     }
@@ -85,6 +81,8 @@ public abstract class BaseBrowsingTest extends BasisTest {
         
         String tag = online ? "online" : "offline";
 
+        Toast.makeText(solo.getCurrentActivity(), "browse and edit " + tag, Toast.LENGTH_SHORT).show();
+        
         assertTrue(waitForNuxeoActivity("org.nuxeo.android.activities.HomeSampleActivity"));
 
         solo.clickOnView(findViewById(org.nuxeo.android.automationsample.R.id.browse_frag));
@@ -103,12 +101,8 @@ public abstract class BaseBrowsingTest extends BasisTest {
         Thread.sleep(200);
         solo.clickOnText("Edit");
 
-        if (!isTwoPane) {
-            assertTrue(waitForNuxeoActivity("org.nuxeo.android.activities.DocumentLayoutFragActivity"));
-        } else {
-            assertTrue(waitForNuxeoActivity("org.nuxeo.android.activities.ListFragActivity"));
-        }
-        
+        assertTrue(waitForNuxeoActivity("org.nuxeo.android.activities.DocumentLayoutFragActivity"));
+
         solo.clearEditText(0);
         String title = "Folder " + tag + " Edited" + System.currentTimeMillis();
         solo.enterText(0, title);
@@ -136,6 +130,8 @@ public abstract class BaseBrowsingTest extends BasisTest {
     }
     
     protected void deleteCreatedFolder() throws Exception {
+        Toast.makeText(solo.getCurrentActivity(), "delete", Toast.LENGTH_SHORT).show();
+        
         assertTrue(waitForNuxeoActivity("org.nuxeo.android.activities.HomeSampleActivity"));
 
         solo.clickOnView(findViewById(org.nuxeo.android.automationsample.R.id.simple_list_frag));
@@ -154,6 +150,8 @@ public abstract class BaseBrowsingTest extends BasisTest {
     }
 
     protected void browseAndCheck(String title) throws Exception {
+        Toast.makeText(solo.getCurrentActivity(), "browse and check", Toast.LENGTH_SHORT).show();
+        
         assertTrue(waitForNuxeoActivity("org.nuxeo.android.activities.HomeSampleActivity"));
 
         solo.clickOnView(findViewById(org.nuxeo.android.automationsample.R.id.browse_frag));
@@ -177,19 +175,12 @@ public abstract class BaseBrowsingTest extends BasisTest {
         Thread.sleep(200);
         solo.clickOnText("View");
 
-        if (!isTwoPane) {
-            assertTrue(waitForNuxeoActivity("org.nuxeo.android.activities.DocumentLayoutFragActivity"));
-        } else {
-            assertTrue(waitForNuxeoActivity("org.nuxeo.android.activities.ListFragActivity"));
-        }
-        
+        assertTrue(waitForNuxeoActivity("org.nuxeo.android.activities.DocumentLayoutFragActivity"));
+
         solo.goBack();
         solo.goBack();
         solo.goBack();
-        
-        if(!isTwoPane) {
-            solo.goBack();
-        }
+        solo.goBack();
     }
 
 }
