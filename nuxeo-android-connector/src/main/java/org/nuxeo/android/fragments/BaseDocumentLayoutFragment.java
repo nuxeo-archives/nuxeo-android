@@ -147,13 +147,6 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
     
     @Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	if (requestCode == ACTION_EDIT_DOCUMENT && resultCode == Activity.RESULT_OK)
-    	{
-    		//XXX never called, to be deleted
-            Document doc = (Document) data.getExtras().get(DOCUMENT);
-            getLayout().applyChanges(doc);
-            saveDocument();
-    	}
         if (getLayout() != null) {
             layout.onActivityResult(requestCode, resultCode, data);
         }
@@ -193,27 +186,6 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
 		}
 	}
 
-//	public void saveDocument(Document doc) {
-//		if (mCallback.isTwoPane()) {
-//			BaseDocumentsListFragment listFragment = (BaseDocumentsListFragment) getFragmentManager()
-//					.findFragmentById(mCallback.getListFragmentContainerId());
-//			listFragment.onDocumentUpdate(doc);
-//			listFragment.doRefresh();
-//			if (mCallback.isTwoPane()) {
-//				FragmentManager fragManager = getFragmentManager();
-//				FragmentTransaction transaction = fragManager
-//						.beginTransaction();
-//				transaction.detach(fragManager
-//						.findFragmentById(mCallback.getLayoutFragmentContainerId()));
-//				transaction.commit();
-//			} else {
-//				getActivity().setResult(Activity.RESULT_OK, new Intent().putExtra(
-//						BaseDocumentLayoutFragment.DOCUMENT, doc));
-//				getActivity().finish();
-//			}
-//		}
-//	}
-
     @Override
     public void onCreateOptionsMenu (Menu menu, MenuInflater inflater){
     	super.onCreateOptionsMenu(menu, inflater);
@@ -251,22 +223,7 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
     	return getArguments().getBoolean(FIRST_CALL);
     }
     
-
-
-//    protected abstract void populateMenu(Menu menu);
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//    	if (callingIntent.getBooleanExtra(BaseDocumentLayoutActivity.FIRST_CALL, true) == false)
-//    	{
-//    		finish();
-//    	} 
-//		return super.onOnptionsItemSelected(item);
-//    }
-    
 	public interface Callback {
-
-//		 public void exchangeFragments();
 
 		public int getLayoutFragmentContainerId();
 		
@@ -296,19 +253,6 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
 		if (item.getItemId() == MNU_SWITCH_EDIT || item.getItemId() == MNU_SWITCH_VIEW) {
 			exchangeFragments();
 		}
-		
-//		if (isFirstCall() == false) {
-//			exchangeFragments();
-//		} else {
-//			switch (item.getItemId()) {
-//			case MNU_SWITCH_EDIT:
-//				switchToView();
-//				break;
-//			case MNU_SWITCH_VIEW:
-//				switchToEdit();
-//				break;
-//			}
-//		}
 		return true;
 	}
 

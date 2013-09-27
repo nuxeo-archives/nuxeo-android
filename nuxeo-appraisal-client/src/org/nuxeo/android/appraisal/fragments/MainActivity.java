@@ -6,8 +6,6 @@ import org.nuxeo.android.fragments.BaseDocLayoutFragAct;
 import org.nuxeo.android.fragments.BaseDocumentLayoutFragment;
 import org.nuxeo.android.fragments.BaseDocumentsListFragment;
 import org.nuxeo.android.fragments.BaseListFragmentActivity;
-
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;

@@ -176,6 +176,10 @@ public abstract class BaseBrowsingTest extends BasisTest {
         solo.clickInList(3);
         assertTrue(waitForNuxeoActivity("org.nuxeo.android.activities.ListFragActivity"));
 
+        if (!isTwoPane) {
+            solo.sendKey(Solo.MENU);
+        }
+        solo.clickOnText("Refresh");
         waitForDocumentTitle(0, title);
         waitForDocumentStatus(0, "");
 
