@@ -76,7 +76,7 @@ public class NetworkSettingsFragment extends AbstractNetworkSettingsFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	super.onCreateView(inflater, container, savedInstanceState);
-    	View v = inflater.inflate(R.layout.offline_screen, container);
+    	View v = inflater.inflate(R.layout.offline_screen, container, false);
 
         forceOfflineChk = (CheckBox) v.findViewById(R.id.forceOfflineChk);
         networkReachable = (CheckBox) v.findViewById(R.id.networkReachableChk);
