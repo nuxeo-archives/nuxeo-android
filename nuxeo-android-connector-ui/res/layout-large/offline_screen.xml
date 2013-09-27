@@ -186,20 +186,14 @@
                             android:text="x pending uploads"
                             android:textSize="12dip" />
 
-                        <LinearLayout
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical" >
-
                             <Button
                                 android:id="@+id/clearPendingUploadBtn"
                                 android:layout_width="fill_parent"
+                            android:layout_weight="1"
                                 android:layout_height="40dip"
                                 android:padding="0px"
                                 android:text="Discard pending uploads"
                                 android:textSize="12dip" />
-                        </LinearLayout>
                     </LinearLayout>
 
                     <LinearLayout
@@ -216,20 +210,14 @@
                             android:text="x Transient objects"
                             android:textSize="12dip" />
 
-                        <LinearLayout
+                        <Button
+                            android:id="@+id/clearTransientStateBtn"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="40dip"
                             android:layout_weight="1"
-                            android:orientation="vertical" >
-
-                            <Button
-                                android:id="@+id/clearTransientStateBtn"
-                                android:layout_width="fill_parent"
-                                android:layout_height="40dip"
-                                android:padding="0px"
-                                android:text="Discard transient objects"
-                                android:textSize="12dip" />
-                        </LinearLayout>
+                            android:padding="0px"
+                            android:text="Discard transient objects"
+                            android:textSize="12dip" />
                     </LinearLayout>
                 </LinearLayout>
             </ScrollView>

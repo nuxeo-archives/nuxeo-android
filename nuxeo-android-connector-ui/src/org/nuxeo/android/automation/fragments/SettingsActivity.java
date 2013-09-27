@@ -30,6 +30,8 @@ public class SettingsActivity extends FragmentActivity {
         setContentView(R.layout.offline_screen_frag);
 
         if (findViewById(R.id.pager) != null) {
+            // Here we are on small screens only, we have to use a ViewPager to
+            // display the setting screens
             mSettingsPagerAdapter = new SettingsPagerAdapter(
                     getSupportFragmentManager());
             mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -62,12 +64,17 @@ public class SettingsActivity extends FragmentActivity {
                     public void onTabReselected(Tab tab, FragmentTransaction ft) {
                     }
                 };
-                actionBar.addTab(actionBar.newTab().setText("Server Settings").setTabListener(
-                        tabListener));
                 actionBar.addTab(actionBar.newTab().setText("Network Settings").setTabListener(
                         tabListener));
+                actionBar.addTab(actionBar.newTab().setText("Server Settings").setTabListener(
+                        tabListener));
+                actionBar.setDisplayShowHomeEnabled(false);
+                actionBar.setDisplayShowTitleEnabled(false);
             }
         }
+        // if we are on large screens, the layout-large/offline_screen_frag.xml
+        // will be displayed, with both fragments fitting on one large screen,
+        // we have nothing more to do
     }
 
     public class SettingsPagerAdapter extends FragmentPagerAdapter {
