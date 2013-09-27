@@ -78,7 +78,7 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
             cacheParam = (byte) (cacheParam | CacheBehavior.FORCE_REFRESH);
             refresh = false;
         }
-        return fetchDocumentsList(cacheParam);
+        return fetchDocumentsList(cacheParam, "");
     }
 
     protected void forceRefresh() {
@@ -97,7 +97,16 @@ public abstract class BaseDocumentsListActivity extends BaseListActivity {
     }
 
     protected abstract LazyUpdatableDocumentsList fetchDocumentsList(
-            byte cacheParam) throws Exception;
+            byte cacheParam, String order) throws Exception;
+
+    @Deprecated
+    /**
+     * @deprecated prefer @fetchDocumentsList(byte cacheParam, String order)
+     */
+    protected LazyUpdatableDocumentsList fetchDocumentsList(
+            byte cacheParam) throws Exception{
+        return fetchDocumentsList(cacheParam, "");
+    }
 
     protected abstract void displayDocumentList(ListView listView,
             LazyDocumentsList documentsList);

@@ -66,7 +66,7 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
     }
 
     @Override
-    protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam)
+    protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam, String order)
             throws Exception {
     	Document doc = getInitParam(ROOT_DOC_PARAM, Document.class);
         Documents docs = getNuxeoContext().getDocumentManager().query(

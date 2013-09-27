@@ -31,7 +31,7 @@ public class DocumentProviderViewActivity extends
     public static final String PROVIDER_NAME_PARAM = "providerName";
 
     @Override
-    protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam)
+    protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam, String order)
             throws Exception {
         DocumentProvider docProvider = getAutomationClient().getDocumentProvider();
         String providerName = getIntent().getExtras().getString(

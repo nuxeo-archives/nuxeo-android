@@ -72,11 +72,13 @@ public class GetChildrenSampleActivity extends BaseSampleDocumentsListActivity {
         return super.retrieveNuxeoData();
     }
 
-    @Override
-    protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam)
-            throws Exception {
+    protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam,
+            String order) throws Exception {
+        if (order.equals("")) {
+            order = " order by dc:modified desc";
+        }
         Documents docs = getNuxeoContext().getDocumentManager().query(
-                "select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:isCheckedInVersion = 0 AND ecm:parentId=? order by dc:modified desc",
+                getBaseQuery() + order,
                 new String[] { getRootUUID() }, null, null, 0, 10, cacheParam);
         if (docs != null) {
             return docs.asUpdatableDocumentsList();
@@ -103,4 +105,7 @@ public class GetChildrenSampleActivity extends BaseSampleDocumentsListActivity {
         return new Document(getRoot().getPath(), "newAndroidDoc", type);
     }
 
+    protected String getBaseQuery() {
+        return "select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:currentLifeCycleState != \"deleted\" AND ecm:isCheckedInVersion = 0 AND ecm:parentId=?";
+    }
 }

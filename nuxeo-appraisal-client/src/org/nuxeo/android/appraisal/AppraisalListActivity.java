@@ -79,7 +79,7 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
     }
 
     @Override
-    protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam)
+    protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam, String order)
             throws Exception {
         String user = getNuxeoSession().getLogin().getUsername();
         Documents docs = getNuxeoContext().getDocumentManager().query(
