@@ -18,7 +18,7 @@
     <item
         android:id="@+id/itemNetworkConfigFrag"
         android:enabled="true"
-        android:title="Settings"
+        android:title="FRSettings"
         android:showAsAction="ifRoom"
         android:titleCondensed="FRSettings">
     </item>

@@ -219,12 +219,22 @@ public abstract class BaseDocumentLayoutFragment extends BaseNuxeoFragment {
     	super.onCreateOptionsMenu(menu, inflater);
         if(Build.VERSION.SDK_INT >= 11) {
         	if (LayoutMode.VIEW == getMode()) {
-                menu.add(Menu.NONE, MNU_SWITCH_EDIT, 2, "Edit").
-                	setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        	    if (mCallback.isTwoPane()) {
+        	        menu.add(Menu.NONE, MNU_SWITCH_EDIT, 2, "Edit").
+                    setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        	    } else {
+        	        menu.add(Menu.NONE, MNU_SWITCH_EDIT, 2, "Edit Document").
+                    setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        	    }
             }
             if (LayoutMode.EDIT == getMode()) {
-            	menu.add(Menu.NONE, MNU_SWITCH_VIEW, 2, "View").
-            	setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                if (mCallback.isTwoPane()) {
+                	menu.add(Menu.NONE, MNU_SWITCH_VIEW, 2, "View").
+                	setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                } else {
+                    menu.add(Menu.NONE, MNU_SWITCH_VIEW, 2, "Back to View").
+                    setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                }
             }
         } else {
         	if (LayoutMode.VIEW == getMode()) {
