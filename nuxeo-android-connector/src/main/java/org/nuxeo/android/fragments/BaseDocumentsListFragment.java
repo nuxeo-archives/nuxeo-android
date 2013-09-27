@@ -3,11 +3,11 @@ package org.nuxeo.android.fragments;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-import org.nuxeo.android.activities.BaseDocumentLayoutActivity;
 import org.nuxeo.android.documentprovider.LazyDocumentsList;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.android.layout.LayoutMode;
 import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
+import org.nuxeo.ecm.automation.client.cache.DeferredUpdateManager;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.NotAvailableOffline;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
@@ -18,17 +18,17 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -83,11 +83,21 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
     @Override
     protected void onNuxeoDataRetrieved(Object data) {
         super.onNuxeoDataRetrieved(data);
+        DeferredUpdateManager dum = getAutomationClient().getDeferredUpdatetManager();
+        if (dum.getPendingRequestCount() > 0) {
+            dum.executePendingRequests(getNuxeoSession(), new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                }
+            });
+        }
         if (data != null) {
             // get the DocumentList from the async call result
             documentsList = (LazyUpdatableDocumentsList) data;
             displayDocumentList(listView, documentsList);
         }
+        doRefresh();
     }
     
     public void doRefresh() {
@@ -479,7 +489,7 @@ public abstract class BaseDocumentsListFragment extends BaseListFragment {
 
 	public void saveNewDocument(Document doc) {
 		onDocumentCreate(doc);
-		doRefresh();
+//		doRefresh();
 		if(mCallback.isTwoPane()){
 			FragmentManager fragManager = getFragmentManager();
 			FragmentTransaction transaction = fragManager.beginTransaction();
