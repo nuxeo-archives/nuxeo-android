@@ -10,12 +10,15 @@ import org.nuxeo.android.documentprovider.LazyDocumentsList;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.android.fragments.BaseDocLayoutFragAct;
 import org.nuxeo.android.fragments.BaseDocumentsListFragment;
+import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
+import org.nuxeo.ecm.automation.client.jaxrs.model.PathRef;
+import org.nuxeo.ecm.automation.client.jaxrs.model.PropertiesHelper;
+import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyMap;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -48,6 +51,26 @@ public class AppraisalContentListFragment extends BaseDocumentsListFragment {
         mapping.put(R.id.thumb, DocumentAttributeResolver.PICTUREURI
                 + ":Small");
         return mapping;
+    }
+
+    @Override
+    protected void onDocumentCreate(Document newDocument) {
+        OperationRequest createOperation = getNuxeoSession().newRequest(
+                "Picture.Create");
+
+        PropertyMap dirty = newDocument.getDirtyProperties();
+        if (dirty.get("file:content") != null) {
+            dirty.map().put("originalPicture", dirty.get("file:content"));
+//            dirty.map().remove("file:content");
+        }
+        String dirtyString = PropertiesHelper.toStringProperties(dirty);
+
+        PathRef parent = new PathRef(newDocument.getParentPath());
+        createOperation.setInput(parent).set("properties", dirtyString);
+        if (newDocument.getName() != null) {
+            createOperation.set("name", newDocument.getName());
+        }
+        documentsList.createDocument(newDocument, createOperation);
     }
 
 	@Override

@@ -10,17 +10,17 @@ import org.nuxeo.android.automation.fragments.SettingsActivity;
 import org.nuxeo.android.documentprovider.LazyDocumentsList;
 import org.nuxeo.android.documentprovider.LazyUpdatableDocumentsList;
 import org.nuxeo.android.fragments.BaseDocLayoutFragAct;
-import org.nuxeo.android.fragments.BaseDocumentLayoutFragment;
 import org.nuxeo.android.fragments.BaseDocumentsListFragment;
 import org.nuxeo.android.layout.LayoutMode;
+import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
 import android.support.v4.app.FragmentTransaction;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -149,6 +150,47 @@ public class AppraisalListFragment extends BaseDocumentsListFragment {
 			subMenu.add(Menu.NONE, MNU_SORT + 3, 2, "last modification up");
 			subMenu.add(Menu.NONE, MNU_SORT + 4, 3, "last modification down");
 			}
+    }
+
+    protected void populateContextMenu(Document doc, ContextMenu menu) {
+        menu.add(Menu.NONE, CTXMNU_VIEW_DOCUMENT, 0, "View Appraisal");
+        menu.add(Menu.NONE, CTXMNU_EDIT_DOCUMENT, 1, "Edit Appraisal");
+        menu.add(Menu.NONE, CTXMNU_VIEW_PICTURES, 2, "View pictures");
+        menu.add(Menu.NONE, CTXMNU_VALIDATE, 3, "Validate");
+        menu.add(Menu.NONE, CTXMNU_DELETE, 3, "Delete");
+    }
+    
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int selectedPosition = info.position;
+        Document doc = getContextMenuDocument(selectedPosition);
+
+        switch (item.getItemId()) {
+        case CTXMNU_VIEW_DOCUMENT:
+            openDocument(documentsList.getDocument(selectedPosition), LayoutMode.VIEW);
+            return true;
+        case CTXMNU_VIEW_PICTURES:
+            onListItemClicked(selectedPosition);
+            return true;
+        case CTXMNU_VALIDATE:
+            validateDocument(doc);
+            return true;
+        case CTXMNU_DELETE:
+            deleteDocument(doc);
+            doRefresh();
+            return true;
+        default:
+            return super.onContextItemSelected(item);
+        }
+    }
+
+    protected void validateDocument(Document doc) {
+        OperationRequest request = getNuxeoSession().newRequest(
+                "Document.SetLifeCycle");
+        request.setInput(doc);
+        request.set("value", "to_expert_visit_done");
+        documentsList.updateDocument(doc, request);
     }
 	
     @Override
