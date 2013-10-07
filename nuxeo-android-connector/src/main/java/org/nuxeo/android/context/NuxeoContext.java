@@ -167,7 +167,9 @@ public class NuxeoContext extends BroadcastReceiver {
                     serverConfig.getAutomationUrl(), androidContext,
                     sqlStateManager, blobStore, networkStatus, serverConfig);
             Log.i(TAG, "new Nuxeo client " + nuxeoClient);
-            Log.d(TAG, "Call stack: ", new Exception());
+            if (Log.isLoggable(TAG, Log.DEBUG)) {
+                Log.d(TAG, "Call stack: ", new Exception());
+            }
         }
         return nuxeoClient;
     }
