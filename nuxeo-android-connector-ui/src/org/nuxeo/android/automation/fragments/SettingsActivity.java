@@ -2,20 +2,17 @@ package org.nuxeo.android.automation.fragments;
 
 import org.nuxeo.android.automation.R;
 
-import android.support.v4.app.FragmentManager;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
-import android.app.FragmentTransaction;
 import android.app.ActionBar.Tab;
+import android.app.FragmentTransaction;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 @SuppressLint("NewApi")
 public class SettingsActivity extends FragmentActivity {
