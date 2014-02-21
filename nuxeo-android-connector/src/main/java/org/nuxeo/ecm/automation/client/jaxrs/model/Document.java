@@ -109,6 +109,7 @@ public class Document extends DocRef implements Serializable {
         this.properties = new PropertyMap();
         this.repoName = null;
         this.name = name;
+        this.facets = new PropertyList();
     }
 
     public Document(String id, String path, String type, PropertyMap dirtyProps) {
@@ -121,6 +122,7 @@ public class Document extends DocRef implements Serializable {
         this.properties = dirtyProps;
         this.repoName = null;
         this.lock = null;
+        this.facets = new PropertyList();
         dirtyFields.addAll(dirtyProps.map.keySet());
     }
 
@@ -365,6 +367,10 @@ public class Document extends DocRef implements Serializable {
 
     public boolean isFolder() {
         return facets.list.contains("Folderish");
+    }
+
+    public boolean hasFacet(String facet) {
+        return facets.list.contains(facet);
     }
 
 }

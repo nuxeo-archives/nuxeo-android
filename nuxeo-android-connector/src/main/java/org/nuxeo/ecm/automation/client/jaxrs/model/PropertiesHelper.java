@@ -46,73 +46,76 @@ public class PropertiesHelper {
     public static String getString(Object v, String defValue) {
         if (v == null) {
             return defValue;
-        }
-        if (v.getClass() == String.class) {
+        } else if (v.getClass() == String.class) {
             return v.toString();
+        } else {
+            throw new IllegalArgumentException("Property is not a string: " + v);
         }
-        throw new IllegalArgumentException("Property is not a scalar: " + v);
     }
 
     public static Boolean getBoolean(Object v, Boolean defValue) {
         if (v == null) {
             return defValue;
-        }
-        if (v.getClass() == String.class) {
+        } else if (v.getClass() == String.class) {
             return Boolean.valueOf(v.toString());
+        } else {
+            throw new IllegalArgumentException("Property is not a boolean: " + v);
         }
-        throw new IllegalArgumentException("Property is not a scalar: " + v);
     }
 
     public static Long getLong(Object v, Long defValue) {
         if (v == null) {
             return defValue;
-        }
-        if (v.getClass() == String.class) {
+        } else if (v.getClass() == String.class) {
             return Long.valueOf(v.toString());
+        } else {
+            throw new IllegalArgumentException("Property is not a long: " + v);
         }
-        throw new IllegalArgumentException("Property is not a scalar: " + v);
     }
 
     public static Double getDouble(Object v, Double defValue) {
         if (v == null) {
             return defValue;
-        }
-        if (v.getClass() == String.class) {
+        } else if (v.getClass() == String.class) {
             return Double.valueOf(v.toString());
+        } else {
+            throw new IllegalArgumentException("Property is not a double: " + v);
         }
-        throw new IllegalArgumentException("Property is not a scalar: " + v);
     }
 
     public static Date getDate(Object v, Date defValue) {
         if (v == null || "null".equals(v)) {
             return defValue;
-        }
-        if (v.getClass() == String.class) {
-        	// XXX 
-        	String dateString = v.toString().substring(0, 10);
+        } else if (v.getClass() == String.class) {
+            String dateString = v.toString().substring(0, 10);
             return DateUtils.parseDate(dateString);
+        } else {
+            throw new IllegalArgumentException("Property is not a Date: " + v);
         }
-        throw new IllegalArgumentException("Property is not a scalar: " + v);
     }
 
     public static PropertyList getList(Object v, PropertyList defValue) {
         if (v == null) {
             return defValue;
-        }
-        if (v instanceof PropertyList) {
+        } else if (v instanceof String && ("null").equals(v)) {
+            return defValue;
+        } else if (v instanceof PropertyList) {
             return (PropertyList) v;
+        } else {
+            throw new IllegalArgumentException("Property is not a list: " + v);
         }
-        throw new IllegalArgumentException("Property is not a list: " + v);
     }
 
     public static PropertyMap getMap(Object v, PropertyMap defValue) {
         if (v == null) {
             return defValue;
-        }
-        if (v instanceof PropertyMap) {
+        } else if (v instanceof String && ("null").equals(v)) {
+            return defValue;
+        } else if (v instanceof PropertyMap) {
             return (PropertyMap) v;
+        } else {
+            throw new IllegalArgumentException("Property is not a map: " + v);
         }
-        throw new IllegalArgumentException("Property is not a map: " + v);
     }
 
     public static String toStringProperties(PropertyMap props) {
