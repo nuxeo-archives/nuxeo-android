@@ -1,6 +1,3 @@
-<manifest
-    package="org.nuxeo.android.library.customconnector">
-
+<manifest package="org.nuxeo.android.customconnector">
     <application></application>
-
 </manifest>
