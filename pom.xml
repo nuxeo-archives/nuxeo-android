@@ -9,9 +9,9 @@
   <description>Nuxeo Android simple client project.</description>
   <packaging>pom</packaging>
   <scm>
-    <connection>scm:git:git://github.com/nuxeo/nuxeo-android.git</connection>
-    <developerConnection>scm:git:https://github.com/nuxeo/nuxeo-android.git</developerConnection>
-    <url>https://github.com/nuxeo/nuxeo-android</url>
+    <connection>scm:git:git@github.com:artmoni/nuxeo-android.git</connection>
+    <developerConnection>scm:git:https://github.com/artmoni/nuxeo-android.git</developerConnection>
+    <url>https://github.com/artmoni/nuxeo-android.git</url>
   </scm>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
