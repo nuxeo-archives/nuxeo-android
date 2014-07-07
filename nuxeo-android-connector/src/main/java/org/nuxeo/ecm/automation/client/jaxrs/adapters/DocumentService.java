@@ -197,7 +197,7 @@ public class DocumentService {
     }
 
     public Document getChild(DocRef docRef, String name) throws Exception {
-        return (Document) session.newRequest(GetDocumentChildren).setInput(docRef).set("name", name).execute();
+        return (Document) session.newRequest(GetDocumentChild).setInput(docRef).set("name", name).execute();
     }
 
     public Document getParent(DocRef docRef) throws Exception {
