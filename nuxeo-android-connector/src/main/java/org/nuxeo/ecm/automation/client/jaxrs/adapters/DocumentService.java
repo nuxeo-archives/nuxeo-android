@@ -13,6 +13,7 @@
  *
  * Contributors:
  *     bstefanescu
+ *     sebastien.fleury
  */
 package org.nuxeo.ecm.automation.client.jaxrs.adapters;
 
@@ -88,6 +89,12 @@ public class DocumentService {
     public static final String CheckOut = "Document.CheckOut";
 
     public static final String CheckIn = "Document.CheckIn";
+
+    public static final String Like = "Services.Like";
+
+    public static final String CancelLike = "Services.CancelLike";
+
+    public static final String GetLikeStatus = "Services.GetLikeStatus";
 
     // //TODO GetAcl?
 
@@ -365,5 +372,23 @@ public class DocumentService {
         OperationRequest req = session.newRequest(CreateVersion).setInput(doc);
         req.setHeader(Constants.HEADER_NX_VOIDOP, "true");
         req.execute();
+    }
+
+    public Blob like(DocRef doc) throws Exception {
+        return (Blob) session.newRequest(Like).set("document", doc).execute();
+    }
+
+    /**
+     * @since 2.0
+     */
+    public Blob cancelLike(DocRef doc) throws Exception {
+        return (Blob) session.newRequest(CancelLike).set("document", doc).execute();
+    }
+
+    /**
+     * @since 2.0
+     */
+    public Blob getLikeStatus(DocRef doc) throws Exception {
+        return (Blob) session.newRequest(GetLikeStatus).set("document", doc).execute();
     }
 }
