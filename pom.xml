@@ -1,5 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.nuxeo.android</groupId>
   <artifactId>nuxeo-android-parent</artifactId>
@@ -7,13 +8,11 @@
   <version>2.0-SNAPSHOT</version>
   <description>Nuxeo Android simple client project.</description>
   <packaging>pom</packaging>
-
   <scm>
     <connection>scm:git:git://github.com/nuxeo/nuxeo-android.git</connection>
     <developerConnection>scm:git:https://github.com/nuxeo/nuxeo-android.git</developerConnection>
     <url>https://github.com/nuxeo/nuxeo-android</url>
   </scm>
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <nuxeo.distribution.version>5.6-SNAPSHOT</nuxeo.distribution.version>
@@ -23,7 +22,6 @@
     <keystore.alias>nuxeo-shell-dev</keystore.alias>
     <keystore.password>nuxeodev</keystore.password>
   </properties>
-
   <modules>
     <module>nuxeo-android-connector</module>
     <module>nuxeo-automation-thin-client</module>
@@ -33,7 +31,6 @@
     <module>nuxeo-android-connector-ui</module>
     <!--<module>nuxeo-automation-browse-test</module> -->
   </modules>
-
   <profiles>
     <profile>
       <id>release</id>
@@ -43,7 +40,6 @@
       </properties>
     </profile>
   </profiles>
-
   <dependencyManagement>
     <dependencies>
       <!-- Nuxeo for Android artifacts -->
@@ -76,14 +72,12 @@
         <type>apklib</type>
         <version>2.0-SNAPSHOT</version>
       </dependency>
-
       <!-- Third-parties -->
       <dependency>
         <groupId>com.smartnsoft</groupId>
         <artifactId>droid4me</artifactId>
         <version>1.0</version>
       </dependency>
-
       <dependency>
         <groupId>com.google.android</groupId>
         <artifactId>android</artifactId>
@@ -97,12 +91,11 @@
         <scope>provided</scope>
       </dependency>
       <dependency>
-        <groupId>com.google.android</groupId>
+        <groupId>com.android.support</groupId>
         <artifactId>support-v4</artifactId>
-        <version>r7</version>
+        <version>19.1.0</version>
         <scope>provided</scope>
       </dependency>
-
       <dependency>
         <groupId>com.google.android</groupId>
         <artifactId>android-test</artifactId>
@@ -120,14 +113,12 @@
         <artifactId>robotium-solo</artifactId>
         <version>2.5</version>
       </dependency>
-
       <dependency>
         <groupId>org.nuxeo</groupId>
         <artifactId>nuxeo-ftest</artifactId>
         <version>1.7.1-SNAPSHOT</version>
         <type>zip</type>
       </dependency>
-
       <dependency>
         <groupId>org.nuxeo.ecm.distribution</groupId>
         <artifactId>nuxeo-distribution-tomcat</artifactId>
@@ -137,14 +128,13 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <build>
     <pluginManagement>
       <plugins>
         <plugin>
           <groupId>com.jayway.maven.plugins.android.generation2</groupId>
           <artifactId>android-maven-plugin</artifactId>
-          <version>3.6.0</version>
+          <version>3.9.0-rc.3</version>
           <inherited>true</inherited>
           <extensions>true</extensions>
           <configuration>
@@ -186,7 +176,6 @@
       </plugins>
     </pluginManagement>
   </build>
-
   <repositories>
     <repository>
       <id>public</id>
@@ -209,8 +198,27 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+    <repository>
+      <id>google-repository</id>
+      <url>file://${env.ANDROID_HOME}/extras/google/m2repository</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>android-repository</id>
+      <url>file://${env.ANDROID_HOME}/extras/android/m2repository</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
   </repositories>
-
   <pluginRepositories>
     <pluginRepository>
       <id>public</id>
@@ -236,7 +244,6 @@
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
-
   <distributionManagement>
     <site>
       <id>maven-website</id>
@@ -256,5 +263,4 @@
       <uniqueVersion>true</uniqueVersion>
     </snapshotRepository>
   </distributionManagement>
-
 </project>

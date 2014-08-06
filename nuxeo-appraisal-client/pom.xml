@@ -29,7 +29,7 @@
       <artifactId>android</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.google.android</groupId>
+      <groupId>com.android.support</groupId>
       <artifactId>support-v4</artifactId>
     </dependency>
   </dependencies>
