@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.nuxeo.android</groupId>
@@ -8,19 +9,17 @@
     <version>2.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-
   <artifactId>nuxeo-android-connector-ui</artifactId>
   <name>Nuxeo Android Connector UI</name>
   <description>Android library providing UI activities using Nuxeo Android Connector</description>
   <packaging>apklib</packaging>
-
   <dependencies>
     <dependency>
       <groupId>com.google.android</groupId>
       <artifactId>android</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.google.android</groupId>
+      <groupId>com.android.support</groupId>
       <artifactId>support-v4</artifactId>
     </dependency>
     <dependency>
@@ -28,7 +27,6 @@
       <artifactId>nuxeo-android-connector</artifactId>
     </dependency>
   </dependencies>
-
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
@@ -38,7 +36,7 @@
       </plugin>
       <plugin>
         <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-        <artifactId>android-maven-plugin</artifactId> 
+        <artifactId>android-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
