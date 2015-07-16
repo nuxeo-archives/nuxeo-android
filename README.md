@@ -65,7 +65,7 @@ Here's an overview of its main targets:
 
     It is a fork from [nuxeo-automation-client](http://hg.nuxeo.org/nuxeo/nuxeo-features/file/5.4/nuxeo-automation/nuxeo-automation-client/)
     making it usable with Google Android SDK 2.2 and reducing its dependencies.
-    This module only manage ReadOnly access to nuxeo and is depracted : use nuxeo-android-connector.
+    This module only manage ReadOnly access to nuxeo and is deprecated: use nuxeo-android-connector.
 
  * Nuxeo Android simple client (`nuxeo-android`)
 
