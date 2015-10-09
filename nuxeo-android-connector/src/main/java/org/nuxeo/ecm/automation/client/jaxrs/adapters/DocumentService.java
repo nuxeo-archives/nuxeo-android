@@ -17,6 +17,13 @@
  */
 package org.nuxeo.ecm.automation.client.jaxrs.adapters;
 
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+
+import org.nuxeo.android.context.NuxeoContext;
+import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.Constants;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
@@ -28,6 +35,8 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 import org.nuxeo.ecm.automation.client.jaxrs.model.FileBlob;
 import org.nuxeo.ecm.automation.client.jaxrs.model.PathRef;
 import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyMap;
+
+import android.R.string;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
@@ -95,6 +104,14 @@ public class DocumentService {
     public static final String CancelLike = "Services.CancelLike";
 
     public static final String GetLikeStatus = "Services.GetLikeStatus";
+
+    public static final String StartWorkflow = "Context.StartWorkflow";
+
+    public static final String GetOpenTasks = "Context.GetOpenTasks";
+
+    public static final String GetTask = "Workflow.GetTask";
+    
+    public static final String GetUsersAndGroups = "Document.GetUsersAndGroups";
 
     // //TODO GetAcl?
 
@@ -391,4 +408,125 @@ public class DocumentService {
     public Blob getLikeStatus(DocRef doc) throws Exception {
         return (Blob) session.newRequest(GetLikeStatus).set("document", doc).execute();
     }
+
+    /**
+     * @since 2.0
+     */
+    public Document getUsersAndGroups(DocRef doc, String permission,
+            String variable) throws Exception {
+        return getUsersAndGroups(doc, permission, variable, false, false, false);
+    }
+
+    /**
+     * @since 2.0
+     */
+    public Document getUsersAndGroups(DocRef doc, String permission,
+            String variable, boolean ignoreGroups, boolean prefixIdentifiers,
+            boolean resolveGroups) throws Exception {
+        OperationRequest req = session.newRequest(GetUsersAndGroups).setInput(
+                doc);
+        req.set("permission", permission);
+        req.set("variable name", "rights");
+        req.set("ignore groups", ignoreGroups);
+        req.set("prefix identifiers", prefixIdentifiers);
+        req.set("resolve groups", resolveGroups);
+        
+        return (Document) req.execute();
+    }
+
+    /**
+     * @since 2.0
+     */
+    public Document startWorkflow(DocRef doc, String workflowId)
+            throws Exception {
+        return startWorkflow(doc, workflowId, true, null);
+    }
+
+    /**
+     * @since 2.0
+     */
+    public Document startWorkflow(DocRef doc, String workflowId, boolean start,
+            PropertyMap variables) throws Exception {
+        OperationRequest req = session.newRequest(StartWorkflow).setInput(doc);
+        req.set("id", workflowId);
+        req.set("start", start);
+        if (variables != null && variables.size() > 0) {
+            req.set("variables", variables);
+        }
+        return (Document) req.execute();
+    }
+
+    /**
+     * @param force TODO
+     * @since 2.0
+     */
+    public Documents getOpenTasks(DocRef doc, String nodeId, String processId,
+            String username, boolean refresh) throws Exception {
+        OperationRequest req = session.newRequest(GetOpenTasks).setInput(doc);
+        req.set("nodeId", nodeId);
+        req.set("processId", processId);
+        req.set("username", username);
+        byte cacheFlag = CacheBehavior.STORE;
+        if (refresh) {
+            cacheFlag = (byte) (cacheFlag | CacheBehavior.FORCE_REFRESH);
+        }
+        return (Documents) req.execute(cacheFlag);
+    }
+
+    /**
+     * @since 2.0
+     */
+    public Documents getOpenTasks(DocRef doc) throws Exception {
+        OperationRequest req = session.newRequest(GetOpenTasks).setInput(doc);
+        return (Documents) req.execute();
+    }
+
+    /**
+     * @param force TODO
+     * @since 2.0
+     */
+    public Blob getUserTaskPageProvider(boolean force) throws Exception {
+        OperationRequest req = session.newRequest("Workflow.UserTaskPageProvider");
+        byte cacheFlag = CacheBehavior.STORE;
+        if (force) {
+            cacheFlag = (byte) (cacheFlag | CacheBehavior.FORCE_REFRESH);
+        }
+        return (Blob) req.execute(cacheFlag);
+    }
+
+    /**
+     * @since 2.0
+     */
+    public Document completeTaskOperation(DocRef doc, String comment,
+            Properties nodeVariables, String status, PropertyMap properties)
+            throws Exception {
+        OperationRequest req = session.newRequest(
+                "Workflow.CompleteTaskOperation").setInput(doc);
+        req.set("comment", comment);
+        req.set("status", status);
+        if (nodeVariables != null) {
+            /*
+             * .The variables are specified as key=value pairs separated by a
+             * new line.To specify multi-line values you can use a \ character
+             * followed by a new line.
+             */
+            StringBuilder b = new StringBuilder();
+            Enumeration e = nodeVariables.propertyNames();
+            while (e.hasMoreElements()) {
+                String key = (String) e.nextElement();
+                b.append(key);
+                b.append("=");
+                b.append(nodeVariables.getProperty(key));
+                b.append("\\");
+                b.append("\n");
+            }
+            req.set("nodeVariables",
+                    "assignees=user:gardening-manager@gmail.com");
+        }
+        if (properties != null)
+            req.set("workflowVariables", properties);
+        return (Document) req.execute();
+    }
+
+       
 }
