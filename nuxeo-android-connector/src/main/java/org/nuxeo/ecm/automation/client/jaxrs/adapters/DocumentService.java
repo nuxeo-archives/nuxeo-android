@@ -17,6 +17,10 @@
  */
 package org.nuxeo.ecm.automation.client.jaxrs.adapters;
 
+import java.util.Enumeration;
+import java.util.Properties;
+
+import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.Constants;
 import org.nuxeo.ecm.automation.client.jaxrs.OperationRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.Session;
@@ -30,6 +34,10 @@ import org.nuxeo.ecm.automation.client.jaxrs.model.PathRef;
 import org.nuxeo.ecm.automation.client.jaxrs.model.PropertyMap;
 
 /**
+ * Currently uses Automation Operation IDs compliant with Nuxeo 5.8. A lot of them have been renamed (see NXP-16203) and
+ * an alias was created for backward compliance. This class will keep compliance with the oldest supported Nuxeo
+ * release.
+ *
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  */
 public class DocumentService {
@@ -95,6 +103,18 @@ public class DocumentService {
     public static final String CancelLike = "Services.CancelLike";
 
     public static final String GetLikeStatus = "Services.GetLikeStatus";
+
+    public static final String StartWorkflow = "Context.StartWorkflow";
+
+    public static final String GetOpenTasks = "Context.GetOpenTasks";
+
+    public static final String GetTask = "Workflow.GetTask";
+
+    public static final String GetUsersAndGroups = "Document.GetUsersAndGroups";
+
+    public static final String CompleteTaskOperation = "Workflow.CompleteTaskOperation";
+
+    public static final String UserTaskPageProvider = "Workflow.UserTaskPageProvider";
 
     // //TODO GetAcl?
 
@@ -291,8 +311,7 @@ public class DocumentService {
         if (xpath != null) {
             req.set("xpath", xpath);
         }
-        req.setHeader(Constants.HEADER_NX_VOIDOP, "true");
-        req.execute();
+        req.setHeader(Constants.HEADER_NX_VOIDOP, "true").execute();
     }
 
     public void removeBlob(DocRef doc) throws Exception {
@@ -304,8 +323,7 @@ public class DocumentService {
         if (xpath != null) {
             req.set("xpath", xpath);
         }
-        req.setHeader(Constants.HEADER_NX_VOIDOP, "true");
-        req.execute();
+        req.setHeader(Constants.HEADER_NX_VOIDOP, "true").execute();
     }
 
     public FileBlob getBlob(DocRef doc) throws Exception {
@@ -353,9 +371,7 @@ public class DocumentService {
     }
 
     public void fireEvent(DocRef doc, String event) throws Exception {
-        OperationRequest req = session.newRequest(CreateVersion).setInput(doc);
-        req.setHeader(Constants.HEADER_NX_VOIDOP, "true");
-        req.execute();
+        session.newRequest(CreateVersion).setInput(doc).setHeader(Constants.HEADER_NX_VOIDOP, "true").execute();
     }
 
     public Blob like(DocRef doc) throws Exception {
@@ -375,4 +391,113 @@ public class DocumentService {
     public Blob getLikeStatus(DocRef doc) throws Exception {
         return (Blob) session.newRequest(GetLikeStatus).set("document", doc).execute();
     }
+
+    /**
+     * @since 2.0
+     */
+    public Document getUsersAndGroups(DocRef doc, String permission, String variable) throws Exception {
+        return getUsersAndGroups(doc, permission, variable, false, false, false);
+    }
+
+    /**
+     * @since 2.0
+     */
+    public Document getUsersAndGroups(DocRef doc, String permission, String variable, boolean ignoreGroups,
+            boolean prefixIdentifiers, boolean resolveGroups) throws Exception {
+        return (Document) session.newRequest(GetUsersAndGroups)
+                                 .setInput(doc)
+                                 .set("permission", permission)
+                                 .set("variable name", "rights")
+                                 .set("ignore groups", ignoreGroups)
+                                 .set("prefix identifiers", prefixIdentifiers)
+                                 .set("resolve groups", resolveGroups)
+                                 .execute();
+    }
+
+    /**
+     * @since 2.0
+     */
+    public Document startWorkflow(DocRef doc, String workflowId) throws Exception {
+        return startWorkflow(doc, workflowId, true, null);
+    }
+
+    /**
+     * @since 2.0
+     */
+    public Document startWorkflow(DocRef doc, String workflowId, boolean start, PropertyMap variables) throws Exception {
+        OperationRequest req = session.newRequest(StartWorkflow)
+                                      .setInput(doc)
+                                      .set("id", workflowId)
+                                      .set("start", start);
+        if (variables != null && variables.size() > 0) {
+            req.set("variables", variables);
+        }
+        return (Document) req.execute();
+    }
+
+    /**
+     * @since 2.0
+     */
+    public Documents getOpenTasks(DocRef doc, String nodeId, String processId, String username, boolean refresh)
+            throws Exception {
+        byte cacheFlag = CacheBehavior.STORE;
+        if (refresh) {
+            cacheFlag = (byte) (cacheFlag | CacheBehavior.FORCE_REFRESH);
+        }
+        return (Documents) session.newRequest(GetOpenTasks)
+                                  .setInput(doc)
+                                  .set("nodeId", nodeId)
+                                  .set("processId", processId)
+                                  .set("username", username)
+                                  .execute(cacheFlag);
+    }
+
+    /**
+     * @since 2.0
+     */
+    public Documents getOpenTasks(DocRef doc) throws Exception {
+        return (Documents) session.newRequest(GetOpenTasks).setInput(doc).execute();
+    }
+
+    /**
+     * @since 2.0
+     */
+    public Blob getUserTaskPageProvider(boolean force) throws Exception {
+        byte cacheFlag = CacheBehavior.STORE;
+        if (force) {
+            cacheFlag = (byte) (cacheFlag | CacheBehavior.FORCE_REFRESH);
+        }
+        return (Blob) session.newRequest(UserTaskPageProvider).execute(cacheFlag);
+    }
+
+    /**
+     * @param nodeVariables The variables are specified as key=value pairs separated by a new line. To specify
+     *            multi-line values you can use a {@code \} character followed by a line return.
+     * @since 2.0
+     */
+    public Document completeTaskOperation(DocRef doc, String comment, Properties nodeVariables, String status,
+            PropertyMap properties) throws Exception {
+        OperationRequest req = session.newRequest(CompleteTaskOperation)
+                                      .setInput(doc)
+                                      .set("comment", comment)
+                                      .set("status", status);
+        if (nodeVariables != null && nodeVariables.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            Enumeration<?> e = nodeVariables.propertyNames();
+            while (e.hasMoreElements()) {
+                String key = (String) e.nextElement();
+                sb.append(key) //
+                  .append("=")
+                  .append(nodeVariables.getProperty(key))
+                  .append("\\")
+                  .append("\n");
+            }
+            req.set("nodeVariables", sb.toString());
+        }
+        if (properties != null) {
+            req.set("workflowVariables", properties);
+        }
+        return (Document) req.execute();
+    }
+
 }
