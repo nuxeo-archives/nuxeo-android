@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2006-2014 Nuxeo SA (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2015 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -117,8 +117,7 @@ public class DocumentService {
     }
 
     public Document getDocument(DocRef ref, String schemas) throws Exception {
-        OperationRequest req = session.newRequest(FetchDocument).set("value",
-                ref);
+        OperationRequest req = session.newRequest(FetchDocument).set("value", ref);
         if (schemas != null) {
             req.setHeader(Constants.HEADER_NX_SCHEMAS, schemas);
         }
@@ -129,15 +128,12 @@ public class DocumentService {
         return getDocument(new PathRef("/"));
     }
 
-    public Document createDocument(DocRef parent, String type, String name)
-            throws Exception {
+    public Document createDocument(DocRef parent, String type, String name) throws Exception {
         return createDocument(parent, type, name, null);
     }
 
-    public Document createDocument(DocRef parent, String type, String name,
-            PropertyMap properties) throws Exception {
-        OperationRequest req = session.newRequest(CreateDocument).setInput(
-                parent).set("type", type).set("name", name);
+    public Document createDocument(DocRef parent, String type, String name, PropertyMap properties) throws Exception {
+        OperationRequest req = session.newRequest(CreateDocument).setInput(parent).set("type", type).set("name", name);
         if (properties != null && properties.size() > 0) {
             req.set("properties", properties);
         }
@@ -156,10 +152,8 @@ public class DocumentService {
         return copy(src, targetParent, null);
     }
 
-    public Document copy(DocRef src, DocRef targetParent, String name)
-            throws Exception {
-        OperationRequest req = session.newRequest(CopyDocument).setInput(src).set(
-                "target", targetParent);
+    public Document copy(DocRef src, DocRef targetParent, String name) throws Exception {
+        OperationRequest req = session.newRequest(CopyDocument).setInput(src).set("target", targetParent);
         if (name != null) {
             req.set("name", name);
         }
@@ -170,10 +164,8 @@ public class DocumentService {
         return move(src, targetParent, null);
     }
 
-    public Document move(DocRef src, DocRef targetParent, String name)
-            throws Exception {
-        OperationRequest req = session.newRequest(MoveDocument).setInput(src).set(
-                "target", targetParent);
+    public Document move(DocRef src, DocRef targetParent, String name) throws Exception {
+        OperationRequest req = session.newRequest(MoveDocument).setInput(src).set("target", targetParent);
         if (name != null) {
             req.set("name", name);
         }
@@ -181,8 +173,7 @@ public class DocumentService {
     }
 
     public Documents getChildren(DocRef docRef) throws Exception {
-        return (Documents) session.newRequest(GetDocumentChildren).setInput(
-                docRef).execute();
+        return (Documents) session.newRequest(GetDocumentChildren).setInput(docRef).execute();
     }
 
     public Document getChild(DocRef docRef, String name) throws Exception {
@@ -195,29 +186,28 @@ public class DocumentService {
     }
 
     public Documents getParent(DocRef docRef, String type) throws Exception {
-        return (Documents) session.newRequest(GetDocumentParent).setInput(
-                docRef).set("type", type).execute();
+        return (Documents) session.newRequest(GetDocumentParent).setInput(docRef).set("type", type).execute();
     }
 
     public Documents query(String query) throws Exception {
         return (Documents) session.newRequest(Query).set("query", query).execute();
     }
 
-    public Document setPermission(DocRef doc, String user, String permission)
-            throws Exception {
+    public Document setPermission(DocRef doc, String user, String permission) throws Exception {
         return setPermission(doc, user, permission, null, true);
     }
 
-    public Document setPermission(DocRef doc, String user, String permission,
-            boolean granted) throws Exception {
+    public Document setPermission(DocRef doc, String user, String permission, boolean granted) throws Exception {
         return setPermission(doc, user, permission, null, granted);
     }
 
-    public Document setPermission(DocRef doc, String user, String permission,
-            String acl, boolean granted) throws Exception {
-        OperationRequest req = session.newRequest(SetPermission).setInput(doc).set(
-                "user", user).set("permission", permission).set("grant",
-                granted);
+    public Document setPermission(DocRef doc, String user, String permission, String acl, boolean granted)
+            throws Exception {
+        OperationRequest req = session.newRequest(SetPermission)
+                                      .setInput(doc)
+                                      .set("user", user)
+                                      .set("permission", permission)
+                                      .set("grant", granted);
         if (acl != null) {
             req.set("acl", acl);
         }
@@ -225,13 +215,11 @@ public class DocumentService {
     }
 
     public Document removeAcl(DocRef doc, String acl) throws Exception {
-        return (Document) session.newRequest(RemoveAcl).setInput(doc).set(
-                "acl", acl).execute();
+        return (Document) session.newRequest(RemoveAcl).setInput(doc).set("acl", acl).execute();
     }
 
     public Document setState(DocRef doc, String state) throws Exception {
-        return (Document) session.newRequest(SetDocumentState).setInput(doc).set(
-                "value", state).execute();
+        return (Document) session.newRequest(SetDocumentState).setInput(doc).set("value", state).execute();
     }
 
     public Document lock(DocRef doc) throws Exception {
@@ -251,47 +239,48 @@ public class DocumentService {
     }
 
     // TODO: value Serializable?
-    public Document setProperty(DocRef doc, String key, String value)
-            throws Exception {
-        return (Document) session.newRequest(SetProperty).setInput(doc).set(
-                "xpath", key).set("value", value).execute();
+    public Document setProperty(DocRef doc, String key, String value) throws Exception {
+        return (Document) session.newRequest(SetProperty).setInput(doc).set("xpath", key).set("value", value).execute();
     }
 
     public Document removeProperty(DocRef doc, String key) throws Exception {
-        return (Document) session.newRequest(RemoveProperty).setInput(doc).set(
-                "xpath", key).execute();
+        return (Document) session.newRequest(RemoveProperty).setInput(doc).set("xpath", key).execute();
     }
 
     public Document update(DocRef doc, PropertyMap properties) throws Exception {
-        return (Document) session.newRequest(UpdateDocument).setInput(doc).set(
-                "properties", properties).execute();
+        return (Document) session.newRequest(UpdateDocument).setInput(doc).set("properties", properties).execute();
     }
 
     public Document publish(DocRef doc, DocRef section) throws Exception {
         return publish(doc, section, true);
     }
 
-    public Document publish(DocRef doc, DocRef section, boolean override)
-            throws Exception {
-        return (Document) session.newRequest(PublishDocument).setInput(doc).set(
-                "target", section).set("override", override).execute();
+    public Document publish(DocRef doc, DocRef section, boolean override) throws Exception {
+        return (Document) session.newRequest(PublishDocument)
+                                 .setInput(doc)
+                                 .set("target", section)
+                                 .set("override", override)
+                                 .execute();
     }
 
-    public Document createRelation(DocRef subject, String predicate,
-            DocRef object) throws Exception {
-        return (Document) session.newRequest(CreateRelation).setInput(subject).set(
-                "object", object).set("predicate", predicate).execute();
+    public Document createRelation(DocRef subject, String predicate, DocRef object) throws Exception {
+        return (Document) session.newRequest(CreateRelation)
+                                 .setInput(subject)
+                                 .set("object", object)
+                                 .set("predicate", predicate)
+                                 .execute();
     }
 
-    public Documents getRelations(DocRef doc, String predicate)
-            throws Exception {
+    public Documents getRelations(DocRef doc, String predicate) throws Exception {
         return getRelations(doc, predicate, true);
     }
 
-    public Documents getRelations(DocRef doc, String predicate, boolean outgoing)
-            throws Exception {
-        return (Documents) session.newRequest(GetRelations).setInput(doc).set(
-                "predicate", predicate).set("outgoing", outgoing).execute();
+    public Documents getRelations(DocRef doc, String predicate, boolean outgoing) throws Exception {
+        return (Documents) session.newRequest(GetRelations)
+                                  .setInput(doc)
+                                  .set("predicate", predicate)
+                                  .set("outgoing", outgoing)
+                                  .execute();
     }
 
     public void setBlob(DocRef doc, Blob blob) throws Exception {
@@ -299,8 +288,7 @@ public class DocumentService {
     }
 
     public void setBlob(DocRef doc, Blob blob, String xpath) throws Exception {
-        OperationRequest req = session.newRequest(SetBlob).setInput(blob).set(
-                "document", doc);
+        OperationRequest req = session.newRequest(SetBlob).setInput(blob).set("document", doc);
         if (xpath != null) {
             req.set("xpath", xpath);
         }
@@ -350,13 +338,10 @@ public class DocumentService {
     }
 
     /**
-     * Increment is one of "None", "Major", "Minor". If null the server default
-     * will be used.
-     * 
-     * See {@link VersionIncrement}
+     * Increment is one of "None", "Major", "Minor". If null the server default will be used. See
+     * {@link VersionIncrement}
      */
-    public Document createVersion(DocRef doc, String increment)
-            throws Exception {
+    public Document createVersion(DocRef doc, String increment) throws Exception {
         OperationRequest req = session.newRequest(CreateVersion).setInput(doc);
         if (increment != null) {
             req.set("increment", increment);
