@@ -76,6 +76,19 @@ Here's an overview of its main targets:
 
     New connector for using Nuxeo Platform services from Android. It's an alternative library of nuxeo-automation-thin-client that provide more infrastructure and support for Read/Write operation as well as off-line management.
 
+    **Important note:** since Nuxeo 7.4 the [batch upload API](https://doc.nuxeo.com/x/OYLZ) has changed to be exposed as a REST resource endpoint.
+
+    The old API using `/site/automation/batch/upload` is deprecated but kept for backward compatibility.
+
+    **Yet since 7.10, for security reasons, this old API does not allow to use a client-side generated batch id passed as a request header**, see [NXP-18030](https://jira.nuxeo.com/browse/NXP-18030) for details.
+
+    **Therefore it is strongly recommended to upgrade to the new batch upload API by adapting the related classes.** This probably just impacts [BlobWidgetWrapper.java](https://github.com/nuxeo/nuxeo-android/blob/master/nuxeo-android-connector/src/main/java/org/nuxeo/android/layout/widgets/BlobWidgetWrapper.java).
+
+    If this is not possible for any reason and you absolutely need to keep using the old API you have two options:
+
+    - Not passing the `X-Batch-Id` header, the batch id will then be automatically generated server-side.
+    - Setting the `allowClientGeneratedBatchId` configuration property to `true` on the Nuxeo instance (not recommended).
+
  * Nuxeo Automation sample (`nuxeo-automation-sample`)
 
     Sample use of the `org.nuxeo.android:nuxeo-android-connector` library.
