@@ -19,8 +19,29 @@
       <artifactId>android</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.android.support</groupId>
-      <artifactId>support-v4</artifactId>
+      <groupId>android.support</groupId>
+      <artifactId>compatibility-v4</artifactId>
+      <version>18</version>
+    </dependency>
+    <dependency>
+      <groupId>android.support</groupId>
+      <artifactId>compatibility-v7</artifactId>
+      <type>apklib</type>
+    </dependency>
+    <dependency>
+      <groupId>android.support</groupId>
+      <artifactId>compatibility-v7</artifactId>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>android.support</groupId>
+      <artifactId>compatibility-v7-appcompat</artifactId>
+      <type>apklib</type>
+    </dependency>
+    <dependency>
+      <groupId>android.support</groupId>
+      <artifactId>compatibility-v7-appcompat</artifactId>
+      <type>jar</type>
     </dependency>
   </dependencies>
 

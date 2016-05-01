@@ -97,6 +97,36 @@
         <scope>provided</scope>
       </dependency>
       <dependency>
+        <groupId>com.android.support</groupId>
+        <artifactId>support-v4</artifactId>
+        <version>19.1.0</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>android.support</groupId>
+        <artifactId>compatibility-v7</artifactId>
+        <version>19</version>
+        <type>apklib</type>
+      </dependency>
+      <dependency>
+        <groupId>android.support</groupId>
+        <artifactId>compatibility-v7</artifactId>
+        <version>19</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>android.support</groupId>
+        <artifactId>compatibility-v7-appcompat</artifactId>
+        <version>19</version>
+        <type>apklib</type>
+      </dependency>
+      <dependency>
+        <groupId>android.support</groupId>
+        <artifactId>compatibility-v7-appcompat</artifactId>
+        <version>19</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
         <groupId>com.google.android</groupId>
         <artifactId>android-test</artifactId>
         <version>2.2.1</version>
@@ -252,13 +282,13 @@
     <repository>
       <id>public-releases</id>
       <url>
-        http://maven.in.nuxeo.com/nexus/content/repositories/public-releases
+        http://maven.nuxeo.com/nexus/content/repositories/public-releases
       </url>
     </repository>
     <snapshotRepository>
       <id>public-snapshots</id>
       <url>
-        http://maven.in.nuxeo.com/nexus/content/repositories/public-snapshots
+        http://maven.nuxeo.com/nexus/content/repositories/public-snapshots
       </url>
       <uniqueVersion>true</uniqueVersion>
     </snapshotRepository>
