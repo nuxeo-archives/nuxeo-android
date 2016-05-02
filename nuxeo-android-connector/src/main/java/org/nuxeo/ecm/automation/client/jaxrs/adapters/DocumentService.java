@@ -499,5 +499,10 @@ public class DocumentService {
         }
         return (Document) req.execute();
     }
+    
+    public void setWorkflowNodeVar(String name, String value) throws Exception {
+        getSession().newRequest("Context.SetWorkflowNodeVar").set("name", name).set(
+                "value", value).execute();
+    }
 
 }
