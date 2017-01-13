@@ -1,5 +1,7 @@
 # Nuxeo Android projects
 
+This repository is deprecated, thus its documentation has been removed from the [documentation](https://doc.nuxeo.com), yet you can still access it in the git history: https://github.com/nuxeo/doc.nuxeo.com-content/commit/469d7e40183b71dce800362733a6af53e5ce7107
+
 ## Initialize Maven repository with Android artifacts (with Maven 3)
 
   git clone https://github.com/mosabua/maven-android-sdk-deployer.git
